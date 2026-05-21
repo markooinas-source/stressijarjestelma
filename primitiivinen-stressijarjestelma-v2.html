@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Primitiivinen Stressijärjestelmä — Kliininen Työkalu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Source+Sans+3:wght@300;400;500;600&family=Inconsolata:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════════ */
+:root {
+  /* Palette — Nordic clinical depth */
+  --bg:        #0f1217;
+  --bg2:       #161b24;
+  --bg3:       #1e2535;
+  --surface:   #252e42;
+  --border:    #2e3a52;
+  --border2:   #3a4a68;
+  --muted:     #5a6a88;
+  --text3:     #8090aa;
+  --text2:     #aabbd0;
+  --text:      #d8e4f0;
+  --bright:    #eaf2fc;
+
+  /* Semantic colours */
+  --ventral:   #3d9e7a;
+  --ventral-bg:#0d2820;
+  --ventral-bd:#1a4535;
+  --sym:       #c06040;
+  --sym-bg:    #2a1408;
+  --sym-bd:    #4a2010;
+  --dorsal:    #4a80b8;
+  --dorsal-bg: #0a1828;
+  --dorsal-bd: #1a3050;
+  --hyper:     #c05050;
+  --hypo:      #5080c0;
+  --optimal:   #3d9e7a;
+  --fawn:      #c0903a;
+  --sage:      #5a8a6a;
+  --accent:    #6ab0d8;
+  --gold:      #c8a86a;
+
+  /* Type */
+  --font-display: 'Lora', Georgia, serif;
+  --font-body:    'Source Sans 3', system-ui, sans-serif;
+  --font-mono:    'Inconsolata', monospace;
+
+  /* Spacing */
+  --r: 8px;
+  --r2: 14px;
+  --gap: 1.5rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* subtle grid texture */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(106,176,216,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(106,176,216,0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   MODE TOGGLE (Therapist / Client)
+═══════════════════════════════════════════════════ */
+#mode-bar {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(15,18,23,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.6rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.app-brand {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--text3);
+  white-space: nowrap;
+}
+
+.mode-pills {
+  display: flex;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 40px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.mode-pill {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.35rem 1rem;
+  border-radius: 40px;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+
+.mode-pill.active {
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 500;
+}
+
+.mode-pill:hover:not(.active) { color: var(--text); }
+
+/* ═══════════════════════════════════════════════════
+   APP VIEWS
+═══════════════════════════════════════════════════ */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ═══════════════════════════════════════════════════
+   TAB NAVIGATION
+═══════════════════════════════════════════════════ */
+.tab-nav {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  padding: 0 1rem;
+  position: sticky; top: 52px; z-index: 100;
+  gap: 0;
+}
+.tab-nav::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.85rem 1.1rem;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.tab-btn:hover { color: var(--text2); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ═══════════════════════════════════════════════════
+   PANELS
+═══════════════════════════════════════════════════ */
+.tab-panel { display: none; animation: fadeIn 0.3s ease; }
+.tab-panel.active { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+
+.section {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════════════════ */
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+  font-weight: 500;
+  font-style: italic;
+  color: var(--bright);
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.section-lead {
+  font-size: 1.05rem;
+  color: var(--text3);
+  max-width: 680px;
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+
+h3.card-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--bright);
+  margin-bottom: 0.35rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   INFO BOX
+═══════════════════════════════════════════════════ */
+.info-box {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--r);
+  padding: 1rem 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text2);
+  margin-bottom: 1.5rem;
+}
+
+.info-box strong {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--accent);
+}
+
+.warning-box {
+  background: rgba(192,80,80,0.08);
+  border: 1px solid rgba(192,80,80,0.25);
+  border-left: 3px solid var(--hyper);
+  border-radius: var(--r);
+  padding: 0.85rem 1.1rem;
+  font-size: 0.88rem;
+  color: #e09090;
+  margin-top: 0.75rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   CLINICAL NOTE
+═══════════════════════════════════════════════════ */
+.clinical-note {
+  background: rgba(106,176,216,0.06);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 0.85rem 1.1rem;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--text3);
+  margin-top: 0.9rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   ACCORDION
+═══════════════════════════════════════════════════ */
+.accordion-item {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 4px;
+  transition: border-color 0.2s;
+}
+.accordion-item.open { border-color: var(--border2); }
+
+.accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: var(--bg2);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+  gap: 1rem;
+}
+.accordion-trigger:hover { background: var(--bg3); }
+.accordion-item.open .accordion-trigger { background: var(--bg3); }
+
+.acc-label { display: flex; flex-direction: column; gap: 0.2rem; }
+.acc-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--bright);
+}
+.acc-sub {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.acc-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+.acc-badge {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+}
+.acc-chevron {
+  color: var(--muted);
+  font-size: 0.7rem;
+  transition: transform 0.3s;
+  font-family: var(--font-mono);
+}
+.accordion-item.open .acc-chevron { transform: rotate(90deg); color: var(--accent); }
+
+.accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.accordion-item.open .accordion-body { max-height: 1000px; }
+
+.accordion-content {
+  padding: 1.25rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--text2);
+}
+.accordion-content p + p { margin-top: 0.75rem; }
+
+/* ═══════════════════════════════════════════════════
+   TAGS
+═══════════════════════════════════════════════════ */
+.tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.75rem; }
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text3);
+}
+
+/* ═══════════════════════════════════════════════════
+   POLYVAGAL LADDER
+═══════════════════════════════════════════════════ */
+.pv-ladder { display: flex; flex-direction: column; gap: 3px; margin-bottom: 2rem; }
+
+.pv-rung {
+  border-radius: var(--r);
+  border: 1px solid;
+  overflow: hidden;
+}
+.pv-rung.ventral  { background: var(--ventral-bg); border-color: var(--ventral-bd); }
+.pv-rung.sym      { background: var(--sym-bg);     border-color: var(--sym-bd); }
+.pv-rung.dorsal   { background: var(--dorsal-bg);  border-color: var(--dorsal-bd); }
+
+.pv-trigger {
+  width: 100%; display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 1.1rem 1.25rem; background: none; border: none; cursor: pointer; gap: 1rem;
+}
+
+.pv-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-style: italic;
+}
+.ventral .pv-name { color: var(--ventral); }
+.sym .pv-name     { color: var(--sym); }
+.dorsal .pv-name  { color: var(--dorsal); }
+
+.pv-nerve {
+  font-family: var(--font-mono);
+  font-size: 0.57rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
+
+.pv-kws { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.55rem; }
+.pv-kw {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+}
+.ventral .pv-kw { background: rgba(61,158,122,0.15); color: var(--ventral); }
+.sym .pv-kw     { background: rgba(192,96,64,0.15);  color: var(--sym); }
+.dorsal .pv-kw  { background: rgba(74,128,184,0.15); color: var(--dorsal); }
+
+.pv-body { max-height: 0; overflow: hidden; transition: max-height 0.4s; }
+.pv-rung.open .pv-body { max-height: 600px; }
+
+.pv-detail {
+  padding: 0 1.25rem 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--text2);
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  margin-top: 0;
+}
+.pv-detail p + p { margin-top: 0.7rem; }
+
+/* ═══════════════════════════════════════════════════
+   STRESS TABLE
+═══════════════════════════════════════════════════ */
+.stress-table-wrap { overflow-x: auto; margin-bottom: 2rem; border-radius: var(--r); border: 1px solid var(--border); }
+.stress-table { width: 100%; border-collapse: collapse; min-width: 680px; }
+.stress-table th {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.75rem 1rem;
+  background: var(--bg3);
+  text-align: left;
+  border-bottom: 1px solid var(--border2);
+  white-space: nowrap;
+}
+.stress-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text2);
+  vertical-align: top;
+}
+.stress-table tr:last-child td { border-bottom: none; }
+.stress-table tr:hover td { background: rgba(106,176,216,0.03); }
+.stress-table .sys { font-family: var(--font-display); font-style: italic; color: var(--bright); }
+
+/* ═══════════════════════════════════════════════════
+   WINDOW OF TOLERANCE
+═══════════════════════════════════════════════════ */
+.wot-container { max-width: 640px; border-radius: var(--r2); overflow: hidden; border: 1px solid var(--border); margin-bottom: 2rem; }
+
+.wot-zone {
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  transition: filter 0.2s;
+  border-bottom: 1px solid var(--border);
+}
+.wot-zone:last-child { border-bottom: none; }
+.wot-zone:hover { filter: brightness(1.08); }
+.wot-zone.hyper   { background: rgba(192,80,80,0.07); }
+.wot-zone.optimal { background: rgba(61,158,122,0.07); }
+.wot-zone.hypo    { background: rgba(74,128,184,0.07); }
+
+.wot-header { display: flex; justify-content: space-between; align-items: flex-start; }
+.wot-label {
+  font-family: var(--font-mono);
+  font-size: 0.57rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+.hyper .wot-label   { color: var(--hyper); }
+.optimal .wot-label { color: var(--optimal); }
+.hypo .wot-label    { color: var(--hypo); }
+
+.wot-title { font-family: var(--font-display); font-size: 1.1rem; font-style: italic; color: var(--bright); }
+
+.wot-syms { font-size: 0.82rem; color: var(--muted); margin-top: 0.4rem; font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.05em; }
+
+.wot-body { max-height: 0; overflow: hidden; transition: max-height 0.4s; }
+.wot-zone.open .wot-body { max-height: 500px; }
+
+.wot-detail { padding-top: 1rem; font-size: 0.92rem; line-height: 1.7; color: var(--text2); }
+
+.intervention-list { list-style: none; margin-top: 0.75rem; }
+.intervention-list li {
+  padding: 0.4rem 0 0.4rem 1.5rem;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--text2);
+}
+.intervention-list li:last-child { border-bottom: none; }
+.intervention-list li::before {
+  content: '→';
+  position: absolute; left: 0;
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   EXERCISE GRID
+═══════════════════════════════════════════════════ */
+.ex-filter-bar {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+.ex-filter {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ex-filter:hover { color: var(--text); border-color: var(--text3); }
+.ex-filter.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+.ex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+
+.ex-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.ex-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+}
+.ex-card.breathing::after  { background: var(--sage); }
+.ex-card.somatic::after    { background: var(--dorsal); }
+.ex-card.grounding::after  { background: var(--sym); }
+.ex-card.cognitive::after  { background: var(--gold); }
+.ex-card.vagus::after      { background: var(--ventral); }
+.ex-card.bilateral::after  { background: var(--accent); }
+
+.ex-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.ex-card.hidden { display: none; }
+
+.ex-type {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.ex-card.breathing .ex-type  { color: var(--sage); }
+.ex-card.somatic .ex-type    { color: var(--dorsal); }
+.ex-card.grounding .ex-type  { color: var(--sym); }
+.ex-card.cognitive .ex-type  { color: var(--gold); }
+.ex-card.vagus .ex-type      { color: var(--ventral); }
+.ex-card.bilateral .ex-type  { color: var(--accent); }
+
+.ex-name { font-family: var(--font-display); font-size: 1.05rem; font-style: italic; color: var(--bright); line-height: 1.3; }
+.ex-desc { font-size: 0.85rem; color: var(--text3); line-height: 1.55; flex: 1; }
+.ex-meta { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: auto; }
+.ex-meta-item {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+/* ═══════════════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════════════ */
+.modal-bg {
+  display: none;
+  position: fixed; inset: 0; z-index: 900;
+  background: rgba(10,13,20,0.75);
+  backdrop-filter: blur(6px);
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-bg.open { display: flex; }
+
+.modal-sheet {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 18px 18px 0 0;
+  padding: 0 0 env(safe-area-inset-bottom, 1rem);
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: sheetUp 0.32s cubic-bezier(0.32,0,0,1);
+  scrollbar-width: thin;
+}
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.modal-handle-bar {
+  display: flex; justify-content: center;
+  padding: 0.75rem;
+  position: sticky; top: 0; background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+}
+.modal-handle { width: 36px; height: 4px; background: var(--border2); border-radius: 2px; }
+
+.modal-body { padding: 1.5rem 1.75rem 2.5rem; }
+
+.modal-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-style: italic;
+  color: var(--bright);
+  margin-bottom: 0.3rem;
+  line-height: 1.25;
+}
+.modal-sub { font-size: 0.9rem; color: var(--text3); margin-bottom: 1.5rem; }
+
+.step-list { list-style: none; counter-reset: steps; }
+.step-list li {
+  counter-increment: steps;
+  padding: 0.85rem 0 0.85rem 3rem;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text2);
+}
+.step-list li:last-child { border-bottom: none; }
+.step-list li::before {
+  content: counter(steps);
+  position: absolute; left: 0; top: 0.85rem;
+  width: 1.75rem; height: 1.75rem;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--accent);
+}
+
+.timer-bar-wrap {
+  margin: 1.25rem 0 0.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+.timer-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.timer-controls { display: flex; gap: 0.5rem; align-items: center; }
+.timer-display {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  color: var(--bright);
+  min-width: 4.5rem;
+}
+.timer-btn {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--r);
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.timer-btn:hover { background: var(--surface); color: var(--bright); }
+.timer-btn.start { border-color: var(--ventral); color: var(--ventral); }
+.timer-btn.start:hover { background: var(--ventral-bd); }
+
+/* ═══════════════════════════════════════════════════
+   AROUSAL METER (client tool)
+═══════════════════════════════════════════════════ */
+.arousal-meter {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+}
+.meter-title { font-family: var(--font-display); font-size: 1.3rem; font-style: italic; color: var(--bright); margin-bottom: 0.4rem; }
+.meter-desc { font-size: 0.9rem; color: var(--text3); margin-bottom: 1.5rem; }
+
+.meter-slider-wrap { position: relative; padding: 1rem 0 2rem; }
+
+.meter-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, var(--hypo), var(--optimal), var(--hyper));
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+input[type=range].meter-input {
+  position: absolute;
+  top: -8px;
+  left: 0; right: 0;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  height: 28px;
+}
+input[type=range].meter-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--bright);
+  border: 3px solid var(--accent);
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+input[type=range].meter-input::-moz-range-thumb {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--bright);
+  border: 3px solid var(--accent);
+  cursor: pointer;
+}
+
+.meter-labels {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+.meter-labels span:first-child { color: var(--hypo); }
+.meter-labels span:last-child  { color: var(--hyper); }
+.meter-labels span:nth-child(2){ color: var(--optimal); }
+
+.meter-result {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--r);
+  border: 1px solid var(--border2);
+  background: var(--bg3);
+  transition: all 0.3s;
+  min-height: 4rem;
+}
+.meter-state { font-family: var(--font-display); font-size: 1.1rem; font-style: italic; margin-bottom: 0.35rem; }
+.meter-suggestion { font-size: 0.88rem; color: var(--text3); line-height: 1.6; }
+.meter-quick-btns { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
+.quick-btn {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.7rem;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+  background: var(--bg);
+  color: var(--accent);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.quick-btn:hover { background: var(--bg3); }
+
+/* ═══════════════════════════════════════════════════
+   PSYCHOEDUCATION CARDS
+═══════════════════════════════════════════════════ */
+.psychoed-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
+
+.psychoed-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.psychoed-card:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+
+.psychoed-card-head {
+  padding: 1.25rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.psychoed-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.psychoed-topic {
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+.psychoed-name { font-family: var(--font-display); font-size: 1.15rem; font-style: italic; color: var(--bright); }
+.psychoed-card-body { padding: 1rem 1.25rem; font-size: 0.88rem; color: var(--text3); line-height: 1.6; }
+
+/* ═══════════════════════════════════════════════════
+   PSYCHOED DETAIL MODAL SECTIONS
+═══════════════════════════════════════════════════ */
+.detail-section { margin-bottom: 1.5rem; }
+.detail-section h4 {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+}
+.detail-section p, .detail-section li { font-size: 0.92rem; line-height: 1.7; color: var(--text2); }
+.detail-section ul { list-style: none; }
+.detail-section ul li { padding: 0.3rem 0 0.3rem 1.2rem; position: relative; border-bottom: 1px solid var(--border); }
+.detail-section ul li::before { content: '•'; position: absolute; left: 0; color: var(--accent); }
+
+/* ═══════════════════════════════════════════════════
+   JOURNAL / NOTES
+═══════════════════════════════════════════════════ */
+.journal-wrap { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+
+.journal-input-area {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.5rem;
+}
+.journal-fields { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; }
+
+.field-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+.field-input, .field-textarea, .field-select {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--r);
+  padding: 0.65rem 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+  resize: none;
+  appearance: none;
+}
+.field-input:focus, .field-textarea:focus, .field-select:focus { border-color: var(--accent); }
+.field-textarea { min-height: 80px; line-height: 1.6; }
+
+.field-range-wrap { display: flex; align-items: center; gap: 0.75rem; }
+.field-range {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border2);
+  outline: none;
+  cursor: pointer;
+}
+.field-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+}
+.field-range-val {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--accent);
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+.btn-primary {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.65rem 1.4rem;
+  border-radius: var(--r);
+  border: none;
+  background: var(--accent);
+  color: var(--bg);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+.btn-primary:hover { background: #85c4e8; }
+
+.btn-ghost {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.65rem 1.4rem;
+  border-radius: var(--r);
+  border: 1px solid var(--border2);
+  background: none;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--text3); }
+
+.journal-entries { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.entry-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1rem 1.25rem;
+  transition: border-color 0.2s;
+}
+.entry-card:hover { border-color: var(--border2); }
+
+.entry-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; gap: 1rem; }
+.entry-date { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; color: var(--muted); }
+.entry-state {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+}
+.entry-state.ventral { background: var(--ventral-bg); color: var(--ventral); border: 1px solid var(--ventral-bd); }
+.entry-state.sym     { background: var(--sym-bg);     color: var(--sym);     border: 1px solid var(--sym-bd); }
+.entry-state.dorsal  { background: var(--dorsal-bg);  color: var(--dorsal);  border: 1px solid var(--dorsal-bd); }
+
+.entry-note { font-size: 0.9rem; color: var(--text3); line-height: 1.6; margin-top: 0.4rem; }
+.entry-scores { display: flex; gap: 1.25rem; margin-top: 0.5rem; }
+.score-item { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.08em; color: var(--muted); }
+.score-item strong { color: var(--text2); }
+
+.entry-delete {
+  background: none; border: none; cursor: pointer;
+  color: var(--muted); font-size: 0.75rem;
+  padding: 0.2rem; transition: color 0.2s;
+  flex-shrink: 0;
+}
+.entry-delete:hover { color: var(--hyper); }
+
+/* chart-lite */
+.chart-wrap { margin-top: 1.5rem; }
+.chart-title { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+.mini-chart { display: flex; align-items: flex-end; gap: 3px; height: 60px; }
+.mini-bar { flex: 1; border-radius: 2px 2px 0 0; min-width: 8px; transition: all 0.3s; cursor: pointer; }
+.mini-bar:hover { filter: brightness(1.3); }
+
+/* ═══════════════════════════════════════════════════
+   BRAIN MODEL TAB
+═══════════════════════════════════════════════════ */
+.brain-stack { display: flex; flex-direction: column; gap: 4px; max-width: 560px; }
+
+.brain-layer {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  position: relative;
+}
+.brain-layer::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+}
+.brain-layer.neocortex  { background: rgba(90,138,106,0.07); }
+.brain-layer.neocortex::before { background: var(--sage); }
+.brain-layer.limbic     { background: rgba(192,96,64,0.07); }
+.brain-layer.limbic::before    { background: var(--sym); }
+.brain-layer.brainstem  { background: rgba(106,176,216,0.07); }
+.brain-layer.brainstem::before { background: var(--accent); }
+
+.brain-trigger {
+  width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 1rem 1.25rem; background: none; border: none; cursor: pointer; gap: 1rem;
+}
+.brain-name { font-family: var(--font-display); font-size: 1.05rem; font-style: italic; color: var(--bright); }
+.brain-latin { font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 0.2rem; }
+.brain-age { font-family: var(--font-mono); font-size: 0.58rem; color: var(--muted); letter-spacing: 0.06em; }
+
+.brain-body { max-height: 0; overflow: hidden; transition: max-height 0.4s; }
+.brain-layer.open .brain-body { max-height: 500px; }
+.brain-content { padding: 0 1.25rem 1.25rem; border-top: 1px solid var(--border); padding-top: 1rem; font-size: 0.93rem; line-height: 1.75; color: var(--text2); }
+.brain-content p + p { margin-top: 0.7rem; }
+
+/* ═══════════════════════════════════════════════════
+   CLIENT VIEW SPECIFIC
+═══════════════════════════════════════════════════ */
+.client-header {
+  background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 2.5rem 1.5rem 2rem;
+  text-align: center;
+}
+.client-greeting {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-style: italic;
+  color: var(--bright);
+  margin-bottom: 0.4rem;
+}
+.client-sub { font-size: 1rem; color: var(--text3); }
+
+.quick-actions { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+.qa-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.1rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+}
+.qa-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.qa-icon { font-size: 1.5rem; }
+.qa-label { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); }
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .section { padding: 1.5rem 1rem 3rem; }
+  .modal-body { padding: 1.25rem 1.25rem 2rem; }
+  .ex-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 380px) {
+  .ex-grid { grid-template-columns: 1fr; }
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* utility */
+.divider { height: 1px; background: var(--border); margin: 2rem 0; }
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); font-style: italic; font-family: var(--font-display); }
+
+/* brain-layer first/last radius */
+.brain-stack .brain-layer:first-child { border-radius: 40px 40px var(--r) var(--r); }
+.brain-stack .brain-layer:last-child  { border-radius: var(--r) var(--r) 40px 40px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════ MODE BAR ═══════════════════════════════════════════ -->
+<div id="mode-bar">
+  <div class="app-brand">Stressijärjestelmä</div>
+  <div class="mode-pills">
+    <button class="mode-pill active" onclick="setMode('therapist')">Terapeutti</button>
+    <button class="mode-pill"        onclick="setMode('client')">Asiakas</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     THERAPIST VIEW
+═══════════════════════════════════════════════════════════════ -->
+<div id="view-therapist" class="view active">
+
+  <nav class="tab-nav" id="therapist-tabs">
+    <button class="tab-btn active" onclick="switchTab('t','aivokerrokset',this)">Aivokerrokset</button>
+    <button class="tab-btn"        onclick="switchTab('t','polyvagaali',this)">Polyvagaali</button>
+    <button class="tab-btn"        onclick="switchTab('t','stressivasteet',this)">Stressivasteet</button>
+    <button class="tab-btn"        onclick="switchTab('t','toleranssi',this)">Toleranssi-ikkuna</button>
+    <button class="tab-btn"        onclick="switchTab('t','harjoitteet',this)">Harjoitteet</button>
+    <button class="tab-btn"        onclick="switchTab('t','psykoed',this)">Psykoedukaatio</button>
+    <button class="tab-btn"        onclick="switchTab('t','muistiinpanot',this)">Muistiinpanot</button>
+  </nav>
+
+  <!-- ── T1 AIVOKERROKSET ───────────────────────────────────── -->
+  <div id="t-aivokerrokset" class="tab-panel active">
+  <div class="section">
+    <div class="section-eyebrow">Neuroanatomia · Evoluutio</div>
+    <h2 class="section-title">Kolme aivokerrosta</h2>
+    <p class="section-lead">Paul MacLeanin triunainen aivomalli — kolme eri aikakaudella kehittynyttä järjestelmää, jotka toimivat yhdessä mutta reagoivat eri tahdissa uhkaan.</p>
+
+    <div class="info-box">
+      <strong>Kliininen ydinviesti:</strong> Kun primitiiviset aivokerrokset aktivoituvat uhkavasteessa, ne voivat kirjaimellisesti "sammuttaa" aivojen rationaaliset osat. Prefrontaalikorteksi menee offline. Tämä ei ole heikkous — se on evoluution suojeleva ohjelma. Bottom-up -interventiot (hengitys, keho, ääni) toimivat suoraan alempiin kerroksiin, kun top-down -menetelmät (kognitiiviset) eivät tavoita yliviriintynyttä asiakasta.
+    </div>
+
+    <div class="brain-stack">
+      <div class="brain-layer neocortex" onclick="toggleBrain(this)">
+        <button class="brain-trigger">
+          <div>
+            <div class="brain-name">Neokorteksi</div>
+            <div class="brain-latin">Neocortex · Uusin aivokuori · Ihminen</div>
+          </div>
+          <div style="text-align:right">
+            <div class="brain-age">~2 milj. v.</div>
+            <div class="acc-chevron" style="margin-top:0.3rem">▶</div>
+          </div>
+        </button>
+        <div class="brain-body">
+          <div class="brain-content">
+            <p>Ihmisen "ajatteleva aivokuori" — kieli, suunnittelu, empatia, päätöksenteko, ajanperspektiivi ja itsetietoisuus. Voi moduloida alempien kerrosten reaktioita — mutta vain kun uhkavaste ei ylikuormitu.</p>
+            <p>Stressitilanteessa verenkierto siirtyy pois prefrontaalikorteksilta. Tästä syystä voimakas pelko tai trauma kirjaimellisesti estää järkiperäisen ajattelun. "En pysty ajattelemaan selkeästi" on neurologinen tosiasia, ei heikkous.</p>
+            <p><strong>Prefrontaalikorteksi (PFC):</strong> inhiboi amygdalaa normaalioloissa. Trauman tai kroonisen stressin myötä PFC-amygdala -yhteys heikkenee — asiakas reaktiivisempi, impulsiivisempi.</p>
+            <div class="tags">
+              <span class="tag">Kieli</span><span class="tag">Suunnittelu</span><span class="tag">Empatia</span>
+              <span class="tag">Tietoisuus</span><span class="tag">PFC</span><span class="tag">Narratiivi</span><span class="tag">Inhibitio</span>
+            </div>
+            <div class="clinical-note">Terapeutille: kognitiiviset interventiomenetelmät vaativat toimivan neokorteksin. Arvioi ensin onko asiakas toleranssi-ikkunassa ennen narratiivityöskentelyä.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="brain-layer limbic" onclick="toggleBrain(this)">
+        <button class="brain-trigger">
+          <div>
+            <div class="brain-name">Limbinen järjestelmä</div>
+            <div class="brain-latin">Systema limbicum · Tunneaivot · Nisäkkäät</div>
+          </div>
+          <div style="text-align:right">
+            <div class="brain-age">~200 milj. v.</div>
+            <div class="acc-chevron" style="margin-top:0.3rem">▶</div>
+          </div>
+        </button>
+        <div class="brain-body">
+          <div class="brain-content">
+            <p><strong>Amygdala</strong> on limbisen järjestelmän hälytystorni — tunnistaa uhan alle 20 millisekunnissa, kauan ennen kuin tietoisuus ehtii mukaan. Hälyttää HPA-akselin kortisolin erittämiseen heti.</p>
+            <p><strong>Hippokampus</strong> tallentaa kontekstuaalisia muistoja ja sijoittaa kokemukat aika- ja paikkajatkumoon. Trauma häiritsee hippokampuksen toimintaa — siksi traumamuistoilla ei ole aikaleimaa. Flashback tuntuu tapahtuvan juuri nyt.</p>
+            <p><strong>Cingulaarinen korteksi</strong> seuraa kehon signaaleja ja sosiaalista kipua. Sosiaalinen hylkääminen aktivoi saman hermoston kuin fyysinen kipu.</p>
+            <div class="tags">
+              <span class="tag">Amygdala</span><span class="tag">Hippokampus</span><span class="tag">Tunnemuisti</span>
+              <span class="tag">Uhka-arvio</span><span class="tag">Kiintymys</span><span class="tag">HPA-akseli</span>
+            </div>
+            <div class="clinical-note">Traumamuisti tallentuu implisiittisenä — kehollisena, aistimuksellisena, tuntemuksellisena — ilman narratiivista rakennetta. Kehotietoisuustyöskentely pääsee tähän kerrokseen suoraan.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="brain-layer brainstem" onclick="toggleBrain(this)">
+        <button class="brain-trigger">
+          <div>
+            <div class="brain-name">Aivorunko & pikkuaivot</div>
+            <div class="brain-latin">Truncus encephali · Vanhin kerros · Reptiilit</div>
+          </div>
+          <div style="text-align:right">
+            <div class="brain-age">~500 milj. v.</div>
+            <div class="acc-chevron" style="margin-top:0.3rem">▶</div>
+          </div>
+        </button>
+        <div class="brain-body">
+          <div class="brain-content">
+            <p>Hallitsee hengitystä, sydämen sykettä, verenpainetta, unen säätelyä ja primitiivisiä selviytymisrefleksejä. Toimii automaattisesti, täysin tietoisuuden alapuolella.</p>
+            <p><strong>Vagushermo (n. vagus, X)</strong> lähtee aivorungosta. Se on pisin kraniaalihermoista ja viestii kaksisuuntaisesti kehon ja aivojen välillä — 80% impulsseista kulkee pohjalta ylös (afferentit). Tämä on perustelu sille miksi keho-interventiot ovat niin tehokkaita.</p>
+            <p><strong>Polyvagaalinen teoria</strong> (Porges): vagushermon kaksi haaraa (ventral/dorsal) sekä sympaattinen hermosto muodostavat kolmiportaisen hierarkkisen puolustusjärjestelmän.</p>
+            <div class="tags">
+              <span class="tag">Hengitys</span><span class="tag">Sydän</span><span class="tag">Vagushermo</span>
+              <span class="tag">Refleksit</span><span class="tag">HRV</span><span class="tag">Eloonjääminen</span>
+            </div>
+            <div class="clinical-note">Aivorungon tason interventiot: hengitysrytmi, ääni, hyräily, kosketus, lämpö, täriseminen. Nämä toimivat suoraan alimmalla tasolla — myös silloin kun limbinen ja kortikaalinen taso ovat ylikuormittuneet.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box" style="margin-top:2rem">
+      <strong>Top-down vs Bottom-up:</strong> Kognitiiviset menetelmät (CBT, narratiivi, psykoedukaatio) toimivat top-down — neokorteksista alaspäin. Somaattiset, hengitys- ja kehotietoisuustyöskentely toimivat bottom-up — aivorungosta ylöspäin. Traumatyöskentelyssä bottom-up on usein ensisijainen lähestymistapa, koska trauma tallennetaan alle kortikaalisen tason.
+    </div>
+  </div>
+  </div>
+
+  <!-- ── T2 POLYVAGAALI ─────────────────────────────────────── -->
+  <div id="t-polyvagaali" class="tab-panel">
+  <div class="section">
+    <div class="section-eyebrow">Stephen Porges · 1994/2011</div>
+    <h2 class="section-title">Polyvagaalinen teoria</h2>
+    <p class="section-lead">Autonomisen hermoston kolme hierarkkista tilaa — ja se, kuinka ne määrittävät kykyämme olla yhteydessä, toimia ja selviytyä. Nuorempi kerros aktivoituu ensin; vasta sen pettäessä vanhempi ottaa hallinnan.</p>
+
+    <div class="info-box">
+      <strong>Neuroception:</strong> Hermostomme arvioi turvallisuutta ja uhkaa jatkuvasti, automaattisesti ja tietoisuuden alapuolella. Tämä "turvallisuustutkain" voi aktivoida puolustusreaktioita ilman rationaalista uhkaa — esim. tietty äänenpaino, tuoksu tai kehon asento riittää.
+    </div>
+
+    <div class="pv-ladder">
+      <div class="pv-rung ventral" onclick="togglePV(this)">
+        <button class="pv-trigger">
+          <div>
+            <div class="pv-name">Ventraalivagaali — Yhteys ja turva</div>
+            <div class="pv-nerve">N. vagus (ventralis) · Sosiaalinen hermosto · Uusin kerros</div>
+            <div class="pv-kws">
+              <span class="pv-kw">Turva</span><span class="pv-kw">Yhteys</span><span class="pv-kw">Leikki</span>
+              <span class="pv-kw">Oppiminen</span><span class="pv-kw">Läsnäolo</span><span class="pv-kw">Empatia</span>
+            </div>
+          </div>
+          <div class="acc-chevron">▶</div>
+        </button>
+        <div class="pv-body">
+          <div class="pv-detail">
+            <p>Uusin evoluutiokerros. Aktivoituu kun keho arvioi ympäristön turvalliseksi. Mahdollistaa sosiaalisen yhteyden, luovuuden, empatian ja oppimisen.</p>
+            <p><strong>Fysiologisesti:</strong> HRV korkea, lihastonus rentoitunut mutta virkeä, kasvonilmeet elävät, äänenpaino vaihtelee (melodinen), kuulokyky terävöityy sosiaalisille äänille (200–2000 Hz), keskilinjan lihakset (silmäkontakti, kuuntelu) aktivoituneita.</p>
+            <p><strong>Vagal brake:</strong> Ventraalivagaalinen säätely pitää sydämen sykkeen tasaisena ilman sympaattista kiihdytystä. Korkea vagal brake -kapasiteetti = hyvä kyky säädellä reaktioita sosiaalisissa tilanteissa.</p>
+            <div class="clinical-note">Terapeuttinen tavoite: luoda riittävä turvallisuus ventraalivagaalisen aktivaation mahdollistamiseksi. Kaikki terapeuttiset interventiot toimivat parhaiten tässä tilassa. Terapeuttinen läsnäolo (äänenpaino, tempo, kasvonilmeet, asento) on suoraan ventraalivagaalinen signaali asiakkaalle.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pv-rung sym" onclick="togglePV(this)">
+        <button class="pv-trigger">
+          <div>
+            <div class="pv-name">Sympaattinen — Mobilisaatio</div>
+            <div class="pv-nerve">Sympaattinen hermosto · Taistele / Pakene · Keski-ikäinen kerros</div>
+            <div class="pv-kws">
+              <span class="pv-kw">Taistelu</span><span class="pv-kw">Pako</span><span class="pv-kw">Ahdistus</span>
+              <span class="pv-kw">Viha</span><span class="pv-kw">Paniikki</span><span class="pv-kw">Liike</span>
+            </div>
+          </div>
+          <div class="acc-chevron">▶</div>
+        </button>
+        <div class="pv-body">
+          <div class="pv-detail">
+            <p>Aktivoituu kun uhka ohittaa ventraalivagaalisen kapasiteetin. Kortisoli ja adrenaliini tulvivat verenkiertoon. Sydän sykkii nopeammin, hengitys tihenee, lihakset jännittyvät toimintavalmiuteen, ruoansulatus pysähtyy, kipukynnys nousee.</p>
+            <p><strong>Adaptiivinen konteksti:</strong> välitön fyysinen uhka, johon voidaan vastata toiminnalla. Taistele = aggression-suuntautunut mobilisaatio. Pakene = liike poispäin. Molemmat vapauttavat stressihormonien latauksen fyysiseen toimintaan.</p>
+            <p><strong>Krooninen sympaattinen yliaktivaatio:</strong> Kun uhka ei pääty, keho ei palaudu. Kortisoli jää korkealle. Tästä kehittyy ahdistuneisuushäiriöitä, PTSD:tä, kroonista kipua, univaikeuksia, IBS:ää, immuuniongelmia.</p>
+            <div class="clinical-note">Keho tarvitsee tavan "purkaa" mobilisaatioenergiaa. Ilman purkamista stressihormonit jäävät kiertämään. Peter Levine: eläimet tärisevät vapautuakseen uhkan jälkeen — ihmiset inhiboivat tämän refleksin. TRE-harjoitteet palauttavat tätä.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pv-rung dorsal" onclick="togglePV(this)">
+        <button class="pv-trigger">
+          <div>
+            <div class="pv-name">Dorsaalivagaali — Romahdus</div>
+            <div class="pv-nerve">N. vagus (dorsalis) · Jähmettyminen / Sulkeutuminen · Vanhin kerros</div>
+            <div class="pv-kws">
+              <span class="pv-kw">Freeze</span><span class="pv-kw">Dissosiaatio</span><span class="pv-kw">Tunnottomuus</span>
+              <span class="pv-kw">Uupumus</span><span class="pv-kw">Häpeä</span><span class="pv-kw">Vetäytyminen</span>
+            </div>
+          </div>
+          <div class="acc-chevron">▶</div>
+        </button>
+        <div class="pv-body">
+          <div class="pv-detail">
+            <p>Vanhin evoluutiokerros. Aktivoituu kun uhka on äärimmäinen eikä pakeneminen tai taistelu ole mahdollista. Metabolinen jarru — keho hidastaa, dissosioituu, turtuu. Evolutiivisessa mielessä "kuolleeksi heittäytyminen".</p>
+            <p><strong>Fysiologisesti:</strong> sydämen syke laskee, verenpaine alenee, lihakset pehmenevät, pupillit supistuvat, näkökenttä kaventuu, ääni menettää modulaation, kehon lämpö laskee.</p>
+            <p><strong>Kliinisesti:</strong> masennus, uupumus, krooniset kivut, kehon tuntemattomuus, tunteiden etäisyys, vaikeus toimia, häpeän kokemus. Trauma jättää usein jälkensä dorsaalivagaaliseen järjestelmään erityisesti varhaisessa kiintymyssuhdetraumassa.</p>
+            <div class="warning-box">⚠ Dorsaalivagaalisesta tilasta ei voi hypätä suoraan ventraalivagaaliseen. Ensin tarvitaan hallittu siirtymä sympaattisen aktivaation kautta — pieniä, turvallisia liikkeitä ja ääniä ennen sosiaalisen yhteyden palautumista.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>Hierarkia käytännössä:</strong> Terapiassa on tärkeää tunnistaa missä tilassa asiakas on. Ventraalivagaaliselle asiakkaalle narratiivi- ja kognitiiviset menetelmät. Sympaattiselle: bottom-up rauhoittaminen ensin. Dorsaalivagaaliselle: aktivointi ennen yhteyden rakentamista.
+    </div>
+  </div>
+  </div>
+
+  <!-- ── T3 STRESSIVASTEET ──────────────────────────────────── -->
+  <div id="t-stressivasteet" class="tab-panel">
+  <div class="section">
+    <div class="section-eyebrow">Fysiologia · Kehon vasteet</div>
+    <h2 class="section-title">Stressivasteet elimistössä</h2>
+    <p class="section-lead">Taistele–pakene–jähmety-reaktio ei ole pelkästään psykologinen ilmiö — se on kokonaisvaltainen fysiologinen ohjelma, joka muuttaa kehon toimintaa kauttaaltaan.</p>
+
+    <div class="stress-table-wrap">
+      <table class="stress-table">
+        <thead>
+          <tr>
+            <th>Järjestelmä</th>
+            <th>Akuutti stressivaste</th>
+            <th>Krooninen stressi</th>
+            <th>Kliininen yhteys</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="sys">Sydän & verenkierto</td><td>Syke nousee, verenpaine nousee, ääreisverenkierto supistuu, veri ohjautuu suuriin lihaksiin</td><td>Hypertensio, rytmihäiriöt, matala HRV, endoteeliongelmat</td><td>Sydänsairaudet, päänsärky, raajaoireet, kylmät kädet/jalat</td></tr>
+          <tr><td class="sys">Hengitysjärjestelmä</td><td>Hengitys tihenee ja pinnallistuu, rintahengitys aktivoituu, CO₂ laskee</td><td>Hyperventilointipattern, hengityslihasetr kronoston jännitys, pallea heikkenee</td><td>Paniikkihäiriö, ahdistus, krooninen kipu, väsymys, ADHD-oireet</td></tr>
+          <tr><td class="sys">Tuki-liikuntaelimistö</td><td>Lihastonus nousee (valmius), kipukynnys tilapäisesti nousee, faskiat jännittyvät</td><td>Krooninen myofaskiaalinen jännitys, trigger-pisteet, heikentynyt liikkuvuus</td><td>Niska-hartiakipu, päänsärky, fibromyalgia, krooninen selkäkipu</td></tr>
+          <tr><td class="sys">Ruoansulatus (gut-brain)</td><td>Ruoansulatus hidastuu/pysähtyy, suoliston motiliteetti muuttuu, verenkierto ohjautuu pois</td><td>IBS, suolisto-oireet, dysbiosis, läpäisevä suoli, ruokahalu-muutokset</td><td>Suoli-aivoakseli: gut-brain -yhteys bidirektionaalinen, krooninen kipu, immuniteetti</td></tr>
+          <tr><td class="sys">Immuunijärjestelmä</td><td>Akuutti aktivaatio, tulehdusreaktio, resurssien uudelleenjako</td><td>Immunosuppressio TAI ylikuormittunut krooninen tulehdus (inflammaatio)</td><td>Autoimmuuni, allergia, pitkä infektiosta toipuminen, Long COVID</td></tr>
+          <tr><td class="sys">HPA-akseli & hormonit</td><td>Kortisoli + adrenaliini, hipotalamus → aivolisäke → lisämunuainen, nopea vaste</td><td>HPA-akselin dysregulaatio, kortisolin rytmihäiriö, sukupuolihormonit häiriintyvät</td><td>Burnout, uupumus, hedelmällisyysongelmat, kilpirauhasongelmat, unihäiriöt</td></tr>
+          <tr><td class="sys">Aivojen toiminta</td><td>PFC sammuu, amygdala yliaktivoituu, hippokampus häiriintyy, muistikonsolidaatio kärsii</td><td>Hippokampuksen kutistuminen, heikentynetkognitio, neuroinflammatio, BDNF laskee</td><td>PTSD, masennus, ADHD-kaltaiset oireet, krooninen kipu, muistiongelmat</td></tr>
+          <tr><td class="sys">Uni & palautuminen</td><td>Kortisoli estää melatoniinia, unen alkaminen viivästyy, sym. hermosto aktiivinen</td><td>Uniarkkitehtuurin häiriöt, syvän unen puute, yöheräily, REM-häiriöt</td><td>Kuormituksen kasautuminen, krooninen kipu, immuuniheikkous, mieliala, kognitio</td></tr>
+          <tr><td class="sys">Iho & aistikynnykset</td><td>Hikoilu lisääntyy, pupillit laajenevat, aistikynnykset laskevat (uhkia haetaan)</td><td>Herkistynyt nosiseptio, aistiyliherkkyys, kutina, iho-ongelmat (psoriasis, ekseema)</td><td>Sensitisaatio kroonisessa kivussa, aistiyliherkkyys ADHD:ssa ja traumassa</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="info-box">
+      <strong>HPA-akseli (hypotalamus–aivolisäke–lisämunuainen):</strong> Kehon keskeinen stressinsäätelyjärjestelmä. Evoluutiossa ohjelmoitu akuuttiin, lyhytkestoiseen stressiin (5–20 min). Krooninen aktivaatio johtaa säätelyn hajoamiseen — glukokortikoidireceptoreiden desensitisaatio, kortisolin paradoksaali lasku burnoutissa.
+    </div>
+  </div>
+  </div>
+
+  <!-- ── T4 TOLERANSSI ──────────────────────────────────────── -->
+  <div id="t-toleranssi" class="tab-panel">
+  <div class="section">
+    <div class="section-eyebrow">Dan Siegel · Pat Ogden</div>
+    <h2 class="section-title">Toleranssi-ikkuna</h2>
+    <p class="section-lead">Optimaalisen integraation alue — vireystila, jossa oppiminen, tunteiden prosessointi ja terapeuttinen muutos ovat mahdollisia. Tavoitteena on auttaa asiakasta löytämään ja laajentamaan tätä aluetta.</p>
+
+    <div class="info-box">
+      <strong>Terapeuttinen tavoite:</strong> Kapea ikkuna = vähäinen kapasiteetti sietää epämukavuutta. Laaja ikkuna = hyvä resilienssi. Terapian keskeinen tehtävä on laajentaa tätä ikkunaa asteittain, turvallisesti, titrattuun tahtiin.
+    </div>
+
+    <div class="wot-container">
+      <div class="wot-zone hyper" onclick="toggleWOT(this)">
+        <div class="wot-header">
+          <div>
+            <div class="wot-label">Yliaktivaatio · Hyperarousal</div>
+            <div class="wot-title">Yli toleranssirajan</div>
+            <div class="wot-syms">Paniikki · Viha · Kaoottinen ajattelu · Agitaatio · Ylivoimainen tunne · Impulsiivisuus</div>
+          </div>
+          <div class="acc-chevron" style="margin-left:0.5rem">▶</div>
+        </div>
+        <div class="wot-body">
+          <div class="wot-detail">
+            <p>Sympaattinen hermosto yliaktivoitunut. PFC suurelta osin offline. Kortisoli- ja adrenaliinitasot korkealla. Rationaalinen ajattelu, perspektiivikyky ja empatia heikentyvät merkittävästi.</p>
+            <p><strong>Kliiniset merkit:</strong> nopea hengitys, laajentuneet pupillit, ylivoimainen tunnetila, kyvyttömyys pysähtyä, impulsiivisuus, vaikeus kuunnella, dissosoiva agitaatio.</p>
+            <ul class="intervention-list">
+              <li>Fysiologinen huokaus — vaguksen aktivointi ensin</li>
+              <li>5-4-3-2-1 orientoituminen — PFC takaisin online</li>
+              <li>Fyysinen liike mobilisaatioenergiaa purkamaan</li>
+              <li>Pidennetty uloshengitys (4–6–8 rytmi)</li>
+              <li>Viileä vesi kasvoihin — dyvingsrefleksi</li>
+              <li>Vältä kognitiivisia interventiota kunnes keho rauhoittuu</li>
+            </ul>
+            <div class="warning-box">⚠ Vältä traumakeskeisiä narratiiveja hyperarousal-tilassa — se voi retraumatisoida.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wot-zone optimal" onclick="toggleWOT(this)">
+        <div class="wot-header">
+          <div>
+            <div class="wot-label">Optimaalinen vireystila · Toleranssi-ikkuna</div>
+            <div class="wot-title">Integraation alue</div>
+            <div class="wot-syms">Virkeä · Läsnä · Utelias · Tunteiden prosessointi mahdollista · Yhteys toisiin</div>
+          </div>
+          <div class="acc-chevron" style="margin-left:0.5rem">▶</div>
+        </div>
+        <div class="wot-body">
+          <div class="wot-detail">
+            <p>Ventraalivagaalinen järjestelmä aktiivinen. Aivopuoliskot integroituneita. Asiakas voi sekä tuntea että ajatella samanaikaisesti — tämä on terapeuttisen muutoksen kannalta keskeinen tila.</p>
+            <p>Vireystila voi vaihdella tässä ikkunassa ilman että se ylittyy. Trauman myötä ikkuna usein kapenee — pienistäkin ärsykkeistä hypätään yli tai alle rajan.</p>
+            <ul class="intervention-list">
+              <li>Kaikki terapeuttiset menetelmät toimivat tässä tilassa</li>
+              <li>Traumatyöskentely, EMDR, narratiivi, kognitiiviset menetelmät</li>
+              <li>Somattiset harjoitteet integraation syventämiseksi</li>
+              <li>Kiintymystyöskentely ja suhdeprosessit</li>
+              <li>Psykoedukaatio ja ongelmanratkaisu</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="wot-zone hypo" onclick="toggleWOT(this)">
+        <div class="wot-header">
+          <div>
+            <div class="wot-label">Aliaktivaatio · Hypoarousal</div>
+            <div class="wot-title">Alle toleranssirajan</div>
+            <div class="wot-syms">Tunnottomuus · Dissosiaatio · Tyhjyys · Vetäytyminen · Jähmettyminen · Häpeä</div>
+          </div>
+          <div class="acc-chevron" style="margin-left:0.5rem">▶</div>
+        </div>
+        <div class="wot-body">
+          <div class="wot-detail">
+            <p>Dorsaalivagaalinen järjestelmä hallitsee. Metabolinen jarrutus — keho sammuu suojellakseen itseään ylivoimaiselta kuormitukselta. Tunteet turtuvat, keho raskas tai etäinen, ajattelu hidastuu.</p>
+            <p><strong>Kliiniset merkit:</strong> tyhjä katse, hidas puhe, matala äänenpaino, vaikeus löytää sanoja, "poissaolo", häpeän kokemus, kehon tunnottomuus.</p>
+            <ul class="intervention-list">
+              <li>Aktivointi varovaisesti — ei pakottaen</li>
+              <li>Pienet liikkeet: varpaiden liikuttelu, silmien avaaminen</li>
+              <li>Orientoituminen ympäristöön äänen kautta</li>
+              <li>Hidas, rytminen liike (keinuminen, kävely)</li>
+              <li>Terapeuttinen ääni ja läsnäolo — sosiaalinen hermosto ensin</li>
+              <li>Hyräily vaguksen aktivoimiseksi</li>
+            </ul>
+            <div class="warning-box">⚠ Vältä painostavia tai nopeita interventiota — ne voivat syventää sulkeutumista. Dorsal → ventral vaatii käyntiä sympaattisen kautta.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- ── T5 HARJOITTEET ─────────────────────────────────────── -->
+  <div id="t-harjoitteet" class="tab-panel">
+  <div class="section">
+    <div class="section-eyebrow">Näyttöön perustuvat menetelmät</div>
+    <h2 class="section-title">Säätelyharjoitteet</h2>
+    <p class="section-lead">Harjoitteet kategorioittain. Jokainen avautuu step-by-step -ohjeella, kliinisillä huomioilla ja ajastimella.</p>
+
+    <div class="ex-filter-bar">
+      <button class="ex-filter active" onclick="filterEx('all',this)">Kaikki</button>
+      <button class="ex-filter" onclick="filterEx('breathing',this)">Hengitys</button>
+      <button class="ex-filter" onclick="filterEx('vagus',this)">Vagus</button>
+      <button class="ex-filter" onclick="filterEx('somatic',this)">Somaattinen</button>
+      <button class="ex-filter" onclick="filterEx('grounding',this)">Ankkurointi</button>
+      <button class="ex-filter" onclick="filterEx('cognitive',this)">Kognitiivinen</button>
+      <button class="ex-filter" onclick="filterEx('bilateral',this)">Bilateraalinen</button>
+    </div>
+
+    <div class="ex-grid" id="ex-grid-therapist">
+      <!-- Cards injected by JS -->
+    </div>
+  </div>
+  </div>
+
+  <!-- ── T6 PSYKOEDUKAATIO ──────────────────────────────────── -->
+  <div id="t-psykoed" class="tab-panel">
+  <div class="section">
+    <div class="section-eyebrow">Psykoedukaatio · Kliiniset teemat</div>
+    <h2 class="section-title">Kliiniset psykoedukaatiokokonaisuudet</h2>
+    <p class="section-lead">Syventävät materiaalit yleisimmistä kliinisistä teemoista. Käytä terapiassa, psykoedukaatiossa ja asiakasohjauksessa.</p>
+    <div class="psychoed-grid" id="psychoed-grid"><!-- JS --></div>
+  </div>
+  </div>
+
+  <!-- ── T7 MUISTIINPANOT ───────────────────────────────────── -->
+  <div id="t-muistiinpanot" class="tab-panel">
+  <div class="section">
+    <div class="section-eyebrow">Kliininen seuranta</div>
+    <h2 class="section-title">Istuntomuistiinpanot & seuranta</h2>
+    <p class="section-lead">Tallenna istuntohuomioita, asiakkaan vireystila ja interventiot. Tiedot tallennetaan paikallisesti selaimeen.</p>
+    <div id="journal-area"><!-- JS --></div>
+  </div>
+  </div>
+
+</div><!-- /view-therapist -->
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CLIENT VIEW
+═══════════════════════════════════════════════════════════════ -->
+<div id="view-client" class="view">
+  <div class="client-header">
+    <div class="client-greeting">Miten voit juuri nyt?</div>
+    <div class="client-sub">Valitse sinulle sopiva harjoite tai tarkista vireystilasi</div>
+  </div>
+
+  <nav class="tab-nav" id="client-tabs">
+    <button class="tab-btn active" onclick="switchTab('c','vireystila',this)">Vireystila</button>
+    <button class="tab-btn"        onclick="switchTab('c','harjoitteet',this)">Harjoitteet</button>
+    <button class="tab-btn"        onclick="switchTab('c','tietoa',this)">Tietoa stressistä</button>
+    <button class="tab-btn"        onclick="switchTab('c','paivyri',this)">Päiväkirja</button>
+  </nav>
+
+  <!-- ── C1 VIREYSTILA ─────────────────────────────────────── -->
+  <div id="c-vireystila" class="tab-panel active">
+  <div class="section">
+    <div class="arousal-meter">
+      <div class="meter-title">Missä tilassa hermostosi on nyt?</div>
+      <div class="meter-desc">Liikuta liukusäädintä — saat heti ehdotuksen sopivasta harjoitteesta.</div>
+
+      <div class="meter-slider-wrap">
+        <div class="meter-track"></div>
+        <input type="range" class="meter-input" id="arousal-slider" min="0" max="100" value="50" oninput="updateMeter(this.value)">
+        <div class="meter-labels">
+          <span>Jähmetys / Tyhjyys</span>
+          <span>Tasapainossa</span>
+          <span>Ylikuormitus / Paniikki</span>
+        </div>
+      </div>
+
+      <div class="meter-result" id="meter-result">
+        <div class="meter-state" id="meter-state">Tasapainossa</div>
+        <div class="meter-suggestion" id="meter-suggestion">Hermostosi on hyvässä tilassa. Voit tehdä minkä tahansa harjoitteen tai vain hengittää rauhallisesti.</div>
+        <div class="meter-quick-btns" id="meter-btns"></div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>Miksi tämä on tärkeää?</strong> Kehosi hermosto säätelee jatkuvasti turvallisuuden tunnetta. Joskus se reagoi uhkaan — jopa silloin kun vaara on pitkään ohi. Harjoitteet auttavat hermostoa "oppimaan" turvallisuuden uudelleen.
+    </div>
+
+    <h3 style="font-family:var(--font-display);font-style:italic;font-size:1.2rem;color:var(--bright);margin-bottom:1rem">Pikavalinnat</h3>
+    <div class="quick-actions" id="quick-actions"><!-- JS --></div>
+  </div>
+  </div>
+
+  <!-- ── C2 HARJOITTEET (client) ───────────────────────────── -->
+  <div id="c-harjoitteet" class="tab-panel">
+  <div class="section">
+    <div class="section-eyebrow">Harjoitteet · Oma käyttö</div>
+    <h2 class="section-title">Valitse harjoite</h2>
+    <p class="section-lead">Kaikki harjoitteet ovat turvallisia itsenäiseen käyttöön. Kuuntele kehoasi ja lopeta jos jokin tuntuu liian voimakkaalta.</p>
+    <div class="ex-filter-bar">
+      <button class="ex-filter active" onclick="filterExClient('all',this)">Kaikki</button>
+      <button class="ex-filter" onclick="filterExClient('breathing',this)">Hengitys</button>
+      <button class="ex-filter" onclick="filterExClient('vagus',this)">Rauhoittava</button>
+      <button class="ex-filter" onclick="filterExClient('grounding',this)">Ankkurointi</button>
+      <button class="ex-filter" onclick="filterExClient('somatic',this)">Kehollinen</button>
+    </div>
+    <div class="ex-grid" id="ex-grid-client"><!-- JS --></div>
+  </div>
+  </div>
+
+  <!-- ── C3 TIETOA ─────────────────────────────────────────── -->
+  <div id="c-tietoa" class="tab-panel">
+  <div class="section">
+    <div class="section-eyebrow">Ymmärrys auttaa paranemisessa</div>
+    <h2 class="section-title">Miksi kehosi reagoi niin?</h2>
+    <p class="section-lead">Tieto stressistä ja hermoston toiminnasta on itsessään terapeuttista. Kun ymmärrät miksi kehosi reagoi kuten se reagoi, se menettää osan vallastaan.</p>
+    <div id="client-info-cards"><!-- JS --></div>
+  </div>
+  </div>
+
+  <!-- ── C4 PÄIVÄKIRJA (client) ────────────────────────────── -->
+  <div id="c-paivyri" class="tab-panel">
+  <div class="section">
+    <div class="section-eyebrow">Oma seuranta</div>
+    <h2 class="section-title">Päiväkirja</h2>
+    <p class="section-lead">Seuraa vointiasi. Kirjaukset näkyvät vain sinulle tässä selaimessa.</p>
+    <div id="client-journal-area"><!-- JS --></div>
+  </div>
+  </div>
+
+</div><!-- /view-client -->
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODALS
+═══════════════════════════════════════════════════════════ -->
+<div class="modal-bg" id="modal-bg" onclick="closeModalBg(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle-bar"><div class="modal-handle"></div></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+
+const EXERCISES = [
+  {
+    id: 'physiological-sigh',
+    name: 'Fysiologinen huokaus',
+    type: 'breathing',
+    typeLabel: 'Hengitys',
+    desc: 'Nopein tapa aktivoida vagushermo. Kaksoissisäänhengitys + pitkä uloshengitys laskee kortisolia sekunneissa.',
+    duration: '2–5 min',
+    forState: ['hyper','sym'],
+    forStateLabel: 'Ahdistus · Paniikki',
+    clientSafe: true,
+    steps: [
+      'Istu tai seiso mukavasti. Löydä hetki ennen aloittamista.',
+      'Hengitä sisään nenän kautta — täytä keuhkot noin 80% täyteen.',
+      'Hengitä välittömästi perään pieni lisähenkäinen nenän kautta. Tunnet keuhkojen täyttyvän kokonaan — tämä avaa pieniä alveoleja.',
+      'Hengitä pitkästi ja hitaasti ulos suun kautta — uloshengityksen tulisi kestää kaksi kertaa niin kauan kuin sisäänhengitys yhteensä.',
+      'Toista 2–5 kertaa. Jo yksi sykli aktivoi vagushermon ja laskee sykettä.',
+      'Huomaa kehon reagointi: usein tapahtuu spontaania laukeamista — huokausta, lihasrentoutumista, syvempiä hengityksiä.'
+    ],
+    clinical: 'Tutkimusnäyttö (Stanford/Huberman 2022): yksi fysiologinen huokaus laskee kortisolitasoa nopeammin kuin mikään muu yksittäinen tekniikka. Käytä aina ensin yliaktivoituneella asiakkaalla ennen muita harjoitteita.',
+    contraindication: '',
+    timerSeconds: 300
+  },
+  {
+    id: 'box-breathing',
+    name: 'Neliöhengitys',
+    type: 'breathing',
+    typeLabel: 'Hengitys',
+    desc: 'ANS-tasapainottava rytminen hengitys. Käytetty mm. US Navy SEALsin stressinhallintatreedessä.',
+    duration: '5–10 min',
+    forState: ['hyper','optimal'],
+    forStateLabel: 'Ahdistus · Stressi · Unettomuus',
+    clientSafe: true,
+    steps: [
+      'Istu selkä tuettuna, jalat lattiassa. Kaksi rentoutushengitystä ensin.',
+      'Hengitä sisään nenän kautta laskien hitaasti 4 sekuntia.',
+      'Pidätä hengitystä laskien 4 sekuntia — ei jännitystä, vain pysähdys.',
+      'Hengitä ulos suun kautta laskien 4 sekuntia — täysin tyhjäksi.',
+      'Pidätä tyhjällä laskien 4 sekuntia.',
+      'Toista 4–8 kierrosta. Laskua voi pidentää (6s tai 8s) harjoittelun myötä.',
+      'Palauta huomio hengitykseen aina kun mieli harhailee — se on osa harjoitetta.'
+    ],
+    clinical: 'Aktivoi parasympaattista hermostoa ja säätelee CO₂-tasoa. Erittäin sopiva kroonisen stressin, unihäiriöiden ja ahdistuneisuuden hoitoon. Voidaan opettaa ahdistuksenoireiden itsehoitokeinoksi.',
+    contraindication: 'Vältä jos hengitysvaikeuksia tai vaikea ahdistus hengitykseen liittyen — aloita lyhyemmillä kierroksilla.',
+    timerSeconds: 480
+  },
+  {
+    id: '478-breathing',
+    name: '4-7-8 Hengitys',
+    type: 'breathing',
+    typeLabel: 'Hengitys',
+    desc: 'Andrew Weilin kehittämä rauhoittava hengitysrytmi. Pidennetty pidätys aktivoi vagushermon ja lisää HRV:tä voimakkaasti.',
+    duration: '4–8 min',
+    forState: ['hyper','optimal'],
+    forStateLabel: 'Unettomuus · Voimakas ahdistus',
+    clientSafe: true,
+    steps: [
+      'Asetu mukavaan asentoon, selkä suorana.',
+      'Tyhjennä keuhkot täysin suun kautta — puhis ulos.',
+      'Sulje suu. Hengitä sisään nenän kautta hiljaa laskien 4.',
+      'Pidätä hengitystä laskien 7.',
+      'Puhista ulos suun kautta laskien 8 — äänekäs, täydellinen uloshengitys.',
+      'Toista 4 kertaa ensimmäisellä kerralla. Myöhemmin jopa 8 kertaa.',
+      'Tee päivittäin — vaikutukset kumuloituvat viikkojen myötä.'
+    ],
+    clinical: 'Pisin pidätys aktivoi voimakkaasti n. vagusta. Kliinisesti tehokas unihäiriöiden, voimakkaan ahdistuksen ja paniikkikohtauksen jälkeisessä rauhoittumisessa. Ei sovi kaikille — seuraa varoitusmerkkejä.',
+    contraindication: 'Vältä verenpainevaivaisten kanssa. Jos pään pöpöttämistä tai huimausta, lyhennä pidätystä tai lopeta.',
+    timerSeconds: 360
+  },
+  {
+    id: '54321',
+    name: '5–4–3–2–1 Aistit',
+    type: 'grounding',
+    typeLabel: 'Ankkurointi',
+    desc: 'Sensorinen orientoituminen hetkeen. Keskeyttää dissosiaation ja hyperarousal-kierteen aktivoimalla PFC:n.',
+    duration: '3–5 min',
+    forState: ['hyper','dissociation'],
+    forStateLabel: 'Dissosiaatio · Yliaktivaatio · Paniikki',
+    clientSafe: true,
+    steps: [
+      'Pysähdy. Hengitä kerran syvään. Sano itsellesi: "Olen turvassa nyt."',
+      'Nimeä ääneen tai mielessä 5 asiaa, jotka NÄET juuri nyt ympärilläsi. Ole tarkka — väri, muoto, etäisyys.',
+      'Nimeä 4 asiaa, joita voit KOSKETTAA. Kosketa niitä — huomaa tekstuuri, lämpö, kovuus.',
+      'Nimeä 3 asiaa, joita KUULET. Kuuntele tarkasti — taustahuminat, ääret, oma hengitys.',
+      'Nimeä 2 asiaa, joita voit HAISTAA (tai muistele miellyttäviä tuoksuja). Tunnusta nykyhetken haju.',
+      'Nimeä 1 asia, jonka voit MAISTAA — tai tunnustele kuinka kieli lepää suussa.',
+      'Ota lopuksi kolme rauhallista hengitystä. Huomaa olevasi tässä hetkessä, turvassa.'
+    ],
+    clinical: 'Katkaisee rumanaatioiden ja flashbackien ketjun aktivoimalla PFC:n sensoriikan kautta. Toimii erityisen hyvin lapsilla — voi tehdä leikkisästi. Voidaan yhdistää hengitysharjoitteeseen lopuksi.',
+    contraindication: '',
+    timerSeconds: 240
+  },
+  {
+    id: 'safe-place',
+    name: 'Turvapaikka-harjoite',
+    type: 'cognitive',
+    typeLabel: 'Mielikuva',
+    desc: 'Sisäinen turvallinen paikka luo ankkurin, johon voidaan palata aktivaation noustessa — myös arjessa.',
+    duration: '10–15 min',
+    forState: ['hyper','optimal'],
+    forStateLabel: 'Trauma · Ahdistus · Unettomuus',
+    clientSafe: true,
+    steps: [
+      'Löydä mukava asento. Sulje silmät tai katso lattiaan. Muutama rauhallinen hengitys.',
+      'Kuvittele mielessäsi paikka — todellinen tai mielikuvituksellinen — jossa tunnet olosi täysin turvalliseksi ja rauhalliseksi.',
+      'Havainnoi tätä paikkaa kaikilla aisteilla: mitä näet? Kuulet? Tunnet ihollasi (ilma, lämpö)? Haistat?',
+      'Anna kehon rekisteröidä turvallisuus. Missä kehossasi tunnet sen? Sydämessä, vatsassa, hartioissa?',
+      'Anna paikalle nimi tai sana, jonka voit myöhemmin käyttää "ankkurina" — esim. "metsä", "koti".',
+      'Harjoittele palaamaan tähän paikkaan mielikuvissasi, ja sitten takaisin huoneeseen. Tee tämä useita kertoja.',
+      'Palauta huomio huoneeseen. Avaa silmät hitaasti. Tunnustele kehon tilaa.'
+    ],
+    clinical: 'EMDR-resurssointi. Rakentaa sisäisen resurssin ennen traumatyötä. Erittäin tehokas ahdistuneisuushäiriöissä ja unihäiriöissä. Kun harjoiteltu riittävästi, ankkurisana riittää aktivoimaan rauhoittumisen.',
+    contraindication: 'Jos asiakkaalla ei ole lainkaan turvallisia muistoja tai mielikuvia — käytä neutraalia tai resursseihin perustuvaa varianttia.',
+    timerSeconds: 600
+  },
+  {
+    id: 'titration',
+    name: 'Titraatio & pendulaatio',
+    type: 'somatic',
+    typeLabel: 'Somaattinen',
+    desc: 'Somatic Experiencing (Peter Levine) — pieniä annoksia aktivaatiota turvallisen resurssin ja aktivaation välillä.',
+    duration: '15–20 min',
+    forState: ['optimal'],
+    forStateLabel: 'Trauma · Krooninen kipu · SE',
+    clientSafe: false,
+    steps: [
+      'Löydä ensin resurssi: paikka kehossa, joka tuntuu neutraalilta tai miellyttävältä (esim. kämmenen lämpö, jalkapohjien tunto lattiaa vasten).',
+      'Vie huomio resurssiin. Viivi siellä riittävän kauan — anna kehon rekisteröidä tämä tila.',
+      'Siirry varovasti kohti pientä aktivaation aaltoa: muistele jotain lievästi epämukavaa (ei traumaa suoraan). Huomaa kehon reaktio.',
+      'Palaa takaisin resurssiin ennen kuin aktivaatio ylittää toleranssin. Tämä on titraatio — pieniä annoksia.',
+      'Pendulaatio: liiku resurssista aktivaatioon ja takaisin useita kertoja. Keho oppii liikkumaan näiden tilojen välillä turvallisesti.',
+      'Seuraa kehon spontaaneja reaktioita (tärinä, syvempi hengitys, kyyneleet) — ne ovat merkki integraatiosta.',
+      'Lopeta aina resurssiin. Anna kehon integroida ennen istunnon päättymistä.'
+    ],
+    clinical: 'Titration estää retraumatisoinnin — pieni annos kerrallaan ilman ylikuormitusta. Prosessi voi herättää fyysisiä tuntemuksia — ne ovat normaaleja. Viivästetty reaktio on mahdollinen.',
+    contraindication: '⚠ Traumatyöskentely aina ammatillisessa kontekstissa. Ei yksinään asiakkaan käyttöön. Varmista riittävä stabilisaatio ensin.',
+    timerSeconds: 0
+  },
+  {
+    id: 'tremor',
+    name: 'TRE — Tärinäharjoite',
+    type: 'somatic',
+    typeLabel: 'Somaattinen',
+    desc: 'Traumareleasing Exercises (David Berceli) — keho purkaa stressihormonien jäännösenergiaa luonnollisen tärinäreaktion kautta.',
+    duration: '20–30 min',
+    forState: ['optimal','sym'],
+    forStateLabel: 'PTSD · Krooninen stressi · Lihasjännitys',
+    clientSafe: false,
+    steps: [
+      'Seiso rennosti, jalat hartianlevyiset. Nouse varpaille ja laske alas 20 kertaa hitaasti — aktivoi pohjelihaksia.',
+      'Seiso jalat leveässä haara-asennossa. Kyykisty hieman — polvissa 30–40° koukku. Pidä asento hetki.',
+      'Anna polvien alkaa tutista varovaisesti. Älä estä tai pakota tärinää — anna sen tapahtua spontaanisti.',
+      'Jos tärinä ei aktivoidu, kokeile painottaa enemmän toiselle jalalle tai muuta polvikulma hieman.',
+      'Anna tärinän levitä kehoon — reidet, lantio, vatsa. Tämä on luonnollinen neurogeeninen tärinä.',
+      'Makaa lattialle selällesi, polvet koukkuun, jalkapohjat lattiassa. Anna tärinän jatkua tai laantua luonnollisesti.',
+      'Viimeistele hitailla venyttelyillä ja kehoskannauksella. Tunnustele muutosta kehossa.'
+    ],
+    clinical: 'Neurogeeninen tärinä purkaa stressihormonien laukaisemaa lihasjännitystä. Eläimet tekevät tämän luonnostaan uhan jälkeen — ihminen usein inhiboi. Stabiloituneessa PTSD:ssä tehokas. Ensimmäiset kerrat aina ohjatusti.',
+    contraindication: '⚠ Ei akuutin trauman välittömässä käsittelyssä. Vältä raskausaikana, epilepsiassa, vaikeissa sydänvaivoissa tai jos lantioalueen kirurginen leikkaus. Ensimmäiset 2–3 kertaa ammattilaisen ohjauksessa.',
+    timerSeconds: 0
+  },
+  {
+    id: 'butterfly',
+    name: 'Perhoshalaus',
+    type: 'bilateral',
+    typeLabel: 'Bilateraalinen',
+    desc: 'EMDR-pohjainen bilateraalinen stimulaatio. Aktivoi aivopuoliskojen integraatiota ja rauhoittaa amygdalaa.',
+    duration: '3–10 min',
+    forState: ['hyper','optimal'],
+    forStateLabel: 'Ahdistus · Trauma · Lapset',
+    clientSafe: true,
+    steps: [
+      'Istu mukavasti selkä tuettuna. Ajattele jotain neutraalia tai hieman miellyttävää.',
+      'Risti kädet rintakehällesi, peukalo peukalolle. Kämmenet lepäävät solisluiden alapuolella.',
+      'Aloita hitaasti vuorotellen taputtamaan käsillä — ensin vasen, sitten oikea. Etsi rauhallinen, tasainen rytmi kuin sydämen lyönti.',
+      'Hengitä rauhallisesti samalla. Salli mielikuvat, tunteet ja kehon tuntemukset tulla ja mennä.',
+      'Jatka 1–5 minuuttia. Pysähdy kun tuntuu siltä.',
+      'Huomaa kehon tila lopuksi. Voit toistaa tarvittaessa.',
+      'Voidaan tehdä silmät auki tai kiinni — kokeile kumpi sopii paremmin.'
+    ],
+    clinical: 'Erityisen sopiva lapsille ja nuorille — konkreettinen, helppo opettaa. Bilateraalinen stimulaatio aktivoi aivopuoliskojen integraatiota, rauhoittaa amygdalaa. Voidaan yhdistää turvapaikka-mielikuvaan.',
+    contraindication: '',
+    timerSeconds: 300
+  },
+  {
+    id: 'humming',
+    name: 'Hyräily & vagus-ääntely',
+    type: 'vagus',
+    typeLabel: 'Vagus',
+    desc: 'Hyräily aktivoi vagushermon suoraan kurkunpään kautta. Tehokas dorsaalivagaaliseen ja aliaktivaatioon.',
+    duration: '5–10 min',
+    forState: ['hypo','dorsal'],
+    forStateLabel: 'Aliaktivaatio · Dissosiaatio',
+    clientSafe: true,
+    steps: [
+      'Istu suorana tai seiso. Hengitä ensin syvään sisään.',
+      'Hyräile ulos hengittäessäsi — "mmmmm" — niin pitkään kuin uloshengitys kestää. Tunne värähtely huulissa, kasvoissa ja rinnassa.',
+      'Kokeile eri äänenkorkeuksia ja löydä se, joka resonoi parhaiten rinnassa ja kurkunpäässä.',
+      'Lisää: laita kädet korvien eteen ja äänne "vvvvv" tai "zzzzz" — värähtely tuntuu voimakkaammin.',
+      'Lisää kehon kosketus: hyräile ja laita käsi sydämelle tai rinnan päälle. Lisää lämpöä kokemukseen.',
+      'Jatka 5–10 minuuttia. Voit tehdä sarjana: 10 hyräilyä, hengitystauko, 10 uudelleen.',
+      'Huomaa muutos kehossa ja vireystilassa.'
+    ],
+    clinical: '80% vaguksen impulsseista kulkee pohjalta ylös (afferentit). Hyräily stimuloi vagusta suoraan kurkunpään kautta. Erittäin tehokas dorsaalivagaaliseen tilaan — "herättelee" sulkeutuneen hermoston ilman painostusta.',
+    contraindication: '',
+    timerSeconds: 480
+  },
+  {
+    id: 'cold-water',
+    name: 'Kylmävesi & dyykkausrefleksi',
+    type: 'vagus',
+    typeLabel: 'Vagus',
+    desc: 'Kasvot kylmään veteen tai kylmä pyyhe naamalle aktivoi dyykkausrefleksin — välitön vaguksen aktivaatio, syke laskee.',
+    duration: '1–3 min',
+    forState: ['hyper'],
+    forStateLabel: 'Paniikki · Voimakas ahdistus',
+    clientSafe: true,
+    steps: [
+      'Täytä pesuallas kylmällä vedellä tai ota kulhollinen jääkylmää vettä.',
+      'Pidätä hengitys.',
+      'Laske kasvot veteen 15–30 sekunnin ajaksi tai paina kylmää pyyhettä silmien ja posken alueelle.',
+      'Tai: laita kylmä pakkaus tai pyyhe kasvoille saman aikaa. Tämä aktivoi saman refleksin.',
+      'Tule ylös ja hengitä rauhallisesti. Huomaa välitön vaikutus sykkeessä ja olossa.',
+      'Toista tarvittaessa 2–3 kertaa.'
+    ],
+    clinical: 'Mammalian diving reflex: evoluutioinen refleksi, joka hidastaa sydämen sykettä kun kasvot joutuvat kylmään veteen. Neuroloogisesti erittäin nopea parasympaattinen aktivaatio. Tehokas paniikkikohtauksen katkaisuun (DBT:n TIPP-taito).',
+    contraindication: 'Vältä sydänsairauksissa tai Raynaudin taudissa. Ei jää-kylmää pidemmäksi aikaa.',
+    timerSeconds: 120
+  },
+  {
+    id: 'body-scan',
+    name: 'Kehoskannaus',
+    type: 'somatic',
+    typeLabel: 'Somaattinen',
+    desc: 'Systemaattinen kehontietoisuusharjoite — käydään keho läpi päästä varpaisiin. Kehittää interoseptiota ja kehoyhteyttä.',
+    duration: '10–20 min',
+    forState: ['optimal'],
+    forStateLabel: 'Kehotietoisuus · Stressi · Kipu',
+    clientSafe: true,
+    steps: [
+      'Makaa selällesi tai istu tuettuna. Sulje silmät tai katso pehmeästi ylöspäin.',
+      'Aloita jalkapohjista. Huomaa kaikki tuntemukset — lämpö, paino, pistely, puuduus — ilman arviointia.',
+      'Liiku hitaasti ylöspäin: nilkat, säärret, polvet, reidet. Viivy kussakin paikassa muutama hengitys.',
+      'Lantio ja vatsa: huomaa hengityksen liike. Miten vatsa liikkuu? Onko jännitystä?',
+      'Rintakehä, sydämen alue: mitä tunnet siellä? Hengityksen rytmi, lämpö, paino.',
+      'Kädet sormenpäistä hartioihin. Niska, kaula, leuka — yleinen jännityksen paikka.',
+      'Pää ja kasvot: kulmakarvojen alue, ohimot, korvat. Lopeta päälaelle.',
+      'Ota koko keho huomioon hetken. Mitä huomasit? Onko jokin muuttunut?'
+    ],
+    clinical: 'Interoseptio (kehon sisäisten signaalien havaitseminen) on traumapotilailla usein heikentynyt — keho tuntuu vieraalta tai etäiseltä. Kehoskannaus rakentaa suhdetta kehoon turvallisesti. Voidaan yhdistää kroonisen kivun hoitoon.',
+    contraindication: 'Voi herättää voimakkaita tuntemuksia traumatisoituneilla — käytä ensin therapist-led versio.',
+    timerSeconds: 900
+  },
+  {
+    id: 'resourcing',
+    name: 'Resurssointi & voimavarat',
+    type: 'cognitive',
+    typeLabel: 'Kognitiivinen',
+    desc: 'Aktivoi mielikuvissa nykyhetken resurssit — ihmiset, paikat, ominaisuudet, kokemusmistot — jotka tukevat turvallisuuden kokemusta.',
+    duration: '10–15 min',
+    forState: ['hypo','optimal'],
+    forStateLabel: 'Stabilisaatio · Trauma · Masennus',
+    clientSafe: true,
+    steps: [
+      'Istu mukavasti. Kaksi rauhallista hengitystä.',
+      'Ajattele jotakuta ihmistä — nykyinen tai menneisyydestä, todellinen tai fiktiivinen — jonka kanssa sinulla on tai oli turvallinen olo. Kuvittele heidät mielessäsi.',
+      'Tuo esiin jokin myönteinen ominaisuus, jonka tiedät itsessäsi olevan — vaikka pieni. Ehkä sinnikkyys, hoivaaminen, luovuus.',
+      'Kuvittele jokin paikka, jossa olet tuntenut olosi turvalliseksi tai rauhalliseksi. Vie huomio sinne.',
+      'Kuljeta näitä resursseja mielessäsi. Huomaa miten keho reagoi, kun ajattelet niitä. Missä tunnet tämän kehossasi?',
+      'Anna kehon rekisteröidä tämä tila. Voit ottaa "kuvan" tästä tilasta myöhemmäksi käyttöön.',
+      'Palauta huomio huoneeseen rauhallisesti.'
+    ],
+    clinical: 'EMDR:n resurssointi-protokolla. Rakentaa stabilisaatiota ennen traumatyötä. Dorsaalivagaalisessa tilassa aloita resurssoinnista ennen mitään muuta. Asiakas voi oppia käyttämään resursseja itsenäisesti arjessa.',
+    contraindication: '',
+    timerSeconds: 600
+  }
+];
+
+const PSYCHOED_DATA = [
+  {
+    id: 'chronic-pain',
+    icon: '🔥',
+    topic: 'Krooninen kipu',
+    name: 'Kivun neurotiede',
+    desc: 'Miksi kipu kroonistuu ja miten hermoston sensitisaatio selittää kipukokemuksen.',
+    sections: [
+      { title: 'Kipu on suojelureaktio', content: 'Kipu ei ole pelkästään kudosvaurion mittari — se on aivojen suojeleva signaali. Kroonisessa kivussa hermosto on oppinut reagoimaan uhkaan herkemmin, vaikka kudosvaurio olisi parantunut. Sensitisaatio tarkoittaa, että kipuhermojen kynnys reagoida on laskenut — pienemmistä ärsykkeistä tulee suuri kipu.' },
+      { title: 'HPA-akseli ja kipu', content: 'Krooninen stressi nostaa kortisolitasoa, joka kiihdyttää tulehdusta ja heikentää kehon omia kipua hillitseviä järjestelmiä (endorfIinit, opioidireseptorit). Stressi ja kipu ruokkivat toisiaan — siksi kroonisen kivun hoito edellyttää aina hermoston säätelyä.' },
+      { title: 'Kliiniset interventiot', content: 'PNE (Pain Neuroscience Education) on tutkitusti tehokas: pelkästään kivun neurotieteestä oppiminen vähentää kipua ja parantaa toimintakykyä. Tähän yhdistettynä hermoston säätelyharjoitteet, kehotietoisuus ja graded exposure tuottavat parhaan tuloksen.' },
+    ]
+  },
+  {
+    id: 'trauma',
+    icon: '🌊',
+    topic: 'Trauma',
+    name: 'Trauman neurobiologia',
+    desc: 'Miten trauma tallentuu kehoon, miksi se ei unohdu ja mikä auttaa.',
+    sections: [
+      { title: 'Implisiittinen muisti', content: 'Trauma tallentuu pääasiassa implisiittisenä muistina — kehollisena, aistimuksellisena, tuntemuksellisena — ilman narratiivista rakennetta tai aikaleimaa. Hippokampuksen toiminta häiriintyy traumahetkellä, joten muisto ei saa "silloin oli" -leimaa. Tästä syystä flashback tuntuu tapahtuvan juuri nyt.' },
+      { title: 'Amygdalan yliaktiivisuus', content: 'Traumatisoituneella henkilöllä amygdala on yliaktiivinen ja PFC-amygdala -yhteys heikentynyt. Tämä tarkoittaa, että neutraalit tilanteet voivat laukaista puolustusreaktion. Kyseessä ei ole "ylireagoiminen" vaan neurologinen muutos.' },
+      { title: 'Kehollinen hoito', content: 'Koska trauma tallentuu alle kortikaalisen tason, pelkkä puhuminen ei aina riitä. Somatic Experiencing, EMDR, sensorimotorinen psykoterapia ja kehotietoisuustyöskentely lähestyvät traumaa suoraan kehon kautta — sieltä missä se on tallennettu.' },
+    ]
+  },
+  {
+    id: 'adhd',
+    icon: '⚡',
+    topic: 'ADHD & toiminnanohjaus',
+    name: 'ADHD ja stressijärjestelmä',
+    desc: 'ADHD:n yhteys ANS-dysregulaatioon, stressivasteeseen ja hermoston säätelyyn.',
+    sections: [
+      { title: 'ADHD ja hermosto', content: 'ADHD on neurokehityksellinen ero, johon liittyy usein autonomisen hermoston dysregulaatio. Monet ADHD-tyypilliset oireet — ylivireys, impulsiivisuus, tunteiden säätelyn vaikeus, unihäiriöt — liittyvät suoraan ANS:n toimintaan. ADHD-hermosto saattaa olla herkempi uhkavasteille.' },
+      { title: 'Aistiyliherkkyys ja neuroception', content: 'Aistiyliherkkys on yleinen ADHD:ssa ja autismissa. Aistiärsykkeet ylittävät herkemmin toleranssin ja laukaisevat sympaattisen vaihteen. Tämä näyttäytyy käytöksessä ylivireystilana, vetäytymisenä tai impulssiivisuutena — ei tahdonalaisena päätöksenä.' },
+      { title: 'Hermoston säätely ADHD:ssa', content: 'Rytmi, ennustettavuus ja kehalliset rutiinit (hengitys, liike, uni) ovat erityisen tärkeitä ADHD-hermoston säätelyssä. Monille toimii hyvin: fyysinen liike ennen kognitiivisia tehtäviä, lyhyet intensiiviset harjoitteet (HIIT), aistiärsykkeiden säätely ympäristössä.' },
+    ]
+  },
+  {
+    id: 'long-covid',
+    icon: '🫁',
+    topic: 'Long COVID & ME/CFS',
+    name: 'Long COVID ja ANS-dysregulaatio',
+    desc: 'Post-COVID oireiden yhteys autonomiseen hermostoon, vagushermoon ja PEM-ilmiöön.',
+    sections: [
+      { title: 'ANS Long COVID:ssa', content: 'Merkittävä osa Long COVID -oireista selittyy autonomisen hermoston häiriöillä. Dysautonomia, POTS (posturaalinen ortostaattinen takykardia), matala HRV, unihäiriöt, fog — kaikki viittaavat ANS:n epätasapainoon. Vagushermovaurio on yksi tutkimuksen alla oleva mekanismi.' },
+      { title: 'PEM – Post-exertional malaise', content: 'Rasituksen jälkeinen oireiden paheneminen (PEM) on ME/CFS:n ja Long COVID:n keskeinen piirre. Perinteinen "enemmän harjoittele" -lähestymistapa voi pahentaa oireita. Sen sijaan pace-menetelmä, energianhallinta ja ANS-tukevat harjoitteet (ei rasitusharjoitteet) ovat suositeltavia.' },
+      { title: 'Hoitolähestyminen', content: 'Vagushermon tukeminen: hyräily, hengitysharjoitteet, kylmävesialtistus varovaisesti. Päivittäinen HRV-seuranta auttaa energiankäytön hallinnassa. Hermoston säätelyharjoitteet ennen kognitiivisia tai fyysisiä ponnisteluita. Stressihallinnan merkitys on suuri — stressi pahentaa oireita.' },
+    ]
+  },
+  {
+    id: 'anxiety',
+    icon: '🌀',
+    topic: 'Ahdistuneisuus',
+    name: 'Ahdistuksen neurobiologia',
+    desc: 'Miksi ahdistus tuntuu kehossa, miten se toimii ja mikä katkaisee kierteen.',
+    sections: [
+      { title: 'Ahdistus kehossa', content: 'Ahdistus on sympaattisen hermoston aktivaatiovaste ilman selkeää fyysistä uhkaa — tai uhkaan, josta ei voi paeta fyysisellä toiminnalla. Keho mobilisoi energiaa, mutta se ei pääse purkautumaan. Tästä syntyy krooninen ylivirieys.' },
+      { title: 'Hyperventilointipattern', content: 'Krooninen ahdistus johtaa usein ylärintahengitykseen ja hyperventilointiin. Tämä laskee CO₂-tasoa, mikä paradoksaalisesti lisää ahdistuksen tunnetta. Hengitysrytmin korjaaminen on yksi tehokkaimmista ahdistuksen hoidon keinoista.' },
+      { title: 'Hyväksyminen vs välttely', content: 'Ahdistuksen välttely vahvistaa ahdistuksen voimaa pitkällä aikavälillä. Hyväksymis- ja omistautumisterapia (ACT) sekä altistusterapia perustuvat siihen, että kehon oppiminen tapahtuu kohtaamalla — turvallisessa kontekstissa, titrattuun tahtiin.' },
+    ]
+  },
+  {
+    id: 'burnout',
+    icon: '🕯️',
+    topic: 'Burnout & uupumus',
+    name: 'Burnout — hermoston romahdus',
+    desc: 'Burnoutin neurobiologia, HPA-akselin uupumus ja palautumisen polku.',
+    sections: [
+      { title: 'HPA-akselin uupumus', content: 'Pitkäkestoinen stressi johtaa HPA-akselin ylikuormitukseen. Kortisolin eritys ensin nousee, sitten häiriintyy tai laskee. Tämä näkyy burnoutissa aamukortisolin matalana, väsymyksenä, motivaation puutteena, kognitiivisina vaikeuksina.' },
+      { title: 'Dorsaalivagaalinen romahdus', content: 'Burnout on usein dorsaalivagaalista romahdusta — hermosto on sulkenut päälle suojellakseen ylikuormittuneesta sympaattisesta aktivaatiosta. Tästä syystä "pakota itsesi liikkeelle" ei toimii — se lisää kuormitusta. Palautuminen vaatii dorsaalivagaalisen tilan tunnistamista ja varovaista aktivointia.' },
+      { title: 'Palautumisen polku', content: 'Palautuminen ei tapahdu pelkästä levosta — se vaatii aktiivista parasympaattisen hermoston harjoittamista. Vagushermon tuki (hyräily, hengitys), rytminen liike, sosiaalinen yhteys ja unen laadun parantaminen ovat keskeisiä. Prosessi on hidas — kuukausia, ei viikkoja.' },
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+// RENDER EXERCISES
+// ═══════════════════════════════════════════════════════
+function renderExercises() {
+  const tGrid = document.getElementById('ex-grid-therapist');
+  const cGrid = document.getElementById('ex-grid-client');
+  if (!tGrid || !cGrid) return;
+
+  tGrid.innerHTML = EXERCISES.map(ex => `
+    <div class="ex-card ${ex.type}" data-type="${ex.type}" onclick="openExModal('${ex.id}')">
+      <div class="ex-type">${ex.typeLabel}</div>
+      <div class="ex-name">${ex.name}</div>
+      <div class="ex-desc">${ex.desc}</div>
+      <div class="ex-meta">
+        <span class="ex-meta-item">⏱ ${ex.duration}</span>
+        <span class="ex-meta-item">· ${ex.forStateLabel}</span>
+      </div>
+    </div>
+  `).join('');
+
+  const clientExercises = EXERCISES.filter(e => e.clientSafe);
+  cGrid.innerHTML = clientExercises.map(ex => `
+    <div class="ex-card ${ex.type}" data-type="${ex.type}" onclick="openExModal('${ex.id}')">
+      <div class="ex-type">${ex.typeLabel}</div>
+      <div class="ex-name">${ex.name}</div>
+      <div class="ex-desc">${ex.desc}</div>
+      <div class="ex-meta">
+        <span class="ex-meta-item">⏱ ${ex.duration}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// EXERCISE FILTER
+// ═══════════════════════════════════════════════════════
+function filterEx(type, btn) {
+  document.querySelectorAll('#ex-grid-therapist .ex-card').forEach(c => {
+    c.classList.toggle('hidden', type !== 'all' && c.dataset.type !== type);
+  });
+  document.querySelectorAll('.ex-filter-bar .ex-filter').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+function filterExClient(type, btn) {
+  document.querySelectorAll('#ex-grid-client .ex-card').forEach(c => {
+    c.classList.toggle('hidden', type !== 'all' && c.dataset.type !== type);
+  });
+  const bars = document.querySelectorAll('#c-harjoitteet .ex-filter');
+  bars.forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════════
+let timerInterval = null;
+let timerRemaining = 0;
+
+function openExModal(id) {
+  const ex = EXERCISES.find(e => e.id === id);
+  if (!ex) return;
+  clearInterval(timerInterval);
+
+  const stepsHTML = ex.steps.map(s => `<li>${s}</li>`).join('');
+  const timerHTML = ex.timerSeconds > 0 ? `
+    <div class="timer-bar-wrap">
+      <div class="timer-label">Ajastin</div>
+      <div class="timer-controls">
+        <div class="timer-display" id="timer-disp">${formatTime(ex.timerSeconds)}</div>
+        <button class="timer-btn start" onclick="startTimer(${ex.timerSeconds})">Aloita</button>
+        <button class="timer-btn" onclick="stopTimer()">Pysäytä</button>
+        <button class="timer-btn" onclick="resetTimer(${ex.timerSeconds})">Nollaa</button>
+      </div>
+    </div>
+  ` : '';
+
+  const contrHTML = ex.contraindication ? `<div class="warning-box">${ex.contraindication}</div>` : '';
+  const clientBadge = !ex.clientSafe ? `<span style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;background:rgba(192,96,64,0.15);color:var(--sym);border:1px solid rgba(192,96,64,0.3);border-radius:3px;padding:0.15rem 0.45rem;margin-left:0.5rem">Ammattilainen</span>` : '';
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-eyebrow">${ex.typeLabel} · ${ex.duration}</div>
+    <div class="modal-title">${ex.name}${clientBadge}</div>
+    <div class="modal-sub">${ex.desc}</div>
+    <ol class="step-list">${stepsHTML}</ol>
+    ${timerHTML}
+    <div class="clinical-note" style="margin-top:1.25rem">${ex.clinical}</div>
+    ${contrHTML}
+  `;
+
+  document.getElementById('modal-bg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function openPsychoedModal(id) {
+  const item = PSYCHOED_DATA.find(p => p.id === id);
+  if (!item) return;
+
+  const sectionsHTML = item.sections.map(s => `
+    <div class="detail-section">
+      <h4>${s.title}</h4>
+      <p>${s.content}</p>
+    </div>
+  `).join('');
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="modal-eyebrow">${item.icon} ${item.topic}</div>
+    <div class="modal-title">${item.name}</div>
+    <div class="modal-sub">${item.desc}</div>
+    <div style="margin-top:1.5rem">${sectionsHTML}</div>
+  `;
+
+  document.getElementById('modal-bg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-bg').classList.remove('open');
+  document.body.style.overflow = '';
+  clearInterval(timerInterval);
+}
+
+function closeModalBg(e) {
+  if (e.target === document.getElementById('modal-bg')) closeModal();
+}
+
+function formatTime(s) {
+  const m = Math.floor(s/60);
+  const sec = s%60;
+  return `${m}:${sec.toString().padStart(2,'0')}`;
+}
+
+function startTimer(total) {
+  clearInterval(timerInterval);
+  if (timerRemaining <= 0) timerRemaining = total;
+  timerInterval = setInterval(() => {
+    timerRemaining--;
+    const disp = document.getElementById('timer-disp');
+    if (disp) disp.textContent = formatTime(timerRemaining);
+    if (timerRemaining <= 0) { clearInterval(timerInterval); if(disp) disp.textContent = 'Valmis ✓'; }
+  }, 1000);
+}
+
+function stopTimer() { clearInterval(timerInterval); }
+
+function resetTimer(total) {
+  clearInterval(timerInterval);
+  timerRemaining = total;
+  const disp = document.getElementById('timer-disp');
+  if (disp) disp.textContent = formatTime(total);
+}
+
+// ═══════════════════════════════════════════════════════
+// PSYCHOED GRID
+// ═══════════════════════════════════════════════════════
+function renderPsychoed() {
+  const grid = document.getElementById('psychoed-grid');
+  if (!grid) return;
+  grid.innerHTML = PSYCHOED_DATA.map(p => `
+    <div class="psychoed-card" onclick="openPsychoedModal('${p.id}')">
+      <div class="psychoed-card-head">
+        <div class="psychoed-icon">${p.icon}</div>
+        <div class="psychoed-topic">${p.topic}</div>
+        <div class="psychoed-name">${p.name}</div>
+      </div>
+      <div class="psychoed-card-body">${p.desc}</div>
+    </div>
+  `).join('');
+
+  // Client version
+  const clientCards = document.getElementById('client-info-cards');
+  if (clientCards) {
+    clientCards.innerHTML = PSYCHOED_DATA.map(p => `
+      <div class="accordion-item" style="margin-bottom:8px">
+        <button class="accordion-trigger" onclick="toggleAccordion(this.parentElement)">
+          <div class="acc-label">
+            <span class="acc-title">${p.icon} ${p.name}</span>
+            <span class="acc-sub">${p.topic}</span>
+          </div>
+          <div class="acc-chevron">▶</div>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <p>${p.desc}</p>
+            <div style="margin-top:1rem">
+              ${p.sections.map(s => `<div style="margin-bottom:1rem"><strong style="color:var(--text);font-size:0.9rem">${s.title}</strong><p style="margin-top:0.35rem;font-size:0.9rem">${s.content}</p></div>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// AROUSAL METER
+// ═══════════════════════════════════════════════════════
+function updateMeter(val) {
+  val = parseInt(val);
+  const state = document.getElementById('meter-state');
+  const sugg  = document.getElementById('meter-suggestion');
+  const btns  = document.getElementById('meter-btns');
+  const result = document.getElementById('meter-result');
+
+  let stateText, suggText, color, exercises = [];
+
+  if (val < 25) {
+    stateText = 'Jähmettyminen / Aliaktivaatio';
+    suggText = 'Hermostosi on sulkeutunut suojautuakseen. Et tarvitse lisää rentoutumista — tarvitset varovaista aktivointia. Pienet liikkeet, hyräily ja ääni auttavat.';
+    color = 'var(--hypo)';
+    exercises = ['humming','54321','butterfly'];
+  } else if (val < 42) {
+    stateText = 'Väsymys / Matala vireystila';
+    suggText = 'Olet lähellä aliaktivaatiota. Hyräily, liike ja rytmi voivat auttaa aktivoimaan hermoston sopivasti.';
+    color = 'var(--dorsal)';
+    exercises = ['humming','body-scan','54321'];
+  } else if (val < 58) {
+    stateText = 'Tasapainossa — toleranssi-ikkunassa';
+    suggText = 'Hermostosi on hyvässä tilassa. Voit tehdä minkä tahansa harjoitteen — tai vain hengittää rauhallisesti ja nauttia hetkestä.';
+    color = 'var(--optimal)';
+    exercises = ['box-breathing','body-scan','safe-place'];
+  } else if (val < 75) {
+    stateText = 'Kohonnut vireystila / Jännitys';
+    suggText = 'Hermostossasi on enemmän energiaa kuin tarvitaan. Hengitysharjoitteet ja orientoituminen auttavat rauhoittumaan.';
+    color = 'var(--sym)';
+    exercises = ['physiological-sigh','box-breathing','54321'];
+  } else {
+    stateText = 'Yliaktivaatio / Ahdistus';
+    suggText = 'Hermostosi on ylikuormittunut. Aloita yksinkertaisesta: yksi hidas uloshengitys. Vasta sen jälkeen harjoite.';
+    color = 'var(--hyper)';
+    exercises = ['physiological-sigh','cold-water','54321'];
+  }
+
+  state.style.color = color;
+  state.textContent = stateText;
+  sugg.textContent = suggText;
+  result.style.borderColor = color + '55';
+
+  btns.innerHTML = exercises.map(id => {
+    const ex = EXERCISES.find(e => e.id === id);
+    if (!ex) return '';
+    return `<button class="quick-btn" onclick="openExModal('${id}')">${ex.name}</button>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// QUICK ACTIONS
+// ═══════════════════════════════════════════════════════
+function renderQuickActions() {
+  const qa = document.getElementById('quick-actions');
+  if (!qa) return;
+  const shortcuts = [
+    { icon: '😮‍💨', label: 'Rauhoitu nyt', id: 'physiological-sigh' },
+    { icon: '🌿', label: 'Ankkuroidu', id: '54321' },
+    { icon: '🦋', label: 'Perhoshalaus', id: 'butterfly' },
+    { icon: '🎵', label: 'Hyräile', id: 'humming' },
+    { icon: '📦', label: 'Neliöhengitys', id: 'box-breathing' },
+    { icon: '🧘', label: 'Kehoskannaus', id: 'body-scan' },
+  ];
+  qa.innerHTML = shortcuts.map(s => `
+    <div class="qa-card" onclick="openExModal('${s.id}')">
+      <div class="qa-icon">${s.icon}</div>
+      <div class="qa-label">${s.label}</div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// JOURNAL / NOTES
+// ═══════════════════════════════════════════════════════
+function getJournalKey(mode) { return mode === 'therapist' ? 'stress_journal_t' : 'stress_journal_c'; }
+
+function loadJournal(mode) {
+  try { return JSON.parse(localStorage.getItem(getJournalKey(mode)) || '[]'); } catch { return []; }
+}
+function saveJournal(mode, entries) {
+  localStorage.setItem(getJournalKey(mode), JSON.stringify(entries));
+}
+
+function renderJournal(mode) {
+  const areaId  = mode === 'therapist' ? 'journal-area' : 'client-journal-area';
+  const area    = document.getElementById(areaId);
+  if (!area) return;
+  const entries = loadJournal(mode);
+
+  const isTherapist = mode === 'therapist';
+  const stateOptions = `
+    <option value="ventral">Ventraalivagaali — Yhteys</option>
+    <option value="sym">Sympaattinen — Mobilisaatio</option>
+    <option value="dorsal">Dorsaalivagaali — Romahdus</option>
+  `;
+  const clientStateOptions = `
+    <option value="ventral">Tasapainossa / Rauhallinen</option>
+    <option value="sym">Stressaantunut / Ahdistunut</option>
+    <option value="dorsal">Väsynyt / Tyhjä / Lamaantunut</option>
+  `;
+
+  area.innerHTML = `
+    <div class="journal-wrap">
+      <div class="journal-input-area">
+        <div class="journal-fields">
+          ${isTherapist ? `<div><label class="field-label">Asiakas (vapaaehtoinen)</label><input type="text" class="field-input" id="jf-client" placeholder="Esim. Asiakas A"></div>` : ''}
+          <div>
+            <label class="field-label">Tila</label>
+            <select class="field-select" id="jf-state">${isTherapist ? stateOptions : clientStateOptions}</select>
+          </div>
+          <div>
+            <label class="field-label">Vireystila (0–10)</label>
+            <div class="field-range-wrap">
+              <input type="range" class="field-range" id="jf-arousal" min="0" max="10" value="5" oninput="document.getElementById('jf-arousal-val').textContent=this.value">
+              <span class="field-range-val" id="jf-arousal-val">5</span>
+            </div>
+          </div>
+          ${isTherapist ? `
+          <div>
+            <label class="field-label">Interventiot</label>
+            <input type="text" class="field-input" id="jf-interventions" placeholder="Esim. fysiologinen huokaus, 5-4-3-2-1">
+          </div>` : ''}
+          <div>
+            <label class="field-label">Muistiinpano</label>
+            <textarea class="field-textarea" id="jf-note" placeholder="${isTherapist ? 'Kliiniset havainnot...' : 'Miten menee? Mitä huomasit...'}"></textarea>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="addJournalEntry('${mode}')">Tallenna kirjaus</button>
+      </div>
+
+      <div class="journal-entries" id="journal-entries-${mode}"></div>
+    </div>
+  `;
+
+  renderJournalEntries(mode);
+}
+
+function renderJournalEntries(mode) {
+  const container = document.getElementById(`journal-entries-${mode}`);
+  if (!container) return;
+  const entries = loadJournal(mode);
+
+  if (entries.length === 0) {
+    container.innerHTML = '<div class="empty-state">Ei vielä kirjauksia</div>';
+    return;
+  }
+
+  container.innerHTML = entries.slice().reverse().map((e, i) => `
+    <div class="entry-card">
+      <div class="entry-header">
+        <div>
+          <div class="entry-date">${e.date}</div>
+          ${e.client ? `<div style="font-size:0.8rem;color:var(--text3);margin-top:0.2rem">${e.client}</div>` : ''}
+        </div>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <span class="entry-state ${e.state}">${e.stateLabel}</span>
+          <button class="entry-delete" onclick="deleteJournalEntry('${mode}',${entries.length-1-i})" title="Poista">✕</button>
+        </div>
+      </div>
+      ${e.note ? `<div class="entry-note">${e.note}</div>` : ''}
+      <div class="entry-scores">
+        <div class="score-item">Vireystila: <strong>${e.arousal}/10</strong></div>
+        ${e.interventions ? `<div class="score-item">· ${e.interventions}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function addJournalEntry(mode) {
+  const stateEl = document.getElementById('jf-state');
+  const arousalEl = document.getElementById('jf-arousal');
+  const noteEl = document.getElementById('jf-note');
+  const clientEl = document.getElementById('jf-client');
+  const intEl = document.getElementById('jf-interventions');
+
+  if (!stateEl || !arousalEl || !noteEl) return;
+
+  const stateLabels = {
+    ventral: mode === 'therapist' ? 'Ventraalivagaali' : 'Tasapainossa',
+    sym:     mode === 'therapist' ? 'Sympaattinen'     : 'Stressaantunut',
+    dorsal:  mode === 'therapist' ? 'Dorsaalivagaali'  : 'Väsynyt/Lamaantunut'
+  };
+
+  const entry = {
+    date: new Date().toLocaleString('fi-FI'),
+    state: stateEl.value,
+    stateLabel: stateLabels[stateEl.value] || stateEl.value,
+    arousal: arousalEl.value,
+    note: noteEl.value,
+    client: clientEl ? clientEl.value : '',
+    interventions: intEl ? intEl.value : ''
+  };
+
+  const entries = loadJournal(mode);
+  entries.push(entry);
+  saveJournal(mode, entries);
+
+  noteEl.value = '';
+  if (clientEl) clientEl.value = '';
+  if (intEl) intEl.value = '';
+  arousalEl.value = 5;
+  document.getElementById(mode==='therapist'?'jf-arousal-val':'jf-arousal-val').textContent = '5';
+
+  renderJournalEntries(mode);
+}
+
+function deleteJournalEntry(mode, idx) {
+  const entries = loadJournal(mode);
+  entries.splice(idx, 1);
+  saveJournal(mode, entries);
+  renderJournalEntries(mode);
+}
+
+// ═══════════════════════════════════════════════════════
+// TOGGLE HELPERS
+// ═══════════════════════════════════════════════════════
+function toggleAccordion(el) {
+  const isOpen = el.classList.contains('open');
+  el.parentElement && el.parentElement.querySelectorAll('.accordion-item').forEach(a => a.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+function toggleBrain(el) {
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.brain-layer').forEach(l => l.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+function togglePV(el) {
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.pv-rung').forEach(r => r.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+function toggleWOT(el) {
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.wot-zone').forEach(z => z.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+// ═══════════════════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════════════════
+function switchTab(view, id, btn) {
+  const prefix = view === 't' ? 't-' : 'c-';
+  document.querySelectorAll(`#view-${view==='t'?'therapist':'client'} .tab-panel`)
+    .forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById(prefix + id);
+  if (panel) panel.classList.add('active');
+
+  const navId = view === 't' ? 'therapist-tabs' : 'client-tabs';
+  document.querySelectorAll(`#${navId} .tab-btn`).forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  // Lazy render
+  if (id === 'muistiinpanot') renderJournal('therapist');
+  if (id === 'paivyri') renderJournal('client');
+}
+
+// ═══════════════════════════════════════════════════════
+// MODE SWITCHING
+// ═══════════════════════════════════════════════════════
+function setMode(mode) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(`view-${mode}`).classList.add('active');
+  document.querySelectorAll('.mode-pill').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  renderExercises();
+  renderPsychoed();
+  renderQuickActions();
+  updateMeter(50);
+  renderJournal('therapist');
+  renderJournal('client');
+});
+</script>
+</body>
+</html>
