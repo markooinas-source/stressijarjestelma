@@ -727,6 +727,104 @@ body.kids-mode .adult-only { display:none; }
 }
 ::-webkit-scrollbar { width:4px; }
 ::-webkit-scrollbar-thumb { background:var(--sand3); border-radius:2px; }
+
+/* ── FOOTER ── */
+.site-footer {
+  background: var(--sand2);
+  border-top: 1.5px solid var(--sand3);
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+body.kids-mode .site-footer { display:none; }
+
+.footer-inner {
+  max-width: 600px; margin: 0 auto;
+  display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+}
+.footer-name {
+  font-family: 'Lora', serif;
+  font-size: 1rem; font-style: italic;
+  color: var(--ink2);
+}
+.footer-clinic {
+  font-size: 0.82rem; color: var(--ink3); font-weight: 600;
+}
+.footer-btns {
+  display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center;
+}
+.footer-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 20px;
+  font-size: 0.82rem; font-weight: 800;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 2px solid;
+}
+.footer-btn.email {
+  background: #fff;
+  border-color: var(--green);
+  color: var(--green);
+}
+.footer-btn.email:hover { background: var(--green-bg); transform: translateY(-1px); }
+.footer-btn.booking {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+.footer-btn.booking:hover { background: #3a6a4e; transform: translateY(-1px); box-shadow: var(--shadow); }
+
+/* ── CONTACT CARD ── */
+.contact-card {
+  background: #fff;
+  border: 1.5px solid var(--sand3);
+  border-radius: var(--r2);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 1rem;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.contact-header {
+  display: flex; align-items: center; gap: 0.9rem;
+}
+.contact-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--green-bg);
+  border: 2px solid var(--green-bd);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; flex-shrink: 0;
+}
+.contact-name {
+  font-family: 'Lora', serif;
+  font-size: 1.05rem; font-style: italic;
+  color: var(--ink);
+}
+.contact-role {
+  font-size: 0.8rem; color: var(--ink3); font-weight: 600;
+}
+.contact-btns {
+  display: flex; gap: 0.6rem; flex-wrap: wrap;
+}
+.contact-btn {
+  flex: 1; min-width: 140px;
+  display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+  padding: 0.7rem 1rem;
+  border-radius: var(--r);
+  font-size: 0.85rem; font-weight: 800;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 2px solid;
+  text-align: center;
+}
+.contact-btn.email {
+  background: #fff; border-color: var(--green); color: var(--green);
+}
+.contact-btn.email:hover { background: var(--green-bg); transform: translateY(-1px); }
+.contact-btn.booking {
+  background: var(--green); border-color: var(--green); color: #fff;
+}
+.contact-btn.booking:hover { background: #3a6a4e; transform: translateY(-1px); box-shadow: var(--shadow); }
 </style>
 </head>
 <body>
@@ -782,6 +880,25 @@ body.kids-mode .adult-only { display:none; }
   <div class="card" style="background:var(--green-bg);border-color:var(--green-bd)">
     <p style="font-family:'Lora',serif;font-style:italic;font-size:1rem;color:var(--ink);margin-bottom:0.4rem">Muista</p>
     <p style="font-size:0.9rem;color:var(--ink2);line-height:1.7">Hermostosi tekee parhaansa suojellakseen sinua. Nämä harjoitteet eivät ole "pikakorjauksia" — ne ovat tapoja opettaa hermostoasi tuntemaan olonsa turvallisemmaksi ajan myötä. Tee niitä säännöllisesti, vaikka et juuri nyt tarvitsisikaan.</p>
+  </div>
+
+  <div class="contact-card">
+    <div class="contact-header">
+      <div class="contact-avatar">🌿</div>
+      <div>
+        <div class="contact-name">Marko Oinas</div>
+        <div class="contact-role">Fysioterapeutti · Akupunktio · Turun Fysiokulma</div>
+      </div>
+    </div>
+    <p style="font-size:0.88rem;color:var(--ink3);line-height:1.65">Kysyttävää harjoitteista tai haluatko varata ajan? Ota yhteyttä suoraan tai varaa aika verkossa.</p>
+    <div class="contact-btns">
+      <a class="contact-btn email" href="mailto:marko.oinas@turunfysiokulma.fi">
+        ✉ Lähetä sähköposti
+      </a>
+      <a class="contact-btn booking" href="https://www.nordhealth.fi/fi/yritys/turun-fysiokulma?therapist=987708ec-fb83-4dfc-8e3a-7d3a5a92af00&tab=appointments&page=1&size=20" target="_blank" rel="noopener">
+        📅 Varaa aika
+      </a>
+    </div>
   </div>
 </div>
 </div>
@@ -1393,5 +1510,21 @@ document.addEventListener('DOMContentLoaded', () => {
   renderKidsGrid();
 });
 </script>
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-name">Marko Oinas</div>
+    <div class="footer-clinic">Fysioterapeutti · Akupunktio · Turun Fysiokulma</div>
+    <div class="footer-btns">
+      <a class="footer-btn email" href="mailto:marko.oinas@turunfysiokulma.fi">
+        ✉ marko.oinas@turunfysiokulma.fi
+      </a>
+      <a class="footer-btn booking" href="https://www.nordhealth.fi/fi/yritys/turun-fysiokulma?therapist=987708ec-fb83-4dfc-8e3a-7d3a5a92af00&tab=appointments&page=1&size=20" target="_blank" rel="noopener">
+        📅 Varaa aika
+      </a>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
