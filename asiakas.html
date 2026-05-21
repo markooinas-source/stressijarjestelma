@@ -728,6 +728,176 @@ body.kids-mode .adult-only { display:none; }
 ::-webkit-scrollbar { width:4px; }
 ::-webkit-scrollbar-thumb { background:var(--sand3); border-radius:2px; }
 
+/* ── VOICE GUIDE ── */
+.voice-panel {
+  margin: 1.5rem 0 0;
+  border: 2px solid var(--green-bd);
+  border-radius: var(--r2);
+  overflow: hidden;
+  background: var(--green-bg);
+}
+
+.voice-start-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.25rem; gap: 1rem;
+}
+.voice-start-label {
+  font-size: 0.82rem; font-weight: 800;
+  color: var(--green);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.voice-start-label span { font-size: 1.1rem; }
+.btn-voice-start {
+  padding: 0.6rem 1.25rem;
+  background: var(--green); color: #fff;
+  border: none; border-radius: 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.82rem; font-weight: 800;
+  cursor: pointer; transition: all 0.2s;
+  white-space: nowrap; flex-shrink: 0;
+}
+.btn-voice-start:hover { background: #3a6a4e; transform: translateY(-1px); }
+
+.voice-active { display: none; }
+.voice-active.show { display: block; }
+
+.voice-step-display {
+  padding: 1.5rem 1.5rem 0.5rem;
+  text-align: center;
+}
+.voice-step-num {
+  font-family: 'Lora', serif;
+  font-size: 0.82rem; font-style: italic;
+  color: var(--green); margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+.voice-step-text {
+  font-size: 1.15rem; font-weight: 600;
+  color: var(--ink); line-height: 1.6;
+  min-height: 3.5rem;
+}
+
+.voice-progress {
+  display: flex; justify-content: center; gap: 0.4rem;
+  padding: 1rem 1.5rem 0.5rem; flex-wrap: wrap;
+}
+.voice-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--sand3); transition: all 0.3s;
+  flex-shrink: 0;
+}
+.voice-dot.done { background: var(--green); }
+.voice-dot.current { background: var(--green); transform: scale(1.4); box-shadow: 0 0 0 3px var(--green-bg), 0 0 0 5px var(--green-bd); }
+
+.voice-controls {
+  display: flex; gap: 0.6rem; padding: 1rem 1.25rem 1.25rem;
+  flex-wrap: wrap;
+}
+.btn-voice {
+  flex: 1; min-width: 100px;
+  padding: 0.85rem 1rem;
+  border-radius: var(--r);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem; font-weight: 800;
+  cursor: pointer; transition: all 0.2s;
+  border: 2px solid; text-align: center;
+}
+.btn-voice.next {
+  background: var(--green); border-color: var(--green); color: #fff;
+  font-size: 1rem;
+}
+.btn-voice.next:hover { background: #3a6a4e; }
+.btn-voice.next:disabled { opacity: 0.4; cursor: default; transform: none; }
+.btn-voice.repeat {
+  background: #fff; border-color: var(--green-bd); color: var(--green);
+}
+.btn-voice.repeat:hover { background: var(--green-bg); }
+.btn-voice.stop {
+  background: #fff; border-color: var(--sand3); color: var(--ink3);
+}
+.btn-voice.stop:hover { border-color: var(--red-bd); color: var(--red); }
+
+.voice-speaking-indicator {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-left: 0.5rem; vertical-align: middle;
+}
+.voice-speaking-indicator span {
+  display: inline-block;
+  width: 4px; border-radius: 2px;
+  background: var(--green);
+  animation: soundwave 0.8s ease-in-out infinite;
+}
+.voice-speaking-indicator span:nth-child(1) { height:8px;  animation-delay:0s; }
+.voice-speaking-indicator span:nth-child(2) { height:14px; animation-delay:0.15s; }
+.voice-speaking-indicator span:nth-child(3) { height:10px; animation-delay:0.3s; }
+.voice-speaking-indicator span:nth-child(4) { height:16px; animation-delay:0.1s; }
+.voice-speaking-indicator span:nth-child(5) { height:6px;  animation-delay:0.25s; }
+@keyframes soundwave {
+  0%,100% { transform: scaleY(0.4); opacity:0.5; }
+  50%      { transform: scaleY(1);   opacity:1; }
+}
+
+.voice-done-msg {
+  text-align: center; padding: 1.25rem;
+  font-family: 'Lora', serif; font-style: italic;
+  font-size: 1.05rem; color: var(--green);
+  display: none;
+}
+.voice-done-msg.show { display: block; }
+
+/* ── SLIDER METER ── */
+.meter-divider {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin: 1rem 0 0.85rem;
+  color: var(--ink3); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.meter-divider::before, .meter-divider::after {
+  content: ''; flex: 1;
+  height: 1px; background: var(--sand3);
+}
+
+.slider-wrap { padding: 0.25rem 0 0.5rem; }
+
+.meter-track {
+  position: relative; height: 10px;
+  border-radius: 5px; margin-bottom: 0.6rem;
+  background: linear-gradient(to right,
+    #3a6a9a 0%, #3a6a9a 20%,
+    #4a7c5e 35%, #4a7c5e 65%,
+    #c07830 80%, #b84040 100%);
+}
+
+input[type=range].mood-slider {
+  position: absolute; top: -9px; left: 0;
+  width: 100%; height: 28px;
+  -webkit-appearance: none; appearance: none;
+  background: transparent; cursor: pointer; margin: 0;
+}
+input[type=range].mood-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--green);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: border-color 0.3s;
+}
+input[type=range].mood-slider::-moz-range-thumb {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #fff; border: 3px solid var(--green);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.slider-labels {
+  display: flex; justify-content: space-between;
+  font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  margin-top: 0.3rem;
+}
+.slider-labels span:nth-child(1) { color: var(--blue); }
+.slider-labels span:nth-child(2) { color: var(--green); }
+.slider-labels span:nth-child(3) { color: var(--red); }
+
 /* ── FOOTER ── */
 .site-footer {
   background: var(--sand2);
@@ -865,6 +1035,21 @@ body.kids-mode .site-footer { display:none; }
         <span class="face-emoji">😰</span>
         <span class="face-label">Ylikuormittunut<br>/ Paniikki</span>
       </button>
+    </div>
+
+    <div class="meter-divider">tai liukusäätimellä</div>
+
+    <div class="slider-wrap">
+      <div class="meter-track">
+        <input type="range" class="mood-slider" id="mood-slider"
+          min="0" max="100" value="50" step="1"
+          oninput="selectSlider(this.value)">
+      </div>
+      <div class="slider-labels">
+        <span>Jähmetys / Tyhjyys</span>
+        <span>Tasapainossa</span>
+        <span>Ylikuormitus / Paniikki</span>
+      </div>
     </div>
 
     <div class="meter-result" id="meter-result">
@@ -1172,7 +1357,51 @@ const STATES = {
 function selectFace(state, btn) {
   document.querySelectorAll('.face-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
+  applyState(state);
+
+  // Sync slider to match face selection
+  const sliderMap = { low: 12, ok: 50, high: 72, panic: 92 };
+  const slider = document.getElementById('mood-slider');
+  if (slider) slider.value = sliderMap[state] || 50;
+  updateSliderThumb(state);
+}
+
+function selectSlider(val) {
+  val = parseInt(val);
+  let state;
+  if      (val < 25) state = 'low';
+  else if (val < 45) state = 'low';
+  else if (val < 60) state = 'ok';
+  else if (val < 78) state = 'high';
+  else               state = 'panic';
+
+  // Sync face buttons
+  document.querySelectorAll('.face-btn').forEach(b => b.classList.remove('selected'));
+  const faceMap = { low:'f-low', ok:'f-ok', high:'f-high', panic:'f-panic' };
+  const faceBtn = document.querySelector('.face-btn.' + faceMap[state]);
+  if (faceBtn) faceBtn.classList.add('selected');
+
+  updateSliderThumb(state);
+  applyState(state);
+}
+
+function updateSliderThumb(state) {
+  const slider = document.getElementById('mood-slider');
+  if (!slider) return;
+  const colorMap = { low: '#3a6a9a', ok: '#4a7c5e', high: '#c07830', panic: '#b84040' };
+  slider.style.setProperty('--thumb-color', colorMap[state] || '#4a7c5e');
+  // Update thumb border via inline style trick
+  slider.setAttribute('data-state', state);
+  const colors = { low:'#3a6a9a', ok:'#4a7c5e', high:'#c07830', panic:'#b84040' };
+  const styleId = 'slider-thumb-style';
+  let styleEl = document.getElementById(styleId);
+  if (!styleEl) { styleEl = document.createElement('style'); styleEl.id = styleId; document.head.appendChild(styleEl); }
+  styleEl.textContent = `input[type=range].mood-slider::-webkit-slider-thumb { border-color: ${colors[state]}; } input[type=range].mood-slider::-moz-range-thumb { border-color: ${colors[state]}; }`;
+}
+
+function applyState(state) {
   const s = STATES[state];
+  if (!s) return;
   const res = document.getElementById('meter-result');
   res.className = 'meter-result ' + s.cls;
   document.getElementById('result-title').textContent = s.title;
@@ -1338,14 +1567,22 @@ function deleteEntry(idx) {
 let timerInterval = null;
 let timerLeft = 0;
 
+// Voice state
+let voiceSteps = [];
+let voiceIdx = 0;
+let voiceActive = false;
+const synth = window.speechSynthesis;
+
 function openModal(id) {
-  const ex = EXERCISES.find(e => e.id===id);
+  const ex = EXERCISES.find(e => e.id === id);
   if (!ex) return;
   clearInterval(timerInterval);
+  stopVoice();
 
   const stepsHTML = ex.steps.map(s => `<li>${s}</li>`).join('');
   const catColor = {breath:'var(--green)',vagus:'var(--blue)',ground:'var(--amber)',body:'var(--purple)',image:'var(--warm2)',bi:'#3a7060'};
   const col = catColor[ex.cat] || 'var(--green)';
+
   const timerHTML = ex.timer ? `
     <div class="timer-panel">
       <div class="timer-label">Ajastin</div>
@@ -1357,15 +1594,51 @@ function openModal(id) {
       </div>
     </div>` : '';
 
+  const hasSpeech = 'speechSynthesis' in window;
+  const voiceHTML = hasSpeech ? `
+    <div class="voice-panel" id="voice-panel">
+      <div class="voice-start-row">
+        <div class="voice-start-label">
+          <span>🎧</span> Ääniohjaaja — kuuntele ja tee
+        </div>
+        <button class="btn-voice-start" onclick="startVoice()">▶ Aloita ääniohjaus</button>
+      </div>
+
+      <div class="voice-active" id="voice-active">
+        <div class="voice-step-display">
+          <div class="voice-step-num" id="v-stepnum"></div>
+          <div class="voice-step-text" id="v-steptext">
+            <span id="v-text"></span>
+            <span class="voice-speaking-indicator" id="v-indicator" style="display:none">
+              <span></span><span></span><span></span><span></span><span></span>
+            </span>
+          </div>
+        </div>
+        <div class="voice-progress" id="v-dots"></div>
+        <div class="voice-controls">
+          <button class="btn-voice repeat" onclick="repeatStep()">↺ Toista</button>
+          <button class="btn-voice next" id="v-next" onclick="nextStep()">Seuraava vaihe →</button>
+          <button class="btn-voice stop" onclick="stopVoice()">✕ Lopeta</button>
+        </div>
+        <div class="voice-done-msg" id="v-done">Harjoite tehty — hienoa! 🌿</div>
+      </div>
+    </div>` : '';
+
   document.getElementById('modal-body').innerHTML = `
     <div class="modal-cat" style="color:${col}">${ex.catLabel}</div>
     <div class="modal-title">${ex.name}</div>
     <div class="modal-desc">${ex.desc}</div>
-    <ol class="step-ol">${stepsHTML}</ol>
+    <ol class="step-ol" id="modal-steps">${stepsHTML}</ol>
+    ${voiceHTML}
     ${timerHTML}
     <div class="modal-note">${ex.note}</div>
     ${ex.warn ? `<div class="modal-warn">⚠ ${ex.warn}</div>` : ''}
   `;
+
+  voiceSteps = ex.steps;
+  voiceIdx = 0;
+  voiceActive = false;
+
   document.getElementById('modal-bg').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1374,11 +1647,13 @@ function closeBg(e) {
   if (e.target === document.getElementById('modal-bg')) closeModal();
 }
 function closeModal() {
+  stopVoice();
   document.getElementById('modal-bg').classList.remove('open');
   document.body.style.overflow = '';
   clearInterval(timerInterval);
 }
 
+// ── TIMER ──
 function fmtTime(s) {
   return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
 }
@@ -1398,6 +1673,135 @@ function resetTimer(total) {
   timerLeft = total;
   const d = document.getElementById('t-disp');
   if (d) d.textContent = fmtTime(total);
+}
+
+// ── VOICE GUIDE ──
+function startVoice() {
+  if (!voiceSteps.length) return;
+  voiceActive = true;
+  voiceIdx = 0;
+
+  // Hide the step list, show voice UI
+  const stepList = document.getElementById('modal-steps');
+  if (stepList) stepList.style.display = 'none';
+
+  const va = document.getElementById('voice-active');
+  if (va) va.classList.add('show');
+
+  // Hide start button
+  const panel = document.getElementById('voice-panel');
+  if (panel) {
+    const startRow = panel.querySelector('.voice-start-row');
+    if (startRow) startRow.style.display = 'none';
+  }
+
+  buildDots();
+  speakStep(voiceIdx);
+}
+
+function buildDots() {
+  const container = document.getElementById('v-dots');
+  if (!container) return;
+  container.innerHTML = voiceSteps.map((_, i) =>
+    `<div class="voice-dot ${i === 0 ? 'current' : ''}" id="vdot-${i}"></div>`
+  ).join('');
+}
+
+function updateDots(idx) {
+  voiceSteps.forEach((_, i) => {
+    const dot = document.getElementById('vdot-' + i);
+    if (!dot) return;
+    dot.className = 'voice-dot' +
+      (i < idx ? ' done' : '') +
+      (i === idx ? ' current' : '');
+  });
+}
+
+function speakStep(idx) {
+  if (!voiceActive || idx >= voiceSteps.length) return;
+  synth.cancel();
+
+  const stepNumEl = document.getElementById('v-stepnum');
+  const stepTextEl = document.getElementById('v-text');
+  const indicator  = document.getElementById('v-indicator');
+  const nextBtn    = document.getElementById('v-next');
+  const doneMsg    = document.getElementById('v-done');
+
+  if (stepNumEl) stepNumEl.textContent = `Vaihe ${idx + 1} / ${voiceSteps.length}`;
+  if (stepTextEl) stepTextEl.textContent = voiceSteps[idx];
+  if (indicator) indicator.style.display = 'inline-flex';
+  if (nextBtn)   nextBtn.disabled = true;
+  if (doneMsg)   doneMsg.classList.remove('show');
+
+  updateDots(idx);
+
+  // Scroll voice panel into view on mobile
+  const vActive = document.getElementById('voice-active');
+  if (vActive) vActive.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const utter = new SpeechSynthesisUtterance(voiceSteps[idx]);
+  utter.lang = 'fi-FI';
+  utter.rate = 0.88;
+  utter.pitch = 1.0;
+  utter.volume = 1.0;
+
+  // Pick a Finnish voice if available
+  const voices = synth.getVoices();
+  const fiVoice = voices.find(v => v.lang.startsWith('fi'));
+  if (fiVoice) utter.voice = fiVoice;
+
+  utter.onend = () => {
+    if (!voiceActive) return;
+    if (indicator) indicator.style.display = 'none';
+    const isLast = (idx === voiceSteps.length - 1);
+    if (nextBtn) {
+      nextBtn.disabled = isLast;
+      nextBtn.textContent = isLast ? 'Valmis ✓' : 'Seuraava vaihe →';
+    }
+    if (isLast && doneMsg) doneMsg.classList.add('show');
+  };
+
+  utter.onerror = () => {
+    if (indicator) indicator.style.display = 'none';
+    if (nextBtn) nextBtn.disabled = false;
+  };
+
+  synth.speak(utter);
+}
+
+function nextStep() {
+  if (!voiceActive) return;
+  voiceIdx++;
+  if (voiceIdx >= voiceSteps.length) {
+    stopVoice();
+    return;
+  }
+  speakStep(voiceIdx);
+}
+
+function repeatStep() {
+  if (!voiceActive) return;
+  speakStep(voiceIdx);
+}
+
+function stopVoice() {
+  voiceActive = false;
+  if (synth) synth.cancel();
+
+  const va = document.getElementById('voice-active');
+  if (va) va.classList.remove('show');
+
+  const stepList = document.getElementById('modal-steps');
+  if (stepList) stepList.style.display = '';
+
+  const panel = document.getElementById('voice-panel');
+  if (panel) {
+    const startRow = panel.querySelector('.voice-start-row');
+    if (startRow) startRow.style.display = '';
+  }
+
+  const indicator = document.getElementById('v-indicator');
+  if (indicator) indicator.style.display = 'none';
 }
 
 // ══════════════════════════════════
