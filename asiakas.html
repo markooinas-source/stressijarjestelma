@@ -3106,51 +3106,6 @@ function stopVoice() {
   if (indicator) indicator.style.display = 'none';
 }
 
-// ══════════════════════════════════
-// KIDS MODE
-// ══════════════════════════════════
-const KID_STATES = {
-  rauhallinen: { title:'Olet väsynyt 😴', text:'Se on ok! Kokeile hyräilyä tai pientä liikettä — se herättelee kehosi sopivasti.', color:'#3a80d0' },
-  hyva:        { title:'Hyvä olo 😊',     text:'Mahtavaa! Tämä on hyvä hetki harjoitella. Kokeile jotain uutta.', color:'var(--green)' },
-  jannittynyt: { title:'Jännittää 😟',    text:'Jännitys on normaalia. Kokeile perhoshalaus tai puhalla hitaasti ulos.', color:'#d09030' },
-  pelottaa:    { title:'Pelottaa 😨',      text:'Se on ok pelätä. Kokeile 5 asiaa jotka näet — se auttaa. Tai pyydä aikuista luoksesi.', color:'#d05050' }
-};
-
-function selectKidFace(state, btn) {
-  document.querySelectorAll('.kid-face').forEach(b => b.classList.remove('sel'));
-  btn.classList.add('sel');
-  const s = KID_STATES[state];
-  if (!s) return;
-  const r = document.getElementById('kid-result');
-  r.style.display = 'block';
-  r.style.borderColor = s.color;
-  r.style.background = s.color + '18';
-  document.getElementById('kid-result-title').style.color = s.color;
-  document.getElementById('kid-result-title').textContent = s.title;
-  document.getElementById('kid-result-text').textContent = s.text;
-}
-
-function renderKidsGrid() {
-  const g = document.getElementById('kids-ex-grid');
-  if (!g) return;
-  g.innerHTML = KID_EXERCISES.map(ex => `
-    <div class="kid-ex-card" onclick="kidExClick('${ex.id}', ${ex.anim})">
-      <span class="kid-emoji">${ex.emoji}</span>
-      <span class="kid-ex-name">${ex.name}</span>
-      <span class="kid-ex-dur">${ex.dur}</span>
-    </div>
-  `).join('');
-}
-
-function kidExClick(id, hasAnim) {
-  if (hasAnim) {
-    document.getElementById('breath-anim-card').style.display = 'block';
-    document.getElementById('breath-anim-card').scrollIntoView({behavior:'smooth'});
-  } else {
-    openModal(id);
-  }
-}
-
 // ── Breathing animation ──
 let breathInterval = null;
 let breathPhase = 0;
