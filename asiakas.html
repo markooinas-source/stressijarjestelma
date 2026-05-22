@@ -329,6 +329,20 @@ body {
 .ex-desc { font-size: 0.85rem; color: var(--ink3); line-height: 1.55; flex:1; }
 .ex-dur  { font-size: 0.72rem; font-weight: 700; color: var(--ink3); }
 
+/* Duration selector on multi-dur cards */
+.dur-selector {
+  display: flex; gap: 0.3rem; margin-top: 0.4rem; flex-wrap: wrap;
+}
+.dur-btn {
+  font-size: 0.68rem; font-weight: 800;
+  padding: 0.25rem 0.6rem; border-radius: 12px;
+  border: 1.5px solid var(--green-bd);
+  background: var(--green-bg); color: var(--green);
+  cursor: pointer; transition: all 0.2s;
+  white-space: nowrap;
+}
+.dur-btn:hover { background: var(--green); color: #fff; transform: translateY(-1px); }
+
 /* ── INFO CARDS ── */
 .info-accordion { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2rem; }
 
@@ -1722,6 +1736,49 @@ const EXERCISES = [
     dur:'10–15 min', forState:['low','ok'],
     steps:['Istu mukavasti. Muutama rauhallinen hengitys.','Ajattele henkilöä — nykyinen tai menneisyydestä, todellinen tai fiktiivinen — jonka kanssa sinulla oli tai on turvallinen olo.','Tuo esiin jokin ominaisuus jota arvostat itsessäsi — vaikka pieni.','Muistele paikka jossa sinulla on tai oli hyvä olo.','Kuljeta näitä mielikuvia. Missä kehossasi tunnet niiden vaikutuksen?','Palauta huomio huoneeseen rauhallisesti.'],
     note:'Hyvä aloittaa terapiassa ja jatkaa kotona. Voi käyttää ennen haastavaa tilannetta.', timer:600 },
+
+  // ── PITKÄT HARJOITTEET (3 pituutta) ──
+  { id:'kehoskannaus-ohjattu', name:'Kehoskannaus', cat:'body', catLabel:'Kehollinen',
+    desc:'Systemaattinen kehontietoisuusharjoite kolmessa pituudessa. Kulje kehon läpi päästä varpaisiin — ääniohjaus tahdittaa.',
+    dur:'5 / 15–20 / 30–40 min', forState:['ok','low'], multiDur:true,
+    durations:['5 min','15–20 min','30–40 min'],
+    durationIds:['kehoskannaus-lyhyt','kehoskannaus-keski','kehoskannaus-pitka'],
+    note:'Kehoskannaus rakentaa interoseptiota — kykyä havaita kehon sisäisiä signaaleja. Hyvä ennen nukkumaan menoa tai kroonisen kivun hoidossa.', timer:0 },
+
+  { id:'tietoinen-hengitys', name:'Tietoinen hengitys', cat:'breath', catLabel:'Hengitys',
+    desc:'Hengityksen havainnointi ja syventäminen kolmessa pituudessa. Ei kontrollia — vain läsnäoloa.',
+    dur:'5 / 15–20 / 30–40 min', forState:['ok','high'], multiDur:true,
+    durations:['5 min','15–20 min','30–40 min'],
+    durationIds:['hengitys-lyhyt','hengitys-keski','hengitys-pitka'],
+    note:'Tietoinen hengitys eroaa hengitystekniikoista — tavoitteena on havainnoida eikä kontrolloida. Rauhoittaa mielen ja yhdistää kehoon.', timer:0 },
+
+  { id:'meditaatio-ohjattu', name:'Meditaatio', cat:'cognitive', catLabel:'Mielikuva',
+    desc:'Tietoisuusmeditaatio kolmessa pituudessa. Hengitys ankkurina, ajatukset pilvinä — anna niiden tulla ja mennä.',
+    dur:'5 / 15–20 / 30–40 min', forState:['ok','high'], multiDur:true,
+    durations:['5 min','15–20 min','30–40 min'],
+    durationIds:['meditaatio-lyhyt','meditaatio-keski','meditaatio-pitka'],
+    note:'Säännöllinen meditaatio muuttaa aivojen rakennetta — prefrontaalikorteksi vahvistuu, amygdala rauhoittuu. Jo 8 viikkoa päivittäistä meditaatiota tuottaa mitattavia muutoksia.', timer:0 },
+
+  { id:'ystävällisyys', name:'Ystävällisyysmeditaatio', cat:'cognitive', catLabel:'Mielikuva',
+    desc:'Loving-kindness — myötätunnon ja ystävällisyyden harjoite itseä ja muita kohtaan. Erityisen hyödyllinen masennukseen, häpeään ja yksinäisyyteen.',
+    dur:'5 / 15–20 / 30–40 min', forState:['low','ok'], multiDur:true,
+    durations:['5 min','15–20 min','30–40 min'],
+    durationIds:['ystavallisyys-lyhyt','ystavallisyys-keski','ystavallisyys-pitka'],
+    note:'Tutkitusti tehokas masennus- ja ahdistusoireisiin. Aktivoi myötätuntojärjestelmän ja heikentää itsekritiikin kierrettä.', timer:0 },
+
+  { id:'ravistelu', name:'Ravistelu ja vapina', cat:'somatic', catLabel:'Somaattinen',
+    desc:'Keho purkaa jännitystä luonnollisen tärinäreaktion kautta. Kolme pituutta eri tarpeisiin.',
+    dur:'5 / 15–20 / 30–40 min', forState:['ok','high'], multiDur:true,
+    durations:['5 min','15–20 min','30–40 min'],
+    durationIds:['ravistelu-lyhyt','ravistelu-keski','ravistelu-pitka'],
+    note:'Neurogeeninen tärinä on kehon luonnollinen keino purkaa stressienergiaa. Eläimet tekevät tämän automaattisesti — ihmiset usein inhiboivat reaktion.', timer:0 },
+
+  { id:'jannitysvapautus', name:'Jännitys–vapautus', cat:'body', catLabel:'Kehollinen',
+    desc:'PMR — progressiivinen lihasrentoutus. Jännitä ja vapauta kehon osat järjestyksessä. Kolme pituutta.',
+    dur:'5 / 15–20 / 30–40 min', forState:['high','ok'], multiDur:true,
+    durations:['5 min','15–20 min','30–40 min'],
+    durationIds:['pmr-lyhyt','pmr-keski','pmr-pitka'],
+    note:'PMR (Progressive Muscle Relaxation, Jacobson 1929) on yksi tutkituimmista rentoutusmenetelmistä. Erittäin tehokas unettomuuteen, ahdistukseen ja krooniseen kipuun.', timer:0 },
 ];
 
 const KID_EXERCISES = [
@@ -1878,15 +1935,20 @@ function renderExGrid() {
   if (!g) return;
   g.innerHTML = EXERCISES.map(ex => {
     const isRx = activeRxIds.includes(ex.id);
+    const durSection = ex.multiDur
+      ? `<div class="dur-selector">${ex.durations.map((d,i) =>
+          `<button class="dur-btn" onclick="event.stopPropagation();startGuided('${ex.durationIds[i]}')">${d}</button>`
+        ).join('')}</div>`
+      : `<div class="ex-dur">⏱ ${ex.dur}</div>`;
     return `
-    <div class="ex-card c-${ex.cat} ${isRx ? 'rx-highlight' : ''}" data-cat="${ex.cat}" onclick="openModal('${ex.id}')">
+    <div class="ex-card c-${ex.cat} ${isRx ? 'rx-highlight' : ''}" data-cat="${ex.cat}" onclick="${ex.multiDur ? '' : `openModal('${ex.id}')`}">
       <div class="ex-cat">${ex.catLabel}</div>
       ${isRx ? `<div class="rx-badge">⭐ Terapeutti suositteli</div>` : ''}
       <div class="ex-name">${ex.name}</div>
       <div class="ex-desc">${ex.desc}</div>
-      <div class="ex-dur">⏱ ${ex.dur}</div>
-    </div>
-  `}).join('');
+      ${durSection}
+    </div>`;
+  }).join('');
 }
 
 function filterEx(cat, btn) {
@@ -2166,8 +2228,7 @@ const GUIDED_PROGRAMS = {
     ]
   },
   resurssointi: {
-    hasBall: false,
-    rounds: 1,
+    hasBall: false, rounds: 1,
     phases: [
       { label: 'Hengitä', text: 'Muutama rauhallinen hengitys', dur: 8, count: false, color: 'green' },
       { label: 'Turvallinen ihminen', text: 'Ajattele ihmistä jonka kanssa sinulla on turvallinen olo', dur: 18, count: false, color: 'green' },
@@ -2175,6 +2236,330 @@ const GUIDED_PROGRAMS = {
       { label: 'Turvallinen paikka', text: 'Muistele paikka jossa sinulla on ollut hyvä olo', dur: 18, count: false, color: 'blue' },
       { label: 'Kehon tunne', text: 'Missä kehossasi tunnet näiden vaikutuksen?', dur: 15, count: false, color: 'green' },
       { label: 'Palauta', text: 'Palauta huomio huoneeseen rauhallisesti', dur: 8, count: false, color: 'green' },
+    ]
+  },
+
+  // ════ KEHOSKANNAUS ════
+  'kehoskannaus-lyhyt': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Makaa tai istu tuettuna. Sulje silmät. Anna hengityksen tasaantua.', dur: 12, count: false, color: 'green' },
+      { label: 'Jalat', text: 'Vie huomio jalkapohjiin ja sääriin. Huomaa paino, lämpö, tuntemukset. Älä muuta mitään.', dur: 25, count: false, color: 'green' },
+      { label: 'Lantio ja vatsa', text: 'Lantio, alaselkä ja vatsa. Miten hengitys liikkuu siellä?', dur: 25, count: false, color: 'amber' },
+      { label: 'Rintakehä ja kädet', text: 'Rintakehä, hartiat, kädet sormenpäihin asti. Onko jännitystä?', dur: 25, count: false, color: 'blue' },
+      { label: 'Kasvot ja pää', text: 'Niska, leuka, kasvot, päälaen. Päästä irti kaikesta jännitteestä.', dur: 20, count: false, color: 'blue' },
+      { label: 'Koko keho', text: 'Ota koko keho huomioon hetkeksi. Hengitä rauhallisesti.', dur: 15, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Liikuta sormet ja varpaat. Avaa silmät hitaasti. Olet tässä hetkessä.', dur: 10, count: false, color: 'green' },
+    ]
+  },
+  'kehoskannaus-keski': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Makaa mukavasti. Sulje silmät. Anna kehon painua alustaa vasten. Muutama syvä hengitys.', dur: 30, count: false, color: 'green' },
+      { label: 'Jalkapohjat', text: 'Aloita jalkapohjista. Huomaa tarkasti — lämpö, kylmyys, paino, kosketuksen pinta. Vain havaitset.', dur: 45, count: false, color: 'green' },
+      { label: 'Nilkat ja säärret', text: 'Nilkat, pohkeet, sääriluut. Huomaa lihasrakenne, luiden tuntu. Mitä muuta huomaat?', dur: 45, count: false, color: 'green' },
+      { label: 'Polvet ja reidet', text: 'Polvilumpiot, reisilihakset, takareidet. Paino alustalla. Anna painovoiman kantaa.', dur: 45, count: false, color: 'green' },
+      { label: 'Lantio', text: 'Lantio, pakarat, lonkat. Tunne alusta alleen. Salli kehon levätä täysin.', dur: 45, count: false, color: 'amber' },
+      { label: 'Vatsa ja alaselkä', text: 'Vatsa kohoaa ja laskee hengityksen mukana. Alaselkä — onko jännitystä? Päästä irti.', dur: 45, count: false, color: 'amber' },
+      { label: 'Rintakehä', text: 'Rintakehä. Tunne sydämen lyönti. Keuhkojen liike. Kylkiluiden avautuminen.', dur: 45, count: false, color: 'amber' },
+      { label: 'Kädet', text: 'Sormenpäistä ranteisiin, kyynärpäihin, hartioihin. Kädet ovat raskaita ja lämpimiä.', dur: 45, count: false, color: 'blue' },
+      { label: 'Niska ja kaula', text: 'Niska, kurkku, kaula. Yleinen jännityksen pesäpaikka. Päästä irti hitaasti.', dur: 45, count: false, color: 'blue' },
+      { label: 'Kasvot', text: 'Leuka, posket, silmät, otsa, päälaen. Anna kasvojen pehmentyä täysin.', dur: 45, count: false, color: 'blue' },
+      { label: 'Koko keho', text: 'Ota koko keho huomioon kerralla. Yhtenäinen, ehjä kokonaisuus. Hengitä.', dur: 30, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Liikuta hitaasti sormia ja varpaita. Hiero käsiä yhteen. Avaa silmät.', dur: 20, count: false, color: 'green' },
+    ]
+  },
+  'kehoskannaus-pitka': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Makaa selällesi. Aseta kädet sivuille tai vatsan päälle. Sulje silmät. Anna ajan pysähtyä.', dur: 60, count: false, color: 'green' },
+      { label: 'Hengitys ensin', text: 'Muutama syvä hengitys. Sisään hitaasti, ulos vielä hitaammin. Anna kehon rauhoittua.', dur: 60, count: false, color: 'green' },
+      { label: 'Jalkapohjat', text: 'Jalkapohjat. Jokainen varvas erikseen. Jalkaholvi. Kantapää. Miten jalkapohjasi tuntuu alustaa vasten?', dur: 90, count: false, color: 'green' },
+      { label: 'Nilkat', text: 'Nilkkanivel, akillesjänne, nilkan sivut. Muistele viimeksi kun kiinnitit huomiota nilkkoihisi.', dur: 60, count: false, color: 'green' },
+      { label: 'Säärret', text: 'Pohjelihakset, sääriluu, säären etupuoli. Tunne lihasten rakenne. Raskaana vai kevyenä?', dur: 60, count: false, color: 'green' },
+      { label: 'Polvet', text: 'Polvilumpiot, polvitaipeet. Onko jännitystä polviniveleen? Salli sen pehmentyä.', dur: 60, count: false, color: 'green' },
+      { label: 'Reidet', text: 'Reisilihakset, takareidet, sisäreidet. Suuret lihakset — tunne niiden paino.', dur: 60, count: false, color: 'amber' },
+      { label: 'Lantio', text: 'Lantio, lonkkanivelet, pakarat. Paino alustalla. Voit antaa selän kaaren litistyä hieman.', dur: 60, count: false, color: 'amber' },
+      { label: 'Alavatsa', text: 'Alavatsa. Tärkeä tunnealue. Mitä tunnet siellä? Jännitystä, avoimuutta, neutraalia?', dur: 60, count: false, color: 'amber' },
+      { label: 'Alaselkä', text: 'Alaselkä ja lantiokorin alue. Hengityksen liike tässä alueessa. Päästä irti.', dur: 60, count: false, color: 'amber' },
+      { label: 'Ylävatsa', text: 'Ylävatsa, pallea. Hengityksen liike täällä — kohoaa sisäänhengittäessä, laskee uloshengittäessä.', dur: 60, count: false, color: 'amber' },
+      { label: 'Rintakehä', text: 'Rintakehä. Sydämen rytmi. Keuhkojen liike. Kylkiluiden liike sivuille. Tunne koko rintakehä.', dur: 90, count: false, color: 'blue' },
+      { label: 'Kädet', text: 'Sormenpäät. Jokainen sormi erikseen. Kämmenet. Ranteet, kyynärpäät, olkavarret, hartiat.', dur: 90, count: false, color: 'blue' },
+      { label: 'Selkäranka', text: 'Tunne selkäranka alhaalta ylös. Jokainen nikama erikseen. Pitkä, tuettu selkäranka.', dur: 60, count: false, color: 'blue' },
+      { label: 'Niska ja kaula', text: 'Niska on usein jännityksen pesäpaikka. Anna lihasten pehmetä hitaasti, ilman pakottamista.', dur: 60, count: false, color: 'blue' },
+      { label: 'Kasvot', text: 'Leuka — salli hampaiden erkaantua hieman. Poskilihakset. Silmät. Otsa. Päälaen.', dur: 90, count: false, color: 'blue' },
+      { label: 'Koko keho', text: 'Ota koko keho huomioon kerralla. Yhtenäinen kokonaisuus. Hengitys kulkee kaikkialle.', dur: 90, count: false, color: 'green' },
+      { label: 'Syvä lepo', text: 'Vain lepo. Ei tarvitse tehdä mitään. Anna kehon olla täysin. Hengitys jatkuu itsestään.', dur: 120, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Liikuta hitaasti sormet ja varpaat. Vie kädet rintakehälle. Hengitä syvään. Käänny sivulle ennen kuin nouset ylös.', dur: 40, count: false, color: 'green' },
+    ]
+  },
+
+  // ════ TIETOINEN HENGITYS ════
+  'hengitys-lyhyt': {
+    hasBall: true, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Istu selkä tuettuna. Sulje silmät. Huomaa hengityksesi sellaisena kuin se on.', dur: 20, count: false, ballPhase: 'hold', color: 'green' },
+      { label: 'Havainnoi', text: 'Hengitä nenän kautta. Tunne ilma nenässä — viileä sisään, lämmin ulos.', dur: 30, count: false, ballPhase: 'in', color: 'green' },
+      { label: 'Syvennä', text: 'Päästä hengitys syvenemään ilman pakottamista. Vatsa laajenee sisäänhengittäessä.', dur: 40, count: false, ballPhase: 'in', color: 'green' },
+      { label: 'Rytmi', text: 'Pidennä uloshengitystä. Sisään neljä sekuntia, ulos kuusi sekuntia. Rauhallisesti.', dur: 60, count: false, ballPhase: 'out', color: 'blue' },
+      { label: 'Vapaa hengitys', text: 'Päästä kaikki kontrolli. Anna hengityksen kulkea omaan tahtiinsa. Vain havaitset.', dur: 60, count: false, ballPhase: 'hold', color: 'green' },
+      { label: 'Paluu', text: 'Syvennä hengitystä hitaasti. Liikuta sormet. Avaa silmät.', dur: 20, count: false, ballPhase: 'hold', color: 'green' },
+    ]
+  },
+  'hengitys-keski': {
+    hasBall: true, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Istu tai makaa mukavasti. Sulje silmät. Anna kehon painua lepoon.', dur: 30, count: false, ballPhase: 'hold', color: 'green' },
+      { label: 'Normaali hengitys', text: 'Havainnoi hengitystäsi sellaisena kuin se on. Älä muuta mitään. Vain katso.', dur: 60, count: false, ballPhase: 'hold', color: 'green' },
+      { label: 'Nenä', text: 'Huomaa ilmavirta nenässä. Siipien liike. Sisäänhengitys on viileämpää, uloshengitys lämpimämpää.', dur: 60, count: false, ballPhase: 'in', color: 'green' },
+      { label: 'Kurkku', text: 'Tunne ilmavirta kurkussa ja henkitorvessa. Ilma laskeutuu syvälle keuhkoihin.', dur: 60, count: false, ballPhase: 'in', color: 'green' },
+      { label: 'Rintakehä', text: 'Rintakehä laajenee sisäänhengittäessä. Kylkiluut avautuvat sivuille. Laske hitaasti.', dur: 60, count: false, ballPhase: 'in', color: 'amber' },
+      { label: 'Vatsa', text: 'Vatsa kohoaa sisäänhengittäessä. Tämä on syvä, palleahengitys. Anna sen tapahtua.', dur: 90, count: false, ballPhase: 'in', color: 'amber' },
+      { label: 'Koko hengitys', text: 'Tunne koko hengitysliike: vatsa — rintakehä — solisluut. Aaltomaisesti.', dur: 90, count: false, ballPhase: 'in', color: 'amber' },
+      { label: 'Pidennetty ulos', text: 'Pidennä uloshengitystä hitaasti. Sisään neljä, ulos kahdeksan. Tämä rauhoittaa hermoston.', dur: 120, count: false, ballPhase: 'out', color: 'blue' },
+      { label: 'Vapaa hengitys', text: 'Päästä kontrolli kokonaan. Hengitys kulkee omaan tahtiinsa. Vain läsnäoloa.', dur: 120, count: false, ballPhase: 'hold', color: 'green' },
+      { label: 'Loppukoonti', text: 'Huomaa miten tunnet itsesi nyt verrattuna alussa. Mitä muuttui?', dur: 30, count: false, ballPhase: 'hold', color: 'green' },
+      { label: 'Paluu', text: 'Kolme syvää hengitystä. Liikuta kädet. Avaa silmät hitaasti.', dur: 30, count: false, ballPhase: 'hold', color: 'green' },
+    ]
+  },
+  'hengitys-pitka': {
+    hasBall: true, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Makaa tai istu. Aseta yksi käsi vatsan päälle, toinen rintakehälle. Sulje silmät.', dur: 60, count: false, ballPhase: 'hold', color: 'green' },
+      { label: 'Luonnollinen hengitys', text: 'Havainnoi hengitystäsi täysin sellaisena kuin se on. Nopea vai hidas? Syvä vai pinnallinen?', dur: 90, count: false, ballPhase: 'hold', color: 'green' },
+      { label: 'Nenän tuntemus', text: 'Tuo koko huomio nenän alueelle. Siipien pieni liike. Sisäänhengityksen viileys. Uloshengityksen lämpö.', dur: 90, count: false, ballPhase: 'in', color: 'green' },
+      { label: 'Hengityslaajuus', text: 'Anna hengityksen syventyä askel askeleelta, ilman pakottamista. Vain avautuminen.', dur: 90, count: false, ballPhase: 'in', color: 'green' },
+      { label: 'Palleahengitys', text: 'Vatsan käsi kohoaa enemmän kuin rintakehän käsi. Tämä on palleahengitystä — kehon luonnollisin tapa.', dur: 120, count: false, ballPhase: 'in', color: 'amber' },
+      { label: 'Koko keho hengittää', text: 'Tunne miten hengitys liikkuu kaikkialle — jalkoihin asti. Keho on kuin hengittävä kokonaisuus.', dur: 120, count: false, ballPhase: 'in', color: 'amber' },
+      { label: '4-6 rytmi', text: 'Sisään neljä, ulos kuusi. Rauhallisesti, pehmeästi. Anna rytmin vakiintua.', dur: 120, count: false, ballPhase: 'out', color: 'blue' },
+      { label: '4-8 rytmi', text: 'Nyt ulos kahdeksan. Pidempi uloshengitys aktivoi parasympaattisen hermoston syvemmin.', dur: 120, count: false, ballPhase: 'out', color: 'blue' },
+      { label: 'Taukohengitys', text: 'Lisää pieni tauko uloshengityksen lopussa. Tyhjä tila. Seuraava sisäänhengitys tulee itsestään.', dur: 120, count: false, ballPhase: 'hold2', color: 'blue' },
+      { label: 'Vapaa hengitys', text: 'Päästä kaikki ohjaus. Hengitys löytää oman rytminsä. Vain ole.', dur: 180, count: false, ballPhase: 'hold', color: 'green' },
+      { label: 'Jooga-hengitys', text: 'Ujjayi-hengitys: pieni kurkunpään supistus — kuulet hiljaisen meren äänen. Kokeile.', dur: 90, count: false, ballPhase: 'hold', color: 'amber' },
+      { label: 'Vapaa hengitys 2', text: 'Takaisin vapaaseen hengitykseen. Täysi läsnäolo tässä hetkessä.', dur: 120, count: false, ballPhase: 'hold', color: 'green' },
+      { label: 'Loppukoonti', text: 'Kolme tietoista hengitystä. Huomaa miten olet. Missä kehossasi tunnet muutoksen?', dur: 60, count: false, ballPhase: 'hold', color: 'green' },
+      { label: 'Paluu', text: 'Liiku hitaasti. Kädet rintakehälle. Nouse ylös hitaasti. Kanna tämä rauha mukanasi.', dur: 40, count: false, ballPhase: 'hold', color: 'green' },
+    ]
+  },
+
+  // ════ MEDITAATIO ════
+  'meditaatio-lyhyt': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Istu selkä suorana mutta rentouna. Silmät kiinni tai puoliksi auki, katse alaspäin.', dur: 20, count: false, color: 'green' },
+      { label: 'Ankkuri', text: 'Tuo huomio hengitykseesi. Hengitys on ankkurisi — aina kun mieli harhailee, palaat tänne.', dur: 30, count: false, color: 'green' },
+      { label: 'Meditaatio', text: 'Huomaa hengitys. Kun ajatus tulee, huomaa se: ajatus. Päästä irti pehmeästi. Palaa hengitykseen.', dur: 120, count: false, color: 'green' },
+      { label: 'Jatka', text: 'Jatka samaa. Ajatukset ovat kuin pilviä — ne liikkuvat ohi. Sinä olet taivas.', dur: 90, count: false, color: 'blue' },
+      { label: 'Avaudu', text: 'Laajenna huomio koko kehoon. Äänet. Tilaan. Tähän hetkeen.', dur: 30, count: false, color: 'amber' },
+      { label: 'Paluu', text: 'Kolme syvää hengitystä. Avaa silmät hitaasti.', dur: 20, count: false, color: 'green' },
+    ]
+  },
+  'meditaatio-keski': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Istu selkä suorana. Kädet sylissä tai polvilla. Sulje silmät. Anna keho löytää tasapainoinen asento.', dur: 40, count: false, color: 'green' },
+      { label: 'Kehon skannaus', text: 'Ennen meditaation aloittamista — havainnoi kehon tila lyhyesti. Missä on jännitystä?', dur: 40, count: false, color: 'green' },
+      { label: 'Hengityksen ankkuri', text: 'Tuo huomio hengitykseen. Vatsan liike tai nenän tunne — valitse yksi ankkurikohta.', dur: 40, count: false, color: 'green' },
+      { label: 'Meditaatio', text: 'Seuraa hengitystä. Kun huomaat harhaantuneesi — ei ongelmaa. Pelkkä huomaaminen on meditaatiota. Palaa.', dur: 180, count: false, color: 'green' },
+      { label: 'Ajatukset pilvinä', text: 'Näe ajatukset pilvinä jotka liikkuvat taivaalla. Et ole pilvi — olet taivas jonka läpi ne kulkevat.', dur: 60, count: false, color: 'blue' },
+      { label: 'Tunteet', text: 'Jos tunne nousee — huomaa se. Nimeä se pehmeästi: tässä on suru, tässä on rauha. Päästä irti.', dur: 90, count: false, color: 'blue' },
+      { label: 'Avoin huomio', text: 'Laajenna huomio kaikkialle yhtä aikaa — keho, äänet, tila, hengitys — ilman kiintymistä mihinkään.', dur: 90, count: false, color: 'amber' },
+      { label: 'Hiljaisuus', text: 'Vain ole. Ei tekemistä. Ei saavutettavaa. Tämä hetki on täydellinen sellaisena kuin se on.', dur: 90, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Syvennä hengitystä hitaasti. Huomaa kehon tila. Liikuta sormet. Avaa silmät hitaasti.', dur: 30, count: false, color: 'green' },
+    ]
+  },
+  'meditaatio-pitka': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Istuma-asento tai makuuasento. Selkä suorana mutta ilman jännitystä. Kädet luonnollisesti. Silmät kiinni.', dur: 60, count: false, color: 'green' },
+      { label: 'Laskeutuminen', text: 'Anna ajan hidastua. Et ole menossa minnekään. Tämä hetki on ainoa joka on.', dur: 60, count: false, color: 'green' },
+      { label: 'Kehon läsnäolo', text: 'Tunne kontakti alustaan. Kehon paino. Lämpö. Kehon ääriviivat.', dur: 60, count: false, color: 'green' },
+      { label: 'Hengityksen ankkuri', text: 'Löydä hengitys. Vatsan nouseminen ja laskeminen. Tule tähän ankkuriin yhä uudelleen.', dur: 60, count: false, color: 'green' },
+      { label: 'Seuraa hengitystä', text: 'Seuraa jokaista hengitystä alusta loppuun. Sisäänhengityksen alku, huippu, siirtymä, uloshengitys, tauko.', dur: 120, count: false, color: 'green' },
+      { label: 'Harhaileva mieli', text: 'Mieli harhailee — tämä on normaalia. Harhailu ja paluu ON meditaatio. Et epäonnistu koskaan.', dur: 90, count: false, color: 'blue' },
+      { label: 'Hiljaa seuraa', text: 'Jatka hengityksen seuraamista. Syvä tutustuminen tähän yksinkertaiseen asiaan.', dur: 180, count: false, color: 'blue' },
+      { label: 'Tunteet', text: 'Jos tunteita nousee — anna niiden olla. Et tarvitse ratkaista mitään. Tunne saa olla.', dur: 120, count: false, color: 'amber' },
+      { label: 'Avoin tietoisuus', text: 'Laajenna huomio kaikille aisteille samanaikaisesti. Kuulet, tunnet, olet. Pelkkä oleminen.', dur: 120, count: false, color: 'amber' },
+      { label: 'Syvä hiljaisuus', text: 'Vain tämä hetki. Ei menneisyyttä, ei tulevaisuutta. Vain tässä ja nyt oleva elämä.', dur: 180, count: false, color: 'green' },
+      { label: 'Yhteys', text: 'Tunne yhteytesi elämään ympärilläsi — toisiin ihmisiin, luontoon, kaikkeen mitä on.', dur: 90, count: false, color: 'green' },
+      { label: 'Kiitollisuus', text: 'Jos tuntuu luonnolliselta — tuo mieleen jokin asia josta olet kiitollinen. Anna sen täyttää sydämesi.', dur: 90, count: false, color: 'amber' },
+      { label: 'Loppuhiljaisuus', text: 'Ole hiljaa. Yhtään ei tarvitse tehdä. Olet tarpeeksi. Tämä riittää.', dur: 120, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Syvennä hengitystä hitaasti. Tee pieniä liikkeitä. Kanna tämä rauha mukanasi päivään.', dur: 40, count: false, color: 'green' },
+    ]
+  },
+
+  // ════ YSTÄVÄLLISYYSMEDITAATIO ════
+  'ystavallisyys-lyhyt': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Istu mukavasti. Käsi sydämen päälle. Sulje silmät.', dur: 20, count: false, color: 'green' },
+      { label: 'Itsellesi', text: 'Ajattele itseäsi. Toivo: Olkoon minulla hyvä olla. Olkoon minä turvassa. Olkoon minä rauhassa.', dur: 60, count: false, color: 'green' },
+      { label: 'Läheiselle', text: 'Tuo mieleen joku jota rakastat. Toivo hänelle samaa: Olkoon sinulla hyvä olla. Olkoon sinä turvassa.', dur: 60, count: false, color: 'amber' },
+      { label: 'Kaikille', text: 'Laajenna toive kaikkiin: Olkoon kaikilla hyvä olla. Olkoon kaikki turvassa. Olkoon rauha.', dur: 60, count: false, color: 'blue' },
+      { label: 'Paluu', text: 'Tunne sydämessä lämpö. Kanna sitä mukanasi.', dur: 20, count: false, color: 'green' },
+    ]
+  },
+  'ystavallisyys-keski': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Istu tai makaa. Laita käsi sydämen päälle. Tunne sen lämpö. Sulje silmät.', dur: 30, count: false, color: 'green' },
+      { label: 'Avaa sydän', text: 'Kuvittele sydämesi alueen laajentuvan. Tilaa lämmölle ja myötätunnolle.', dur: 40, count: false, color: 'green' },
+      { label: 'Itsellesi', text: 'Sinäkin ansaitset myötätuntoa. Toivo itsellesi: Olkoon minulla hyvä olla. Olkoon minä turvassa. Olkoon minä terve. Olkoon minä rauhassa.', dur: 90, count: false, color: 'green' },
+      { label: 'Jos tuntuu vaikealta', text: 'Jos myötätunto itseä kohtaan tuntuu vaikealta — se on normaalia. Voit silti toivoa: Saatan löytää rauhan.', dur: 40, count: false, color: 'green' },
+      { label: 'Rakastettu', text: 'Tuo mieleen joku jota rakastat — ihminen tai eläin. Kuvittele hänet. Toivo: Olkoon sinulla hyvä olla. Olkoon sinä turvassa. Olkoon sinä terve.', dur: 90, count: false, color: 'amber' },
+      { label: 'Neutraali ihminen', text: 'Tuo mieleen joku neutraali — naapuri, myyjä, tuttava. Toivo hänelle samaa hyvää. Sama kaipaus onneen, sama pelko kärsimyksestä.', dur: 90, count: false, color: 'amber' },
+      { label: 'Vaikea ihminen', text: 'Halutessasi — tuo mieleen joku vaikea ihminen. Ei pakko. Jos tulee, toivo: Toivottavasti löydät rauhan. Toivottavasti kärsimyksesi helpottaa.', dur: 90, count: false, color: 'blue' },
+      { label: 'Kaikki olennot', text: 'Laajenna kaikille maailmassa: Olkoon kaikilla hyvä olla. Olkoon kaikki turvassa. Olkoon rauha kaikkialla.', dur: 90, count: false, color: 'blue' },
+      { label: 'Paluu', text: 'Palaa sydämeen. Tunne lämpö. Kiitos itsellesi tästä harjoitteesta.', dur: 30, count: false, color: 'green' },
+    ]
+  },
+  'ystavallisyys-pitka': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Istu tai makaa. Laita molemmat kädet sydämelle. Tunne sydämen lyönti. Sulje silmät.', dur: 60, count: false, color: 'green' },
+      { label: 'Hengitys', text: 'Muutama syvä hengitys. Sisään myötätuntoa, ulos kireyttä. Anna sydän pehmentyä.', dur: 60, count: false, color: 'green' },
+      { label: 'Sydämen avaaminen', text: 'Kuvittele sydämessäsi lämmin, pehmeä valo. Se kasvaa jokaisella uloshengityksellä.', dur: 60, count: false, color: 'green' },
+      { label: 'Itsellesi', text: 'Sinäkin olet arvoinen rakkaudesta ja myötätunnosta — aivan kuten kaikki muutkin. Toivo: Olkoon minulla hyvä olla.', dur: 60, count: false, color: 'green' },
+      { label: 'Itselle syvemmin', text: 'Olkoon minä turvassa. Olkoon minä terve. Olkoon minussa rauhaa. Olkoon minulla onnea.', dur: 90, count: false, color: 'green' },
+      { label: 'Lapsi-sinä', text: 'Tuo mieleen itsesi lapsena. Pieni, haavoittuvainen, kaikkea toivova. Toivo hänelle kaikkea hyvää.', dur: 90, count: false, color: 'green' },
+      { label: 'Rakastettu', text: 'Tuo mieleen joku jolle tunnet rakkautta. Kuvittele hänen kasvonsa. Anna rakkauden virrata luonnollisesti.', dur: 90, count: false, color: 'amber' },
+      { label: 'Rakastettu jatkuu', text: 'Olkoon sinulla hyvä olla. Olkoon sinä turvassa. Olkoon sinä terve. Olkoon sinulla onnea.', dur: 90, count: false, color: 'amber' },
+      { label: 'Ystävä', text: 'Tuo mieleen hyvä ystävä. Sama toive, sama lämpö: Olkoon sinulla hyvä olla. Olkoon sinä rauhassa.', dur: 90, count: false, color: 'amber' },
+      { label: 'Neutraali ihminen', text: 'Joku jonka näet usein mutta et tunne. Hekin kaipaamaan onnea ja pelkäämään kärsimystä — aivan kuten sinä.', dur: 90, count: false, color: 'blue' },
+      { label: 'Vaikea ihminen', text: 'Jos haluat kokeilla — joku joka on tuottanut sinulle kipua. Ei tarvitse hyväksyä heidän tekojaan. Voi silti toivoa: Toivottavasti löydät rauhan.', dur: 120, count: false, color: 'blue' },
+      { label: 'Laajene', text: 'Kaupunkisi. Maasi. Kaikki ihmiset maapallolla. Kaikki olennot — eläimet, kasvit, elämä. Olkoon kaikilla hyvä olla.', dur: 120, count: false, color: 'blue' },
+      { label: 'Palaa itseen', text: 'Palaa takaisin itseen. Sinä olet osa tätä kaikkea. Sama rakkauden ansaitseva olento.', dur: 60, count: false, color: 'green' },
+      { label: 'Sydämen lämpö', text: 'Tunne sydämessä lämpö. Anna sen säteillä kaikkialle kehoon. Kanna tätä mukanasi.', dur: 60, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Syvennä hengitystä. Kiitos itsellesi tästä harjoitteesta. Avaa silmät hitaasti.', dur: 40, count: false, color: 'green' },
+    ]
+  },
+
+  // ════ RAVISTELU ════
+  'ravistelu-lyhyt': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Valmistaudu', text: 'Seiso jalat hartianlevyiset, polvet pehmeästi koukussa. Hengitä muutama kerta syvään.', dur: 20, count: false, color: 'green' },
+      { label: 'Ravistelua käsiin', text: 'Ravista käsiä kuin ravistat vettä sormista. Lisää vähitellen koko käsivarsiin ja hartioihin.', dur: 30, count: false, color: 'amber' },
+      { label: 'Ravistelua jalkoihin', text: 'Nosta vuorotellen jalkoja kevyesti ja ravista. Tunne tärinä jaloissa.', dur: 30, count: false, color: 'amber' },
+      { label: 'Koko keho', text: 'Anna koko kehon ravistella — polvet pomppivat, kädet heiluvat, hartiat liikkuvat. Vapaa liike.', dur: 60, count: false, color: 'amber' },
+      { label: 'Rauhoitu', text: 'Hidasta vähitellen. Seiso hiljaa. Tunne kehon värähtely laantuminen.', dur: 30, count: false, color: 'green' },
+      { label: 'Kehon skannaus', text: 'Skannaa kehoa lyhyesti. Mitä muuttui? Missä tunnet eron?', dur: 30, count: false, color: 'green' },
+    ]
+  },
+  'ravistelu-keski': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Valmistaudu', text: 'Seiso jalat hartianlevyiset. Polvet pehmeästi koukussa — älä lukitse. Silmät auki tai kiinni.', dur: 30, count: false, color: 'green' },
+      { label: 'Hengitys', text: 'Kolme syvää hengitystä. Tunne jalkapohjat maassa. Olet turvallisesti maadoittunut.', dur: 30, count: false, color: 'green' },
+      { label: 'Sormet', text: 'Aloita sormenpäistä. Ravista kuin ravistat vettä pois. Pikkuhiljaa ranteisiin.', dur: 30, count: false, color: 'amber' },
+      { label: 'Käsivarret', text: 'Anna ravistuksen levitä koko käsivarsiin ja hartioihin. Löyhät käsivarret.', dur: 45, count: false, color: 'amber' },
+      { label: 'Yläkeho', text: 'Hartiat alkavat liikkua, rintakehä pehmenee. Anna liikkeen laajentua ylävartalolle.', dur: 45, count: false, color: 'amber' },
+      { label: 'Jalat', text: 'Ravista kevyesti oikeaa jalkaa. Sitten vasenta. Vuorotellen, löysästi.', dur: 45, count: false, color: 'amber' },
+      { label: 'Koko keho', text: 'Anna koko kehon osallistua. Polvet pomppivat, lantio liikkuu, kädet heiluvat vapaasti.', dur: 90, count: false, color: 'amber' },
+      { label: 'Vapaa ravistelu', text: 'Kuuntele mitä keho haluaa tehdä. Ehkä enemmän lantioita, ehkä käsiä — seuraa impulssia.', dur: 90, count: false, color: 'amber' },
+      { label: 'Hidasta', text: 'Hidasta vähitellen. Liike pienenee. Loppuu itsestään. Seiso hiljaa.', dur: 30, count: false, color: 'green' },
+      { label: 'Kehon läsnäolo', text: 'Suljetaanko silmät. Havainnoi kehon tila. Missä tunnet tärinän jälkisäteilyä?', dur: 45, count: false, color: 'green' },
+      { label: 'Maadoitus', text: 'Tunne jalkapohjat maassa. Kehon paino. Vakaa, maadoittunut olo.', dur: 30, count: false, color: 'green' },
+    ]
+  },
+  'ravistelu-pitka': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Valmistaudu', text: 'Seiso tilassa jossa on riittävästi tilaa liikkua. Jalat hartianlevyiset. Polvet pehmeästi koukussa.', dur: 40, count: false, color: 'green' },
+      { label: 'Kehon skannaus', text: 'Ennen ravistelua — skannaa kehon tila. Missä on jännitystä? Missä raskautta?', dur: 40, count: false, color: 'green' },
+      { label: 'Hengitys ja maadoitus', text: 'Viisi syvää hengitystä. Jalkapohjat tuntevat lattian. Olet tässä, turvassa, maadoittunut.', dur: 60, count: false, color: 'green' },
+      { label: 'Sormenpäät', text: 'Aloita sormenpäistä — pienestä. Ravista kuin vapiset kylmästä. Hyvin pienesti.', dur: 40, count: false, color: 'amber' },
+      { label: 'Kädet', text: 'Anna ravistus levitä kämmeniin, ranteisiin, kyynärpäihin. Käsivarret löyhät.', dur: 60, count: false, color: 'amber' },
+      { label: 'Hartiat', text: 'Hartiat alkavat osallistua. Ehkä pieniä pyörittelyjä. Anna luonnollisen liikkeen tapahtua.', dur: 60, count: false, color: 'amber' },
+      { label: 'Rintakehä', text: 'Rintakehä pehmenee ja avautuu. Salli hengityksen syventyä liikkeen mukana.', dur: 60, count: false, color: 'amber' },
+      { label: 'Lantio', text: 'Lantio alkaa liikkua. Ehkä sivusuuntaan, ehkä ympäri. Alaselkä löystyy.', dur: 90, count: false, color: 'amber' },
+      { label: 'Jalat', text: 'Ravista vuorotellen jalkoja. Polvet pomppivat pehmeästi. Lisää tai vähennä tarpeen mukaan.', dur: 90, count: false, color: 'amber' },
+      { label: 'Koko keho', text: 'Koko keho liikkuu nyt. Anna sen liikkua miten haluaa. Keho tietää mitä tarvitsee.', dur: 120, count: false, color: 'amber' },
+      { label: 'Vapaa liike', text: 'Ei oikeaa tapaa. Vain vapaa, luonnollinen liike. Ehkä ääni haluaa tulla mukaan?', dur: 120, count: false, color: 'amber' },
+      { label: 'Seuraa impulssia', text: 'Minkä osa kehosta haluaa liikkua enemmän? Seuraa sitä. Täysi luottamus kehoon.', dur: 90, count: false, color: 'amber' },
+      { label: 'Hidasta', text: 'Liike alkaa pienetä luonnollisesti. Älä pakota — anna sen laantua omaan tahtiinsa.', dur: 60, count: false, color: 'green' },
+      { label: 'Pysähdy', text: 'Seiso hiljaa. Silmät kiinni. Tunne kehon värähtely. Miten olo on nyt?', dur: 60, count: false, color: 'green' },
+      { label: 'Skannaus', text: 'Skannaa kehoa — missä on kevyempää? Missä on vapautumista? Anna sille tilaa.', dur: 60, count: false, color: 'green' },
+      { label: 'Maadoitus', text: 'Jalkapohjat maassa. Paino tasaisesti molemmilla jaloilla. Vakaa, eläväinen olo.', dur: 40, count: false, color: 'green' },
+    ]
+  },
+
+  // ════ JÄNNITYS–VAPAUTUS (PMR) ════
+  'pmr-lyhyt': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Makaa selällesi. Kädet sivuilla. Hengitä muutama kerta rauhallisesti.', dur: 20, count: false, color: 'green' },
+      { label: 'Jalat', text: 'Jännitä molemmat jalat — varpaat ylös, lihakset tiukasti. Pidä viisi sekuntia.', dur: 10, count: true, color: 'amber' },
+      { label: 'Vapauta jalat', text: 'Vapauta kokonaan. Tunne rentoutuminen levitä jalkoihin. Hengitä ulos.', dur: 20, count: false, color: 'green' },
+      { label: 'Vatsa', text: 'Jännitä vatsalihakset tiukasti — kuin suojaisi iskua vastaan. Pidä viisi sekuntia.', dur: 10, count: true, color: 'amber' },
+      { label: 'Vapauta vatsa', text: 'Vapauta täysin. Vatsa pehmenee. Hengitys syvenee.', dur: 20, count: false, color: 'green' },
+      { label: 'Kädet', text: 'Purista molemmat kädet nyrkkiin tiukasti. Pidä viisi sekuntia.', dur: 10, count: true, color: 'amber' },
+      { label: 'Vapauta kädet', text: 'Avaa kädet hitaasti. Sormet pehmenevät. Lämpö leviää käsiin.', dur: 20, count: false, color: 'green' },
+      { label: 'Kasvot', text: 'Purista kasvot yhteen — silmät, otsa, leuka tiukasti. Viisi sekuntia.', dur: 10, count: true, color: 'amber' },
+      { label: 'Vapauta kasvot', text: 'Vapauta kaikki. Kasvojen lihakset pehmenevät. Syvä rentoutuminen.', dur: 20, count: false, color: 'green' },
+      { label: 'Lepo', text: 'Koko keho rentona. Hengitä rauhallisesti. Tunne painon ja rentouden tunne.', dur: 40, count: false, color: 'green' },
+    ]
+  },
+  'pmr-keski': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Makaa selällesi, kädet sivuilla. Sulje silmät. Muutama syvä hengitys rauhoittumiseksi.', dur: 40, count: false, color: 'green' },
+      { label: 'Oikea jalka', text: 'Jännitä oikea jalka — varpaat ylös, pohje, reisi tiukasti. Pidä seitsemän sekuntia.', dur: 12, count: true, color: 'amber' },
+      { label: 'Vapauta oikea jalka', text: 'Vapauta hitaasti. Tunne rentoutumisen aalto jalassa. Huomaa ero.', dur: 25, count: false, color: 'green' },
+      { label: 'Vasen jalka', text: 'Jännitä vasen jalka samalla tavalla. Seitsemän sekuntia.', dur: 12, count: true, color: 'amber' },
+      { label: 'Vapauta vasen jalka', text: 'Vapauta. Molemmat jalat nyt täysin rentona ja raskaana.', dur: 25, count: false, color: 'green' },
+      { label: 'Pakarat', text: 'Purista pakaralihakset tiukasti yhteen. Seitsemän sekuntia.', dur: 12, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Vapauta pakarat. Lantio painuu alustalle.', dur: 20, count: false, color: 'green' },
+      { label: 'Vatsa', text: 'Vedä vatsa sisään ja jännitä tiukasti. Seitsemän sekuntia.', dur: 12, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Vapauta vatsa täysin. Hengitys syvenee luonnollisesti.', dur: 25, count: false, color: 'green' },
+      { label: 'Rintakehä', text: 'Hengitä syvään ja pidätä rintakehä laajentuneena. Jännitä rintakehän lihakset.', dur: 12, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Päästä ilma ulos pitkänä uloshengityksenä. Rintakehä laskeutuu.', dur: 25, count: false, color: 'green' },
+      { label: 'Kädet', text: 'Purista molemmat kädet nyrkkiin tiukasti. Jännitä koko käsivarsi olkapäähän asti.', dur: 12, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Avaa kädet hitaasti. Käsivarret pehmenevät ja lämpenevät.', dur: 25, count: false, color: 'green' },
+      { label: 'Niska', text: 'Paina päätä kevyesti alustaa vasten. Jännitä niskaan. Seitsemän sekuntia.', dur: 12, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Vapauta niska. Anna pään painua luonnollisesti alustalle.', dur: 25, count: false, color: 'green' },
+      { label: 'Kasvot', text: 'Purista silmät kiinni, nosta kulmakarva, purista hampaat — kaikki yhteen. Seitsemän sekuntia.', dur: 12, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Vapauta kaikki kerralla. Kasvojen täydellinen rentoutuminen. Kieli pehmenee.', dur: 25, count: false, color: 'green' },
+      { label: 'Koko keho', text: 'Skannaa koko keho. Onko jossain vielä jännitystä? Hengitä sinne ja vapauta.', dur: 45, count: false, color: 'green' },
+      { label: 'Syvä rentoutus', text: 'Koko keho rentona. Raskas. Lämmin. Syvä rauha.', dur: 60, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Syvennä hengitystä. Liikuta sormet ja varpaat. Avaa silmät hitaasti.', dur: 25, count: false, color: 'green' },
+    ]
+  },
+  'pmr-pitka': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Makaa selällään pehmeällä alustalla. Tyyny pään alla. Peitto tarvittaessa. Sulje silmät.', dur: 60, count: false, color: 'green' },
+      { label: 'Laskeutuminen', text: 'Anna kehon painua alustalle. Jokainen nivelkohta pehmenee. Olet turvassa ja mukava.', dur: 60, count: false, color: 'green' },
+      { label: 'Hengitysvalmistelu', text: 'Viisi syvää hengitystä. Sisään hitaasti, ulos hitaasti. Valmistaudut syvään rentoutukseen.', dur: 60, count: false, color: 'green' },
+      { label: 'Oikeat varpaat', text: 'Jännitä oikeat varpaat — taivuta kohti kantapäätä. Kymmenen sekuntia.', dur: 15, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Vapauta. Huomaa tingling-tunne vapauttamisen hetkellä. Tässä on ero jännityksen ja rentoutumisen välillä.', dur: 25, count: false, color: 'green' },
+      { label: 'Vasen jalkapohjat', text: 'Jännitä vasen jalka. Varpaat ylös, pohjelihas tiukka. Kymmenen sekuntia.', dur: 15, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Vapauta. Molemmat jalkapohjat rentona. Lämpö virtaa.', dur: 25, count: false, color: 'green' },
+      { label: 'Oikea sääri ja reisi', text: 'Jännitä koko oikea jalka säärestä reisiin. Nosta jalka hieman alustalta. Kymmenen sekuntia.', dur: 15, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Laske jalka. Vapauta kaikki. Jalka raskas ja lämmin alustalla.', dur: 30, count: false, color: 'green' },
+      { label: 'Vasen sääri ja reisi', text: 'Jännitä koko vasen jalka. Kymmenen sekuntia.', dur: 15, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Vapauta. Molemmat jalat täysin rentona.', dur: 30, count: false, color: 'green' },
+      { label: 'Pakarat ja lantio', text: 'Purista pakaralihakset tiukasti. Jännitä lantionpohja. Kymmenen sekuntia.', dur: 15, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Vapauta lantio kokonaan. Pakaralihakset pehmenevät. Lantio painuu.', dur: 30, count: false, color: 'green' },
+      { label: 'Alavatsa', text: 'Vedä alavatsa sisään tiukasti. Jännitä. Kymmenen sekuntia.', dur: 15, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Vapauta vatsa. Hengitys laajenee alempaan vatsaan. Syvempi hengitys.', dur: 30, count: false, color: 'green' },
+      { label: 'Selkälihakset', text: 'Paina alaselkää kevyesti alustaa vasten. Jännitä selkälihaksia. Kymmenen sekuntia.', dur: 15, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Vapauta selkä. Selkäranka laskeutuu luonnolliseen asentoon.', dur: 30, count: false, color: 'green' },
+      { label: 'Rintakehä', text: 'Hengitä syvään, pidätä. Rintakehä laajenee maksimiin. Kymmenen sekuntia.', dur: 15, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Pitkä, hidas uloshengitys. Rintakehä laskeutuu. Täydellinen rentoutuminen.', dur: 35, count: false, color: 'green' },
+      { label: 'Oikea käsi', text: 'Purista oikea käsi nyrkkiin tiukasti. Jännitä koko käsivarsi. Kymmenen sekuntia.', dur: 15, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Avaa käsi hitaasti. Tunne rentoutuminen sormenpäistä olkapäähän. Lämpö leviää.', dur: 30, count: false, color: 'green' },
+      { label: 'Vasen käsi', text: 'Purista vasen käsi nyrkkiin. Jännitä koko käsivarsi. Kymmenen sekuntia.', dur: 15, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Vapauta. Molemmat kädet rentona ja lämpiminä.', dur: 30, count: false, color: 'green' },
+      { label: 'Hartiat', text: 'Nosta hartiat kohti korvia. Tiukasti. Kymmenen sekuntia.', dur: 15, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Pudota hartiat alas. Tuntuu kuin paino olisi noussut hartioilta.', dur: 30, count: false, color: 'green' },
+      { label: 'Kasvot', text: 'Kasvot yhteen — silmät, nenä, posket, otsa. Kaikki tiukasti. Kymmenen sekuntia.', dur: 15, count: true, color: 'amber' },
+      { label: 'Vapauta', text: 'Vapauta kaikki kerralla. Kasvot pehmenevät. Ihossa voi tuntua kihelmöintiä.', dur: 30, count: false, color: 'green' },
+      { label: 'Koko keho', text: 'Jännitä koko keho kerralla — kaikki lihakset yhtä aikaa. Kymmenen sekuntia.', dur: 15, count: true, color: 'amber' },
+      { label: 'Vapauta kaikki', text: 'VAPAUTA. Kaikki kerralla. Täydellinen syvä rentoutuminen koko kehossa.', dur: 40, count: false, color: 'green' },
+      { label: 'Syvä lepo', text: 'Koko keho rentona. Raskas. Lämmin. Syvä rauha. Hengitys kulkee vapaasti.', dur: 120, count: false, color: 'green' },
+      { label: 'Lepo jatkuu', text: 'Olet täysin rentoutunut. Vain oleminen. Ei tekemistä.', dur: 90, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Ota kolme syvää hengitystä. Liikuta sormet hitaasti. Taivuta polvia. Avaa silmät hitaasti.', dur: 40, count: false, color: 'green' },
     ]
   },
 };
@@ -2195,7 +2580,12 @@ function startGuided(exId) {
   if (!program) { startTimer(120); return; }
 
   guidedProgram = program;
-  guidedExName = EXERCISES.find(e => e.id === exId)?.name || '';
+  // Find name — check direct match first, then multiDur parent
+  const directEx = EXERCISES.find(e => e.id === exId);
+  const parentEx = EXERCISES.find(e => e.durationIds && e.durationIds.includes(exId));
+  const durIdx = parentEx ? parentEx.durationIds.indexOf(exId) : -1;
+  const durLabel = durIdx >= 0 ? ' — ' + parentEx.durations[durIdx] : '';
+  guidedExName = directEx ? directEx.name : (parentEx ? parentEx.name + durLabel : exId);
   guidedActive = true;
   guidedCurrentRound = 0;
   guidedCurrentPhase = 0;
