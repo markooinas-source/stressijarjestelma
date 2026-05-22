@@ -1118,6 +1118,77 @@ input[type=range].mood-slider::-moz-range-thumb {
 .slider-labels span:nth-child(2) { color: var(--green); }
 .slider-labels span:nth-child(3) { color: var(--red); }
 
+/* ── INFO TABS ── */
+.info-tabs {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+.info-tab {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem; font-weight: 700;
+  padding: 0.45rem 0.9rem; border-radius: 20px;
+  border: 2px solid var(--sand3);
+  background: #fff; color: var(--ink3);
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.info-tab:hover { border-color: var(--green); color: var(--ink); }
+.info-tab.active { background: var(--green); border-color: var(--green); color: #fff; }
+
+.info-section { animation: fadeUp 0.3s ease; }
+
+.info-hero {
+  background: linear-gradient(135deg, var(--green-bg) 0%, #fff 100%);
+  border: 1.5px solid var(--green-bd);
+  border-radius: var(--r2);
+  padding: 1.5rem; margin-bottom: 1.25rem;
+  display: flex; gap: 1rem; align-items: flex-start;
+}
+.info-hero-icon { font-size: 2rem; line-height: 1; flex-shrink: 0; }
+.info-hero-title { font-family: 'Lora', serif; font-size: 1.2rem; font-style: italic; color: var(--ink); margin-bottom: 0.3rem; }
+.info-hero-lead { font-size: 0.92rem; color: var(--ink2); line-height: 1.65; }
+
+.info-blocks { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem; }
+
+.info-block { background: #fff; border: 1.5px solid var(--sand3); border-radius: var(--r); overflow: hidden; }
+.info-block-trigger {
+  width: 100%; display: flex; justify-content: space-between; align-items: center;
+  padding: 0.9rem 1.1rem; background: none; border: none;
+  cursor: pointer; text-align: left; gap: 0.75rem; transition: background 0.2s;
+}
+.info-block-trigger:hover { background: var(--sand); }
+.info-block.open .info-block-trigger { background: var(--sand2); }
+.info-block-icon { font-size: 1.1rem; flex-shrink: 0; }
+.info-block-title { font-family: 'Lora', serif; font-size: 1rem; font-style: italic; color: var(--ink); flex: 1; }
+.info-block-chev { font-size: 0.7rem; color: var(--ink3); transition: transform 0.28s; }
+.info-block.open .info-block-chev { transform: rotate(90deg); color: var(--green); }
+.info-block-body { max-height: 0; overflow: hidden; transition: max-height 0.42s; }
+.info-block.open .info-block-body { max-height: 900px; }
+.info-block-content { padding: 1rem 1.1rem 1.1rem; border-top: 1px solid var(--sand3); font-size: 0.92rem; line-height: 1.75; color: var(--ink2); }
+.info-block-content p + p { margin-top: 0.65rem; }
+.info-block-content strong { color: var(--ink); }
+
+.self-help-list { list-style: none; margin-top: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.self-help-list li {
+  display: flex; gap: 0.6rem; align-items: flex-start;
+  padding: 0.5rem 0.6rem; background: var(--sand);
+  border-radius: var(--r); font-size: 0.88rem; color: var(--ink2); line-height: 1.5;
+}
+.self-help-list li .sh-icon { flex-shrink: 0; font-size: 0.95rem; margin-top: 0.05rem; }
+.self-help-list li .sh-btn {
+  font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.55rem; border-radius: 10px;
+  border: 1.5px solid var(--green-bd); background: var(--green-bg); color: var(--green);
+  cursor: pointer; flex-shrink: 0; transition: all 0.2s; white-space: nowrap;
+}
+.self-help-list li .sh-btn:hover { background: var(--green); color: #fff; }
+
+.seek-help-box {
+  background: var(--amber-bg); border: 1.5px solid var(--amber-bd);
+  border-left: 3px solid var(--amber); border-radius: 0 var(--r) var(--r) 0;
+  padding: 0.85rem 1rem; font-size: 0.88rem; color: #705020;
+  line-height: 1.65; margin-top: 1.25rem;
+}
+.seek-help-box strong { color: #4a3010; }
+
 /* ── RX — TERAPEUTIN SUOSITTELEMAT ── */
 .rx-banner {
   background: linear-gradient(135deg, #e8f5ee 0%, #f0f8f2 100%);
@@ -1459,10 +1530,21 @@ body.kids-mode .site-footer { display:none; }
 <!-- ════════════════ ADULT: TIETOA ════════════════ -->
 <div id="panel-tietoa" class="panel adult-only">
 <div class="section">
-  <h1 class="page-title">Miksi kehosi reagoi niin?</h1>
-  <p class="page-sub">Tieto auttaa. Kun ymmärrät miksi hermostosi toimii kuten se toimii, reaktiot alkavat tuntua tutuilta — ei pelottavilta.</p>
+  <h1 class="page-title">Tietoa oireistasi</h1>
+  <p class="page-sub">Valitse aihe joka koskettaa sinua. Saat tietoa siitä miksi kehosi reagoi niin — ja konkreettisia keinoja omatoimiseen helpottamiseen.</p>
 
-  <div class="info-accordion" id="info-accordion"></div>
+  <!-- Topic tabs -->
+  <div class="info-tabs" id="info-tabs">
+    <button class="info-tab active" onclick="switchInfoTab('stressi',this)">😮‍💨 Stressi</button>
+    <button class="info-tab" onclick="switchInfoTab('kipu',this)">🔥 Kipu</button>
+    <button class="info-tab" onclick="switchInfoTab('ahdistus',this)">🌀 Ahdistus</button>
+    <button class="info-tab" onclick="switchInfoTab('trauma',this)">🌊 Trauma</button>
+    <button class="info-tab" onclick="switchInfoTab('uni',this)">🌙 Uni</button>
+    <button class="info-tab" onclick="switchInfoTab('adhd',this)">⚡ ADHD</button>
+    <button class="info-tab" onclick="switchInfoTab('longcovid',this)">🫁 Long COVID</button>
+  </div>
+
+  <div id="info-content"></div>
 </div>
 </div>
 
@@ -1642,24 +1724,6 @@ const EXERCISES = [
     note:'Hyvä aloittaa terapiassa ja jatkaa kotona. Voi käyttää ennen haastavaa tilannetta.', timer:600 },
 ];
 
-const INFO_DATA = [
-  { emoji:'💡', title:'Miksi hermostosi reagoi niin voimakkaasti?',
-    content:`<p>Kehosi hermosto on kehittynyt miljoonia vuosia — se on ohjelmoitu suojaamaan sinua uhkilta. Kun koet jonkin uhkaavana — todellisen tai kuvitellun — hermostosi käynnistää hälytysreaktion automaattisesti ja ilman lupaa sinulta.</p><p>Tämä ei ole heikkous. Se on yksi luonnon hienoimmista keksinnöistä. Ongelma syntyy vain silloin, kun tämä hälytys ei enää sammu — tai syttyy tilanteissa joissa todellista vaaraa ei ole.</p>
-    <div class="tip-box">Muista: reaktiosi hermostosi, ei sinun heikkoutesi. Harjoitteet auttavat hermostoa oppimaan turvallisuuden uudelleen.</div>`},
-  { emoji:'😰', title:'Mitä kehossasi tapahtuu stressin aikana?',
-    content:`<p>Kun hermostosi kokee uhan, se käynnistää "taistele tai pakene" -reaktion sekunneissa. Sydämen syke nousee, hengitys tihenee, lihakset jännittyvät, ja koko keho on valmiudessa toimintaan.</p><p>Tämä on täysin normaalia ja tarkoituksenmukaista. Hankalaksi käy, kun tämä reaktio ei raukea — esimerkiksi kroonisessa stressissä tai trauman jälkeen keho saattaa pysyä "hälytystilassa" pitkiäkin aikoja.</p>
-    <div class="tip-box">Hengitysharjoitteet toimivat siksi, että hidas uloshengitys viestii suoraan hermostolle: "Olemme turvassa. Voit rauhoittua."</div>`},
-  { emoji:'🌊', title:'Mikä on jähmettyminen ja miksi se tapahtuu?',
-    content:`<p>Joskus stressin tai ylikuormituksen reaktio ei ole ahdistus tai viha — vaan tyhjyys, lamaantuminen tai tunnottomuus. Tätä kutsutaan jähmettymisreaktioksi.</p><p>Se on vanha, automaattinen suojamekanismi — keho "sammuttaa" itsensä sietämättömästä kuormituksesta. Tuntuu kuin ei jaksaisi mitään, ei pystyisi liikkumaan, tai tunteet olisivat kaukana.</p>
-    <div class="tip-box">Jos sinulla on usein tällainen olo, hyräily, pienet liikkeet ja ääni ovat erityisen hyviä — ne "herättelevät" hermoston takaisin turvallisesti.</div>`},
-  { emoji:'😮‍💨', title:'Miksi hengitys rauhoittaa niin tehokkaasti?',
-    content:`<p>Hengitys on ainoa kehon toiminto, joka on sekä automaattinen että tietoisen kontrollin alainen. Tämä tekee siitä suoran väylän hermostoon.</p><p>Erityisesti pidennetty uloshengitys aktivoi rauhoittavan hermoston haaran — se viestii aivoille "vaara on ohi". Pelkkä hidas hengittäminen ulos 6–8 sekuntia laskee sykettä muutamassa minuutissa.</p>
-    <div class="tip-box">Sisäänhengitys kiihdyttää, uloshengitys rauhoittaa. Jos haluat rauhoittua, hengitä ulos hitaammin kuin sisään.</div>`},
-  { emoji:'🔁', title:'Miksi harjoitteet eivät aina tunnu toimivan?',
-    content:`<p>Hermosto oppii hitaasti. Yksi harjoituskerta ei muuta pitkäaikaisia reaktioita — mutta säännöllinen harjoittelu muuttaa. Jokainen kerta kun harjoittelet rauhoittumista, opetat hermostoasi tuntemaan turvallisuuden tutummaksi.</p><p>Jos harjoite tuntuu vaikealta tai epämukavalta, se on täysin normaalia. Aloita pienistä asioista — vaikka yksi fysiologinen huokaus päivässä.</p>
-    <div class="tip-box">Terapeutti voi auttaa löytämään ne harjoitteet jotka toimivat juuri sinulle. Kerro seuraavalla tapaamisella mikä tuntui helpolta ja mikä vaikealta.</div>`},
-];
-
 const KID_EXERCISES = [
   { id:'perhos', emoji:'🦋', name:'Perhoshalaus', dur:'3 min', anim:false },
   { id:'hyraile', emoji:'🎵', name:'Hyräily', dur:'5 min', anim:false },
@@ -1836,30 +1900,6 @@ function filterEx(cat, btn) {
 // ══════════════════════════════════
 // INFO ACCORDION
 // ══════════════════════════════════
-function renderInfo() {
-  const el = document.getElementById('info-accordion');
-  if (!el) return;
-  el.innerHTML = INFO_DATA.map((item,i) => `
-    <div class="info-item" id="info-${i}">
-      <button class="info-trigger" onclick="toggleInfo(${i})">
-        <span class="info-icon">${item.emoji}</span>
-        <span class="info-title">${item.title}</span>
-        <span class="info-chev">▶</span>
-      </button>
-      <div class="info-body">
-        <div class="info-content">${item.content}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-function toggleInfo(i) {
-  const el = document.getElementById('info-'+i);
-  const isOpen = el.classList.contains('open');
-  document.querySelectorAll('.info-item').forEach(e => e.classList.remove('open'));
-  if (!isOpen) el.classList.add('open');
-}
-
 // ══════════════════════════════════
 // JOURNAL
 // ══════════════════════════════════
@@ -2733,7 +2773,7 @@ function clearRx() {
 document.addEventListener('DOMContentLoaded', () => {
   renderQuick();
   renderExGrid();
-  renderInfo();
+  renderInfoContent('stressi'); // render default tab
   renderEntries();
   renderKidsGrid();
   initRx();
