@@ -1803,12 +1803,35 @@ const KIDS_AGE_DATA = {
       { id:'turvapaikka-pikku',  emoji:'🏠', name:'Oma turvapaikka',   dur:'5 min', guided:'turva' },
     ],
     info: [
-      { icon:'❤️', title:'Mikä on tunne?',
-        content:`<p>Tunteet ovat kuin värejä — on iloista keltaista, surullista sinistä, vihaisesta punaista ja pelokasta violettia.</p><p>Kaikki tunteet ovat ok! Ei ole olemassa "huonoja" tunteita. Tunteet kertovat sinulle jotain tärkeää.</p><p>Tunteet aina menevät ohi — kuin pilvet taivaalla. 🌤️</p>` },
-      { icon:'🧠', title:'Missä tunteet asuvat?',
-        content:`<p>Tunteet asuvat kehossasi! Kun olet iloinen, sydän tuntuu lämpimältä. Kun jännittää, maha voi pyöriä.</p><p>Keho kertoo sinulle miten voit. Voit aina kuunnella sitä.</p>` },
-      { icon:'🌬️', title:'Hengitys auttaa aina',
-        content:`<p>Kun sinua pelottaa tai jännittää, voit aina hengittää! Hengitä hitaasti ulos — se on kuin sanoisit keholle: "Kaikki on ok."</p>` },
+      { icon:'🐒', title:'Apina-aivot ja Pöllö-aivot',
+        content:`<div style="background:#fff8e8;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #e8a020">
+          <strong style="color:#8a5010">🐒 Tarina:</strong><p style="margin-top:0.35rem">Sinun päässäsi asuu kaksi kaveria. <strong>Apina</strong> on nopea ja äänekäs — se huutaa heti kun jotain jännittävää tai pelottavaa tapahtuu. <strong>Pöllö</strong> on rauhallinen ja viisas — se miettii ensin, sitten toimii.</p>
+          <p style="margin-top:0.35rem">Kun Apina herää ja alkaa huutaa, Pöllö menee piiloon. Siksi kun olet tosi vihainen tai peloissasi, on vaikea ajatella järkevästi!</p></div>
+        <p><strong>Oikeasti:</strong> Aivoissasi on hälytysosa (amygdala) joka reagoi nopeasti. Kun se aktivoituu, järkevä osa menee "offline". Hengitys auttaa Pöllön takaisin — kun hengität hitaasti ulos, Apina rauhoittuu.</p>` },
+
+      { icon:'❤️', title:'Missä tunteet asuvat?',
+        content:`<div style="background:#fff0f5;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #e06080">
+          <strong style="color:#a03050">💝 Tarina:</strong><p style="margin-top:0.35rem">Tunteet ovat kuin värit. On iloista keltaista ☀️, surullista sinistä 💙, vihaisesta punaista 🔴 ja pelokkaan violettia 💜. Kaikki värit ovat tärkeitä — ilman sinistä taivas ei olisi niin kaunis!</p></div>
+        <p>Tunteet asuvat kehossasi. Kun olet iloinen, sydän tuntuu lämpimältä. Kun jännittää, maha saattaa pyöriä. Kun olet surullinen, rintakehä voi tuntua raskaalta.</p>
+        <p>Kaikki tunteet ovat ok! Tunteet kertovat sinulle jotain tärkeää. Ne menevät aina ohi — kuin pilvet taivaalla. 🌤️</p>` },
+
+      { icon:'😰', title:'Miksi joskus pelottaa tai jännittää?',
+        content:`<div style="background:#f0f5ff;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #6080e0">
+          <strong style="color:#3050a0">🦁 Tarina:</strong><p style="margin-top:0.35rem">Kauan kauan sitten ihmiset asuivat luolissa. Leijona saattoi tulla vierailulle! Silloin keho piti osata juosta nopeasti. Siksi sydän löi kovaa ja jalat valmistautuivat juoksemaan.</p>
+          <p style="margin-top:0.35rem">Nykyään leijonat eivät tule kouluun — mutta keho tekee silti saman jutun kun jotain pelottaa!</p></div>
+        <p>Pelko ja jännitys eivät ole vaarallisia. Ne ovat kehon tapa sanoa "ole varovainen". Voit sanoa keholle "kaikki on ok" hengittämällä hitaasti ulos. 😮‍💨</p>` },
+
+      { icon:'🌙', title:'Miksi uni on niin tärkeää?',
+        content:`<div style="background:#f0eeff;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #8060d0">
+          <strong style="color:#5040a0">🔧 Tarina:</strong><p style="margin-top:0.35rem">Yöllä kun nukut, aivoissasi on pienet siivoojat! Ne siivoavat päivän murheet pois, laittavat muistot hyllyyn ja lataavat akkusi täyteen.</p>
+          <p style="margin-top:0.35rem">Jos et nuku tarpeeksi, siivoojat eivät ehdi tehdä työtään. Siksi väsyneenä kaikki tuntuu vaikeammalta!</p></div>
+        <p>Lapset tarvitsevat noin <strong>9–11 tuntia</strong> unta yössä. Ennen nukkumaan menoa: laske puhelin, himmennä valot ja tee jotain rauhallista.</p>` },
+
+      { icon:'🔥', title:'Miksi joskus sattuu?',
+        content:`<div style="background:#fff5f0;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #e07040">
+          <strong style="color:#a04020">🚨 Tarina:</strong><p style="margin-top:0.35rem">Kipu on kuin paloauto 🚒 — se tulee hälyttämään kun jotain on pielessä! Jos otat tuliseen liesitasoon, kipu sanoo "OI! Vedä käsi pois!" Ilman kipua satuttaisit itsesi koko ajan.</p></div>
+        <p>Kipu on tärkeä viesti keholta. Mutta joskus — kun on sairas tai pitkään kipeä — keho saattaa huutaa vaikka vaara on jo ohi. Silloin rauhoittuminen, hengitys ja lepo auttavat.</p>
+        <p>Jos koskaan sattuu paljon, kerro aina aikuiselle! 🤗</p>` },
     ]
   },
 
@@ -1834,12 +1857,39 @@ const KIDS_AGE_DATA = {
       { id:'turva-koulu',      emoji:'🏡', name:'Turvapaikka',         dur:'8 min', guided:'turva' },
     ],
     info: [
-      { icon:'🧠', title:'Mitä stressi tekee kehollesi?',
-        content:`<p>Kun sinulle tulee stressi — esimerkiksi kokeesta, riidasta tai pelottavasta tilanteesta — aivojesi hälytysosa aktivoituu.</p><p>Sydän lyö nopeammin, hengitys tihenee ja lihakset jännittyvät. Keho valmistautuu toimintaan — tämä on tarkoituksellista!</p><p>Ongelma on kun stressi ei lopu ja keho pysyy hälytystilassa. Hengitysharjoitteet viestivät keholle: "vaara on ohi, voidaan rauhoittua."</p>` },
-      { icon:'❤️', title:'Miksi tunteet tuntuvat kehossa?',
-        content:`<p>Tunteet eivät asu vain mielessä — ne ovat kehollisia kokemuksia. Suru tuntuu rintakehässä. Jännitys vatsassa. Ilo voi tuntua keveytenä koko kehossa.</p><p>Tämä on normaalia! Kehosi viestii sinulle jatkuvasti. Oppimalla kuuntelemaan sitä, pystyt tunnistamaan miten voit — ja tekemään jotain sen hyväksi.</p>` },
-      { icon:'💪', title:'Mitä voit tehdä kun tunteet ovat voimakkaita?',
-        content:`<p><strong>Tunnista ensin:</strong> mikä tunne tämä on? Nimeäminen auttaa — "tässä on jännitys" tai "tässä on viha".</p><p><strong>Hengitä:</strong> yksi hidas uloshengitys rauhoittaa hermoston välittömästi.</p><p><strong>Liiku tai ravistele:</strong> keho purkaa tunneenergiaa liikkeen kautta.</p><p><strong>Puhu jollekin:</strong> luotettava aikuinen auttaa kun tunteet tuntuvat liian isoilta.</p>` },
+      { icon:'🚨', title:'Hälytysnappi aivoissasi — stressi ja tunteet',
+        content:`<div style="background:#fff8e8;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #e8a020">
+          <strong style="color:#8a5010">💡 Metafora:</strong><p style="margin-top:0.35rem">Aivoissasi on <strong>paloilmoitin</strong> (amygdala). Se on tosi hyvä työssään — se havaitsee vaaran nopeasti. Mutta joskus se hälyttää myös silloin kun savua ei oikeasti ole — kuten koetta tai esiintymistä pelätessä.</p>
+          <p style="margin-top:0.35rem">Kun paloilmoitin soi, rationaalinen osa aivoista (prefrontaalikorteksi) menee automaattisesti "lepotilaan". Siksi on niin vaikea ajatella selkeästi kun on tosi stressaantunut!</p></div>
+        <p><strong>Mitä kehossasi tapahtuu:</strong> Sydän lyö nopeammin, hengitys tihenee, lihakset jännittyvät ja vatsa voi pyöriä. Keho valmistautuu toimintaan — tämä on normaalia ja tarkoituksellista.</p>
+        <p><strong>Miksi hengitys auttaa:</strong> Hidas uloshengitys lähettää signaalin aivoihin: "Vaara on ohi." Paloilmoitin hiljenee ja järkevä osa pääsee takaisin töihin.</p>` },
+
+      { icon:'🌊', title:'Hermosto — kehon sähköjärjestelmä',
+        content:`<div style="background:#e8f5ff;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #4080c0">
+          <strong style="color:#205090">⚡ Metafora:</strong><p style="margin-top:0.35rem">Hermostosi on kuin kodin sähköjärjestelmä. Sillä on <strong>kaasupoljin</strong> (sympaattinen hermosto) joka kiihdyttää, ja <strong>jarru</strong> (parasympaattinen hermosto) joka hidastaa.</p>
+          <p style="margin-top:0.35rem">Stressi painaa kaasupoljinta. Hengitysharjoitteet painaa jarrua.</p></div>
+        <p>Normaalisti jarru ja kaasupoljin toimivat tasapainossa. Kroonisessa stressissä kaasupoljin jää pohjaan — keho ei pääse lepotilaan kunnolla. Tämä väsyttää ja tekee olosta levottoman.</p>
+        <p><strong>Hyvä uutinen:</strong> Voit oppia käyttämään jarrua tahdonalaisesti — hengityksen, liikkeen ja ääntellyn avulla.</p>` },
+
+      { icon:'😨', title:'Ahdistus ja pelko — miksi keho reagoi niin?',
+        content:`<div style="background:#f5eeff;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #9060d0">
+          <strong style="color:#6040a0">🦕 Metafora:</strong><p style="margin-top:0.35rem">Ahdistusreaktio on <strong>dinosaurukselta peritty</strong> — se kehittyi kun ihmiset joutuivat pakenemaan petoja. Keho valmistautuu taistelemaan tai pakenemaan: sydän lyö kovaa, hengitys tihenee, lihakset jännittyvät.</p>
+          <p style="margin-top:0.35rem">Ongelmana on se, että keho tekee saman jutun koetilanteessa kuin leijonan edessä — vaikka kokeesta selviää eikä siltä tarvitse paeta!</p></div>
+        <p><strong>Tärkeintä tietää:</strong> Ahdistus tuntuu pahalta, mutta se EI ole vaarallinen. Se menee aina ohi. Mitä enemmän vastustaa, sitä pitkempään se kestää. Kun antaa sen olla, se laantuu nopeammin.</p>
+        <p><strong>Vinkki:</strong> Nimeä tunne ääneen tai mielessä — "tässä on jännitys". Se aktivoi aivojen järkevän osan ja auttaa rauhoittumaan.</p>` },
+
+      { icon:'💤', title:'Uni — miksi aivot tarvitsevat sitä niin paljon?',
+        content:`<div style="background:#f0fff5;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #40b060">
+          <strong style="color:#207040">🔄 Metafora:</strong><p style="margin-top:0.35rem">Aivosi ovat kuin tietokone joka pitää <strong>sammuttaa ja käynnistää uudelleen</strong> joka yö. Yöllä aivot siirtävät päivän oppimat asiat pitkäaikaismuistiin, korjaavat soluja ja poistavat kuona-aineita.</p>
+          <p style="margin-top:0.35rem">Jos tietokonetta ei koskaan sammuteta, se alkaa hidastua ja bugiintua. Sama tapahtuu aivoille ilman unta!</p></div>
+        <p>Kouluikäiset tarvitsevat <strong>9–11 tuntia</strong> unta. Unenpuute tekee oppimisesta vaikeampaa, tunteista voimakkaampia ja stressistä pahempaa.</p>
+        <p><strong>Nukahtamisvinkki:</strong> Puhelin pois 30–60 min ennen nukkumaan menoa. Puhelimen valo huijaa aivoja luulemaan että on vielä päivä.</p>` },
+
+      { icon:'🔥', title:'Kipu — kehon hälytysjärjestelmä',
+        content:`<div style="background:#fff5f0;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #e07040">
+          <strong style="color:#a04020">📡 Metafora:</strong><p style="margin-top:0.35rem">Kipu on kuin <strong>tekstiviesti keholta</strong>: "Hei, täällä tarvitaan huomiota!" Normaalisti viesti on hyödyllinen — se kertoo kun jotain on vialla.</p>
+          <p style="margin-top:0.35rem">Mutta joskus kipuhälytys jää päälle vaikka varsinainen vaurio on jo parantunut — kuin puhelin joka piippaa vanhasta viestistä yhä uudelleen.</p></div>
+        <p>Stressi ja jännitys voivat vahvistaa kipua — ne pitävät hermoston hereillä ja herkistyttynä. Siksi rentoutuminen, hengitys ja turvallisuuden kokemus voivat oikeasti auttaa kipuun.</p>` },
     ]
   },
 
@@ -1866,14 +1916,41 @@ const KIDS_AGE_DATA = {
       { id:'ystavallisyys-n',  emoji:'💚', name:'Ystävällisyys itselle',  dur:'5 min', guided:'ystavallisyys-lyhyt' },
     ],
     info: [
-      { icon:'🧠', title:'Miksi hermostosi reagoi niin voimakkaasti?',
-        content:`<p>Nuoruudessa aivot ovat kehitysvaiheessa — erityisesti prefrontaalikorteksi, joka vastaa impulssien hallinnasta ja pitkäjänteisestä ajattelusta, kehittyy vasta noin 25-vuotiaaksi.</p><p>Samaan aikaan tunteiden käsittelykeskus (amygdala) on täysin kehittynyt. Tämä selittää miksi tunteet voivat tuntua niin ylivoimaisilta — emotionaalinen kapasiteetti on täysillä, mutta jarrutusmekanismi on vasta kehittymässä.</p><p>Tämä ei ole vika — se on neurologinen tosiasia. Harjoitteet auttavat kehittämään tätä säätelykapasiteettia.</p>` },
-      { icon:'📱', title:'Stressi, some ja ylivireys',
-        content:`<p>Jatkuva some-altistus pitää hermoston aktiivisena. Jokainen ilmoitus, scroll ja tykkäys aktivoi dopamiinijärjestelmän — keho pysyy ylivirinnässä.</p><p>Tämä ei tarkoita että puhelin pitää heittää pois — tarkoittaa että hermosto tarvitsee säännöllisiä "taukoja" digitaalisesta stimulaatiosta. Harjoitteet ovat yksi tapa antaa hermoston rauhoittua.</p>` },
-      { icon:'💤', title:'Miksi nukahtaminen on niin vaikeaa?',
-        content:`<p>Nuoruudessa melatoniinin (unihormoni) eritys siirtyy myöhemmäksi — biologinen kello haluaa sinut nukkumaan myöhemmin ja heräämään myöhemmin. Tämä on neurologinen muutos, ei laiskuus.</p><p>Lisäksi sinivalo illalla (puhelin, tietokone) estää melatoniinin eritystä. Ruutuaika 1–2 tuntia ennen nukkumaan menoa kannattaa minimoida.</p>` },
-      { icon:'💚', title:'Itsekritiikki ja myötätunto',
-        content:`<p>Nuoruudessa itsekritiikin ääni voi olla erityisen kova. Aivojen kehitys tekee nuorista herkempiä sosiaaliselle arvioimiselle ja hylkäämiselle.</p><p>Ystävällisyysharjoite ei ole "pehmeä" — se on neurotieteen tukema menetelmä joka muuttaa aivojen reaktiota itseen. Kokeile sitä.</p>` },
+      { icon:'🧠', title:'Nuoruuden aivot — miksi tunteet ovat niin voimakkaita?',
+        content:`<div style="background:#f0f5ff;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #5070d0">
+          <strong style="color:#304090">🔬 Neurotiede:</strong><p style="margin-top:0.35rem">Prefrontaalikorteksi (PFC) — aivojen "toiminnanjohtaja" joka vastaa impulssien hallinnasta, pitkäjänteisestä suunnittelusta ja tunteiden säätelystä — kehittyy täysin vasta noin <strong>25-vuotiaaksi</strong>.</p>
+          <p style="margin-top:0.35rem">Samaan aikaan limbinen järjestelmä, erityisesti amygdala (tunteiden käsittelykeskus), on täysin kehittynyt jo teini-iässä. Tulos: tunne-kapasiteetti täysillä, jarrutusmekanismi vasta rakenteilla.</p></div>
+        <p>Tämä ei ole luonnevirhe tai heikkous — se on neurologinen kehitysvaihe. Aivosi tekevät juuri sen mitä niiden pitääkin tehdä tässä iässä.</p>
+        <p><strong>Harjoittelun merkitys:</strong> Säätelyharjoitteet vahvistavat PFC–amygdala-yhteyttä. Jokainen kerta kun harjoittelet rauhoittumista aktivaation sijaan, opetat hermostoasi. Nämä muutokset ovat mitattavia ja pysyviä.</p>` },
+
+      { icon:'⚡', title:'Autonominen hermosto — kehon autopilotti',
+        content:`<div style="background:#fff8e8;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #c09020">
+          <strong style="color:#806010">🚗 Metafora:</strong><p style="margin-top:0.35rem">Autonominen hermosto on kuin auton <strong>automaattivaihteisto</strong> — se toimii ilman sinun tietoista kontrolliasi. Kaasupoljin = sympaattinen hermosto (kiihdyttää, stressireaktio). Jarru = parasympaattinen hermosto (rauhoittaa, palautuminen).</p></div>
+        <p><strong>Sympaattinen aktivaatio</strong> (taistele/pakene): kortisoli ja adrenaliini vapautuvat, syke nousee, hengitys tihenee, lihakset jännittyvät, ruoansulatus pysähtyy. Tämä on tarkoitettu lyhytkestoiseen, akuuttiin uhkaan.</p>
+        <p><strong>Krooninen aktivaatio</strong> on ongelma: kortisoli pysyy korkealla, uni häiriintyy, mieliala laskee, kognitio heikkenee. Keho on jatkuvassa hälytystilassa.</p>
+        <p><strong>Vagushermo</strong> on parasympaattisen hermoston pääväylä. 80% sen signaaleista kulkee kehosta aivoihin — tämä selittää miksi kehollinen harjoittelu (hengitys, ääni, liike) toimii niin tehokkaasti.</p>` },
+
+      { icon:'😰', title:'Ahdistus ja paniikki — neurobiologia',
+        content:`<div style="background:#f5eeff;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #8050c0">
+          <strong style="color:#5030a0">🦕 Evoluutio:</strong><p style="margin-top:0.35rem">Ahdistusreaktio kehittyi suojelemaan ihmisiä akuuteista fyysisistä uhkista. Amygdala tunnistaa uhan alle 20 millisekunnissa — ennen kuin tietoisuus ehtii mukaan. Keho mobilisoituu toimintaan.</p></div>
+        <p><strong>Paradoksi:</strong> Sama reaktio aktivoituu sosiaalisissa tilanteissa, kokeissa, esiintymisessä — tilanteissa joissa fyysinen toiminta ei auta. Stressihormonit jäävät kiertämään ilman purkautumista.</p>
+        <p><strong>Hyperventilointiloukku:</strong> Ahdistus → hengitys tihenee → CO₂ laskee → lisää ahdistuksen tunnetta → hengitys tihenee lisää. Hidas uloshengitys katkaisee tämän kierteen fysiologisesti.</p>
+        <p><strong>Avoidance-loukku:</strong> Välttely tuottaa hetkellistä helpotusta mutta vahvistaa ahdistusta pitkällä aikavälillä. Hermosto oppii: "Tämä tilanne on vaarallinen, koska pakenen siitä." Asteittainen altistuminen turvallisessa ympäristössä on tehokkain hoito.</p>` },
+
+      { icon:'💤', title:'Uni, nuoruus ja aivot',
+        content:`<div style="background:#f0fff5;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #40b060">
+          <strong style="color:#207040">🕐 Sirkadiaaninen rytmi:</strong><p style="margin-top:0.35rem">Nuoruudessa biologinen kello siirtyy myöhemmäksi — melatoniinin eritys alkaa myöhemmin illalla ja jatkuu pidempään aamuun. Tämä on <strong>neurologinen muutos</strong>, ei laiskuus tai huono tapa.</p></div>
+        <p><strong>Mitä nukkuessa tapahtuu:</strong> Hippokampus siirtää päivän oppimia asioita pitkäaikaismuistiin (muistikoodaus). Glia-solut poistavat kuona-aineita aivoista. Emotionaalinen prosessointi tapahtuu REM-unessa. Kasvuhormonia erittyy syvässä unessa.</p>
+        <p><strong>Unenpuute teini-iässä:</strong> Heikentää PFC:n toimintaa entisestään, vahvistaa amygdalan reaktiivisuutta, lisää masennuksen ja ahdistuksen riskiä, heikentää oppimista ja muistia.</p>
+        <p>13–17-vuotiaat tarvitsevat <strong>8–10 tuntia</strong> unta. Sinivalo (puhelin) illalla estää melatoniinin eritystä — vähennä ruutuaikaa ennen nukkumaan menoa.</p>` },
+
+      { icon:'🔥', title:'Kipu, stressi ja hermosto',
+        content:`<div style="background:#fff5f0;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #e07040">
+          <strong style="color:#a04020">🧬 Neurotiede:</strong><p style="margin-top:0.35rem">Kipu syntyy aivoissa — se ei ole pelkästään kudosvaurion mittari vaan aivojen suojeleva signaali. Aivot arvioivat tilanteen kokonaisvaltaisesti: kuinka vaarallista tämä on, kuinka paljon huomiota se tarvitsee?</p></div>
+        <p><strong>Sensitisaatio:</strong> Kroonisessa kivussa kipuhermojen kynnys reagoida laskee. Pienet ärsykkeet alkavat tuntua isoilta — hermosto on "yliviritetty". Kudos voi olla parantunut, mutta hermosto ei ole vielä oppinut tätä.</p>
+        <p><strong>Stressi pahentaa kipua suoraan:</strong> Kortisoli kiihdyttää tulehdusta, heikentää endorfiinijärjestelmää ja pitää hermoston hälytystilassa. Tämä selittää miksi krooninen kipu ja stressi esiintyvät usein yhdessä.</p>
+        <p><strong>Tieto auttaa:</strong> Tutkimukset osoittavat että pelkkä ymmärrys kivun mekanismeista vähentää kipua. Turvallisuuden kokemus on yksi tärkeimmistä kivun lievittäjistä.</p>` },
+    ]
     ]
   }
 };
