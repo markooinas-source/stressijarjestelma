@@ -2770,6 +2770,223 @@ function clearRx() {
 // ══════════════════════════════════
 // INIT
 // ══════════════════════════════════
+// ══════════════════════════════════
+// INFO BANK
+// ══════════════════════════════════
+
+const INFO_TOPICS = {
+  stressi: {
+    icon:'😮‍💨', title:'Stressi ja hermosto',
+    lead:'Stressi ei ole pelkästään mielessä — se on kehon laajamittainen fysiologinen ohjelma. Ymmärtämällä mitä kehossasi tapahtuu, voit oppia vaikuttamaan siihen.',
+    blocks:[
+      { icon:'🧠', title:'Miksi hermostosi käynnistää stressireaktion?',
+        content:`<p>Hermostosi on kehittynyt suojaamaan sinua uhkilta. Kun se havaitsee vaaran — todellisen tai kuvitellun — se käynnistää hälytysreaktion automaattisesti, ilman lupaasi.</p><p>Sydän sykkii nopeammin, hengitys tihenee, lihakset jännittyvät, ruoansulatus pysähtyy. Tämä on täysin normaalia — ja elintärkeää akuutissa vaarassa.</p><p><strong>Ongelma syntyy</strong> kun reaktio ei sammu. Nykyajan stressit — työ, ihmissuhteet, taloudelliset huolet — eivät vaadi fyysistä pakenemista, mutta keho reagoi niihin kuten muinaiseen petoon.</p>` },
+      { icon:'⚡', title:'Mitä kehossasi tapahtuu stressin aikana?',
+        content:`<p><strong>Akuutti vaste:</strong> Kortisoli ja adrenaliini vapautuvat. Syke nousee. Hengitys tihenee ja pinnallistuu. Lihakset jännittyvät. Ruoansulatus pysähtyy.</p><p><strong>Krooninen stressi:</strong> Kortisolitasot pysyvät korkealla. Uni häiriintyy. Immuunijärjestelmä heikkenee. Lihakset ovat jatkuvasti jännittyneenä. Mieliala laskee.</p><p>Kehosi ei erota oikeaa vaaraa huolesta tai paineesta. Pelkkä ajatus stressaavasta tilanteesta riittää käynnistämään saman reaktion.</p>`,
+        selfHelp:[
+          {icon:'😮‍💨', text:'Fysiologinen huokaus — nopein tapa laskea kortisolia', btn:'fysiologinen'},
+          {icon:'📦', text:'Neliöhengitys — tasapainottaa hermoston 5 minuutissa', btn:'neliohengitys'},
+          {icon:'🎵', text:'Hyräily aktivoi parasympaattisen hermoston suoraan', btn:'hyraile'},
+        ]},
+      { icon:'🔄', title:'Miksi stressi tuntuu erilaiselta eri päivinä?',
+        content:`<p>Stressinsietokyvysi vaihtelee joka päivä. Uni, ravinto, sosiaalinen tuki ja aiemmat kuormitukset vaikuttavat kapasiteettiisi.</p><p><strong>Toleranssi-ikkuna</strong> on tila jossa pystyt sekä tuntemaan että ajattelemaan selkeästi. Krooninen stressi kaventaa tätä ikkunaa — pienetkin asiat alkavat tuntua ylivoimaisilta.</p><p>Harjoitteet eivät poista stressiä — ne laajentavat ikkunaa. Harjoittelemalla opetat hermostoasi palautumaan nopeammin.</p>`,
+        selfHelp:[
+          {icon:'🧘', text:'Kehoskannaus auttaa tunnistamaan jännityksen ajoissa', btn:'kehoskannaus'},
+          {icon:'🏡', text:'Turvapaikka viestii hermostolle turvallisuudesta', btn:'turva'},
+        ]},
+      { icon:'⚠️', title:'Milloin stressi tarvitsee ammattiapua?',
+        content:`<p>Hae apua jos stressi on jatkunut yli 3 kuukautta, uni on pitkäaikaisesti häiriintynyt, sinulla on säännöllisiä paniikkioireita, arki tai työ on merkittävästi vaikeutunut, tai käytät alkoholia stressinhallinnan keinona.</p>` }
+    ]
+  },
+  kipu: {
+    icon:'🔥', title:'Kipu ja hermosto',
+    lead:'Kipu ei ole pelkästään kudosvaurion mittari — se on aivojen suojeleva signaali. Ymmärtämällä kivun mekanismit voit vaikuttaa siihen merkittävästi.',
+    blocks:[
+      { icon:'🧠', title:'Miksi kipusi on oikea vaikka "mitään ei löydy"?',
+        content:`<p>Kipu syntyy aina aivoissa. Se ei tarkoita että kipu on kuviteltua — tarkoittaa että aivosi ovat arvioineet tilanteen uhkaavaksi ja lähettävät suojelusignaalin.</p><p><strong>Akuutti kipu</strong> (alle 3 kk) on yleensä merkki kudosvauriosta — hyödyllinen varoitus.</p><p><strong>Krooninen kipu</strong> (yli 3 kk) on usein merkki siitä, että hermosto on herkistynyt. Kipujärjestelmä on yliviritetty ja reagoi pieniinkin ärsykkeisiin. Kudos on voinut parantua, mutta hermosto ei ole vielä oppinut tätä.</p>` },
+      { icon:'🔊', title:'Mitä on sensitisaatio ja miten stressi liittyy kipuun?',
+        content:`<p>Sensitisaatio tarkoittaa että kipuhermojen kynnys reagoida on laskenut. Aiemmin neutraalit ärsykkeet — kevyt kosketus, liike, lämpö — voivat tuntua kivuliailta.</p><p><strong>Stressi pahentaa kipua suoraan:</strong> kortisoli kiihdyttää tulehdusta, heikentää kehon omia kivunlievitysjärjestelmiä ja pitää hermoston hälytystilassa.</p><p>Tämä ei tarkoita että kipu on pelkkää stressiä — tarkoittaa että stressi ja kipu ruokkivat toisiaan, ja molempia on hoidettava.</p>`,
+        selfHelp:[
+          {icon:'😮‍💨', text:'Hengitysharjoitteet laskevat stressihormoneita ja voivat helpottaa kipua', btn:'fysiologinen'},
+          {icon:'🧘', text:'Kehoskannaus — rauhallinen huomion vieminen kehoon', btn:'kehoskannaus'},
+          {icon:'🎵', text:'Hyräily aktivoi parasympaattisen hermoston', btn:'hyraile'},
+        ]},
+      { icon:'💡', title:'Tieto itsessään vähentää kipua',
+        content:`<p>Kivun neurotiede -tutkimukset osoittavat: <strong>pelkkä ymmärrys siitä miksi kipu toimii niin kuin toimii vähentää kipua</strong> ja parantaa toimintakykyä.</p><p>Kun kipusi ei enää pelota yhtä paljon, hermosto voi alkaa laskea hälytystilaa. Turvallisuuden kokemus on yksi tärkeimmistä kivun lievittäjistä.</p>`,
+        selfHelp:[
+          {icon:'🏡', text:'Turvapaikka — viestii hermostolle "olet turvassa"', btn:'turva'},
+          {icon:'👀', text:'5-4-3-2-1 keskeyttää kipuun keskittymisen', btn:'54321'},
+          {icon:'💪', text:'Voimavarat rakentaa sisäistä turvaa', btn:'resurssointi'},
+        ]},
+      { icon:'⚠️', title:'Milloin kipu vaatii lääkärin arvion?',
+        content:`<p>Hae lääkäriin heti jos kipu alkoi vamman jälkeen, herättää yöllä, on erittäin voimakasta, kipuun liittyy puutumista tai heikkoutta, sinulla on selittämätöntä laihtumista tai kuumeilua, tai kipu pahenee jatkuvasti.</p>` }
+    ]
+  },
+  ahdistus: {
+    icon:'🌀', title:'Ahdistus ja paniikki',
+    lead:'Ahdistus on kehon hälytysreaktio — se tuntuu pelottavalta mutta ei ole vaarallinen. Ymmärtämällä mitä kehossasi tapahtuu, reaktio menettää osan vallastaan.',
+    blocks:[
+      { icon:'🧠', title:'Miksi ahdistus tuntuu niin fyysiseltä?',
+        content:`<p>Ahdistus on sympaattisen hermoston aktivaatiovaste. <strong>Sydän tykyttää</strong> — pumppaa verta lihaksiin. <strong>Hengitys tihenee</strong> — lisää happea. <strong>Kädet hikoilevat</strong> — parempi ote. <strong>Vatsa vääntää</strong> — ruoansulatus pysähtyy. <strong>Lihasjännitys</strong> — valmiudessa toimintaan.</p><p>Kaikki nämä ovat täysin normaaleja ahdistuksen oireita. Ne tuntuvat epämukavilta mutta eivät ole vaarallisia.</p>` },
+      { icon:'💨', title:'Miksi hengitys on niin tärkeää ahdistuksessa?',
+        content:`<p>Krooninen ahdistus johtaa usein ylärintahengitykseen ja hyperventilointiin. Tämä laskee CO₂-tasoa veressä — mikä paradoksaalisesti <strong>lisää ahdistuksen tunnetta</strong>.</p><p>Pidennetty uloshengitys aktivoi vagushermon — se viestii aivoille "vaara on ohi". Sisäänhengitys kiihdyttää sykettä. Uloshengitys hidastaa sitä. Mitä hitaammin hengität ulos, sitä nopeammin rauhoitut.</p>`,
+        selfHelp:[
+          {icon:'😮‍💨', text:'Fysiologinen huokaus — nopein apu paniikkiin', btn:'fysiologinen'},
+          {icon:'📦', text:'Neliöhengitys — tasapainottaa 5 minuutissa', btn:'neliohengitys'},
+          {icon:'❄️', text:'Kylmää kasvoille — katkaisee paniikkikohtauksen sekunneissa', btn:'kylmavesi'},
+        ]},
+      { icon:'🔄', title:'Miksi välttely tekee ahdistuksesta pahempaa?',
+        content:`<p>Kun vältät ahdistavia tilanteita, saat hetkellistä helpotusta — mutta pitkällä aikavälillä ahdistus kasvaa. Hermosto oppii, että tilanne on vaarallinen koska pakenet siitä.</p><p>Ahdistus on kuin aalto — se nousee, huipentuu ja laskee. Se ei voi jatkua ikuisesti. Pienin askelin kohtaaminen turvallisessa ympäristössä on tehokkain tapa vähentää ahdistusta.</p>`,
+        selfHelp:[
+          {icon:'👀', text:'5-4-3-2-1 tuo sinut takaisin hetkeen kesken ahdistuksen', btn:'54321'},
+          {icon:'🦋', text:'Perhoshalaus — rauhoittaa nopeasti, toimii kaikkialla', btn:'perhos'},
+          {icon:'🏡', text:'Turvapaikka — kun ahdistus tuntuu ylivoimaiselta', btn:'turva'},
+        ]},
+      { icon:'⚠️', title:'Milloin ahdistus vaatii ammattiapua?',
+        content:`<p>Hae apua jos ahdistus estää normaalit arjen asiat, sinulla on toistuvia paniikkikohtauksia, ahdistus on jatkunut yli 6 kuukautta, käytät alkoholia ahdistuksen hallintaan, tai sinulla on ajatuksia itsesi vahingoittamisesta.</p>` }
+    ]
+  },
+  trauma: {
+    icon:'🌊', title:'Trauma ja keho',
+    lead:'Trauma ei ole pelkästään muisto — se on kehollinen kokemus. Keho muistaa vaikka mieli yrittäisi unohtaa. Tämä ei ole heikkous vaan hermoston normaali reaktio ylivoimaiseen kokemukseen.',
+    blocks:[
+      { icon:'🧠', title:'Miksi trauma jää kehoon?',
+        content:`<p>Traumaattinen kokemus tallentuu aivoihin eri tavalla kuin tavalliset muistot. Normaali muisti tallentuu hippokampukseen — siellä muistolla on aika, paikka ja konteksti.</p><p>Trauma tallentuu tunne- ja aistimusalueille ilman aikaleimaa. Siksi traumareaktio voi tuntua kuin se tapahtuisi <strong>juuri nyt</strong> — ei muistolta menneisyydestä. Tästä syystä pelkkä puhuminen ei aina riitä.</p>` },
+      { icon:'🌊', title:'Miksi kehosi reagoi voimakkaasti arkisiin tilanteisiin?',
+        content:`<p>Hermosto on oppinut tunnistamaan "vaaramerkkejä" — ääniä, tuoksuja, tilanteita jotka muistuttavat traumasta. Tämä tapahtuu tietoisuuden alapuolella, automaattisesti.</p><p>Reagoit voimakkaasti tilanteeseen joka tuntuu ulkopuolisesta neutraalilta. <strong>Tämä ei ole ylilyöntiä</strong> — hermostosi tekee mitä se on ohjelmoitu tekemään: suojelemaan sinua.</p>`,
+        selfHelp:[
+          {icon:'👀', text:'5-4-3-2-1 tuo sinut takaisin nykyhetkeen flashbackin aikana', btn:'54321'},
+          {icon:'🦋', text:'Perhoshalaus rauhoittaa amygdalaa', btn:'perhos'},
+          {icon:'😮‍💨', text:'Hengitys ensin — aina kun reaktio on voimakas', btn:'fysiologinen'},
+        ]},
+      { icon:'💚', title:'Mitä voit tehdä itse?',
+        content:`<p><strong>Turvallisuuden rakentaminen</strong> on ensimmäinen askel. Ennen traumatyötä hermosto tarvitsee kokemuksen siitä, että nykyhetki on turvallinen.</p><p><strong>Pienet säännölliset harjoitteet</strong> ovat tehokkaampia kuin harva intensiivinen työ. Keho oppii turvallisuutta toistosta.</p>`,
+        selfHelp:[
+          {icon:'🏡', text:'Turvapaikka — rakentaa sisäisen ankkurin', btn:'turva'},
+          {icon:'💪', text:'Voimavarat — vahvistaa sisäistä turvaa', btn:'resurssointi'},
+          {icon:'🧘', text:'Kehoskannaus — varovainen yhteys kehoon', btn:'kehoskannaus'},
+        ]},
+      { icon:'⚠️', title:'Trauma vaatii usein ammattiapua',
+        content:`<p>Omatoimiset harjoitteet tukevat paranemista — mutta vakava trauma tarvitsee ammattilaisen ohjausta. Hae apua jos sinulla on toistuvia flashbackeja tai painajaisia, vältät laajasti tilanteita, tunnet olevasi jatkuvasti varuillasi, tai oireet ovat kestäneet yli kuukauden traumaattisen tapahtuman jälkeen.</p>` }
+    ]
+  },
+  uni: {
+    icon:'🌙', title:'Uni ja palautuminen',
+    lead:'Uni on aktiivinen palautumisprosessi jossa hermosto, immuunijärjestelmä ja muisti uusiutuvat. Unenpuute on yksi yleisimmistä stressin ja oireiden pahentajista.',
+    blocks:[
+      { icon:'🧠', title:'Miksi stressi pilaa unen?',
+        content:`<p>Kortisoli — stressihormoni — estää melatoniinin eritystä. Jos kortisolisi on korkealla illalla, nukahtaminen on vaikeaa vaikka olisit väsynyt.</p><p>Sympaattinen hermosto pitää sinut valveilla. Stressi viestii hermostolle: "ympäristö ei ole turvallinen — pysy hereillä." Tästä syntyy noidankehä: stressi pilaa unen → unenpuute lisää stressiä → stressi pilaa unen.</p>` },
+      { icon:'🌙', title:'Tärkeimmät keinot parantaa unta',
+        content:`<p><strong>Säännöllinen rytmi</strong> on tärkein yksittäinen tekijä. Mene nukkumaan ja herää samaan aikaan joka päivä — myös viikonloppuisin.</p><p><strong>Viileä makuuhuone</strong> (18–20°C) auttaa kehon lämpötilaa laskemaan nukahtamista varten.</p><p><strong>Sinivalo illalla</strong> estää melatoniinia. Vähennä ruutuaikaa 1–2 tuntia ennen nukkumaan menoa.</p><p><strong>Rauhoittumisrutiini</strong> viestii hermostolle lepotilaan siirtymisestä. Jo 10 minuutin rutiini toimii.</p>`,
+        selfHelp:[
+          {icon:'😮‍💨', text:'4-7-8 hengitys — tehokkain yksittäinen keino nukahtamiseen', btn:'478'},
+          {icon:'🧘', text:'Kehoskannaus ennen nukkumaan menoa laukaisee lihasjännityksen', btn:'kehoskannaus'},
+          {icon:'🏡', text:'Turvapaikka-mielikuva auttaa mielen hiljenemisessä', btn:'turva'},
+        ]},
+      { icon:'😴', title:'Mitä jos herään yöllä enkä saa unta?',
+        content:`<p><strong>Älä makaa sängyssä valppaana yli 20 minuuttia.</strong> Nouse ylös ja tee jotain rauhallista heikossa valaistuksessa kunnes väsyttää.</p><p><strong>Älä katso kelloa</strong> — se lisää ahdistusta. Peitä kello tai käännä se poispäin.</p><p><strong>Hyväksy herääminen</strong> ilman taistelua. Keho saa paljon hyötyä pelkästä levosta vaikka et nukkuisi.</p>`,
+        selfHelp:[
+          {icon:'📦', text:'Neliöhengitys laskee vireystilaa hitaasti alas', btn:'neliohengitys'},
+          {icon:'🎵', text:'Hyräily hiljaa itsekseen voi rauhoittaa mielen', btn:'hyraile'},
+        ]},
+      { icon:'⚠️', title:'Milloin uniongelmat vaativat apua?',
+        content:`<p>Hae apua jos uniongelmat ovat jatkuneet yli 3 kuukautta, päiväväsymys haittaa merkittävästi toimintakykyä, kuorsaat voimakkaasti tai hengityksesi pysähtyy yöllä, tai uni ei virkistä vaikka nukkuisit pitkään.</p>` }
+    ]
+  },
+  adhd: {
+    icon:'⚡', title:'ADHD ja ylivireystila',
+    lead:'ADHD ei ole pelkkä keskittymisongelma — se on neurologinen ero joka vaikuttaa hermoston säätelyyn laajasti. Monet ADHD-oireet liittyvät suoraan autonomiseen hermostoon.',
+    blocks:[
+      { icon:'🧠', title:'Miksi ADHD-hermosto reagoi eri tavalla?',
+        content:`<p>ADHD-hermostossa dopamiinin ja noradrenaliinin toiminta on erilaista. Tämä vaikuttaa tarkkaavaisuuteen ja impulsiivisuuteen — mutta myös <strong>hermoston säätelyyn</strong>.</p><p>Autonominen hermosto voi olla herkempi ärsykkeille. Pienetkin asiat voivat laukaista sympaattisen vaihteen — ei tahdonalaisesti, vaan neurologisesti. Tämä selittää miksi tunteiden säätely, ylivireys ja unihäiriöt ovat niin yleisiä.</p>` },
+      { icon:'⚡', title:'Aistiyliherkkyys ja ylivireys',
+        content:`<p>Monet ADHD-tyyppiset kokevat aistiyliherkkyyttä — äänet, valot, kosketukset voivat tuntua ylivoimaisen häiritseviltä. Tämä ei ole herkkähipiäisyyttä — hermosto käsittelee aistisignaaleja eri tavalla.</p><p><strong>Ylivireys illalla</strong> on erittäin yleistä. Dopamiini hakee stimulaatiota, ja hermosto vastustaa siirtymistä lepotilaan.</p>`,
+        selfHelp:[
+          {icon:'😮‍💨', text:'Fysiologinen huokaus — nopein keino laskea ylivireyttä', btn:'fysiologinen'},
+          {icon:'🎵', text:'Hyräily aktivoi parasympaattisen hermoston suoraan', btn:'hyraile'},
+          {icon:'🦋', text:'Perhoshalaus — rytminen stimulaatio rauhoittaa', btn:'perhos'},
+        ]},
+      { icon:'🔋', title:'Energianhallinta ADHD:ssa',
+        content:`<p><strong>Liike ennen kognitiivista työtä</strong> on yksi tehokkaimmista keinoista. 10–20 minuuttia reipasta liikettä nostaa dopamiini- ja noradrenaliinitasoja luonnollisesti.</p><p><strong>Rytmi ja ennustettavuus</strong> ovat erityisen tärkeitä. Tuttu rakenne vähentää hermoston jatkuvaa ympäristön skannausta.</p>`,
+        selfHelp:[
+          {icon:'🧘', text:'Kehoskannaus auttaa tunnistamaan ylikuormituksen ajoissa', btn:'kehoskannaus'},
+          {icon:'📦', text:'Neliöhengitys ennen haastavaa tehtävää', btn:'neliohengitys'},
+        ]},
+      { icon:'⚠️', title:'ADHD vaatii kokonaisvaltaista hoitoa',
+        content:`<p>Omatoimiset harjoitteet tukevat merkittävästi — mutta ne eivät korvaa asianmukaista hoitoa. Hae arviota jos ADHD-epäily on vahva tai oireet haittaavat merkittävästi arkea, työtä tai ihmissuhteita.</p>` }
+    ]
+  },
+  longcovid: {
+    icon:'🫁', title:'Long COVID ja pitkäkestoinen uupumus',
+    lead:'Long COVID ja ME/CFS ovat monimutkaisia tiloja jotka vaikuttavat hermoston, immuunijärjestelmän ja energiantuotannon toimintaan. Oikea tieto ja lähestymistapa ovat keskeisiä.',
+    blocks:[
+      { icon:'🧠', title:'Miksi Long COVID vaikuttaa niin moneen asiaan?',
+        content:`<p>Long COVID voi vaikuttaa autonomiseen hermostoon laajasti. <strong>Dysautonomia</strong> — hermoston säätelyhäiriö — selittää monia oireita: sydämen tykytys seistessä, väsymys, sumuinen ajattelu, unihäiriöt.</p><p><strong>POTS</strong> (posturaalinen ortostaattinen takykardia) on yleinen — syke nousee voimakkaasti seistessä. Vagushermovaurio on yksi tutkimuksen alla oleva mekanismi.</p>` },
+      { icon:'⚠️', title:'PEM — miksi rasittuminen pahentaa oireita?',
+        content:`<p><strong>Post-exertional malaise (PEM)</strong> on Long COVID:n keskeinen piirre: rasitus — fyysinen tai henkinen — pahentaa oireita 12–48 tunnin viiveellä. Tämä on biologinen reaktio, ei laiskuus.</p><p><strong>Pace-menetelmä:</strong> pidä aktiivisuus alle oireita aiheuttavan rajan. Lopeta ennen kuin oireet alkavat. Lepo on hoitoa. Henkinen rasitus kuluttaa yhtä paljon kuin fyysinen.</p>` },
+      { icon:'💚', title:'Mitä voit tehdä itse varovaisesti?',
+        content:`<p><strong>Vagushermon tuki varovaisesti:</strong> hyräily, hidas hengitys voivat tukea vagushermon toimintaa — mutta aloita todella pienestä ja seuraa reaktiota.</p><p><strong>Stressinhallinta on ensiluokkaista hoitoa</strong> — stressi pahentaa oireita suoraan. Hermoston rauhoittaminen on lääketieteellisesti perusteltua.</p>`,
+        selfHelp:[
+          {icon:'😮‍💨', text:'Fysiologinen huokaus — varovainen vagushermon aktivointi', btn:'fysiologinen'},
+          {icon:'🎵', text:'Hyräily stimuloi vagusta suoraan kurkunpään kautta', btn:'hyraile'},
+          {icon:'🏡', text:'Turvapaikka rauhoittaa hermostoa ilman fyysistä rasitusta', btn:'turva'},
+        ]},
+      { icon:'⚠️', title:'Long COVID vaatii ammattilaisen seurantaa',
+        content:`<p>Hae apua heti jos oireesi ovat vakavia tai pahenevat, sinulla on rintakipua tai hengenahdistusta, sydämen rytmihäiriöitä, tai oireet estävät normaalin arjen. Vältä aggressiivista liikuntaharjoittelua ilman ammattilaisen ohjausta.</p>` }
+    ]
+  }
+};
+
+let currentInfoTab = 'stressi';
+
+function switchInfoTab(id, btn) {
+  currentInfoTab = id;
+  document.querySelectorAll('.info-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderInfoContent(id);
+}
+
+function renderInfoContent(id) {
+  const topic = INFO_TOPICS[id];
+  if (!topic) return;
+  const container = document.getElementById('info-content');
+  if (!container) return;
+
+  const blocksHTML = topic.blocks.map((b, i) => {
+    const shHTML = b.selfHelp ? `<ul class="self-help-list">${b.selfHelp.map(sh =>
+      `<li><span class="sh-icon">${sh.icon}</span><span style="flex:1">${sh.text}</span>${sh.btn ? `<button class="sh-btn" onclick="openModal('${sh.btn}')">Kokeile →</button>` : ''}</li>`
+    ).join('')}</ul>` : '';
+
+    return `<div class="info-block" id="ib-${id}-${i}">
+      <button class="info-block-trigger" onclick="toggleInfoBlock('${id}',${i})">
+        <span class="info-block-icon">${b.icon}</span>
+        <span class="info-block-title">${b.title}</span>
+        <span class="info-block-chev">▶</span>
+      </button>
+      <div class="info-block-body">
+        <div class="info-block-content">${b.content}${shHTML}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  container.innerHTML = `<div class="info-section">
+    <div class="info-hero">
+      <div class="info-hero-icon">${topic.icon}</div>
+      <div><div class="info-hero-title">${topic.title}</div><div class="info-hero-lead">${topic.lead}</div></div>
+    </div>
+    <div class="info-blocks">${blocksHTML}</div>
+  </div>`;
+}
+
+function toggleInfoBlock(topicId, idx) {
+  const el = document.getElementById(`ib-${topicId}-${idx}`);
+  if (!el) return;
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.info-block').forEach(b => b.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+// ══════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   renderQuick();
   renderExGrid();
