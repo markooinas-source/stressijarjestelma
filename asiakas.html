@@ -573,6 +573,119 @@ body {
 .t-btn.start { border-color: var(--green); color: var(--green); }
 .t-btn.start:hover { background: var(--green-bg); }
 
+/* ── MUSIC PLAYER ── */
+.music-player {
+  background: #fff;
+  border: 1.5px solid var(--sand3);
+  border-radius: var(--r2);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 8px rgba(42,33,24,0.05);
+}
+
+.music-player-title {
+  font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: 0.85rem;
+  display: flex; align-items: center; gap: 0.4rem;
+}
+
+.track-list {
+  display: flex; flex-direction: column; gap: 0.4rem;
+  margin-bottom: 0.85rem;
+}
+
+.track-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  border: 1.5px solid var(--sand3);
+  border-radius: var(--r);
+  cursor: pointer; transition: all 0.2s;
+  background: var(--sand);
+}
+.track-item:hover { border-color: var(--green); background: var(--green-bg); }
+.track-item.playing {
+  border-color: var(--green);
+  background: var(--green-bg);
+}
+
+.track-play-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--green);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; color: #fff;
+  flex-shrink: 0; transition: all 0.2s;
+}
+.track-play-btn:hover { background: #3a6a4e; transform: scale(1.08); }
+.track-item.playing .track-play-btn { background: var(--amber); }
+
+.track-info { flex: 1; min-width: 0; }
+.track-name {
+  font-size: 0.88rem; font-weight: 700;
+  color: var(--ink); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.track-mood { font-size: 0.72rem; color: var(--ink3); }
+
+.track-vol-wrap {
+  display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0;
+}
+.track-vol {
+  width: 60px; appearance: none; height: 3px;
+  border-radius: 2px; background: var(--sand3);
+  outline: none; cursor: pointer;
+}
+.track-vol::-webkit-slider-thumb {
+  appearance: none; width: 12px; height: 12px;
+  border-radius: 50%; background: var(--green); cursor: pointer;
+}
+
+.now-playing-bar {
+  display: none;
+  align-items: center; gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--green-bg);
+  border: 1.5px solid var(--green-bd);
+  border-radius: var(--r);
+  font-size: 0.78rem; color: var(--green);
+  font-weight: 700;
+}
+.now-playing-bar.show { display: flex; }
+
+.sound-wave {
+  display: flex; align-items: flex-end; gap: 2px; height: 14px;
+}
+.sound-wave span {
+  display: block; width: 3px; border-radius: 1px;
+  background: var(--green);
+  animation: wave 0.8s ease-in-out infinite;
+}
+.sound-wave span:nth-child(1) { height: 5px; animation-delay: 0s; }
+.sound-wave span:nth-child(2) { height: 10px; animation-delay: 0.15s; }
+.sound-wave span:nth-child(3) { height: 7px; animation-delay: 0.3s; }
+.sound-wave span:nth-child(4) { height: 12px; animation-delay: 0.1s; }
+.sound-wave span:nth-child(5) { height: 4px; animation-delay: 0.25s; }
+@keyframes wave {
+  0%,100% { transform: scaleY(0.4); opacity: 0.5; }
+  50%      { transform: scaleY(1);   opacity: 1; }
+}
+
+/* ── GUIDED OVERLAY — music addition ── */
+.guided-music-row {
+  display: none;
+  align-items: center; gap: 0.6rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(74,124,94,0.08);
+  border: 1px solid var(--green-bd);
+  border-radius: 20px;
+  font-size: 0.75rem; font-weight: 700;
+  color: var(--green);
+}
+.guided-music-row.show { display: flex; }
+
 /* ── GUIDED TIMER ── */
 .guided-overlay {
   display: none;
@@ -1233,6 +1346,51 @@ body.kids-mode .site-footer { display:none; }
     </div>
   </div>
 
+  <h2 class="page-title" style="font-size:1.3rem;margin-bottom:1rem">Taustamusiikki</h2>
+  <div class="music-player adult-only">
+    <div class="music-player-title">🎵 Valitse taustamusiikki harjoitteeseen</div>
+    <div class="track-list">
+      <div class="track-item" id="track-0" onclick="toggleTrack(0)">
+        <button class="track-play-btn" id="track-btn-0">▶</button>
+        <div class="track-info">
+          <div class="track-name">Slow Breath Field</div>
+          <div class="track-mood">Rauhallinen · hengitysharjoitteisiin</div>
+        </div>
+        <div class="track-vol-wrap">
+          <span style="font-size:0.7rem">🔈</span>
+          <input type="range" class="track-vol" id="vol-0" min="0" max="100" value="40" oninput="setTrackVol(0,this.value)" onclick="event.stopPropagation()">
+        </div>
+      </div>
+      <div class="track-item" id="track-1" onclick="toggleTrack(1)">
+        <button class="track-play-btn" id="track-btn-1">▶</button>
+        <div class="track-info">
+          <div class="track-name">Slow Tide</div>
+          <div class="track-mood">Maadoittava · ankkurointiharjoitteisiin</div>
+        </div>
+        <div class="track-vol-wrap">
+          <span style="font-size:0.7rem">🔈</span>
+          <input type="range" class="track-vol" id="vol-1" min="0" max="100" value="40" oninput="setTrackVol(1,this.value)" onclick="event.stopPropagation()">
+        </div>
+      </div>
+      <div class="track-item" id="track-2" onclick="toggleTrack(2)">
+        <button class="track-play-btn" id="track-btn-2">▶</button>
+        <div class="track-info">
+          <div class="track-name">Breath in Cedar</div>
+          <div class="track-mood">Metsäinen · mielikuva- ja kehoharjoitteisiin</div>
+        </div>
+        <div class="track-vol-wrap">
+          <span style="font-size:0.7rem">🔈</span>
+          <input type="range" class="track-vol" id="vol-2" min="0" max="100" value="40" oninput="setTrackVol(2,this.value)" onclick="event.stopPropagation()">
+        </div>
+      </div>
+    </div>
+    <div class="now-playing-bar" id="now-playing-bar">
+      <div class="sound-wave"><span></span><span></span><span></span><span></span><span></span></div>
+      <span id="now-playing-name">—</span>
+      <span style="margin-left:auto;font-size:0.7rem;font-weight:600;color:var(--ink3);cursor:pointer" onclick="stopMusic()">✕ Pysäytä</span>
+    </div>
+  </div>
+
   <h2 class="page-title" style="font-size:1.3rem;margin-bottom:1rem">Pikavalinnat</h2>
   <div class="quick-grid" id="quick-grid"></div>
 
@@ -1400,6 +1558,10 @@ body.kids-mode .site-footer { display:none; }
 <!-- GUIDED TIMER OVERLAY -->
 <div class="guided-overlay" id="guided-overlay">
   <div class="guided-ex-name" id="g-exname"></div>
+  <div class="guided-music-row" id="g-music-row">
+    <div class="sound-wave"><span></span><span></span><span></span><span></span><span></span></div>
+    <span id="g-music-name"></span>
+  </div>
   <div class="breath-ball-wrap" id="g-ball-wrap">
     <div class="breath-ball" id="g-ball"></div>
   </div>
@@ -2009,6 +2171,9 @@ function startGuided(exId) {
 
   document.getElementById('g-exname').textContent = guidedExName;
 
+  // Fade music down slightly during guided exercise
+  fadeMusic(0.18, 1500);
+
   // Ball visibility
   const ballWrap = document.getElementById('g-ball-wrap');
   if (ballWrap) ballWrap.classList.toggle('show', !!program.hasBall);
@@ -2106,6 +2271,11 @@ function stopGuided() {
   if (synth) synth.cancel();
   document.getElementById('guided-overlay').classList.remove('active');
   document.body.style.overflow = '';
+  // Fade music back up
+  if (currentTrack >= 0) {
+    const targetVol = document.getElementById('vol-' + currentTrack)?.value / 100 || 0.4;
+    fadeMusic(targetVol, 1500);
+  }
 }
 
 function speak(text) {
@@ -2364,6 +2534,116 @@ function stopBreathAnim() {
   if (instr) instr.textContent = 'Paina nappia aloittaaksesi';
   const count = document.getElementById('breath-count');
   if (count) count.textContent = '';
+}
+
+// ══════════════════════════════════
+// MUSIC PLAYER
+// ══════════════════════════════════
+const BASE_URL = 'https://markooinas-source.github.io/stressijarjestelma/';
+
+const TRACKS = [
+  { file: 'Slow_Breath_Field.mp3', name: 'Slow Breath Field' },
+  { file: 'Slow_Tide.mp3',         name: 'Slow Tide' },
+  { file: 'Breath_in_Cedar.mp3',   name: 'Breath in Cedar' },
+];
+
+const musicAudios = TRACKS.map(t => {
+  const a = new Audio(BASE_URL + t.file);
+  a.loop = true;
+  a.volume = 0.4;
+  return a;
+});
+
+let currentTrack = -1;
+let musicPlaying = false;
+
+function toggleTrack(idx) {
+  if (currentTrack === idx && musicPlaying) {
+    pauseMusic();
+  } else {
+    playTrack(idx);
+  }
+}
+
+function playTrack(idx) {
+  // Stop any playing track
+  musicAudios.forEach((a, i) => { if (i !== idx) { a.pause(); a.currentTime = 0; } });
+  document.querySelectorAll('.track-item').forEach(el => el.classList.remove('playing'));
+  document.querySelectorAll('.track-play-btn').forEach(el => el.textContent = '▶');
+
+  currentTrack = idx;
+  musicPlaying = true;
+
+  musicAudios[idx].play().then(() => {
+    document.getElementById('track-' + idx).classList.add('playing');
+    document.getElementById('track-btn-' + idx).textContent = '⏸';
+
+    // Now playing bar
+    const bar = document.getElementById('now-playing-bar');
+    const nameEl = document.getElementById('now-playing-name');
+    if (bar) bar.classList.add('show');
+    if (nameEl) nameEl.textContent = TRACKS[idx].name;
+
+    // Guided overlay music row
+    const gRow = document.getElementById('g-music-row');
+    const gName = document.getElementById('g-music-name');
+    if (gRow) gRow.classList.add('show');
+    if (gName) gName.textContent = TRACKS[idx].name;
+
+  }).catch(() => {
+    // Autoplay blocked — show message
+    const bar = document.getElementById('now-playing-bar');
+    if (bar) {
+      bar.classList.add('show');
+      bar.style.background = 'var(--amber-bg)';
+      bar.style.borderColor = 'var(--amber-bd)';
+      const nameEl = document.getElementById('now-playing-name');
+      if (nameEl) { nameEl.style.color = 'var(--amber)'; nameEl.textContent = 'Paina ▶ uudelleen käynnistääksesi'; }
+    }
+  });
+}
+
+function pauseMusic() {
+  if (currentTrack >= 0) musicAudios[currentTrack].pause();
+  musicPlaying = false;
+  document.querySelectorAll('.track-item').forEach(el => el.classList.remove('playing'));
+  document.querySelectorAll('.track-play-btn').forEach(el => el.textContent = '▶');
+  const bar = document.getElementById('now-playing-bar');
+  if (bar) bar.classList.remove('show');
+  const gRow = document.getElementById('g-music-row');
+  if (gRow) gRow.classList.remove('show');
+}
+
+function stopMusic() {
+  if (currentTrack >= 0) { musicAudios[currentTrack].pause(); musicAudios[currentTrack].currentTime = 0; }
+  currentTrack = -1;
+  musicPlaying = false;
+  document.querySelectorAll('.track-item').forEach(el => el.classList.remove('playing'));
+  document.querySelectorAll('.track-play-btn').forEach(el => el.textContent = '▶');
+  const bar = document.getElementById('now-playing-bar');
+  if (bar) { bar.classList.remove('show'); bar.style.background = ''; bar.style.borderColor = ''; }
+  const gRow = document.getElementById('g-music-row');
+  if (gRow) gRow.classList.remove('show');
+}
+
+function setTrackVol(idx, val) {
+  musicAudios[idx].volume = val / 100;
+}
+
+// Fade music in/out for guided exercises
+function fadeMusic(targetVol, duration) {
+  if (currentTrack < 0 || !musicPlaying) return;
+  const audio = musicAudios[currentTrack];
+  const startVol = audio.volume;
+  const diff = targetVol - startVol;
+  const steps = 20;
+  const stepTime = duration / steps;
+  let step = 0;
+  const fade = setInterval(() => {
+    step++;
+    audio.volume = Math.max(0, Math.min(1, startVol + diff * (step / steps)));
+    if (step >= steps) clearInterval(fade);
+  }, stepTime);
 }
 
 // ══════════════════════════════════
