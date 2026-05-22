@@ -2542,12 +2542,12 @@ function stopBreathAnim() {
 const BASE_URL = 'https://markooinas-source.github.io/stressijarjestelma/';
 
 const TRACKS = [
-  { file: 'Slow_Breath_Field.mp3', name: 'Slow Breath Field' },
-  { file: 'Slow_Tide.mp3',         name: 'Slow Tide' },
-  { file: 'Breath_in_Cedar.mp3',   name: 'Breath in Cedar' },
+  { file: 'Slow%20Breath%20Field.mp3', name: 'Slow Breath Field' },
+  { file: 'Slow%20Tide.mp3',           name: 'Slow Tide' },
+  { file: 'Breath%20in%20Cedar.mp3',   name: 'Breath in Cedar' },
 ];
 
-const musicAudios = TRACKS.map(t => {
+const musicAudios = TRACKS.map((t) => {
   const a = new Audio(BASE_URL + t.file);
   a.loop = true;
   a.volume = 0.4;
@@ -2581,8 +2581,8 @@ function playTrack(idx) {
     // Now playing bar
     const bar = document.getElementById('now-playing-bar');
     const nameEl = document.getElementById('now-playing-name');
-    if (bar) bar.classList.add('show');
-    if (nameEl) nameEl.textContent = TRACKS[idx].name;
+    if (bar) { bar.classList.add('show'); bar.style.background = ''; bar.style.borderColor = ''; }
+    if (nameEl) { nameEl.style.color = ''; nameEl.textContent = TRACKS[idx].name; }
 
     // Guided overlay music row
     const gRow = document.getElementById('g-music-row');
@@ -2590,16 +2590,22 @@ function playTrack(idx) {
     if (gRow) gRow.classList.add('show');
     if (gName) gName.textContent = TRACKS[idx].name;
 
-  }).catch(() => {
-    // Autoplay blocked — show message
+  }).catch(err => {
+    // Show helpful error
     const bar = document.getElementById('now-playing-bar');
     if (bar) {
       bar.classList.add('show');
       bar.style.background = 'var(--amber-bg)';
       bar.style.borderColor = 'var(--amber-bd)';
-      const nameEl = document.getElementById('now-playing-name');
-      if (nameEl) { nameEl.style.color = 'var(--amber)'; nameEl.textContent = 'Paina ▶ uudelleen käynnistääksesi'; }
     }
+    const nameEl = document.getElementById('now-playing-name');
+    if (nameEl) {
+      nameEl.style.color = 'var(--amber)';
+      nameEl.textContent = err.name === 'NotAllowedError'
+        ? 'Paina ▶ uudelleen — selain vaatii painalluksen'
+        : 'Tiedostoa ei löydy — tarkista GitHub';
+    }
+    document.getElementById('track-btn-' + idx).textContent = '▶';
   });
 }
 
