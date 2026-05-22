@@ -825,130 +825,111 @@ body {
 }
 
 /* ── KIDS MODE ── */
-body.kids-mode {
-  --sand:    #fff8ee;
-  --sand2:   #ffefd4;
-  --sand3:   #ffdcaa;
-}
-
+body.kids-mode { --sand: #fff8ee; --sand2: #ffefd4; --sand3: #ffdcaa; }
 .kids-overlay { display:none; }
 body.kids-mode .kids-overlay { display:block; }
 body.kids-mode .adult-only { display:none; }
+body.kids-mode .site-footer { display:none; }
 
-.kids-panel {
-  max-width: 680px; margin: 0 auto;
-  padding: 1.5rem 1rem 5rem;
-}
+.kids-panel { max-width:680px; margin:0 auto; padding:1.5rem 1rem 5rem; }
 
-.kids-title {
-  font-family: 'Nunito', sans-serif;
-  font-size: clamp(1.6rem,6vw,2.4rem);
-  font-weight: 800; color: var(--ink);
-  text-align:center; margin-bottom:0.3rem;
+/* Age selector */
+.age-selector { text-align:center; padding:2rem 0; }
+.age-title { font-family:'Lora',serif; font-size:1.6rem; font-style:italic; color:var(--ink); margin-bottom:1.5rem; }
+.age-btns { display:flex; gap:0.85rem; justify-content:center; flex-wrap:wrap; }
+.age-btn {
+  display:flex; flex-direction:column; align-items:center; gap:0.5rem;
+  padding:1.25rem 1.5rem; min-width:130px;
+  border:3px solid var(--sand3); border-radius:20px; background:#fff;
+  cursor:pointer; transition:all 0.22s; font-family:'Nunito',sans-serif;
 }
-.kids-sub { text-align:center; font-size:1rem; color:var(--ink3); margin-bottom:2rem; }
+.age-btn:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,0,0,0.12); border-color:var(--green); }
+.age-emoji { font-size:2.2rem; line-height:1; }
+.age-label { font-size:0.85rem; font-weight:800; color:var(--ink2); }
 
-.kids-meter {
-  background:#fff;
-  border: 2px solid var(--sand3);
-  border-radius: 24px;
-  padding:1.5rem;
-  margin-bottom:1.5rem;
-  box-shadow: var(--shadow);
-  text-align:center;
-}
-.kids-meter-title {
-  font-size:1.1rem; font-weight:800; color:var(--ink); margin-bottom:1rem;
-}
-.kids-faces {
-  display:flex; justify-content:center; gap:0.6rem;
-  flex-wrap:wrap;
-}
+/* Kids meter card */
+.kids-meter-card { margin-bottom:1rem; }
+.kids-feeling-title { font-family:'Lora',serif; font-size:1.1rem; font-style:italic; color:var(--ink); margin-bottom:1rem; text-align:center; }
+
+.kids-feeling-grid { display:flex; flex-wrap:wrap; justify-content:center; gap:0.6rem; margin-bottom:0.85rem; }
 .kid-face {
-  display:flex; flex-direction:column; align-items:center;
-  gap:0.3rem; padding:0.9rem 0.7rem;
-  border: 3px solid var(--sand3);
-  border-radius:16px; background:#fff;
-  cursor:pointer; transition:all 0.2s;
-  min-width:70px;
+  display:flex; flex-direction:column; align-items:center; gap:0.3rem;
+  padding:0.85rem 0.7rem; min-width:72px;
+  border:3px solid var(--sand3); border-radius:16px; background:#fff;
+  cursor:pointer; transition:all 0.2s; font-family:'Nunito',sans-serif;
 }
-.kid-face:hover { transform:scale(1.05); box-shadow:var(--shadow); }
-.kid-face.sel { border-width:3px; transform:scale(1.08); box-shadow:var(--shadow2); }
-.kid-face.f1.sel { border-color:#60a0e0; background:#e8f4ff; }
-.kid-face.f2.sel { border-color:#60c080; background:#e8fdf0; }
-.kid-face.f3.sel { border-color:#e0a020; background:#fffbe8; }
-.kid-face.f4.sel { border-color:#e06060; background:#fff0f0; }
-.kf-emoji { font-size:2.2rem; line-height:1; }
-.kf-word { font-size:0.72rem; font-weight:800; color:var(--ink3); }
+.kid-face:hover { transform:scale(1.05); box-shadow:0 4px 16px rgba(0,0,0,0.1); }
+.kid-face.sel { border-width:3px; transform:scale(1.08); box-shadow:0 6px 20px rgba(0,0,0,0.15); }
+.kid-face.kf-blue.sel   { border-color:#60a0e0; background:#e8f4ff; }
+.kid-face.kf-green.sel  { border-color:#60c080; background:#e8fdf0; }
+.kid-face.kf-yellow.sel { border-color:#e0a020; background:#fffbe8; }
+.kid-face.kf-red.sel    { border-color:#e06060; background:#fff0f0; }
+.kid-face.kf-purple.sel { border-color:#a060e0; background:#f4eeff; }
+.kf-emoji { font-size:2rem; line-height:1; }
+.kf-word  { font-size:0.72rem; font-weight:800; color:var(--ink3); text-align:center; }
 
 .kid-result {
-  margin-top:1rem; padding:0.9rem 1rem;
+  margin-top:0.85rem; padding:0.9rem 1rem;
   border-radius:14px; border:2px solid var(--sand3);
   background:var(--sand); transition:all 0.3s;
-  text-align:left;
 }
-.kid-result-title { font-size:1rem; font-weight:800; margin-bottom:0.3rem; }
-.kid-result-text { font-size:0.9rem; color:var(--ink2); line-height:1.6; }
+.kid-result-title { font-size:1rem; font-weight:800; margin-bottom:0.25rem; color:var(--ink); }
+.kid-result-text  { font-size:0.88rem; color:var(--ink2); line-height:1.6; }
+.kid-suggest-btns { display:flex; flex-wrap:wrap; gap:0.4rem; margin-top:0.65rem; }
+.kid-sug-btn {
+  font-size:0.75rem; font-weight:800; padding:0.3rem 0.75rem;
+  border-radius:20px; border:2px solid var(--green-bd);
+  background:var(--green-bg); color:var(--green); cursor:pointer; transition:all 0.2s;
+}
+.kid-sug-btn:hover { background:var(--green); color:#fff; }
 
-.kids-ex-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:0.85rem;
-  margin-bottom:1.5rem;
-}
+/* Kids exercises */
+.kids-ex-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:0.75rem; margin-bottom:1rem; }
 .kid-ex-card {
-  background:#fff;
-  border: 2px solid var(--sand3);
-  border-radius:20px;
-  padding:1.1rem 0.85rem;
-  cursor:pointer;
-  transition:all 0.2s;
-  text-align:center;
-  display:flex; flex-direction:column; align-items:center; gap:0.4rem;
+  background:#fff; border:2px solid var(--sand3); border-radius:18px;
+  padding:1rem 0.85rem; cursor:pointer; transition:all 0.2s;
+  text-align:center; display:flex; flex-direction:column; align-items:center; gap:0.4rem;
 }
-.kid-ex-card:hover { transform:translateY(-3px); box-shadow:var(--shadow2); }
-.kid-emoji  { font-size:2rem; line-height:1; }
-.kid-ex-name { font-size:0.85rem; font-weight:800; color:var(--ink); }
-.kid-ex-dur  { font-size:0.72rem; color:var(--ink3); }
+.kid-ex-card:hover { transform:translateY(-3px); box-shadow:0 6px 20px rgba(0,0,0,0.1); border-color:var(--warm); }
+.kid-ex-card.guided-card { border-color:var(--green-bd); background:var(--green-bg); }
+.kid-emoji    { font-size:2rem; line-height:1; }
+.kid-ex-name  { font-size:0.82rem; font-weight:800; color:var(--ink); line-height:1.3; }
+.kid-ex-dur   { font-size:0.68rem; color:var(--ink3); }
+.kid-ex-guide { font-size:0.65rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:var(--green); margin-top:0.1rem; }
+
+/* Kids info accordion */
+.kids-info-title { font-size:0.85rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink3); margin-bottom:0.75rem; }
+.kids-info-item { background:#fff; border:2px solid var(--sand3); border-radius:var(--r); overflow:hidden; margin-bottom:0.5rem; }
+.kids-info-trigger {
+  width:100%; display:flex; align-items:center; gap:0.75rem;
+  padding:0.85rem 1rem; background:none; border:none; cursor:pointer; text-align:left; transition:background 0.2s;
+}
+.kids-info-trigger:hover { background:var(--sand); }
+.kids-info-item.open .kids-info-trigger { background:var(--sand2); }
+.kids-info-icon  { font-size:1.2rem; flex-shrink:0; }
+.kids-info-title2 { font-size:0.95rem; font-weight:800; color:var(--ink); flex:1; }
+.kids-info-chev  { font-size:0.7rem; color:var(--ink3); transition:transform 0.28s; }
+.kids-info-item.open .kids-info-chev { transform:rotate(90deg); color:var(--green); }
+.kids-info-body  { max-height:0; overflow:hidden; transition:max-height 0.38s; }
+.kids-info-item.open .kids-info-body { max-height:600px; }
+.kids-info-content { padding:0.9rem 1rem 1rem; border-top:1px solid var(--sand3); font-size:0.9rem; line-height:1.75; color:var(--ink2); }
+.kids-info-content p+p { margin-top:0.55rem; }
 
 /* breathing animation */
-.breath-anim-wrap {
-  display:flex; flex-direction:column; align-items:center;
-  gap:1rem; padding:1.5rem 0;
-}
+.breath-anim-wrap { display:flex; flex-direction:column; align-items:center; gap:1rem; padding:1.5rem 0; }
 .breath-circle {
-  width:120px; height:120px;
-  border-radius:50%;
-  background: var(--green-bg);
-  border: 3px solid var(--green);
+  width:120px; height:120px; border-radius:50%;
+  background:var(--green-bg); border:3px solid var(--green);
   display:flex; align-items:center; justify-content:center;
-  font-size:0.9rem; font-weight:800; color:var(--green);
-  transition: all 0.1s;
+  font-size:0.9rem; font-weight:800; color:var(--green); transition:all 0.1s;
 }
-.breath-circle.expanding {
-  animation: breathIn 4s ease-in-out forwards;
-}
-.breath-circle.holding {
-  animation: none;
-  width:160px; height:160px;
-  background: var(--amber-bg);
-  border-color: var(--amber);
-  color: var(--amber);
-}
-.breath-circle.shrinking {
-  animation: breathOut 6s ease-in-out forwards;
-}
+.breath-circle.expanding { animation:breathIn 4s ease-in-out forwards; }
+.breath-circle.holding   { animation:none; width:160px; height:160px; background:var(--amber-bg); border-color:var(--amber); color:var(--amber); }
+.breath-circle.shrinking { animation:breathOut 6s ease-in-out forwards; }
 @keyframes breathIn  { from{width:90px;height:90px} to{width:160px;height:160px} }
 @keyframes breathOut { from{width:160px;height:160px} to{width:90px;height:90px} }
-
-.breath-instruction {
-  font-size:1.1rem; font-weight:800; color:var(--ink);
-  text-align:center;
-}
-.breath-count {
-  font-size:2rem; font-weight:800;
-  color:var(--green); font-family:'Lora',serif;
-}
+.breath-instruction { font-size:1.1rem; font-weight:800; color:var(--ink); text-align:center; }
+.breath-count { font-size:2rem; font-weight:800; color:var(--green); font-family:'Lora',serif; }
 
 /* ── RESPONSIVE ── */
 @media(max-width:480px) {
@@ -1603,51 +1584,68 @@ body.kids-mode .site-footer { display:none; }
 <!-- ════════════════ KIDS MODE ════════════════ -->
 <div id="kids-mode-panel" class="panel kids-overlay">
 <div class="kids-panel">
-  <div class="kids-title">Miten sinulla menee? 🌟</div>
-  <div class="kids-sub">Valitse naama joka muistuttaa eniten sinua juuri nyt</div>
 
-  <div class="kids-meter card">
-    <div class="kids-faces" id="kids-faces">
-      <button class="kid-face f1" onclick="selectKidFace('rauhallinen',this)">
-        <span class="kf-emoji">😴</span>
-        <span class="kf-word">Väsynyt</span>
+  <!-- Age group selector -->
+  <div class="age-selector" id="age-selector">
+    <div class="age-title">Hei! Kuinka vanha olet? 👋</div>
+    <div class="age-btns">
+      <button class="age-btn" onclick="selectAge('pikku')">
+        <span class="age-emoji">🐣</span>
+        <span class="age-label">3–7 vuotta</span>
       </button>
-      <button class="kid-face f2" onclick="selectKidFace('hyva',this)">
-        <span class="kf-emoji">😊</span>
-        <span class="kf-word">Hyvä olo</span>
+      <button class="age-btn" onclick="selectAge('koulu')">
+        <span class="age-emoji">🌱</span>
+        <span class="age-label">8–12 vuotta</span>
       </button>
-      <button class="kid-face f3" onclick="selectKidFace('jannittynyt',this)">
-        <span class="kf-emoji">😟</span>
-        <span class="kf-word">Jännittää</span>
+      <button class="age-btn" onclick="selectAge('nuori')">
+        <span class="age-emoji">🌿</span>
+        <span class="age-label">13–17 vuotta</span>
       </button>
-      <button class="kid-face f4" onclick="selectKidFace('pelottaa',this)">
-        <span class="kf-emoji">😨</span>
-        <span class="kf-word">Pelottaa</span>
-      </button>
-    </div>
-    <div class="kid-result" id="kid-result" style="display:none">
-      <div class="kid-result-title" id="kid-result-title"></div>
-      <div class="kid-result-text" id="kid-result-text"></div>
     </div>
   </div>
 
-  <div style="font-size:1rem;font-weight:800;color:var(--ink);margin-bottom:0.85rem">Kokeile tätä 👇</div>
-  <div class="kids-ex-grid" id="kids-ex-grid"></div>
+  <!-- Age content area (hidden until age selected) -->
+  <div id="age-content" style="display:none">
 
-  <!-- breathing animation -->
-  <div class="card" id="breath-anim-card" style="display:none">
-    <div style="font-family:'Lora',serif;font-style:italic;font-size:1.1rem;color:var(--ink);margin-bottom:0.75rem;text-align:center" id="breath-ex-title">Hengitysharjoite</div>
-    <div class="breath-anim-wrap">
-      <div class="breath-circle" id="breath-circle">Aloita</div>
-      <div class="breath-instruction" id="breath-instruction">Paina nappia aloittaaksesi</div>
-      <div class="breath-count" id="breath-count"></div>
+    <!-- Back button + age label -->
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem">
+      <button onclick="resetAge()" style="font-size:0.75rem;font-weight:800;padding:0.35rem 0.8rem;border-radius:20px;border:2px solid var(--sand3);background:#fff;color:var(--ink3);cursor:pointer">← Vaihda</button>
+      <span id="age-badge" style="font-size:0.78rem;font-weight:800;color:var(--ink3)"></span>
     </div>
-    <div style="display:flex;gap:0.5rem;justify-content:center">
-      <button class="t-btn start" onclick="startBreathAnim()">Aloita</button>
-      <button class="t-btn" onclick="stopBreathAnim()">Lopeta</button>
-    </div>
-  </div>
 
+    <!-- FEELING METER -->
+    <div class="card kids-meter-card" id="kids-feeling-area">
+      <div class="kids-feeling-title" id="kids-feeling-title">Miten sinulla menee tänään?</div>
+      <div class="kids-feeling-grid" id="kids-feeling-grid"></div>
+      <div class="kid-result" id="kid-result" style="display:none">
+        <div class="kid-result-title" id="kid-result-title"></div>
+        <div class="kid-result-text" id="kid-result-text"></div>
+        <div class="kid-suggest-btns" id="kid-suggest-btns"></div>
+      </div>
+    </div>
+
+    <!-- EXERCISES -->
+    <div style="font-size:1rem;font-weight:800;color:var(--ink);margin:1.25rem 0 0.75rem" id="kids-ex-title">Harjoitteet</div>
+    <div class="kids-ex-grid" id="kids-ex-grid"></div>
+
+    <!-- INFO / feelings education -->
+    <div id="kids-info-area" style="margin-top:1.5rem"></div>
+
+    <!-- Breathing animation (shown when selected) -->
+    <div class="card" id="breath-anim-card" style="display:none;margin-top:1rem">
+      <div style="font-family:'Lora',serif;font-style:italic;font-size:1.1rem;color:var(--ink);margin-bottom:0.75rem;text-align:center" id="breath-ex-title">Hengitysharjoite</div>
+      <div class="breath-anim-wrap">
+        <div class="breath-circle" id="breath-circle">Aloita</div>
+        <div class="breath-instruction" id="breath-instruction">Paina nappia aloittaaksesi</div>
+        <div class="breath-count" id="breath-count"></div>
+      </div>
+      <div style="display:flex;gap:0.5rem;justify-content:center">
+        <button class="t-btn start" onclick="startBreathAnim()">Aloita</button>
+        <button class="t-btn" onclick="stopBreathAnim()">Lopeta</button>
+      </div>
+    </div>
+
+  </div><!-- /age-content -->
 </div>
 </div>
 
@@ -1781,12 +1779,222 @@ const EXERCISES = [
     note:'PMR (Progressive Muscle Relaxation, Jacobson 1929) on yksi tutkituimmista rentoutusmenetelmistä. Erittäin tehokas unettomuuteen, ahdistukseen ja krooniseen kipuun.', timer:0 },
 ];
 
-const KID_EXERCISES = [
-  { id:'perhos', emoji:'🦋', name:'Perhoshalaus', dur:'3 min', anim:false },
-  { id:'hyraile', emoji:'🎵', name:'Hyräily', dur:'5 min', anim:false },
-  { id:'54321', emoji:'👀', name:'5 aistia', dur:'3 min', anim:false },
-  { id:'hengitys', emoji:'🫧', name:'Puhalla pallo', dur:'2 min', anim:true },
-];
+// ══════════════════════════════════
+// KIDS DATA
+// ══════════════════════════════════
+
+const KIDS_AGE_DATA = {
+  pikku: {
+    label: '🐣 3–7 vuotta',
+    feelingTitle: 'Miten sinulla menee? Valitse naama!',
+    feelings: [
+      { id:'iloinen',    emoji:'😊', word:'Iloinen',    color:'kf-green',  title:'Sulla on hyvä olo! 😊',       text:'Mahtavaa! Haluatko leikkiä ja harjoitella?', exIds:['perhos-pikku','hengitys-pikku','hyraile-pikku'] },
+      { id:'vasynyt',    emoji:'😴', word:'Väsynyt',    color:'kf-blue',   title:'Olet väsynyt 😴',             text:'Se on ok! Voidaan tehdä rauhallinen harjoite.', exIds:['hengitys-pikku','kehoskannaus-pikku'] },
+      { id:'jannittaa',  emoji:'😟', word:'Jännittää',  color:'kf-yellow', title:'Sinua jännittää 😟',          text:'Jännitys on normaali tunne! Kokeile puhaltaa palloa.', exIds:['hengitys-pikku','perhos-pikku'] },
+      { id:'surullinen', emoji:'😢', word:'Surullinen',  color:'kf-blue',   title:'Olet surullinen 💙',          text:'Suru on ok. Voit itkeä — se auttaa. Kokeile perhoshalaus.', exIds:['perhos-pikku','hyraile-pikku'] },
+      { id:'vihainen',   emoji:'😠', word:'Vihainen',   color:'kf-red',    title:'Sinulla on viha sisällä 😠',  text:'Viha on tunne — se menee ohi. Ravistele se ulos kehosta!', exIds:['ravistelu-pikku','hengitys-pikku'] },
+    ],
+    exercises: [
+      { id:'hengitys-pikku',     emoji:'🫧', name:'Puhalla pallo',    dur:'2 min', guided:'hengitys-pikku-prog', anim:true },
+      { id:'perhos-pikku',       emoji:'🦋', name:'Perhoshalaus',      dur:'3 min', guided:'butterfly' },
+      { id:'hyraile-pikku',      emoji:'🎵', name:'Hyräily',           dur:'3 min', guided:'hyraile' },
+      { id:'ravistelu-pikku',    emoji:'🐟', name:'Ravistele kuin kala',dur:'2 min', guided:'ravistelu-pikku-prog' },
+      { id:'kehoskannaus-pikku', emoji:'🐌', name:'Hiljaa & kuuntele', dur:'3 min', guided:'kehoskannaus-pikku-prog' },
+      { id:'turvapaikka-pikku',  emoji:'🏠', name:'Oma turvapaikka',   dur:'5 min', guided:'turva' },
+    ],
+    info: [
+      { icon:'❤️', title:'Mikä on tunne?',
+        content:`<p>Tunteet ovat kuin värejä — on iloista keltaista, surullista sinistä, vihaisesta punaista ja pelokasta violettia.</p><p>Kaikki tunteet ovat ok! Ei ole olemassa "huonoja" tunteita. Tunteet kertovat sinulle jotain tärkeää.</p><p>Tunteet aina menevät ohi — kuin pilvet taivaalla. 🌤️</p>` },
+      { icon:'🧠', title:'Missä tunteet asuvat?',
+        content:`<p>Tunteet asuvat kehossasi! Kun olet iloinen, sydän tuntuu lämpimältä. Kun jännittää, maha voi pyöriä.</p><p>Keho kertoo sinulle miten voit. Voit aina kuunnella sitä.</p>` },
+      { icon:'🌬️', title:'Hengitys auttaa aina',
+        content:`<p>Kun sinua pelottaa tai jännittää, voit aina hengittää! Hengitä hitaasti ulos — se on kuin sanoisit keholle: "Kaikki on ok."</p>` },
+    ]
+  },
+
+  koulu: {
+    label: '🌱 8–12 vuotta',
+    feelingTitle: 'Miten olet tänään? Valitse tunne!',
+    feelings: [
+      { id:'hyva',       emoji:'😊', word:'Hyvä olo',    color:'kf-green',  title:'Hyvä olo 😊',               text:'Mahtavaa! Tämä on hyvä hetki harjoitella tai kokeilla jotain uutta.', exIds:['neliohengitys','perhos-koulu','kehoskannaus-koulu'] },
+      { id:'vasynyt',    emoji:'😴', word:'Väsynyt',      color:'kf-blue',   title:'Olet väsynyt 😴',            text:'Väsymys on merkki siitä, että keho tarvitsee lepoa tai aktivointia. Kokeile hyräilyä.', exIds:['hyraile-koulu','kehoskannaus-koulu'] },
+      { id:'stressaantunut', emoji:'😬', word:'Stressaantunut', color:'kf-yellow', title:'Stressiä 😬', text:'Stressi tuntuu kehossa — sydän lyö nopeammin, lihakset jännittyvät. Hengitys auttaa!', exIds:['fysiologinen','neliohengitys','54321'] },
+      { id:'surullinen', emoji:'😢', word:'Surullinen',   color:'kf-blue',   title:'Surullinen 💙',              text:'Suru on tärkeä tunne. Anna sen olla — et joudu pysyä surullisena ikuisesti.', exIds:['perhos-koulu','turva-koulu'] },
+      { id:'vihainen',   emoji:'😡', word:'Vihainen',     color:'kf-red',    title:'Vihainen 😡',                text:'Viha on energia — se haluaa purkautua. Ravistele tai liiku ensin, sitten hengitä.', exIds:['ravistelu-koulu','fysiologinen'] },
+      { id:'ahdistunut', emoji:'😰', word:'Ahdistunut',   color:'kf-purple', title:'Ahdistus 😰',               text:'Ahdistus on kehon hälytysreaktio. Se tuntuu pahalta mutta ei ole vaarallinen.', exIds:['fysiologinen','54321','neliohengitys'] },
+    ],
+    exercises: [
+      { id:'fysiologinen-k',   emoji:'😮‍💨', name:'Rauhoitu heti',      dur:'3 min', guided:'fysiologinen' },
+      { id:'neliohengitys-k',  emoji:'📦', name:'Neliöhengitys',       dur:'5 min', guided:'neliohengitys' },
+      { id:'54321-k',          emoji:'👀', name:'5 aistia',            dur:'4 min', guided:'54321' },
+      { id:'perhos-koulu',     emoji:'🦋', name:'Perhoshalaus',        dur:'5 min', guided:'butterfly' },
+      { id:'hyraile-koulu',    emoji:'🎵', name:'Hyräily',             dur:'5 min', guided:'hyraile' },
+      { id:'ravistelu-koulu',  emoji:'🐟', name:'Ravistele keho',      dur:'5 min', guided:'ravistelu-lyhyt' },
+      { id:'kehoskannaus-koulu',emoji:'🧘', name:'Kehoskannaus',        dur:'5 min', guided:'kehoskannaus-lyhyt' },
+      { id:'turva-koulu',      emoji:'🏡', name:'Turvapaikka',         dur:'8 min', guided:'turva' },
+    ],
+    info: [
+      { icon:'🧠', title:'Mitä stressi tekee kehollesi?',
+        content:`<p>Kun sinulle tulee stressi — esimerkiksi kokeesta, riidasta tai pelottavasta tilanteesta — aivojesi hälytysosa aktivoituu.</p><p>Sydän lyö nopeammin, hengitys tihenee ja lihakset jännittyvät. Keho valmistautuu toimintaan — tämä on tarkoituksellista!</p><p>Ongelma on kun stressi ei lopu ja keho pysyy hälytystilassa. Hengitysharjoitteet viestivät keholle: "vaara on ohi, voidaan rauhoittua."</p>` },
+      { icon:'❤️', title:'Miksi tunteet tuntuvat kehossa?',
+        content:`<p>Tunteet eivät asu vain mielessä — ne ovat kehollisia kokemuksia. Suru tuntuu rintakehässä. Jännitys vatsassa. Ilo voi tuntua keveytenä koko kehossa.</p><p>Tämä on normaalia! Kehosi viestii sinulle jatkuvasti. Oppimalla kuuntelemaan sitä, pystyt tunnistamaan miten voit — ja tekemään jotain sen hyväksi.</p>` },
+      { icon:'💪', title:'Mitä voit tehdä kun tunteet ovat voimakkaita?',
+        content:`<p><strong>Tunnista ensin:</strong> mikä tunne tämä on? Nimeäminen auttaa — "tässä on jännitys" tai "tässä on viha".</p><p><strong>Hengitä:</strong> yksi hidas uloshengitys rauhoittaa hermoston välittömästi.</p><p><strong>Liiku tai ravistele:</strong> keho purkaa tunneenergiaa liikkeen kautta.</p><p><strong>Puhu jollekin:</strong> luotettava aikuinen auttaa kun tunteet tuntuvat liian isoilta.</p>` },
+    ]
+  },
+
+  nuori: {
+    label: '🌿 13–17 vuotta',
+    feelingTitle: 'Miten voit juuri nyt?',
+    feelings: [
+      { id:'ok',          emoji:'😌', word:'OK / Rauhallinen',    color:'kf-green',  title:'Olet tasapainossa 😌',         text:'Hyvä hetki harjoitella tai oppia jotain uutta hermostostasi.', exIds:['neliohengitys','kehoskannaus-lyhyt','meditaatio-lyhyt'] },
+      { id:'stressaantunut', emoji:'😬', word:'Stressaantunut',  color:'kf-yellow', title:'Stressiä 😬',                  text:'Stressi on kehon reaktio kuormitukseen. Se ei ole vaarallinen — mutta sitä voi oppia hallitsemaan.', exIds:['fysiologinen','neliohengitys','54321'] },
+      { id:'ahdistunut',  emoji:'😰', word:'Ahdistunut',         color:'kf-purple', title:'Ahdistusta 😰',               text:'Ahdistus on kehon hälytysreaktio — sydän lyö kovaa, hengitys tihenee. Tiedät jo mitä tehdä.', exIds:['fysiologinen','kylmavesi','54321'] },
+      { id:'masentunut',  emoji:'😔', word:'Matala / Tyhjä',     color:'kf-blue',   title:'Matala tai tyhjä olo 😔',     text:'Joskus hermosto hidastuu suojelukseksi. Pienet liikkeet ja ääni voivat auttaa aktivoimaan.', exIds:['hyraile-koulu','ravistelu-lyhyt','resurssointi'] },
+      { id:'vihainen',    emoji:'😡', word:'Vihainen / Ärtynyt', color:'kf-red',    title:'Viha tai ärsyyntyminen 😡',   text:'Viha on signaali — jokin on pielessä tai raja on ylitetty. Purkaminen ensin, sitten ajattelu.', exIds:['ravistelu-lyhyt','fysiologinen','54321'] },
+      { id:'ylikuormittunut', emoji:'🤯', word:'Ylikuormittunut', color:'kf-red',   title:'Ylikuormittunut 🤯',          text:'Aloita yksi asia: hidas uloshengitys. Se on kaikki mitä nyt tarvitset.', exIds:['fysiologinen','kylmavesi','54321'] },
+    ],
+    exercises: [
+      { id:'fysiologinen-n',   emoji:'😮‍💨', name:'Fysiologinen huokaus',  dur:'3 min', guided:'fysiologinen' },
+      { id:'neliohengitys-n',  emoji:'📦', name:'Neliöhengitys',           dur:'5 min', guided:'neliohengitys' },
+      { id:'54321-n',          emoji:'👀', name:'5-4-3-2-1 Aistit',        dur:'4 min', guided:'54321' },
+      { id:'kylmavesi-n',      emoji:'❄️', name:'Kylmää kasvoille',        dur:'2 min', guided:'kylmavesi' },
+      { id:'perhos-n',         emoji:'🦋', name:'Perhoshalaus',            dur:'5 min', guided:'butterfly' },
+      { id:'meditaatio-n',     emoji:'🧘', name:'Meditaatio (lyhyt)',      dur:'5 min', guided:'meditaatio-lyhyt' },
+      { id:'kehoskannaus-n',   emoji:'🌿', name:'Kehoskannaus',            dur:'5 min', guided:'kehoskannaus-lyhyt' },
+      { id:'ravistelu-n',      emoji:'⚡', name:'Ravistele stressi ulos',  dur:'5 min', guided:'ravistelu-lyhyt' },
+      { id:'ystavallisyys-n',  emoji:'💚', name:'Ystävällisyys itselle',  dur:'5 min', guided:'ystavallisyys-lyhyt' },
+    ],
+    info: [
+      { icon:'🧠', title:'Miksi hermostosi reagoi niin voimakkaasti?',
+        content:`<p>Nuoruudessa aivot ovat kehitysvaiheessa — erityisesti prefrontaalikorteksi, joka vastaa impulssien hallinnasta ja pitkäjänteisestä ajattelusta, kehittyy vasta noin 25-vuotiaaksi.</p><p>Samaan aikaan tunteiden käsittelykeskus (amygdala) on täysin kehittynyt. Tämä selittää miksi tunteet voivat tuntua niin ylivoimaisilta — emotionaalinen kapasiteetti on täysillä, mutta jarrutusmekanismi on vasta kehittymässä.</p><p>Tämä ei ole vika — se on neurologinen tosiasia. Harjoitteet auttavat kehittämään tätä säätelykapasiteettia.</p>` },
+      { icon:'📱', title:'Stressi, some ja ylivireys',
+        content:`<p>Jatkuva some-altistus pitää hermoston aktiivisena. Jokainen ilmoitus, scroll ja tykkäys aktivoi dopamiinijärjestelmän — keho pysyy ylivirinnässä.</p><p>Tämä ei tarkoita että puhelin pitää heittää pois — tarkoittaa että hermosto tarvitsee säännöllisiä "taukoja" digitaalisesta stimulaatiosta. Harjoitteet ovat yksi tapa antaa hermoston rauhoittua.</p>` },
+      { icon:'💤', title:'Miksi nukahtaminen on niin vaikeaa?',
+        content:`<p>Nuoruudessa melatoniinin (unihormoni) eritys siirtyy myöhemmäksi — biologinen kello haluaa sinut nukkumaan myöhemmin ja heräämään myöhemmin. Tämä on neurologinen muutos, ei laiskuus.</p><p>Lisäksi sinivalo illalla (puhelin, tietokone) estää melatoniinin eritystä. Ruutuaika 1–2 tuntia ennen nukkumaan menoa kannattaa minimoida.</p>` },
+      { icon:'💚', title:'Itsekritiikki ja myötätunto',
+        content:`<p>Nuoruudessa itsekritiikin ääni voi olla erityisen kova. Aivojen kehitys tekee nuorista herkempiä sosiaaliselle arvioimiselle ja hylkäämiselle.</p><p>Ystävällisyysharjoite ei ole "pehmeä" — se on neurotieteen tukema menetelmä joka muuttaa aivojen reaktiota itseen. Kokeile sitä.</p>` },
+    ]
+  }
+};
+
+let currentAge = null;
+
+function selectAge(age) {
+  currentAge = age;
+  const data = KIDS_AGE_DATA[age];
+  document.getElementById('age-selector').style.display = 'none';
+  document.getElementById('age-content').style.display = 'block';
+  document.getElementById('age-badge').textContent = data.label;
+  renderKidsFeelings(age);
+  renderKidsExercises(age);
+  renderKidsInfo(age);
+}
+
+function resetAge() {
+  currentAge = null;
+  document.getElementById('age-selector').style.display = 'block';
+  document.getElementById('age-content').style.display = 'none';
+  document.getElementById('kid-result').style.display = 'none';
+  document.getElementById('breath-anim-card').style.display = 'none';
+}
+
+function renderKidsFeelings(age) {
+  const data = KIDS_AGE_DATA[age];
+  document.getElementById('kids-feeling-title').textContent = data.feelingTitle;
+  const grid = document.getElementById('kids-feeling-grid');
+  grid.innerHTML = data.feelings.map(f => `
+    <button class="kid-face ${f.color}" onclick="selectKidFeeling('${age}','${f.id}',this)">
+      <span class="kf-emoji">${f.emoji}</span>
+      <span class="kf-word">${f.word}</span>
+    </button>
+  `).join('');
+}
+
+function selectKidFeeling(age, feelingId, btn) {
+  const data = KIDS_AGE_DATA[age];
+  const feeling = data.feelings.find(f => f.id === feelingId);
+  if (!feeling) return;
+  document.querySelectorAll('.kids-feeling-grid .kid-face').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  const r = document.getElementById('kid-result');
+  r.style.display = 'block';
+  document.getElementById('kid-result-title').textContent = feeling.title;
+  document.getElementById('kid-result-text').textContent = feeling.text;
+  // Suggest buttons
+  const btns = document.getElementById('kid-suggest-btns');
+  btns.innerHTML = (feeling.exIds || []).map(id => {
+    const exData = KIDS_AGE_DATA[age]?.exercises.find(e => e.id === id)
+      || EXERCISES.find(e => e.id === id);
+    const name = exData ? (exData.name || id) : id;
+    const guided = exData?.guided || id;
+    return `<button class="kid-sug-btn" onclick="startGuidedKid('${guided}')">${name}</button>`;
+  }).join('');
+}
+
+function renderKidsExercises(age) {
+  const data = KIDS_AGE_DATA[age];
+  const grid = document.getElementById('kids-ex-grid');
+  grid.innerHTML = data.exercises.map(ex => `
+    <div class="kid-ex-card ${ex.guided ? 'guided-card' : ''}"
+         onclick="${ex.anim ? `showBreathAnim('${ex.id}')` : `startGuidedKid('${ex.guided || ex.id}')`}">
+      <span class="kid-emoji">${ex.emoji}</span>
+      <span class="kid-ex-name">${ex.name}</span>
+      <span class="kid-ex-dur">${ex.dur}</span>
+      ${ex.guided && !ex.anim ? '<span class="kid-ex-guide">▶ Ääniohjaaja</span>' : ''}
+    </div>
+  `).join('');
+}
+
+function renderKidsInfo(age) {
+  const data = KIDS_AGE_DATA[age];
+  const area = document.getElementById('kids-info-area');
+  if (!area || !data.info) return;
+  area.innerHTML = `<div class="kids-info-title">Tietoa tunteista ja hermostosta</div>` +
+    data.info.map((item, i) => `
+    <div class="kids-info-item" id="ki-${age}-${i}">
+      <button class="kids-info-trigger" onclick="toggleKidsInfo('${age}',${i})">
+        <span class="kids-info-icon">${item.icon}</span>
+        <span class="kids-info-title2">${item.title}</span>
+        <span class="kids-info-chev">▶</span>
+      </button>
+      <div class="kids-info-body">
+        <div class="kids-info-content">${item.content}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleKidsInfo(age, idx) {
+  const el = document.getElementById(`ki-${age}-${idx}`);
+  if (!el) return;
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.kids-info-item').forEach(e => e.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+function startGuidedKid(exId) {
+  stopBreathAnim();
+  document.getElementById('breath-anim-card').style.display = 'none';
+  startGuided(exId);
+}
+
+function showBreathAnim(id) {
+  const card = document.getElementById('breath-anim-card');
+  card.style.display = 'block';
+  card.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+// Legacy renderKidsGrid (kept for compatibility)
+function renderKidsGrid() {
+  // Now handled by age-group system
+}
+
+// Keep old KID_STATES and selectKidFace for compatibility
+const KID_STATES = {};
+function selectKidFace() {}
+
+const KID_EXERCISES = [];
 
 // ══════════════════════════════════
 // NAVIGATION
@@ -1810,6 +2018,8 @@ function toggleKids() {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('kids-mode-panel').classList.add('active');
     document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+    // Reset to age selector
+    resetAge();
   } else {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-koti').classList.add('active');
@@ -2560,6 +2770,35 @@ const GUIDED_PROGRAMS = {
       { label: 'Syvä lepo', text: 'Koko keho rentona. Raskas. Lämmin. Syvä rauha. Hengitys kulkee vapaasti.', dur: 120, count: false, color: 'green' },
       { label: 'Lepo jatkuu', text: 'Olet täysin rentoutunut. Vain oleminen. Ei tekemistä.', dur: 90, count: false, color: 'green' },
       { label: 'Paluu', text: 'Ota kolme syvää hengitystä. Liikuta sormet hitaasti. Taivuta polvia. Avaa silmät hitaasti.', dur: 40, count: false, color: 'green' },
+    ]
+  },
+
+  // ════ LASTEN OHJELMAT ════
+  'hengitys-pikku-prog': {
+    hasBall: true, rounds: 5,
+    phases: [
+      { label: 'Haista kukka', text: 'Haista kukka — hengitä hitaasti sisään nenän kautta', dur: 3, count: true, ballPhase: 'in', color: 'green' },
+      { label: 'Sammuta kynttilä', text: 'Puhalla kynttilä sammuksiin — hitaasti ulos suun kautta', dur: 5, count: true, ballPhase: 'out', color: 'blue' },
+      { label: 'Odota', text: 'Odota hetki ennen seuraavaa', dur: 2, count: false, ballPhase: 'hold2', color: 'green' },
+    ]
+  },
+  'ravistelu-pikku-prog': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Ravistele kädet', text: 'Ravistele käsiä kuin koira märkänä — heiluta heiluta!', dur: 10, count: false, color: 'amber' },
+      { label: 'Stomppaa', text: 'Stomppaa jalkoja vuorotellen lattiaan — stompp stompp stompp!', dur: 10, count: false, color: 'amber' },
+      { label: 'Koko keho', text: 'Nyt koko keho liikkuu — ravistele kaikki samaan aikaan!', dur: 15, count: false, color: 'amber' },
+      { label: 'Pysähdy', text: 'Pysähdy. Seiso hiljaa. Miten tuntuu? Onko kevyempää?', dur: 15, count: false, color: 'green' },
+    ]
+  },
+  'kehoskannaus-pikku-prog': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Makaa alas', text: 'Makaa lattialle tai sängylle. Sulje silmät tai pidä ne kiinni sormilla.', dur: 10, count: false, color: 'green' },
+      { label: 'Jalat', text: 'Missä sinun jalkasi ovat? Wiggle — liikuta varpaita. Ovat ne lämpimiä?', dur: 15, count: false, color: 'green' },
+      { label: 'Vatsa', text: 'Laita käsi vatsalle. Tunne miten se nousee sisään hengittäessä ja laskee ulos hengittäessä.', dur: 20, count: false, color: 'amber' },
+      { label: 'Sydän', text: 'Nyt käsi sydämelle. Tunnetko sen lyövän? Tup-tup-tup! Se rakastaa sinua!', dur: 20, count: false, color: 'amber' },
+      { label: 'Hymy', text: 'Hymyile hieman. Tunne hymyn tuntu kasvoilla. Hyvältä tuntuu!', dur: 15, count: false, color: 'green' },
     ]
   },
 };
