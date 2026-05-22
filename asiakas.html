@@ -1005,6 +1005,73 @@ input[type=range].mood-slider::-moz-range-thumb {
 .slider-labels span:nth-child(2) { color: var(--green); }
 .slider-labels span:nth-child(3) { color: var(--red); }
 
+/* ── RX — TERAPEUTIN SUOSITTELEMAT ── */
+.rx-banner {
+  background: linear-gradient(135deg, #e8f5ee 0%, #f0f8f2 100%);
+  border: 2px solid var(--green-bd);
+  border-radius: var(--r2);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: none;
+}
+.rx-banner.show { display: block; }
+.rx-banner-title {
+  font-family: 'Lora', serif;
+  font-size: 1rem; font-style: italic;
+  color: var(--green); margin-bottom: 0.3rem;
+}
+.rx-banner-sub { font-size: 0.82rem; color: var(--ink3); margin-bottom: 0.75rem; }
+.rx-banner-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.rx-pill {
+  font-size: 0.75rem; font-weight: 700;
+  padding: 0.3rem 0.75rem; border-radius: 20px;
+  background: var(--green); color: #fff;
+  cursor: pointer; border: none; transition: all 0.2s;
+}
+.rx-pill:hover { background: #3a6a4e; transform: translateY(-1px); }
+
+.ex-card.rx-highlight {
+  border-color: var(--green);
+  background: linear-gradient(135deg, #fff 0%, #f4fbf6 100%);
+  box-shadow: 0 2px 12px rgba(74,124,94,0.15);
+}
+.ex-card.rx-highlight::before { background: var(--green); height: 4px; }
+
+.rx-badge {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  font-size: 0.62rem; font-weight: 800;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  background: var(--green-bg); border: 1px solid var(--green-bd);
+  color: var(--green); padding: 0.15rem 0.45rem;
+  border-radius: 4px; margin-top: 0.2rem;
+}
+
+.rx-code-section {
+  background: #fff;
+  border: 1.5px solid var(--sand3);
+  border-radius: var(--r);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+.rx-code-label { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink3); margin-bottom: 0.5rem; display: block; }
+.rx-code-row { display: flex; gap: 0.5rem; }
+.rx-code-input {
+  flex: 1; background: var(--sand);
+  border: 1.5px solid var(--sand3); border-radius: var(--r);
+  padding: 0.55rem 0.85rem;
+  font-family: 'Nunito', sans-serif; font-size: 0.95rem;
+  color: var(--ink); outline: none; transition: border-color 0.2s;
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+.rx-code-input:focus { border-color: var(--green); background: #fff; }
+.rx-code-btn {
+  font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 800;
+  padding: 0.55rem 1rem; border-radius: var(--r);
+  border: none; background: var(--green); color: #fff;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.rx-code-btn:hover { background: #3a6a4e; }
+
 /* ── FOOTER ── */
 .site-footer {
   background: var(--sand2);
@@ -1200,6 +1267,23 @@ body.kids-mode .site-footer { display:none; }
 <div class="section">
   <h1 class="page-title">Harjoitteet</h1>
   <p class="page-sub">Kaikki harjoitteet ovat turvallisia kotona tehtäviksi. Lopeta jos jokin tuntuu liian voimakkaalta.</p>
+
+  <!-- RX banner — shown when prescription active -->
+  <div class="rx-banner" id="rx-banner">
+    <div class="rx-banner-title">⭐ Terapeutti on valinnut sinulle harjoitteet</div>
+    <div class="rx-banner-sub">Nämä harjoitteet on suositeltu sinulle. Ne on korostettu alla.</div>
+    <div class="rx-banner-pills" id="rx-banner-pills"></div>
+  </div>
+
+  <!-- Code input -->
+  <div class="rx-code-section" id="rx-code-section">
+    <label class="rx-code-label">Syötä terapeutin antama koodi</label>
+    <div class="rx-code-row">
+      <input type="text" class="rx-code-input" id="rx-code-input" placeholder="RX-XXXXX" maxlength="8">
+      <button class="rx-code-btn" onclick="applyRxCode()">Aktivoi</button>
+      <button class="rx-code-btn" style="background:var(--sand2);color:var(--ink3);border:1.5px solid var(--sand3)" onclick="clearRx()">Tyhjennä</button>
+    </div>
+  </div>
 
   <div class="filter-bar">
     <button class="filter-btn active" onclick="filterEx('all',this)">Kaikki</button>
@@ -1566,14 +1650,17 @@ function renderQuick() {
 function renderExGrid() {
   const g = document.getElementById('ex-grid');
   if (!g) return;
-  g.innerHTML = EXERCISES.map(ex => `
-    <div class="ex-card c-${ex.cat}" data-cat="${ex.cat}" onclick="openModal('${ex.id}')">
+  g.innerHTML = EXERCISES.map(ex => {
+    const isRx = activeRxIds.includes(ex.id);
+    return `
+    <div class="ex-card c-${ex.cat} ${isRx ? 'rx-highlight' : ''}" data-cat="${ex.cat}" onclick="openModal('${ex.id}')">
       <div class="ex-cat">${ex.catLabel}</div>
+      ${isRx ? `<div class="rx-badge">⭐ Terapeutti suositteli</div>` : ''}
       <div class="ex-name">${ex.name}</div>
       <div class="ex-desc">${ex.desc}</div>
       <div class="ex-dur">⏱ ${ex.dur}</div>
     </div>
-  `).join('');
+  `}).join('');
 }
 
 function filterEx(cat, btn) {
@@ -2280,6 +2367,81 @@ function stopBreathAnim() {
 }
 
 // ══════════════════════════════════
+// RX — PRESCRIPTION SYSTEM
+// ══════════════════════════════════
+let activeRxIds = [];
+
+function initRx() {
+  // Check URL params first
+  const params = new URLSearchParams(window.location.search);
+  const rxParam = params.get('rx');
+  if (rxParam) {
+    const ids = decodeURIComponent(rxParam).split(',').map(s => s.trim()).filter(Boolean);
+    if (ids.length) { applyRx(ids); return; }
+  }
+  // Check localStorage for saved rx
+  const saved = localStorage.getItem('active_rx');
+  if (saved) {
+    try {
+      const ids = JSON.parse(saved);
+      if (ids.length) applyRx(ids);
+    } catch {}
+  }
+}
+
+function applyRxCode() {
+  const input = document.getElementById('rx-code-input');
+  if (!input) return;
+  const code = input.value.trim().toUpperCase();
+  if (!code.startsWith('RX-')) { input.style.borderColor='var(--red)'; setTimeout(()=>input.style.borderColor='',1500); return; }
+
+  // Try to find in localStorage (set by terapeutti.html on same device)
+  const map = JSON.parse(localStorage.getItem('rx_codes')||'{}');
+  if (map[code]) {
+    applyRx(map[code]);
+    input.value = '';
+  } else {
+    // Code not found locally — show gentle error
+    input.style.borderColor = 'var(--red)';
+    input.placeholder = 'Koodia ei löydy — pyydä terapeutilta linkki';
+    setTimeout(() => { input.style.borderColor=''; input.placeholder='RX-XXXXX'; }, 3000);
+  }
+}
+
+function applyRx(ids) {
+  activeRxIds = ids;
+  localStorage.setItem('active_rx', JSON.stringify(ids));
+
+  // Show banner
+  const banner = document.getElementById('rx-banner');
+  if (banner) {
+    banner.classList.add('show');
+    const pills = document.getElementById('rx-banner-pills');
+    if (pills) {
+      pills.innerHTML = ids.map(id => {
+        const ex = EXERCISES.find(e => e.id === id);
+        if (!ex) return '';
+        return `<button class="rx-pill" onclick="openModal('${id}')">${ex.name}</button>`;
+      }).join('');
+    }
+  }
+
+  // Re-render exercise grid with highlights
+  renderExGrid();
+
+  // Switch to harjoitteet tab
+  showPanel('harjoitteet', document.querySelector('.nav-tab:nth-child(2)'));
+}
+
+function clearRx() {
+  activeRxIds = [];
+  localStorage.removeItem('active_rx');
+  const banner = document.getElementById('rx-banner');
+  if (banner) banner.classList.remove('show');
+  renderExGrid();
+}
+
+// ══════════════════════════════════
 // INIT
 // ══════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
@@ -2288,6 +2450,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderInfo();
   renderEntries();
   renderKidsGrid();
+  initRx();
 });
 </script>
 <!-- FOOTER -->
