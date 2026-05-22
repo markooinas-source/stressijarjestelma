@@ -573,6 +573,113 @@ body {
 .t-btn.start { border-color: var(--green); color: var(--green); }
 .t-btn.start:hover { background: var(--green-bg); }
 
+/* ── GUIDED TIMER ── */
+.guided-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 800;
+  background: rgba(247,240,230,0.97);
+  backdrop-filter: blur(8px);
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.guided-overlay.active { display: flex; }
+
+.guided-ex-name {
+  font-family: 'Lora', serif;
+  font-size: 1rem; font-style: italic;
+  color: var(--ink3); margin-bottom: 1.5rem;
+}
+
+/* Breathing ball */
+.breath-ball-wrap {
+  display: none;
+  justify-content: center; align-items: center;
+  margin-bottom: 1.5rem;
+  height: 200px;
+}
+.breath-ball-wrap.show { display: flex; }
+
+.breath-ball {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: var(--green-bg);
+  border: 3px solid var(--green);
+  transition: all 0s linear;
+}
+.breath-ball.phase-in {
+  animation: ballIn var(--ball-dur, 4s) ease-in-out forwards;
+}
+.breath-ball.phase-hold {
+  width: 160px; height: 160px;
+  background: var(--amber-bg);
+  border-color: var(--amber);
+}
+.breath-ball.phase-out {
+  animation: ballOut var(--ball-dur, 6s) ease-in-out forwards;
+}
+.breath-ball.phase-hold2 {
+  width: 100px; height: 100px;
+  background: var(--blue-bg);
+  border-color: var(--blue);
+}
+@keyframes ballIn  { from{width:90px;height:90px;background:#e8f2ec;border-color:#4a7c5e} to{width:170px;height:170px;background:#fdf0e0;border-color:#c07830} }
+@keyframes ballOut { from{width:170px;height:170px;background:#fdf0e0;border-color:#c07830} to{width:90px;height:90px;background:#e8f0f8;border-color:#3a6a9a} }
+
+.guided-phase-label {
+  font-size: 0.72rem; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink3); margin-bottom: 0.5rem;
+  min-height: 1.2em;
+}
+.guided-instruction {
+  font-family: 'Lora', serif;
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  font-style: italic; font-weight: 500;
+  color: var(--ink);
+  line-height: 1.3;
+  min-height: 2.8em;
+  display: flex; align-items: center; justify-content: center;
+  max-width: 520px;
+}
+.guided-count {
+  font-size: clamp(2.5rem, 10vw, 4rem);
+  font-weight: 800; font-family: 'Lora', serif;
+  color: var(--green); margin: 0.5rem 0 1rem;
+  min-height: 1.2em; line-height: 1;
+  transition: color 0.4s;
+}
+.guided-count.amber { color: var(--amber); }
+.guided-count.blue  { color: var(--blue); }
+
+.guided-round-info {
+  font-size: 0.8rem; color: var(--ink3); font-weight: 600;
+  margin-bottom: 1.5rem; min-height: 1.4em;
+}
+
+.guided-progress-bar {
+  width: 100%; max-width: 320px;
+  height: 4px; border-radius: 2px;
+  background: var(--sand3); margin-bottom: 2rem; overflow: hidden;
+}
+.guided-progress-fill {
+  height: 100%; border-radius: 2px;
+  background: var(--green);
+  width: 0%; transition: width 0.3s linear;
+}
+
+.guided-stop-btn {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.82rem; font-weight: 800;
+  padding: 0.65rem 1.5rem;
+  border-radius: 20px;
+  border: 2px solid var(--sand3);
+  background: #fff; color: var(--ink3);
+  cursor: pointer; transition: all 0.2s;
+}
+.guided-stop-btn:hover { border-color: var(--red-bd); color: var(--red); }
+
 .modal-note {
   margin-top: 1.25rem;
   padding: 0.85rem 1.1rem;
@@ -1206,6 +1313,22 @@ body.kids-mode .site-footer { display:none; }
 </div>
 </div>
 
+<!-- GUIDED TIMER OVERLAY -->
+<div class="guided-overlay" id="guided-overlay">
+  <div class="guided-ex-name" id="g-exname"></div>
+  <div class="breath-ball-wrap" id="g-ball-wrap">
+    <div class="breath-ball" id="g-ball"></div>
+  </div>
+  <div class="guided-phase-label" id="g-phase"></div>
+  <div class="guided-instruction" id="g-instruction">Valmistaudu...</div>
+  <div class="guided-count" id="g-count"></div>
+  <div class="guided-round-info" id="g-round"></div>
+  <div class="guided-progress-bar">
+    <div class="guided-progress-fill" id="g-progress"></div>
+  </div>
+  <button class="guided-stop-btn" onclick="stopGuided()">✕ Lopeta harjoite</button>
+</div>
+
 <!-- MODAL -->
 <div class="modal-bg" id="modal-bg" onclick="closeBg(event)">
   <div class="modal-sheet">
@@ -1585,12 +1708,9 @@ function openModal(id) {
 
   const timerHTML = ex.timer ? `
     <div class="timer-panel">
-      <div class="timer-label">Ajastin</div>
+      <div class="timer-label">Ohjattu harjoite</div>
       <div class="timer-row">
-        <span class="timer-num" id="t-disp">${fmtTime(ex.timer)}</span>
-        <button class="t-btn start" onclick="startTimer(${ex.timer})">Aloita</button>
-        <button class="t-btn" onclick="pauseTimer()">Tauko</button>
-        <button class="t-btn" onclick="resetTimer(${ex.timer})">Nollaa</button>
+        <button class="t-btn start" style="flex:1;padding:0.65rem 1rem;font-size:0.88rem" onclick="startGuided('${ex.id}')">▶ Aloita ohjattu harjoite</button>
       </div>
     </div>` : '';
 
@@ -1648,15 +1768,271 @@ function closeBg(e) {
 }
 function closeModal() {
   stopVoice();
+  stopGuided();
   document.getElementById('modal-bg').classList.remove('open');
   document.body.style.overflow = '';
   clearInterval(timerInterval);
 }
 
-// ── TIMER ──
+// ── GUIDED TIMER ──
+
 function fmtTime(s) {
   return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
 }
+const GUIDED_PROGRAMS = {
+  fysiologinen: {
+    hasBall: true,
+    rounds: 5,
+    phases: [
+      { label: 'Hengitä sisään', text: 'Hengitä sisään nenän kautta', dur: 2, count: true, ballPhase: 'in', color: 'green' },
+      { label: 'Lisähenkäinen', text: 'Pieni lisähenkäinen — täytä keuhkot', dur: 1.5, count: false, ballPhase: 'hold', color: 'amber' },
+      { label: 'Hengitä ulos', text: 'Pitkä hidas uloshengitys suun kautta', dur: 6, count: true, ballPhase: 'out', color: 'blue' },
+      { label: 'Tauko', text: 'Rentoudu...', dur: 1.5, count: false, ballPhase: 'hold2', color: 'green' },
+    ]
+  },
+  neliohengitys: {
+    hasBall: true,
+    rounds: 6,
+    phases: [
+      { label: 'Sisään', text: 'Hengitä sisään nenän kautta', dur: 4, count: true, ballPhase: 'in', color: 'green' },
+      { label: 'Pidätä', text: 'Pidätä — ei jännitystä', dur: 4, count: true, ballPhase: 'hold', color: 'amber' },
+      { label: 'Ulos', text: 'Hengitä ulos suun kautta', dur: 4, count: true, ballPhase: 'out', color: 'blue' },
+      { label: 'Pidätä', text: 'Pidätä tyhjällä', dur: 4, count: true, ballPhase: 'hold2', color: 'blue' },
+    ]
+  },
+  '478': {
+    hasBall: true,
+    rounds: 4,
+    phases: [
+      { label: 'Sisään', text: 'Hengitä sisään nenän kautta', dur: 4, count: true, ballPhase: 'in', color: 'green' },
+      { label: 'Pidätä', text: 'Pidätä rauhallisesti', dur: 7, count: true, ballPhase: 'hold', color: 'amber' },
+      { label: 'Ulos', text: 'Puhista ulos suun kautta', dur: 8, count: true, ballPhase: 'out', color: 'blue' },
+    ]
+  },
+  hyraile: {
+    hasBall: false,
+    rounds: 8,
+    phases: [
+      { label: 'Hengitä sisään', text: 'Hengitä syvään nenän kautta', dur: 3, count: false, color: 'green' },
+      { label: 'Hyräile', text: 'Hyräile ulos — mmmmmm...', dur: 6, count: false, color: 'amber' },
+      { label: 'Tauko', text: 'Tauko — tunnustele värähtely', dur: 2, count: false, color: 'blue' },
+    ]
+  },
+  '54321': {
+    hasBall: false,
+    rounds: 1,
+    phases: [
+      { label: 'Valmistaudu', text: 'Pysähdy. Hengitä kerran syvään.', dur: 5, count: false, color: 'green' },
+      { label: '5 — Näkeminen', text: 'Nimeä 5 asiaa jotka NÄET', dur: 15, count: false, color: 'green' },
+      { label: '4 — Kosketus', text: 'Nimeä 4 asiaa joita voit KOSKETTAA — kosketa niitä', dur: 15, count: false, color: 'amber' },
+      { label: '3 — Kuuleminen', text: 'Nimeä 3 asiaa joita KUULET', dur: 12, count: false, color: 'blue' },
+      { label: '2 — Haju', text: 'Nimeä 2 asiaa joita voit HAISTAA', dur: 10, count: false, color: 'green' },
+      { label: '1 — Maku', text: 'Nimeä 1 asia jonka voit MAISTAA', dur: 8, count: false, color: 'amber' },
+      { label: 'Valmis', text: 'Kolme rauhallista hengitystä — olet tässä hetkessä', dur: 10, count: false, color: 'green' },
+    ]
+  },
+  perhos: {
+    hasBall: false,
+    rounds: 4,
+    phases: [
+      { label: 'Asettele kädet', text: 'Risti kädet rintakehällesi', dur: 4, count: false, color: 'green' },
+      { label: 'Taputa rytmissä', text: 'Taputa hitaasti vuorotellen — vasen, oikea, vasen, oikea...', dur: 20, count: false, color: 'green' },
+      { label: 'Tauko', text: 'Pysähdy. Hengitä. Tunnustele olo.', dur: 6, count: false, color: 'blue' },
+    ]
+  },
+  kehoskannaus: {
+    hasBall: false,
+    rounds: 1,
+    phases: [
+      { label: 'Asettele itsesi', text: 'Makaa tai istu tuettuna. Sulje silmät.', dur: 8, count: false, color: 'green' },
+      { label: 'Jalkapohjat', text: 'Huomaa jalkapohjat — lämpö, paino, tunne', dur: 12, count: false, color: 'green' },
+      { label: 'Jalat', text: 'Nilkat, säärret, polvet, reidet — liiku hitaasti ylöspäin', dur: 15, count: false, color: 'green' },
+      { label: 'Lantio & vatsa', text: 'Miten hengitys liikkuu vatsassa?', dur: 12, count: false, color: 'amber' },
+      { label: 'Rintakehä', text: 'Rintakehä, sydämen alue — mitä tunnet siellä?', dur: 12, count: false, color: 'amber' },
+      { label: 'Kädet & hartiat', text: 'Kädet sormenpäistä hartioihin — onko jännitystä?', dur: 12, count: false, color: 'blue' },
+      { label: 'Niska & kasvot', text: 'Niska, leuka, kasvot, päälaen — päästä irti', dur: 15, count: false, color: 'blue' },
+      { label: 'Koko keho', text: 'Ota koko keho huomioon. Mitä muuttui?', dur: 10, count: false, color: 'green' },
+    ]
+  },
+  turva: {
+    hasBall: false,
+    rounds: 1,
+    phases: [
+      { label: 'Asettele itsesi', text: 'Sulje silmät tai katso pehmeästi alas', dur: 6, count: false, color: 'green' },
+      { label: 'Löydä paikka', text: 'Kuvittele paikka jossa tunnet olosi turvalliseksi', dur: 15, count: false, color: 'green' },
+      { label: 'Näkeminen', text: 'Mitä näet siellä? Anna kuvan tarkentua.', dur: 12, count: false, color: 'green' },
+      { label: 'Kuuleminen', text: 'Mitä kuulet? Äänet, hiljaisuus...', dur: 10, count: false, color: 'amber' },
+      { label: 'Tunteminen', text: 'Mitä tunnet ihollasi? Lämpö, viileys, tuuli...', dur: 10, count: false, color: 'amber' },
+      { label: 'Keho', text: 'Missä kehossasi tunnet turvallisuuden? Anna sen levitä.', dur: 15, count: false, color: 'blue' },
+      { label: 'Ankkuri', text: 'Anna paikalle nimi. Tämä on sinun turvapaikkasi.', dur: 10, count: false, color: 'green' },
+    ]
+  },
+  kylmavesi: {
+    hasBall: false,
+    rounds: 3,
+    phases: [
+      { label: 'Valmistaudu', text: 'Pidätä hengitystä', dur: 3, count: false, color: 'blue' },
+      { label: 'Kylmä', text: 'Kasvot veteen tai kylmä pyyhe kasvoille — 20 sekuntia', dur: 20, count: true, ballPhase: '', color: 'blue' },
+      { label: 'Hengitä', text: 'Hengitä rauhallisesti. Tunne vaikutus.', dur: 10, count: false, color: 'green' },
+    ]
+  },
+  resurssointi: {
+    hasBall: false,
+    rounds: 1,
+    phases: [
+      { label: 'Hengitä', text: 'Muutama rauhallinen hengitys', dur: 8, count: false, color: 'green' },
+      { label: 'Turvallinen ihminen', text: 'Ajattele ihmistä jonka kanssa sinulla on turvallinen olo', dur: 18, count: false, color: 'green' },
+      { label: 'Oma vahvuus', text: 'Tuo esiin jokin ominaisuus jota arvostat itsessäsi', dur: 15, count: false, color: 'amber' },
+      { label: 'Turvallinen paikka', text: 'Muistele paikka jossa sinulla on ollut hyvä olo', dur: 18, count: false, color: 'blue' },
+      { label: 'Kehon tunne', text: 'Missä kehossasi tunnet näiden vaikutuksen?', dur: 15, count: false, color: 'green' },
+      { label: 'Palauta', text: 'Palauta huomio huoneeseen rauhallisesti', dur: 8, count: false, color: 'green' },
+    ]
+  },
+};
+
+// Guided timer state
+let guidedActive = false;
+let guidedTimeout = null;
+let guidedCurrentRound = 0;
+let guidedCurrentPhase = 0;
+let guidedProgram = null;
+let guidedExName = '';
+let guidedTotalDur = 0;
+let guidedElapsed = 0;
+let guidedCountInterval = null;
+
+function startGuided(exId) {
+  const program = GUIDED_PROGRAMS[exId];
+  if (!program) { startTimer(120); return; }
+
+  guidedProgram = program;
+  guidedExName = EXERCISES.find(e => e.id === exId)?.name || '';
+  guidedActive = true;
+  guidedCurrentRound = 0;
+  guidedCurrentPhase = 0;
+  guidedElapsed = 0;
+
+  // Calculate total duration
+  guidedTotalDur = program.rounds * program.phases.reduce((s, p) => s + p.dur, 0);
+
+  // Show overlay, hide modal
+  document.getElementById('guided-overlay').classList.add('active');
+  document.getElementById('modal-bg').classList.remove('open');
+  document.body.style.overflow = 'hidden';
+
+  document.getElementById('g-exname').textContent = guidedExName;
+
+  // Ball visibility
+  const ballWrap = document.getElementById('g-ball-wrap');
+  if (ballWrap) ballWrap.classList.toggle('show', !!program.hasBall);
+
+  runGuidedPhase();
+}
+
+function runGuidedPhase() {
+  if (!guidedActive) return;
+  const program = guidedProgram;
+  if (guidedCurrentRound >= program.rounds) {
+    finishGuided(); return;
+  }
+
+  const phase = program.phases[guidedCurrentPhase];
+  const totalPhases = program.phases.length;
+
+  // Update UI
+  document.getElementById('g-phase').textContent = phase.label;
+  document.getElementById('g-instruction').textContent = phase.text;
+  document.getElementById('g-round').textContent =
+    program.rounds > 1
+      ? `Kierros ${guidedCurrentRound + 1} / ${program.rounds}`
+      : `Vaihe ${guidedCurrentPhase + 1} / ${totalPhases}`;
+
+  // Progress bar
+  guidedElapsed += (guidedCurrentPhase === 0 && guidedCurrentRound === 0) ? 0 : 0;
+  const pct = Math.round(guidedElapsed / guidedTotalDur * 100);
+  const fill = document.getElementById('g-progress');
+  if (fill) fill.style.width = pct + '%';
+
+  // Count color
+  const countEl = document.getElementById('g-count');
+  if (countEl) {
+    countEl.className = 'guided-count' + (phase.color === 'amber' ? ' amber' : phase.color === 'blue' ? ' blue' : '');
+  }
+
+  // Ball animation
+  if (program.hasBall && phase.ballPhase) {
+    const ball = document.getElementById('g-ball');
+    if (ball) {
+      ball.className = 'breath-ball';
+      ball.style.setProperty('--ball-dur', phase.dur + 's');
+      void ball.offsetWidth;
+      ball.classList.add('phase-' + phase.ballPhase);
+    }
+  }
+
+  // Speak
+  speak(phase.text);
+
+  // Countdown if needed
+  clearInterval(guidedCountInterval);
+  if (phase.count && countEl) {
+    let c = Math.round(phase.dur);
+    countEl.textContent = c;
+    guidedCountInterval = setInterval(() => {
+      c--;
+      if (countEl) countEl.textContent = c > 0 ? c : '';
+      if (c <= 0) clearInterval(guidedCountInterval);
+    }, 1000);
+  } else if (countEl) {
+    countEl.textContent = '';
+  }
+
+  // Advance
+  guidedElapsed += phase.dur;
+  guidedTimeout = setTimeout(() => {
+    guidedCurrentPhase++;
+    if (guidedCurrentPhase >= program.phases.length) {
+      guidedCurrentPhase = 0;
+      guidedCurrentRound++;
+    }
+    runGuidedPhase();
+  }, phase.dur * 1000);
+}
+
+function finishGuided() {
+  guidedActive = false;
+  clearInterval(guidedCountInterval);
+  speak('Harjoite valmis. Hienoa!');
+  const instr = document.getElementById('g-instruction');
+  if (instr) instr.textContent = 'Harjoite valmis — hienoa! 🌿';
+  const count = document.getElementById('g-count');
+  if (count) count.textContent = '';
+  const fill = document.getElementById('g-progress');
+  if (fill) fill.style.width = '100%';
+  setTimeout(() => stopGuided(), 3000);
+}
+
+function stopGuided() {
+  guidedActive = false;
+  clearTimeout(guidedTimeout);
+  clearInterval(guidedCountInterval);
+  if (synth) synth.cancel();
+  document.getElementById('guided-overlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'fi-FI'; u.rate = 0.85; u.pitch = 1.0; u.volume = 1.0;
+  const voices = synth.getVoices();
+  const fi = voices.find(v => v.lang.startsWith('fi'));
+  if (fi) u.voice = fi;
+  synth.speak(u);
+}
+
+// Legacy timer (fallback for exercises without guided program)
 function startTimer(total) {
   clearInterval(timerInterval);
   if (timerLeft <= 0) timerLeft = total;
