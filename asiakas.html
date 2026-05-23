@@ -897,6 +897,41 @@ body.kids-mode .site-footer { display:none; }
 .kid-ex-dur   { font-size:0.68rem; color:var(--ink3); }
 .kid-ex-guide { font-size:0.65rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:var(--green); margin-top:0.1rem; }
 
+/* Kids slider */
+.kids-slider-wrap { margin: 0.85rem 0 0.5rem; }
+.kids-slider-label {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--ink3);
+  text-align: center; margin-bottom: 0.6rem;
+}
+.kids-slider-track {
+  position: relative; height: 14px;
+  border-radius: 7px; margin-bottom: 0.4rem;
+  background: linear-gradient(to right, #60a0e0, #60c080, #e0a020, #e06060);
+}
+input[type=range].kids-slider {
+  position: absolute; top: -7px; left: 0;
+  width: 100%; height: 28px;
+  -webkit-appearance: none; appearance: none;
+  background: transparent; cursor: pointer; margin: 0;
+}
+input[type=range].kids-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #fff; border: 3px solid var(--green);
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  font-size: 1rem;
+}
+input[type=range].kids-slider::-moz-range-thumb {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #fff; border: 3px solid var(--green); cursor: pointer;
+}
+.kids-slider-ends {
+  display: flex; justify-content: space-between;
+  font-size: 0.72rem; font-weight: 700; color: var(--ink3);
+  padding: 0 0.1rem;
+}
+
 /* Kids tab navigation */
 .kids-tab-nav {
   display: flex; gap: 0.4rem; flex-wrap: wrap;
@@ -1675,7 +1710,24 @@ body.kids-mode .site-footer { display:none; }
     <div id="kids-tab-miten" class="kids-tab-panel active">
       <div class="card kids-meter-card" id="kids-feeling-area">
         <div class="kids-feeling-title" id="kids-feeling-title">Miten sinulla menee tänään?</div>
+
+        <!-- Emoji faces -->
         <div class="kids-feeling-grid" id="kids-feeling-grid"></div>
+
+        <!-- Slider (shown for all ages) -->
+        <div class="kids-slider-wrap" id="kids-slider-wrap" style="display:none">
+          <div class="kids-slider-label" id="kids-slider-label">tai liikuta tätä</div>
+          <div class="kids-slider-track">
+            <input type="range" class="kids-slider" id="kids-slider"
+              min="0" max="100" value="50" step="1"
+              oninput="onKidsSlider(this.value)">
+          </div>
+          <div class="kids-slider-ends">
+            <span id="kids-slider-low"></span>
+            <span id="kids-slider-high"></span>
+          </div>
+        </div>
+
         <div class="kid-result" id="kid-result" style="display:none">
           <div class="kid-result-title" id="kid-result-title"></div>
           <div class="kid-result-text" id="kid-result-text"></div>
@@ -1858,12 +1910,17 @@ const KIDS_AGE_DATA = {
       { id:'vihainen',   emoji:'😠', word:'Vihainen',   color:'kf-red',    title:'Sinulla on viha sisällä 😠',  text:'Viha on tunne — se menee ohi. Ravistele se ulos kehosta!', exIds:['ravistelu-pikku','hengitys-pikku'] },
     ],
     exercises: [
-      { id:'hengitys-pikku',     emoji:'🫧', name:'Puhalla pallo',    dur:'2 min', guided:'hengitys-pikku-prog', anim:true },
-      { id:'perhos-pikku',       emoji:'🦋', name:'Perhoshalaus',      dur:'3 min', guided:'butterfly' },
-      { id:'hyraile-pikku',      emoji:'🎵', name:'Hyräily',           dur:'3 min', guided:'hyraile' },
-      { id:'ravistelu-pikku',    emoji:'🐟', name:'Ravistele kuin kala',dur:'2 min', guided:'ravistelu-pikku-prog' },
-      { id:'kehoskannaus-pikku', emoji:'🐌', name:'Hiljaa & kuuntele', dur:'3 min', guided:'kehoskannaus-pikku-prog' },
-      { id:'turvapaikka-pikku',  emoji:'🏠', name:'Oma turvapaikka',   dur:'5 min', guided:'turva' },
+      { id:'hengitys-pikku',       emoji:'🫧', name:'Puhalla pallo',         dur:'2 min', guided:'hengitys-pikku-prog', anim:true },
+      { id:'perhos-pikku',         emoji:'🦋', name:'Perhoshalaus',            dur:'3 min', guided:'butterfly' },
+      { id:'hyraile-pikku',        emoji:'🎵', name:'Hyräily',                 dur:'3 min', guided:'hyraile' },
+      { id:'ravistelu-pikku',      emoji:'🐟', name:'Ravistele kuin kala',      dur:'2 min', guided:'ravistelu-pikku-prog' },
+      { id:'kehoskannaus-pikku',   emoji:'🐌', name:'Hiljaa & kuuntele',        dur:'3 min', guided:'kehoskannaus-pikku-prog' },
+      { id:'turvapaikka-pikku',    emoji:'🏠', name:'Oma turvapaikka',          dur:'5 min', guided:'turva' },
+      { id:'lohikaarme-pikku',     emoji:'🐉', name:'Lohikäärmeen hengitys',    dur:'4 min', guided:'lohikaarme-satu' },
+      { id:'lumihiutale-pikku',    emoji:'❄️', name:'Lumihiutale sulaa',        dur:'5 min', guided:'lumihiutale-satu' },
+      { id:'metsamatka-pikku',     emoji:'🌲', name:'Mielikuvamatka metsään',   dur:'6 min', guided:'metsa-pikku-satu' },
+      { id:'kehokartta-pikku',     emoji:'🗺️', name:'Kehon kartta',            dur:'4 min', guided:'kehokartta-pikku-satu' },
+      { id:'taikuri-pikku',        emoji:'✨', name:'Taikuri herää',            dur:'4 min', guided:'taikuri-satu' },
     ],
     info: [
       { icon:'🐒', title:'Apina-aivot ja Pöllö-aivot',
@@ -1910,14 +1967,19 @@ const KIDS_AGE_DATA = {
       { id:'ahdistunut', emoji:'😰', word:'Ahdistunut',   color:'kf-purple', title:'Ahdistus 😰',               text:'Ahdistus on kehon hälytysreaktio. Se tuntuu pahalta mutta ei ole vaarallinen.', exIds:['fysiologinen','54321','neliohengitys'] },
     ],
     exercises: [
-      { id:'fysiologinen-k',   emoji:'😮‍💨', name:'Rauhoitu heti',      dur:'3 min', guided:'fysiologinen' },
-      { id:'neliohengitys-k',  emoji:'📦', name:'Neliöhengitys',       dur:'5 min', guided:'neliohengitys' },
-      { id:'54321-k',          emoji:'👀', name:'5 aistia',            dur:'4 min', guided:'54321' },
-      { id:'perhos-koulu',     emoji:'🦋', name:'Perhoshalaus',        dur:'5 min', guided:'butterfly' },
-      { id:'hyraile-koulu',    emoji:'🎵', name:'Hyräily',             dur:'5 min', guided:'hyraile' },
-      { id:'ravistelu-koulu',  emoji:'🐟', name:'Ravistele keho',      dur:'5 min', guided:'ravistelu-lyhyt' },
-      { id:'kehoskannaus-koulu',emoji:'🧘', name:'Kehoskannaus',        dur:'5 min', guided:'kehoskannaus-lyhyt' },
-      { id:'turva-koulu',      emoji:'🏡', name:'Turvapaikka',         dur:'8 min', guided:'turva' },
+      { id:'fysiologinen-k',    emoji:'😮‍💨', name:'Rauhoitu heti',          dur:'3 min', guided:'fysiologinen' },
+      { id:'neliohengitys-k',   emoji:'📦',  name:'Neliöhengitys',            dur:'5 min', guided:'neliohengitys' },
+      { id:'54321-k',           emoji:'👀',  name:'5 aistia',                 dur:'4 min', guided:'54321' },
+      { id:'perhos-koulu',      emoji:'🦋',  name:'Perhoshalaus',              dur:'5 min', guided:'butterfly' },
+      { id:'hyraile-koulu',     emoji:'🎵',  name:'Hyräily',                  dur:'5 min', guided:'hyraile' },
+      { id:'ravistelu-koulu',   emoji:'⚡',  name:'Ravistele keho',            dur:'5 min', guided:'ravistelu-lyhyt' },
+      { id:'kehoskannaus-koulu',emoji:'🧘',  name:'Kehoskannaus',              dur:'5 min', guided:'kehoskannaus-lyhyt' },
+      { id:'turva-koulu',       emoji:'🏡',  name:'Turvapaikka',               dur:'8 min', guided:'turva' },
+      { id:'meri-koulu',        emoji:'🌊',  name:'Merimatka — meren aallot',  dur:'6 min', guided:'meri-koulu-satu' },
+      { id:'puu-koulu',         emoji:'🌳',  name:'Olet vahva puu',            dur:'5 min', guided:'puu-koulu-satu' },
+      { id:'metsa-koulu',       emoji:'🦊',  name:'Mielikuvamatka metsään',    dur:'8 min', guided:'metsa-koulu-satu' },
+      { id:'agentti-koulu',     emoji:'🕵️', name:'Salainen aistiagentti',     dur:'5 min', guided:'agentti-koulu-satu' },
+      { id:'itseen-koulu',      emoji:'💫',  name:'Matka omaan itseen',        dur:'8 min', guided:'itseen-koulu-satu' },
     ],
     info: [
       { icon:'🚨', title:'Hälytysnappi aivoissasi — stressi ja tunteet',
@@ -1969,14 +2031,19 @@ const KIDS_AGE_DATA = {
     ],
     exercises: [
       { id:'fysiologinen-n',   emoji:'😮‍💨', name:'Fysiologinen huokaus',  dur:'3 min', guided:'fysiologinen' },
-      { id:'neliohengitys-n',  emoji:'📦', name:'Neliöhengitys',           dur:'5 min', guided:'neliohengitys' },
-      { id:'54321-n',          emoji:'👀', name:'5-4-3-2-1 Aistit',        dur:'4 min', guided:'54321' },
+      { id:'neliohengitys-n',  emoji:'📦',  name:'Neliöhengitys',          dur:'5 min', guided:'neliohengitys' },
+      { id:'54321-n',          emoji:'👀',  name:'5-4-3-2-1 Aistit',       dur:'4 min', guided:'54321' },
       { id:'kylmavesi-n',      emoji:'❄️', name:'Kylmää kasvoille',        dur:'2 min', guided:'kylmavesi' },
-      { id:'perhos-n',         emoji:'🦋', name:'Perhoshalaus',            dur:'5 min', guided:'butterfly' },
-      { id:'meditaatio-n',     emoji:'🧘', name:'Meditaatio (lyhyt)',      dur:'5 min', guided:'meditaatio-lyhyt' },
-      { id:'kehoskannaus-n',   emoji:'🌿', name:'Kehoskannaus',            dur:'5 min', guided:'kehoskannaus-lyhyt' },
-      { id:'ravistelu-n',      emoji:'⚡', name:'Ravistele stressi ulos',  dur:'5 min', guided:'ravistelu-lyhyt' },
-      { id:'ystavallisyys-n',  emoji:'💚', name:'Ystävällisyys itselle',  dur:'5 min', guided:'ystavallisyys-lyhyt' },
+      { id:'perhos-n',         emoji:'🦋',  name:'Perhoshalaus',           dur:'5 min', guided:'butterfly' },
+      { id:'meditaatio-n',     emoji:'🧘',  name:'Meditaatio (lyhyt)',     dur:'5 min', guided:'meditaatio-lyhyt' },
+      { id:'kehoskannaus-n',   emoji:'🌿',  name:'Kehoskannaus',           dur:'5 min', guided:'kehoskannaus-lyhyt' },
+      { id:'ravistelu-n',      emoji:'⚡',  name:'Ravistele stressi ulos', dur:'5 min', guided:'ravistelu-lyhyt' },
+      { id:'ystavallisyys-n',  emoji:'💚',  name:'Ystävällisyys itselle', dur:'5 min', guided:'ystavallisyys-lyhyt' },
+      { id:'sukellus-n',       emoji:'🌊',  name:'Syvä sukellus — hengitys', dur:'8 min', guided:'sukellus-nuori-satu' },
+      { id:'metsa-n',          emoji:'🌲',  name:'Mielikuvamatka metsään', dur:'10 min', guided:'metsa-nuori-satu' },
+      { id:'puisto-n',         emoji:'🌸',  name:'Matka puistoon',         dur:'8 min',  guided:'puisto-nuori-satu' },
+      { id:'itseen-n',         emoji:'🔮',  name:'Matka omaan itseen',     dur:'10 min', guided:'itseen-nuori-satu' },
+      { id:'kehonkuva-n',      emoji:'🗺️', name:'Kehonkuvan hahmottaminen',dur:'8 min', guided:'kehonkuva-nuori-satu' },
     ],
     info: [
       { icon:'🧠', title:'Nuoruuden aivot — miksi tunteet ovat niin voimakkaita?',
@@ -2025,9 +2092,73 @@ function selectAge(age) {
   document.getElementById('age-selector').style.display = 'none';
   document.getElementById('age-content').style.display = 'block';
   document.getElementById('age-badge').textContent = data.label;
+
+  // Configure slider
+  const sliderWrap = document.getElementById('kids-slider-wrap');
+  const sliderLow  = document.getElementById('kids-slider-low');
+  const sliderHigh = document.getElementById('kids-slider-high');
+  const sliderLbl  = document.getElementById('kids-slider-label');
+  if (sliderWrap) {
+    sliderWrap.style.display = 'block';
+    document.getElementById('kids-slider').value = 50;
+    if (age === 'pikku') {
+      sliderLbl.textContent = 'tai liikuta tätä 👇';
+      sliderLow.textContent  = '😴 Väsynyt';
+      sliderHigh.textContent = '😠 Vihainen';
+    } else if (age === 'koulu') {
+      sliderLbl.textContent = 'tai liikuta liukusäädintä';
+      sliderLow.textContent  = '😴 Matala';
+      sliderHigh.textContent = '😠 Ylikuormittunut';
+    } else {
+      sliderLbl.textContent = 'tai liukusäädin';
+      sliderLow.textContent  = '😶 Tyhjä / lamaantunut';
+      sliderHigh.textContent = '😰 Ylikuormittunut';
+    }
+  }
+
   renderKidsFeelings(age);
   renderKidsExercises(age);
   renderKidsInfo(age);
+}
+
+function onKidsSlider(val) {
+  if (!currentAge) return;
+  val = parseInt(val);
+  const data = KIDS_AGE_DATA[currentAge];
+  const feelings = data.feelings;
+  // Map 0-100 to feeling index
+  const idx = Math.min(feelings.length - 1, Math.floor(val / (100 / feelings.length)));
+  const feeling = feelings[idx];
+  if (!feeling) return;
+
+  // Highlight matching face
+  document.querySelectorAll('.kids-feeling-grid .kid-face').forEach((b,i) => {
+    b.classList.toggle('sel', i === idx);
+  });
+
+  // Show result
+  const r = document.getElementById('kid-result');
+  r.style.display = 'block';
+  document.getElementById('kid-result-title').textContent = feeling.title;
+  document.getElementById('kid-result-text').textContent = feeling.text;
+  const btns = document.getElementById('kid-suggest-btns');
+  btns.innerHTML = (feeling.exIds || []).map(id => {
+    const exData = KIDS_AGE_DATA[currentAge]?.exercises.find(e => e.id === id)
+      || EXERCISES.find(e => e.id === id);
+    const name = exData ? (exData.name || id) : id;
+    const guided = exData?.guided || id;
+    return `<button class="kid-sug-btn" onclick="showKidsTab('harjoitteet',document.querySelector('.kids-tab:nth-child(2)'));startGuidedKid('${guided}')">${name}</button>`;
+  }).join('');
+
+  // Update slider thumb color
+  const colors = ['#60a0e0','#60c080','#e0a020','#e06060','#a060e0'];
+  const slider = document.getElementById('kids-slider');
+  if (slider) {
+    const color = colors[idx] || '#60c080';
+    let styleEl = document.getElementById('kids-slider-style');
+    if (!styleEl) { styleEl = document.createElement('style'); styleEl.id='kids-slider-style'; document.head.appendChild(styleEl); }
+    styleEl.textContent = `input[type=range].kids-slider::-webkit-slider-thumb{border-color:${color}} input[type=range].kids-slider::-moz-range-thumb{border-color:${color}}`;
+  }
 }
 
 function resetAge() {
@@ -2919,6 +3050,226 @@ const GUIDED_PROGRAMS = {
       { label: 'Syvä lepo', text: 'Koko keho rentona. Raskas. Lämmin. Syvä rauha. Hengitys kulkee vapaasti.', dur: 120, count: false, color: 'green' },
       { label: 'Lepo jatkuu', text: 'Olet täysin rentoutunut. Vain oleminen. Ei tekemistä.', dur: 90, count: false, color: 'green' },
       { label: 'Paluu', text: 'Ota kolme syvää hengitystä. Liikuta sormet hitaasti. Taivuta polvia. Avaa silmät hitaasti.', dur: 40, count: false, color: 'green' },
+    ]
+  },
+
+  // ════ SATUHARJOITTEET — 3-7v ════
+  'lohikaarme-satu': {
+    hasBall: true, rounds: 1,
+    phases: [
+      { label: 'Valmistaudu', text: 'Istu mukavasti. Sulje silmät. Tänään sinä olet lohikäärme!', dur: 10, count: false, ballPhase: 'hold', color: 'green' },
+      { label: 'Lohikäärme herää', text: 'Lohikäärme nukkui luolassaan koko talven. Nyt se herää. Venyttele kuin lohikäärme — iso, hidas venytys!', dur: 12, count: false, ballPhase: 'hold', color: 'amber' },
+      { label: 'Hengitä sisään', text: 'Lohikäärme hengittää syvään — keräilee tulta vatsan syvyyksiin. Hengitä sisään nenän kautta, hitaasti...', dur: 5, count: true, ballPhase: 'in', color: 'green' },
+      { label: 'Puhalla tuli', text: 'Puhalla tuli ulos! Pitkä, hidas, lämmin uloshengitys suun kautta — huuuu!', dur: 7, count: true, ballPhase: 'out', color: 'amber' },
+      { label: 'Toista', text: 'Uudelleen — hengitä sisään, kerää tuli...', dur: 5, count: true, ballPhase: 'in', color: 'green' },
+      { label: 'Puhalla', text: 'Ja puhalla hitaasti ulos — lohikäärme on rauhallinen ja vahva.', dur: 7, count: true, ballPhase: 'out', color: 'amber' },
+      { label: 'Vielä kerran', text: 'Viimeinen kerta — syvään sisään...', dur: 5, count: true, ballPhase: 'in', color: 'green' },
+      { label: 'Viimeinen puhallus', text: 'Ja ulos, rauhallisesti. Lohikäärme hymyilee. Se on tyytyväinen ja rauhallinen.', dur: 7, count: true, ballPhase: 'out', color: 'green' },
+      { label: 'Lopetus', text: 'Avaa silmät hitaasti. Sinä olet vahva kuin lohikäärme!', dur: 10, count: false, ballPhase: 'hold', color: 'green' },
+    ]
+  },
+
+  'lumihiutale-satu': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Aloitus', text: 'Istu tai makaa. Sulje silmät. Kuvittele olevasi pieni lumihiutale taivaalla.', dur: 12, count: false, color: 'blue' },
+      { label: 'Taivaalla', text: 'Olet kevyt, kevyt kuin höyhen. Leijailet rauhallisesti ylhäällä. Tuuli kantaa sinua hellästi.', dur: 15, count: false, color: 'blue' },
+      { label: 'Laskeutuminen', text: 'Alat laskeutua hitaasti, hitaasti alaspäin. Ympärilläsi on muita lumihiutaleita — kaikki laskeutuvat rauhassa.', dur: 20, count: false, color: 'blue' },
+      { label: 'Lihakset', text: 'Kun laskeudut, tunnet kehosi pehmenevän. Hartiat laskevat. Kädet ovat raskaat ja pehmeät.', dur: 20, count: false, color: 'blue' },
+      { label: 'Laskeutuminen jatkuu', text: 'Laskeutut edelleen — jalat pehmenevät, vatsa rentoutuu. Olet kevyt ja rauhallinen.', dur: 20, count: false, color: 'green' },
+      { label: 'Maassa', text: 'Lumihiutale laskeutuu pehmeästi maahan. Se sulaa hitaasti — muuttuu vedeksi, imeytyy maahan. Kaikki jännitys sulaa pois.', dur: 25, count: false, color: 'green' },
+      { label: 'Lepo', text: 'Olet täysin rauhallinen. Hengitä hitaasti. Olet turvassa ja lämpimässä.', dur: 20, count: false, color: 'green' },
+      { label: 'Herätys', text: 'Liikuta hitaasti sormet ja varpaat. Avaa silmät. Hyvää heräämistä, pieni lumihiutale!', dur: 12, count: false, color: 'green' },
+    ]
+  },
+
+  'metsa-pikku-satu': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Aloitus', text: 'Sulje silmät. Kuvittele: olet kävelemässä metsässä. Jalkojen alla on pehmeä sammal.', dur: 12, count: false, color: 'green' },
+      { label: 'Metsä', text: 'Puut ovat isoja ja vahvoja. Aurinko paistaa lehtien läpi ja tekee kultaisia laikkuja maahan.', dur: 15, count: false, color: 'green' },
+      { label: 'Äänet', text: 'Kuulet lintujen laulua. Tuuli huiskauttaa lehtiä. Jostakin kuuluu pienen puron solina.', dur: 15, count: false, color: 'green' },
+      { label: 'Hengitys', text: 'Hengitä syvään — metsä tuoksuu männyiltä ja kostealta maalta. Hyvältä tuoksuu!', dur: 15, count: false, color: 'green' },
+      { label: 'Puu', text: 'Löydät ison, vanhan puun. Sen juuret ovat kuin isot kädet maassa. Istu sen viereen ja nojaa selkä puuhun.', dur: 20, count: false, color: 'amber' },
+      { label: 'Turva', text: 'Puu on vahva ja turvallinen. Tunnet sen lämmön selässäsi. Tässä on hyvä olla.', dur: 20, count: false, color: 'amber' },
+      { label: 'Orava', text: 'Pienen orava juoksee puussa! Se katsoo sinua uteliaana, sitten jatkaa matkaansa. Hymyile sille.', dur: 15, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Kun olet valmis, nouse ylös ja kävele takaisin. Puu heiluttaa lehtiään hyvästi.', dur: 12, count: false, color: 'green' },
+      { label: 'Herätys', text: 'Avaa silmät hitaasti. Olet taas täällä, turvassa. Miten tuntuu?', dur: 10, count: false, color: 'green' },
+    ]
+  },
+
+  'kehokartta-pikku-satu': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Aloitus', text: 'Makaa tai istu. Tänään tutustumme sinun kehosi karttaan kuin seikkailijat!', dur: 10, count: false, color: 'amber' },
+      { label: 'Jalkapohjat', text: 'Aloitetaan matka jalkapohjista. Wiggletä varpaat! Tunnetko ne? Ne ovat matkan lähtöpiste.', dur: 15, count: false, color: 'green' },
+      { label: 'Jalat', text: 'Nousemme ylöspäin kartalla — säärret, polvet. Ne ovat vahvat kuin puun rungot!', dur: 15, count: false, color: 'green' },
+      { label: 'Vatsa', text: 'Laita käsi vatsalle. Tässä on kehon "tukikohta" — vatsa nousee sisäänhengittäessä kuin pieni kupla!', dur: 15, count: false, color: 'amber' },
+      { label: 'Sydän', text: 'Nyt sydän! Laita käsi rintaan. Tunnet sen lyövän — tup-tup-tup. Se rakastaa sinua ja lyö joka sekunti!', dur: 15, count: false, color: 'amber' },
+      { label: 'Kädet', text: 'Kädet ovat kuin kartan "haarat". Liikuta sormia — jokainen sormi on oma pikku seikkailija!', dur: 15, count: false, color: 'green' },
+      { label: 'Kasvot', text: 'Kasvot ovat kartan "huippu"! Nosta kulmakarva ylös ja alas. Hymyile! Tee hassu ilme!', dur: 15, count: false, color: 'green' },
+      { label: 'Koko kartta', text: 'Koko keho on nyt kartoitettu! Sinä olet ainutlaatuinen — kukaan muu ei ole täsmälleen samanlainen kuin sinä.', dur: 15, count: false, color: 'green' },
+      { label: 'Lopetus', text: 'Hyvin tehty, seikkailija! Avaa silmät.', dur: 10, count: false, color: 'green' },
+    ]
+  },
+
+  'taikuri-satu': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Aloitus', text: 'Sulje silmät. Olet taikuri joka herää aamuisin ja aktivoi omat maagisit aistinsa!', dur: 10, count: false, color: 'amber' },
+      { label: 'Näkökyky', text: 'Avaa silmät taikurin tavoin! Katso ympärillesi — mitä viisi asiaa näet? Nimeä ne mielessäsi, kuin listaisit taikoja.', dur: 20, count: false, color: 'amber' },
+      { label: 'Kuulokokemus', text: 'Nyt aktivoit kuulosi! Sulje silmät ja kuuntele — mitä kolme ääntä kuulet? Kaukaiset, läheiset, hiljaiset...', dur: 20, count: false, color: 'blue' },
+      { label: 'Kosketus', text: 'Taikurin kosketusaisti! Kosketa jotain lähellä olevaa. Onko se karhea, sileä, lämmin, kylmä? Taikurit tuntevat kaiken!', dur: 20, count: false, color: 'green' },
+      { label: 'Haju', text: 'Hengitä syvään nenän kautta. Mitä taikoja ilmassa on? Taikurit haistavat kaiken mitä muut eivät huomaa.', dur: 15, count: false, color: 'green' },
+      { label: 'Maku', text: 'Viimeinen aisti — tunnustele kuinka kieli lepää suussasi. Onko jotain makua? Taikuri on nyt täysin hereillä!', dur: 15, count: false, color: 'amber' },
+      { label: 'Taika valmis', text: 'Kaikki viisi aistia aktivoituna! Sinä olet nyt täysin läsnä tässä hetkessä. Se on paras taika!', dur: 12, count: false, color: 'green' },
+    ]
+  },
+
+  // ════ SATUHARJOITTEET — 8-12v ════
+  'meri-koulu-satu': {
+    hasBall: true, rounds: 1,
+    phases: [
+      { label: 'Aloitus', text: 'Sulje silmät. Kuvittele olevasi rannalla. Kuulet meren äänen — kohinaa, aaltoja.', dur: 15, count: false, ballPhase: 'hold', color: 'blue' },
+      { label: 'Ensimmäinen aalto', text: 'Meren aalto tulee hitaasti rantaan — hengitä sisään kun aalto nousee.', dur: 5, count: true, ballPhase: 'in', color: 'blue' },
+      { label: 'Aalto vetäytyy', text: 'Aalto vetäytyy takaisin mereen — hengitä ulos samaan tahtiin, rauhallisesti.', dur: 7, count: true, ballPhase: 'out', color: 'blue' },
+      { label: 'Rytmi', text: 'Meri on rauhallinen tänään. Aallot ovat pieniä ja tasaisia. Hengityksesi seuraa meren rytmiä.', dur: 40, count: false, ballPhase: 'hold', color: 'blue' },
+      { label: 'Sisään', text: 'Aalto nousee — sisään nenän kautta.', dur: 5, count: true, ballPhase: 'in', color: 'blue' },
+      { label: 'Ulos', text: 'Aalto vetäytyy — ulos hitaasti suun kautta.', dur: 7, count: true, ballPhase: 'out', color: 'blue' },
+      { label: 'Vapaa meri', text: 'Vain meri ja sinä. Hengitä meren tahtiin niin kauan kuin haluat.', dur: 60, count: false, ballPhase: 'hold', color: 'blue' },
+      { label: 'Paluu', text: 'Avaa silmät hitaasti. Voit aina palata tähän merenrantaan mielessäsi.', dur: 12, count: false, ballPhase: 'hold', color: 'green' },
+    ]
+  },
+
+  'puu-koulu-satu': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Aloitus', text: 'Seiso tai istu selkä suorana. Tänään sinä olet vahva puu.', dur: 10, count: false, color: 'green' },
+      { label: 'Juuret', text: 'Kuvittele juuret kasvavan jalkojesi alta syvälle maahan. Ne pitävät sinua tukevasti paikallaan. Tunne jalkapohjat tukevasti lattiassa.', dur: 20, count: false, color: 'green' },
+      { label: 'Runko', text: 'Selkärankasi on puun runko — vahva, suora, joustava. Puu ei murru tuulessa — se taipuu ja palaa takaisin.', dur: 20, count: false, color: 'green' },
+      { label: 'Oksat', text: 'Kädet ovat oksat — heilauta niitä kevyesti kuin tuuli puhaltaisi. Puu liikkuu mutta juuret pitävät.', dur: 20, count: false, color: 'amber' },
+      { label: 'Hengitys', text: 'Puu hengittää lehtien kautta. Sisäänhengitys — puu imee aurinkoa. Uloshengitys — puu antaa happea maailmalle.', dur: 30, count: false, color: 'green' },
+      { label: 'Myrsky', text: 'Kuvittele pieni myrsky — tulee hankalat ajatukset tai tunteet. Mutta juuret pitävät. Puu taipuu mutta ei kaadu.', dur: 20, count: false, color: 'amber' },
+      { label: 'Rauha', text: 'Myrsky menee ohi. Puu on edelleen paikallaan, vahva ja rauhallinen kuin ennen.', dur: 20, count: false, color: 'green' },
+      { label: 'Lopetus', text: 'Muista: sinä olet vahva kuin puu. Hankalat hetket menevät ohi, mutta sinä pysyt.', dur: 15, count: false, color: 'green' },
+    ]
+  },
+
+  'metsa-koulu-satu': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Lähtö', text: 'Sulje silmät. Kuvittele seisovasi metsän reunalla. Edessäsi on polku joka vie syvemmälle.', dur: 15, count: false, color: 'green' },
+      { label: 'Metsään astuminen', text: 'Astut poluelle. Jalkojen alla on pehmeä sammalpohja. Kuulet lintujen laulun. Aurinko paistaa puiden läpi.', dur: 20, count: false, color: 'green' },
+      { label: 'Hengitys', text: 'Hengitä metsän ilmaa — se tuoksuu männyiltä, maalta, puhtaalta. Jokainen sisäänhengitys tuo rauhaa.', dur: 20, count: false, color: 'green' },
+      { label: 'Keho metsässä', text: 'Huomaa miten kehosi rentoutuu metsässä. Hartiat laskevat. Lihakset pehmenevät. Polku kantaa sinua.', dur: 20, count: false, color: 'amber' },
+      { label: 'Puro', text: 'Tulet puron äärelle. Vesi on kirkasta ja viileää. Istudu kiville. Kuuntele veden solina.', dur: 25, count: false, color: 'blue' },
+      { label: 'Levätä', text: 'Istu rauhassa puron äärellä. Ei tarvitse mennä minnekään. Tämä hetki on sinun.', dur: 30, count: false, color: 'green' },
+      { label: 'Eläimet', text: 'Ehkä näet ohjavan — kettu, hirvi, lintu. Ne katsovat sinua rauhallisesti. Olet tervetullut tähän metsään.', dur: 20, count: false, color: 'green' },
+      { label: 'Paluu', text: 'On aika palata. Kävelet polkua takaisin. Mutta tiedät, että voit aina tulla tänne mielessäsi.', dur: 15, count: false, color: 'green' },
+      { label: 'Herätys', text: 'Avaa silmät hitaasti. Tunne kehon paino. Olet tässä hetkessä.', dur: 12, count: false, color: 'green' },
+    ]
+  },
+
+  'agentti-koulu-satu': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Tehtävänanto', text: 'Olet salainen aistiagentti. Tehtäväsi: skannata ympäristö kaikilla viidellä aistilla. Agentti on täysin läsnä.', dur: 12, count: false, color: 'amber' },
+      { label: 'Näköskannaus', text: 'NÄKÖ: Skannaa ympäristösi kuin agentti — nimeä 5 asiaa mitä näet. Yksityiskohdat, värit, etäisyydet.', dur: 25, count: false, color: 'amber' },
+      { label: 'Kuuloskannaus', text: 'KUULO: Agentin korvat tarttuvat kaikkiin ääniin. Kuuntele tarkasti — läheiset ja kaukaiset äänet. Nimeä 3 ääntä.', dur: 20, count: false, color: 'blue' },
+      { label: 'Kosketusskannaus', text: 'KOSKETUS: Kosketa 4 eri pintaa — vaatteet, tuoli, iho. Agentti analysoi — karhea, sileä, lämmin, kylmä?', dur: 20, count: false, color: 'green' },
+      { label: 'Hajuskannaus', text: 'HAJU: Hengitä syvään. Agentti tunnistaa 2 hajua ilmasta. Mikä tuoksuu? Huomaa mitä muut eivät.', dur: 15, count: false, color: 'green' },
+      { label: 'Makuskannaus', text: 'MAKU: Tunnustele kieli, suu. Mitä maistuu? Agentin kaikki aistit ovat nyt täysin aktivoituina.', dur: 15, count: false, color: 'amber' },
+      { label: 'Tehtävä suoritettu', text: 'Tehtävä suoritettu. Salainen agentti on täysin läsnä tässä hetkessä. Tämä on rauhallisin paikka olla.', dur: 12, count: false, color: 'green' },
+    ]
+  },
+
+  'itseen-koulu-satu': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Aloitus', text: 'Sulje silmät. Tänään teemme erityisen matkan — matkan sisimpääsi.', dur: 12, count: false, color: 'amber' },
+      { label: 'Hengitys', text: 'Hengitä muutama kerta rauhallisesti. Jokainen uloshengitys vie sinut syvemmälle rauhaan.', dur: 20, count: false, color: 'green' },
+      { label: 'Sydän', text: 'Laita käsi sydämelle. Tunne sen rytmi. Sydämesi on lyönyt siitä asti kun synnyit — se on sinun.', dur: 20, count: false, color: 'amber' },
+      { label: 'Vahvuudet', text: 'Ajattele jotain mitä osaat hyvin — vaikka pieni asia. Missä kehossasi tunnet sen? Ehkä se tuntuu lämpöltä rinnassa.', dur: 25, count: false, color: 'green' },
+      { label: 'Myötätunto', text: 'Sinulla on myös asioita jotka tuntuvat vaikeilta. Kaikilla on. Ole itsellesi lempeä — kuten olisit parhaalle kaverillesi.', dur: 25, count: false, color: 'blue' },
+      { label: 'Oma tila', text: 'Kuvittele sinun oma sisäinen tila — se voi olla huone, niitty, tähtiä. Millainen se on? Se on vain sinun.', dur: 25, count: false, color: 'amber' },
+      { label: 'Ankkuri', text: 'Tämä sisäinen paikka on aina olemassa. Voit tulla tänne aina kun tarvitset rauhaa.', dur: 20, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Syvennä hengitystä. Liikuta sormet. Avaa silmät. Olet hyvä juuri sellaisena kuin olet.', dur: 15, count: false, color: 'green' },
+    ]
+  },
+
+  // ════ SATUHARJOITTEET — 13-17v ════
+  'sukellus-nuori-satu': {
+    hasBall: true, rounds: 1,
+    phases: [
+      { label: 'Valmistaudu', text: 'Istu tai makaa mukavasti. Sulje silmät. Tänään lähdemme sukellukselle — sisään omaan hengitykseen.', dur: 15, count: false, ballPhase: 'hold', color: 'blue' },
+      { label: 'Pintahengitys', text: 'Havainnoi ensin hengitystäsi sellaisena kuin se on. Ei kontrollia. Vain katso miten se toimii.', dur: 20, count: false, ballPhase: 'hold', color: 'blue' },
+      { label: 'Ensimmäinen sukellus', text: 'Hengitä syvään sisään — kuin sukeltaisit pinnan alle. Tunne keuhkot täyttyvän kokonaan.', dur: 6, count: true, ballPhase: 'in', color: 'blue' },
+      { label: 'Vedenpinnanalus', text: 'Pidätä hetki — olet pinnan alla. Hiljaisuus. Rauha. Ulkomaailma kaukana.', dur: 4, count: true, ballPhase: 'hold', color: 'blue' },
+      { label: 'Nousu', text: 'Nouse hitaasti pintaan — pitkä, tasainen uloshengitys. Kuin nousisit syvältä ylöspäin.', dur: 8, count: true, ballPhase: 'out', color: 'blue' },
+      { label: 'Rytmi', text: 'Löydä oma sukelluksesi rytmi. Sisään — pidätys — ulos. Rauhallisesti, toistuvasti.', dur: 90, count: false, ballPhase: 'hold', color: 'blue' },
+      { label: 'Syvempi sukellus', text: 'Nyt syvemmälle — pidempi sisäänhengitys, pidempi pidätys, pidempi uloshengitys.', dur: 60, count: false, ballPhase: 'in', color: 'blue' },
+      { label: 'Vapaa sukellus', text: 'Anna hengityksen löytää oma rytminsä. Olet kokenut sukeltaja nyt.', dur: 60, count: false, ballPhase: 'hold', color: 'blue' },
+      { label: 'Paluu pintaan', text: 'Kolme syvää hengitystä. Avaa silmät hitaasti. Olet palannut pintaan — levänneenä ja rauhallisena.', dur: 20, count: false, ballPhase: 'hold', color: 'green' },
+    ]
+  },
+
+  'metsa-nuori-satu': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Johdanto', text: 'Sulje silmät. Kuvittele seisovasi metsäpolun alussa. On varhainen aamu. Ilma on raikas ja hiljainen.', dur: 20, count: false, color: 'green' },
+      { label: 'Astuminen metsään', text: 'Astut poluelle. Jalkojen alla murskuu lehtikarike. Puut ovat korkeita — valo filtteröityy lehtien läpi kultaisena.', dur: 20, count: false, color: 'green' },
+      { label: 'Aistit', text: 'Hengitä metsän tuoksua. Männynpihka, kostea multa, puhdas ilma. Kuulet linnun laulun ja puron kohinan kaukaa.', dur: 25, count: false, color: 'green' },
+      { label: 'Keho metsässä', text: 'Huomaa miten kehosi reagoi metsään. Hartiat laskeutuvat. Hengitys syvenee. Jokin jännitys lähtee pois.', dur: 20, count: false, color: 'amber' },
+      { label: 'Puro', text: 'Löydät puron. Istu suurelle kivelle. Vesi virtaa kirkkaana. Heijastukset välähtelevät. Anna ajan pysähtyä.', dur: 30, count: false, color: 'blue' },
+      { label: 'Ajatukset', text: 'Jos mieleesi tulee ajatuksia — anna niiden olla kuin lehtiä purossa. Ne liikkuvat ohi. Sinä olet kivi jolla istut.', dur: 30, count: false, color: 'blue' },
+      { label: 'Juuret', text: 'Tunne yhteytesi maahan. Kuin puunjuuret — olet osa tätä. Tähän hetkeen. Tähän paikkaan.', dur: 25, count: false, color: 'green' },
+      { label: 'Hiljaisuus', text: 'Vain metsä. Vain hengitys. Tässä hetkessä ei tarvitse olla mitään muuta kuin se mitä on.', dur: 40, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Nouse hitaasti. Kävelet takaisin polkua pitkin. Metsä jää taaksesi mutta sen rauha kulkee mukanasi.', dur: 20, count: false, color: 'green' },
+      { label: 'Herätys', text: 'Syvennä hengitystä. Liikuta kehoa hitaasti. Avaa silmät. Tuo hetken rauha mukanasi päivään.', dur: 15, count: false, color: 'green' },
+    ]
+  },
+
+  'puisto-nuori-satu': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Aloitus', text: 'Sulje silmät. Kuvittele suosikkipuistosi tai miellyttävä ulkotila — todellinen tai kuvitteellinen.', dur: 15, count: false, color: 'green' },
+      { label: 'Puisto', text: 'Olet siellä. Millainen ilma on? Aurinkoinen, pilvinen, rauhallinen? Missä istut tai seisot?', dur: 20, count: false, color: 'green' },
+      { label: 'Näkymä', text: 'Katso ympärillesi. Puita, ruohoa, taivasta. Ehkä ihmisiä kaukana tai vain sinä yksin. Mitä näet?', dur: 20, count: false, color: 'green' },
+      { label: 'Äänet', text: 'Kuuntele puiston ääniä. Tuuli lehtien seassa. Ehkä lintuja. Kaukaa kaupungin humu. Kaikki on ok.', dur: 20, count: false, color: 'green' },
+      { label: 'Keho', text: 'Tunne kehosi puistossa. Jalat maassa tai penkillä. Kasvoilla ehkä aurinko tai viileä tuuli. Anna kehon levätä.', dur: 25, count: false, color: 'amber' },
+      { label: 'Läsnäolo', text: 'Tässä hetkessä ei ole mitään ratkottavaa. Ei velvollisuuksia. Vain tämä hetki tässä puistossa.', dur: 30, count: false, color: 'amber' },
+      { label: 'Kiitollisuus', text: 'Jos tuntuu luontevalta — tuo mieleen jokin pieni asia josta voit olla kiitollinen. Ehkä juuri tämä hetki.', dur: 25, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Syvennä hengitystä. Liikuta sormet, varpaat. Avaa silmät. Muista — tämä tila on aina saatavilla.', dur: 15, count: false, color: 'green' },
+    ]
+  },
+
+  'itseen-nuori-satu': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Aloitus', text: 'Sulje silmät. Tänään teemme matkan — ei minnekään ulkopuolelle, vaan sisäänpäin.', dur: 15, count: false, color: 'amber' },
+      { label: 'Hengitys', text: 'Muutama syvä hengitys. Jokainen uloshengitys vie sinut lähemmäs omaa sisäistä tilaasi.', dur: 30, count: false, color: 'green' },
+      { label: 'Kehon kohtaaminen', text: 'Huomaa kehosi sellaisena kuin se on juuri nyt. Ei arviointia. Ei parannuksia tarvita. Vain tämä keho tässä hetkessä.', dur: 25, count: false, color: 'green' },
+      { label: 'Sisäinen tila', text: 'Kuvittele sisäinen tila — voi olla huone, maisema, tila. Minkä värinen se on? Miltä se tuntuu? Onko siellä valoa?', dur: 30, count: false, color: 'amber' },
+      { label: 'Vahvuudet', text: 'Tuo tähän tilaan jokin ominaisuus josta tunnet ylpeyttä itsessäsi. Se voi olla pieni. Se on silti arvokas.', dur: 25, count: false, color: 'amber' },
+      { label: 'Vaikeus', text: 'Tuo myös jokin asia joka on nyt haastavaa. Ei tarvitse ratkaista. Vain tunnustaa sen olemassaolo lempeästi.', dur: 25, count: false, color: 'blue' },
+      { label: 'Myötätunto', text: 'Kohtele itseäsi kuten kohtelisit ystävää joka kertoo saman tarinan. Mitä sanoisit hänelle?', dur: 30, count: false, color: 'blue' },
+      { label: 'Ankkuri', text: 'Tämä sisäinen tila on aina olemassa — myös kaoottisimpina hetkinä. Muista tämä tunne.', dur: 20, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Syvennä hengitystä. Liikuta kehoa hitaasti. Avaa silmät. Sinä olet tarpeeksi, juuri nyt.', dur: 15, count: false, color: 'green' },
+    ]
+  },
+
+  'kehonkuva-nuori-satu': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Aloitus', text: 'Makaa tai istu tuettuna. Sulje silmät. Tänään tutustumme kehoosi — ei ulkonäköön vaan siihen mitä keho TEKEE ja TUNTEE.', dur: 15, count: false, color: 'green' },
+      { label: 'Hengitys', text: 'Hengitä muutama kerta rauhallisesti. Tunne rintakehä laajentuvan ja supistuvan. Keho tekee tämän automaattisesti — aina.', dur: 25, count: false, color: 'green' },
+      { label: 'Jalat', text: 'Vie huomio jalkoihin. Ne kantavat sinua joka päivä. Tunne niiden paino, lämpö, kontakti alustaan. Nämä jalat ovat sinun.', dur: 25, count: false, color: 'green' },
+      { label: 'Kädet', text: 'Kädet ovat välineet joilla kosket maailmaa — halaat, kirjoitat, soitat, teet. Liikuta sormet hitaasti. Huomaa niiden kapasiteetti.', dur: 25, count: false, color: 'green' },
+      { label: 'Sydän', text: 'Sydän on lyönyt siitä asti kun olit sikiö — miljoonia kertoja ilman taukoa. Laita käsi rintaan. Tunne sen uskollisuus.', dur: 25, count: false, color: 'amber' },
+      { label: 'Keho viestii', text: 'Kehosi viestii sinulle jatkuvasti — nälkä, väsymys, stressi, ilo. Nämä signaalit ovat tietoa, ei vikoja. Voitko kuunnella niitä?', dur: 25, count: false, color: 'amber' },
+      { label: 'Hyväksyminen', text: 'Keho ei ole koristus tai suoritus — se on kotisi. Se on ainoa jossa asut koko elämäsi. Mitä se ansaitsee sinulta?', dur: 25, count: false, color: 'blue' },
+      { label: 'Kiitos keholle', text: 'Jos se tuntuu luontevalta — lähetä kiitos keholle. Kaikesta mitä se tekee. Kaikesta mitä se kantaa.', dur: 20, count: false, color: 'green' },
+      { label: 'Paluu', text: 'Syvennä hengitystä. Liikuta hitaasti. Avaa silmät. Kehosi on sinun — ja se on tarpeeksi.', dur: 15, count: false, color: 'green' },
     ]
   },
 
