@@ -1921,6 +1921,8 @@ const KIDS_AGE_DATA = {
       { id:'metsamatka-pikku',     emoji:'🌲', name:'Mielikuvamatka metsään',   dur:'6 min', guided:'metsa-pikku-satu' },
       { id:'kehokartta-pikku',     emoji:'🗺️', name:'Kehon kartta',            dur:'4 min', guided:'kehokartta-pikku-satu' },
       { id:'taikuri-pikku',        emoji:'✨', name:'Taikuri herää',            dur:'4 min', guided:'taikuri-satu' },
+      { id:'muistelu-pikku',       emoji:'💭', name:'Mukava muisto',            dur:'5 min', guided:'muistelu-pikku-prog' },
+      { id:'kehoaktiv-pikku',      emoji:'🤲', name:'Taputtele itsesi herätä',  dur:'4 min', guided:'kehoaktiv-pikku-prog' },
     ],
     info: [
       { icon:'🐒', title:'Apina-aivot ja Pöllö-aivot',
@@ -1928,6 +1930,18 @@ const KIDS_AGE_DATA = {
           <strong style="color:#8a5010">🐒 Tarina:</strong><p style="margin-top:0.35rem">Sinun päässäsi asuu kaksi kaveria. <strong>Apina</strong> on nopea ja äänekäs — se huutaa heti kun jotain jännittävää tai pelottavaa tapahtuu. <strong>Pöllö</strong> on rauhallinen ja viisas — se miettii ensin, sitten toimii.</p>
           <p style="margin-top:0.35rem">Kun Apina herää ja alkaa huutaa, Pöllö menee piiloon. Siksi kun olet tosi vihainen tai peloissasi, on vaikea ajatella järkevästi!</p></div>
         <p><strong>Oikeasti:</strong> Aivoissasi on hälytysosa (amygdala) joka reagoi nopeasti. Kun se aktivoituu, järkevä osa menee "offline". Hengitys auttaa Pöllön takaisin — kun hengität hitaasti ulos, Apina rauhoittuu.</p>` },
+
+      { icon:'🐉', title:'Isot tunteet tulevat ja menevät — kuin pilvet taivaalla',
+        content:`<div style="background:#f0f8ff;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #60a0e0">
+          <strong style="color:#2050a0">📖 Tarina lohikäärmeestä:</strong>
+          <p style="margin-top:0.35rem">Kuvittele että ikkunasta kurkistaa lohikäärme! Aivojen hälytysnappi soi heti ja kehosi valmistautuu — sydän hakkaa, hengitys kiihtyy.</p>
+          <p style="margin-top:0.35rem">Kehosi voi tehdä kolmea asiaa:<br>
+          🥊 <strong>Taistella</strong> — haluaisi huutaa tai lyödä<br>
+          🏃 <strong>Paeta</strong> — haluaisi juosta pois<br>
+          🧊 <strong>Jähmettyä</strong> — ei pysty liikkumaan tai puhumaan</p>
+          <p style="margin-top:0.35rem">Kaikki nämä ovat täysin normaaleja! Keho suojelee sinua.</p></div>
+        <p><strong>Hyvä uutinen:</strong> Voit itse sammuttaa hälytyksen! Hengitä sisään… ja ulos hitaasti. Katso ympärillesi ja etsi kolme sinistä asiaa. Heiluttele varpaita. Sydän alkaa lyödä rauhallisemmin.</p>
+        <p style="margin-top:0.5rem"><em>Isot tunteet tulevat ja menevät — kuin pilvet taivaalla. 🌤️</em></p>` },
 
       { icon:'❤️', title:'Missä tunteet asuvat?',
         content:`<div style="background:#fff0f5;border-radius:12px;padding:0.85rem 1rem;margin-bottom:0.75rem;border-left:3px solid #e06080">
@@ -1980,6 +1994,8 @@ const KIDS_AGE_DATA = {
       { id:'metsa-koulu',       emoji:'🦊',  name:'Mielikuvamatka metsään',    dur:'8 min', guided:'metsa-koulu-satu' },
       { id:'agentti-koulu',     emoji:'🕵️', name:'Salainen aistiagentti',     dur:'5 min', guided:'agentti-koulu-satu' },
       { id:'itseen-koulu',      emoji:'💫',  name:'Matka omaan itseen',        dur:'8 min', guided:'itseen-koulu-satu' },
+      { id:'kehoaktiv-koulu',   emoji:'🤲',  name:'Keho herää — lempeä aktivointi', dur:'6 min', guided:'kehoaktiv-koulu-prog' },
+      { id:'tunnetaito-koulu',  emoji:'🎨',  name:'Tunteiden taidegalleria',   dur:'5 min', guided:'tunnetaito-koulu-prog' },
     ],
     info: [
       { icon:'🚨', title:'Hälytysnappi aivoissasi — stressi ja tunteet',
@@ -3299,6 +3315,54 @@ const GUIDED_PROGRAMS = {
       { label: 'Vatsa', text: 'Laita käsi vatsalle. Tunne miten se nousee sisään hengittäessä ja laskee ulos hengittäessä.', dur: 20, count: false, color: 'amber' },
       { label: 'Sydän', text: 'Nyt käsi sydämelle. Tunnetko sen lyövän? Tup-tup-tup! Se on väsymätön kaveri!', dur: 20, count: false, color: 'amber' },
       { label: 'Hymy', text: 'Hymyile hieman. Tunne hymyn tuntu kasvoilla. Hyvältä tuntuu!', dur: 15, count: false, color: 'green' },
+    ]
+  },
+
+  // ── DOCX-harjoitteet ──
+  'muistelu-pikku-prog': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Asettele', text: 'Ota mukava istuma-asento. Hengitä rauhallisesti nenän kautta sisään ja suun kautta ulos. Toista muutaman kerran.', dur: 20, count: false, color: 'green' },
+      { label: 'Muisto', text: 'Palauta nyt mieleesi jokin mukava muisto. Jokin asia josta pidät. Mieti miltä se sinusta tuntui.', dur: 30, count: false, color: 'amber' },
+      { label: 'Kehon tunne', text: 'Missä kehossasi tunnet mukavan muiston? Rinnassa, vatsassa, käsissä? Salli sen levitä.', dur: 20, count: false, color: 'amber' },
+      { label: 'Paluu', text: 'Aukaise silmäsi rauhallisesti ja palaa nykyhetkeen. Hienoa!', dur: 10, count: false, color: 'green' },
+    ]
+  },
+
+  'kehoaktiv-pikku-prog': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Seiso', text: 'Seiso molemmilla jaloilla. Hengitä sisään ja vie kädet ylös — kuin kasvaisit pidemmäksi!', dur: 10, count: false, color: 'green' },
+      { label: 'Kädet alas', text: 'Uloshengityksellä tuo kädet sivuilta hitaasti alas. Hengitä rauhallisesti.', dur: 10, count: false, color: 'green' },
+      { label: 'Taputtele jalat', text: 'Taivuta varovasti alaspäin ja taputtele lempeästi jalkoja nilkasta reiteen. Ensin toiselle, sitten toiselle jalalle.', dur: 20, count: false, color: 'amber' },
+      { label: 'Taputtele kädet', text: 'Taputtele lempeästi molemmat kädet — sormista aina olkapäähän saakka.', dur: 15, count: false, color: 'amber' },
+      { label: 'Silittele vatsa', text: 'Silittele lempeästi vatsaasi pyörivin liikkein. Se on kehosi tukikohta!', dur: 10, count: false, color: 'green' },
+      { label: 'Kiitos!', text: 'Kiitä itseäsi lempeästä harjoituksesta! Olet tehnyt jotain ihanaa itsellesi.', dur: 10, count: false, color: 'green' },
+    ]
+  },
+
+  'kehoaktiv-koulu-prog': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Aloitus', text: 'Seiso lantion levyisessä haara-asennossa. Hengitä sisään ja nosta kädet sivulta ylös. Uloshengityksellä laske alas. Toista neljä kertaa.', dur: 30, count: false, color: 'green' },
+      { label: 'Käsien lämmitys', text: 'Tuo kädet yhteen ja hiero niitä lempeästi toisiaan vasten. Tunnustele lämpö, joka syntyy. Miltä se tuntuu?', dur: 20, count: false, color: 'green' },
+      { label: 'Silittele kädet', text: 'Ojenna toinen käsi suoraksi. Silittele sitä lempeästi sormenpäistä olkapäähän — edestä ja takaa. Sitten toinen käsi.', dur: 25, count: false, color: 'amber' },
+      { label: 'Silittele koko keho', text: 'Kumarru varovasti eteenpäin ja silittele itseäsi varpaista ylös olkapäihin. Pyri tavoittamaan mahdollisimman moni kohta kehostasi.', dur: 25, count: false, color: 'amber' },
+      { label: 'Pää ja hartiat', text: 'Silittele päätäsi rauhallisin liikkein päälaelta alaspäin olkapäihin saakka.', dur: 15, count: false, color: 'amber' },
+      { label: 'Käsi rintakehälle', text: 'Aseta käsi rintakehälle. Tunne sen lämpö. Hengitä kättä kohti — miltä tuntuu?', dur: 20, count: false, color: 'green' },
+      { label: 'Lopetus', text: 'Ravistele käsiä ja jalkoja lempeästi. Pyöritä olkapäät. Kiitos itsellesi — teit jotain lempeää oman kehosi hyväksi.', dur: 15, count: false, color: 'green' },
+    ]
+  },
+
+  'tunnetaito-koulu-prog': {
+    hasBall: false, rounds: 1,
+    phases: [
+      { label: 'Aloitus', text: 'Istu mukavasti. Tänään tutustumme omiin tunteisiisi. Kaikki tunteet ovat ok — ne kertovat sinulle jotain tärkeää.', dur: 15, count: false, color: 'green' },
+      { label: 'Millainen päivä?', text: 'Mieti hetki — millainen päivä sinulla on tänään ollut? Hyvä, raskas, tylsä, jännittävä?', dur: 20, count: false, color: 'amber' },
+      { label: 'Tunnista tunne', text: 'Mitä tunteita olet kokenut tänään? Iloa, surua, vihaa, jännitystä, pelkoa, yllätystä?', dur: 20, count: false, color: 'amber' },
+      { label: 'Ilo', text: 'Mieti jokin asia josta olet tänään ollut iloinen — vaikka pieni. Missä kehossasi tunnet ilon?', dur: 20, count: false, color: 'green' },
+      { label: 'Vaikea tunne', text: 'Onko ollut jokin asia joka teki sinut surulliseksi tai vihaiseksi? Anna tunteen olla — se on ok. Se menee ohi.', dur: 20, count: false, color: 'blue' },
+      { label: 'Lopetus', text: 'Tunteet tulevat ja menevät, kuin pilvet taivaalla. Sinä olet aina enemmän kuin yksikään tunne.', dur: 15, count: false, color: 'green' },
     ]
   },
 };
