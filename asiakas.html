@@ -1601,7 +1601,9 @@ body.kids-mode .site-footer { display:none; }
     <button class="filter-btn" onclick="filterEx('vagus',this)">Rauhoittava</button>
     <button class="filter-btn" onclick="filterEx('ground',this)">Ankkurointi</button>
     <button class="filter-btn" onclick="filterEx('body',this)">Kehollinen</button>
+    <button class="filter-btn" onclick="filterEx('somatic',this)">Somaattinen</button>
     <button class="filter-btn" onclick="filterEx('image',this)">Mielikuva</button>
+    <button class="filter-btn" onclick="filterEx('bi',this)">Bilateraalinen</button>
   </div>
 
   <div class="ex-grid" id="ex-grid"></div>
@@ -2556,6 +2558,14 @@ const synth = window.speechSynthesis;
 function openModal(id) {
   const ex = EXERCISES.find(e => e.id === id);
   if (!ex) return;
+
+  // MultiDur exercises don't use the modal — they launch directly via dur buttons on the card
+  // If somehow called, scroll to the exercise card instead
+  if (ex.multiDur) {
+    showPanel('harjoitteet', document.querySelector('.nav-tab:nth-child(2)'));
+    return;
+  }
+
   clearInterval(timerInterval);
   stopVoice();
 
@@ -2689,6 +2699,15 @@ const GUIDED_PROGRAMS = {
     ]
   },
   perhos: {
+    hasBall: false,
+    rounds: 4,
+    phases: [
+      { label: 'Asettele kädet', text: 'Risti kädet rintakehällesi', dur: 4, count: false, color: 'green' },
+      { label: 'Taputa rytmissä', text: 'Taputa hitaasti vuorotellen — vasen, oikea, vasen, oikea...', dur: 20, count: false, color: 'green' },
+      { label: 'Tauko', text: 'Pysähdy. Hengitä. Tunnustele olo.', dur: 6, count: false, color: 'blue' },
+    ]
+  },
+  butterfly: {
     hasBall: false,
     rounds: 4,
     phases: [
@@ -4138,9 +4157,8 @@ function toggleInfoBlock(topicId, idx) {
 document.addEventListener('DOMContentLoaded', () => {
   renderQuick();
   renderExGrid();
-  renderInfoContent('stressi'); // render default tab
+  renderInfoContent('stressi');
   renderEntries();
-  renderKidsGrid();
   initRx();
 });
 </script>
