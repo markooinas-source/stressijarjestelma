@@ -897,7 +897,47 @@ body.kids-mode .site-footer { display:none; }
 .kid-ex-dur   { font-size:0.68rem; color:var(--ink3); }
 .kid-ex-guide { font-size:0.65rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; color:var(--green); margin-top:0.1rem; }
 
-/* Kids slider */
+/* Crisis steps */
+.crisis-step {
+  display:flex; gap:1rem; align-items:flex-start;
+  padding:1rem; background:#fff; border:2px solid var(--sand3);
+  border-radius:var(--r); cursor:pointer; transition:all 0.2s;
+}
+.crisis-step:hover { border-color:var(--green-bd); }
+.crisis-step.done { background:var(--green-bg); border-color:var(--green-bd); }
+.crisis-step.done .crisis-num { background:var(--green); color:#fff; }
+.crisis-num {
+  width:32px; height:32px; border-radius:50%; background:var(--red);
+  color:#fff; font-weight:800; font-size:0.9rem;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.crisis-title { font-weight:800; font-size:0.92rem; color:var(--ink); margin-bottom:0.35rem; }
+.crisis-desc { font-size:0.82rem; color:var(--ink2); line-height:1.6; }
+.crisis-ex-btn {
+  margin-top:0.5rem; font-family:'Nunito',sans-serif; font-size:0.75rem; font-weight:800;
+  padding:0.3rem 0.8rem; background:var(--green); color:#fff;
+  border:none; border-radius:20px; cursor:pointer;
+}
+
+/* Progress charts */
+.progress-chart-wrap { margin-top:1.25rem; }
+.chart-title { font-size:0.82rem; font-weight:800; color:var(--ink2); margin-bottom:0.65rem; }
+.bar-chart { display:flex; align-items:flex-end; gap:4px; height:80px; }
+.bar-col { display:flex; flex-direction:column; align-items:center; gap:3px; flex:1; }
+.bar-fill { width:100%; border-radius:4px 4px 0 0; background:var(--green); min-height:2px; transition:height 0.4s; }
+.bar-label { font-size:0.55rem; color:var(--ink3); text-align:center; }
+.streak-row { display:flex; gap:5px; flex-wrap:wrap; margin-top:0.75rem; }
+.streak-dot { width:22px; height:22px; border-radius:50%; border:1.5px solid var(--sand3); display:flex; align-items:center; justify-content:center; font-size:0.55rem; color:var(--ink3); }
+.streak-dot.done { background:var(--green); border-color:var(--green); }
+.streak-dot.done::after { content:'✓'; color:#fff; font-size:0.65rem; }
+
+/* Summary stats */
+.progress-stats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.6rem; margin-top:0.85rem; }
+.pstat { background:var(--sand2); border-radius:var(--r); padding:0.65rem 0.75rem; text-align:center; }
+.pstat-num { font-size:1.4rem; font-weight:800; color:var(--ink); }
+.pstat-lbl { font-size:0.65rem; color:var(--ink3); font-weight:700; letter-spacing:0.04em; text-transform:uppercase; }
+
+
 .kids-slider-wrap { margin: 0.85rem 0 0.5rem; }
 .kids-slider-label {
   font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em;
@@ -1446,6 +1486,7 @@ body.kids-mode .site-footer { display:none; }
     <button class="nav-tab adult-only" onclick="showPanel('harjoitteet',this)">Harjoitteet</button>
     <button class="nav-tab adult-only" onclick="showPanel('tietoa',this)">Tietoa</button>
     <button class="nav-tab adult-only" onclick="showPanel('paivakirja',this)">Päiväkirja</button>
+    <button class="nav-tab adult-only" onclick="showPanel('kriisi',this)" style="color:var(--red);font-weight:800">🆘 Apua nyt</button>
   </div>
   <button class="kid-toggle" id="kid-toggle-btn" onclick="toggleKids()">🧸 Lapsi</button>
 </nav>
@@ -1666,10 +1707,105 @@ body.kids-mode .site-footer { display:none; }
   </div>
 
   <div class="entries-list" id="entries-list"></div>
+
+  <div class="progress-chart-wrap" id="progress-section" style="display:none">
+    <div class="card" style="margin-top:1.25rem">
+      <div style="font-size:0.85rem;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink3);margin-bottom:0.85rem">Edistyminen</div>
+      <div class="progress-stats" id="progress-stats"></div>
+
+      <div class="chart-title" style="margin-top:1.25rem;margin-bottom:0.5rem">Vireystila ajan yli</div>
+      <div style="position:relative;height:160px;margin-bottom:1rem">
+        <canvas id="score-chart-canvas"></canvas>
+      </div>
+
+      <div class="chart-title" style="margin-top:1rem">Harjoitusstreak — viimeiset 30 päivää</div>
+      <div class="streak-row" id="streak-row"></div>
+
+      <div class="chart-title" style="margin-top:1rem">Mielialat — jakautuminen</div>
+      <div id="mood-stats" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem"></div>
+    </div>
+  </div>
+
+    </div>
+  </div>
 </div>
 </div>
 
-<!-- ════════════════ KIDS MODE ════════════════ -->
+<!-- ════ KRIISI ════ -->
+<div id="panel-kriisi" class="panel adult-only">
+<div class="section">
+  <div style="background:var(--red-bg);border:2px solid var(--red-bd);border-radius:var(--r2);padding:1.25rem;margin-bottom:1.25rem">
+    <div style="font-size:1.1rem;font-weight:800;color:var(--red);margin-bottom:0.5rem">🆘 Tarvitsetko apua juuri nyt?</div>
+    <p style="font-size:0.9rem;color:var(--ink2);margin-bottom:0.85rem">Jos olet välittömässä vaarassa tai harkitset itsesi vahingoittamista, soita heti.</p>
+    <div style="display:flex;flex-direction:column;gap:0.6rem">
+      <a href="tel:112" style="display:flex;align-items:center;gap:0.75rem;background:#fff;border:2px solid var(--red);border-radius:var(--r);padding:0.85rem 1rem;text-decoration:none">
+        <span style="font-size:1.4rem">🚨</span>
+        <div><div style="font-weight:800;color:var(--red);font-size:1rem">112 — Hätäkeskus</div><div style="font-size:0.78rem;color:var(--ink3)">Hengenvaara, välitön apu</div></div>
+      </a>
+      <a href="tel:09252500111" style="display:flex;align-items:center;gap:0.75rem;background:#fff;border:2px solid var(--amber-bd);border-radius:var(--r);padding:0.85rem 1rem;text-decoration:none">
+        <span style="font-size:1.4rem">📞</span>
+        <div><div style="font-weight:800;color:var(--amber);font-size:1rem">09 2525 0111 — Kriisipuhelin</div><div style="font-size:0.78rem;color:var(--ink3)">Ympäri vuorokauden, maksuton</div></div>
+      </a>
+      <a href="tel:116123" style="display:flex;align-items:center;gap:0.75rem;background:#fff;border:2px solid var(--blue-bd);border-radius:var(--r);padding:0.85rem 1rem;text-decoration:none">
+        <span style="font-size:1.4rem">💙</span>
+        <div><div style="font-weight:800;color:var(--blue);font-size:1rem">116 123 — Mielenterveyspuhelin</div><div style="font-size:0.78rem;color:var(--ink3)">Ma–pe 9–06, la–su 15–06</div></div>
+      </a>
+    </div>
+  </div>
+
+  <h2 style="font-family:'Lora',serif;font-style:italic;font-size:1.15rem;margin-bottom:0.85rem;color:var(--ink)">Rauhoitu nyt — vaihe kerrallaan</h2>
+  <p style="font-size:0.88rem;color:var(--ink3);margin-bottom:1rem">Tee nämä järjestyksessä. Jokainen vaihe auttaa hermostoasi rauhoittumaan.</p>
+
+  <div style="display:flex;flex-direction:column;gap:0.65rem;margin-bottom:1.25rem">
+    <div class="crisis-step" onclick="this.classList.toggle('done')">
+      <div class="crisis-num">1</div>
+      <div>
+        <div class="crisis-title">Fysiologinen huokaus — tee heti</div>
+        <div class="crisis-desc">Hengitä sisään kahdesti nenän kautta (pieni lisähenkäinen), sitten pitkästi ulos suun kautta. Toista 3 kertaa.</div>
+        <button class="crisis-ex-btn" onclick="event.stopPropagation();startGuided('fysiologinen')">▶ Tee harjoite</button>
+      </div>
+    </div>
+    <div class="crisis-step" onclick="this.classList.toggle('done')">
+      <div class="crisis-num">2</div>
+      <div>
+        <div class="crisis-title">Ankkuroidu — olet turvassa nyt</div>
+        <div class="crisis-desc">Nimeä ääneen tai mielessä: 5 asiaa mitä näet · 4 asiaa mitä voit koskettaa · 3 ääntä mitä kuulet. Paina jalat lattiaan.</div>
+        <button class="crisis-ex-btn" onclick="event.stopPropagation();startGuided('54321')">▶ Tee harjoite</button>
+      </div>
+    </div>
+    <div class="crisis-step" onclick="this.classList.toggle('done')">
+      <div class="crisis-num">3</div>
+      <div>
+        <div class="crisis-title">Kylmä vesi kasvoille</div>
+        <div class="crisis-desc">Pidätä hengitystä ja laske kasvot kylmään veteen 15–30 sek, tai paina kylmää pyyhettä silmille. Syke laskee välittömästi.</div>
+        <button class="crisis-ex-btn" onclick="event.stopPropagation();startGuided('kylmavesi')">▶ Tee harjoite</button>
+      </div>
+    </div>
+    <div class="crisis-step" onclick="this.classList.toggle('done')">
+      <div class="crisis-num">4</div>
+      <div>
+        <div class="crisis-title">Ota yhteyttä johonkin</div>
+        <div class="crisis-desc">Soita, laita viesti tai mene jonkun luo. Yhteys toiseen ihmiseen on tehokkain rauhoittumismekanismi — me olemme sosiaalisia eläimiä.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:1rem">
+    <div style="font-size:0.78rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:0.75rem">Lisää apua</div>
+    <div style="display:flex;flex-direction:column;gap:0.5rem;font-size:0.87rem">
+      <a href="https://mieli.fi" target="_blank" style="color:var(--blue);display:flex;align-items:center;gap:0.5rem">🔗 Mieli.fi — Mielenterveys ry</a>
+      <a href="https://www.mtkl.fi/" target="_blank" style="color:var(--blue);display:flex;align-items:center;gap:0.5rem">🔗 Mielenterveyskeskusliitto</a>
+      <a href="https://nyyti.fi/" target="_blank" style="color:var(--blue);display:flex;align-items:center;gap:0.5rem">🔗 Nyyti ry — opiskelijoille</a>
+      <a href="https://www.sekasin.fi/" target="_blank" style="color:var(--blue);display:flex;align-items:center;gap:0.5rem">🔗 Sekasin — nuorille</a>
+    </div>
+  </div>
+
+  <div style="padding:1rem;background:var(--green-bg);border-radius:var(--r);border:1.5px solid var(--green-bd)">
+    <p style="font-size:0.85rem;color:var(--ink2);font-style:italic;line-height:1.65">Muista: tämä tunne on väliaikainen. Olet kokenut vaikeat hetket ennenkin ja selvinnyt niistä. Hermostosi on ylikuormittunut — se menee ohi. Olet turvassa.</p>
+  </div>
+</div>
+</div>
+
 <div id="kids-mode-panel" class="panel kids-overlay">
 <div class="kids-panel">
 
@@ -2242,6 +2378,96 @@ function showKidsTab(id, btn) {
   if (id !== 'harjoitteet') document.getElementById('breath-anim-card').style.display = 'none';
 }
 
+function renderProgressCharts() {
+  const entries = loadEntries();
+  const section = document.getElementById('progress-section');
+  if (!entries.length) { if (section) section.style.display='none'; return; }
+  if (section) section.style.display='block';
+
+  // Stats
+  const statsEl = document.getElementById('progress-stats');
+  const total = entries.length;
+  const withEx = entries.filter(e => e.exercise && e.exercise.trim()).length;
+  const scores = entries.map(e => parseInt(e.score)||5);
+  const avgScore = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '–';
+  const trend = scores.length >= 2 ? scores[scores.length-1] - scores[0] : 0;
+  const trendStr = trend < 0 ? `↓ ${Math.abs(trend).toFixed(0)} parantunut` : trend > 0 ? `↑ ${trend.toFixed(0)} noussut` : '→ Tasainen';
+  if (statsEl) statsEl.innerHTML = `
+    <div class="pstat"><div class="pstat-num">${total}</div><div class="pstat-lbl">Kirjausta</div></div>
+    <div class="pstat"><div class="pstat-num">${withEx}</div><div class="pstat-lbl">Harjoittelupäivää</div></div>
+    <div class="pstat"><div class="pstat-num">${avgScore}</div><div class="pstat-lbl">Keskim. vireystila</div></div>
+    <div class="pstat"><div class="pstat-num" style="font-size:0.9rem">${trendStr}</div><div class="pstat-lbl">Kehitys</div></div>
+  `;
+
+  // Line chart with Chart.js
+  const canvas = document.getElementById('score-chart-canvas');
+  if (canvas) {
+    const last20 = entries.slice(-20);
+    const labels = last20.map(e => e.date ? e.date.split(' ')[0] : '');
+    const data = last20.map(e => parseInt(e.score)||5);
+    if (canvas._chartInst) canvas._chartInst.destroy();
+    const isDark = document.body.classList.contains('dark') || window.matchMedia('(prefers-color-scheme:dark)').matches;
+    const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+    const textColor = isDark ? '#8a8070' : '#6a6050';
+    canvas._chartInst = new Chart(canvas.getContext('2d'), {
+      type:'line',
+      data:{
+        labels,
+        datasets:[{
+          label:'Vireystila',
+          data,
+          borderColor:'#5a8a60',
+          backgroundColor:'rgba(90,138,96,0.1)',
+          tension:0.4,
+          pointRadius:4,
+          pointBackgroundColor:'#5a8a60',
+          fill:true
+        }]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        scales:{
+          y:{min:0,max:10,ticks:{stepSize:2,color:textColor},grid:{color:gridColor}},
+          x:{ticks:{color:textColor,maxTicksLimit:7},grid:{color:gridColor}}
+        },
+        plugins:{legend:{display:false}}
+      }
+    });
+  }
+
+  // Streak dots
+  const streakEl = document.getElementById('streak-row');
+  if (streakEl) {
+    const today = new Date();
+    const dots = [];
+    for (let i=29; i>=0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate()-i);
+      const dStr = d.toLocaleDateString('fi-FI');
+      const hasEntry = entries.some(e => e.date && e.date.startsWith(dStr.split('.').slice(0,2).join('.')));
+      dots.push(`<div class="streak-dot${hasEntry?' done':''}" title="${dStr}"></div>`);
+    }
+    streakEl.innerHTML = dots.join('');
+  }
+
+  // Mood stats
+  const moodEl = document.getElementById('mood-stats');
+  if (moodEl) {
+    const moodMap = {'ok':'😌 Rauhallinen','high':'😬 Stressaantunut','low':'😶 Väsynyt','panic':'😰 Ylikuormittunut'};
+    const moodColors = {'ok':'var(--green)','high':'var(--amber)','low':'var(--blue)','panic':'var(--red)'};
+    const counts = {};
+    entries.forEach(e => { if(e.mood) counts[e.mood]=(counts[e.mood]||0)+1; });
+    moodEl.innerHTML = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([m,c])=>
+      `<div style="display:flex;align-items:center;gap:0.4rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--sand2);font-size:0.78rem">
+        <span>${moodMap[m]||m}</span>
+        <span style="font-weight:800;color:${moodColors[m]||'var(--ink)'}">${c}</span>
+      </div>`
+    ).join('') || '<span style="color:var(--ink3);font-size:0.82rem">Ei mielialoja kirjattu</span>';
+  }
+}
+
+
 function renderKidsInfo(age) {
   const data = KIDS_AGE_DATA[age];
   const area = document.getElementById('kids-info-area');
@@ -2487,14 +2713,14 @@ const MOOD_TAGS = {ok:'tag-ok', high:'tag-high', low:'tag-low', panic:'tag-panic
 function saveEntry() {
   const score = document.getElementById('j-score').value;
   const note = document.getElementById('j-note').value.trim();
-  const ex = document.getElementById('j-exercise').value.trim();
+  const exercise = document.getElementById('j-exercise').value.trim();
   if (!selectedMood && !note) return;
 
   const entries = loadEntries();
   entries.push({
     date: new Date().toLocaleString('fi-FI'),
     mood: selectedMood || 'ok',
-    score, note, ex
+    score, note, exercise
   });
   localStorage.setItem('oma_journal', JSON.stringify(entries));
 
@@ -2505,6 +2731,7 @@ function saveEntry() {
   document.querySelectorAll('.mood-chip').forEach(b => b.classList.remove('sel'));
   selectedMood = '';
   renderEntries();
+  renderProgressCharts();
 }
 
 function loadEntries() {
@@ -2518,12 +2745,13 @@ function renderEntries() {
   if (!entries.length) { el.innerHTML = '<div class="empty">Ei vielä kirjauksia — tallenna ensimmäinen 🌱</div>'; return; }
   el.innerHTML = entries.slice().reverse().map((e,ri) => {
     const idx = entries.length-1-ri;
+    const ex = e.exercise || e.ex || '';
     return `
     <div class="entry">
       <div class="entry-head">
         <div>
           <div class="entry-date">${e.date}</div>
-          ${e.ex ? `<div style="font-size:0.82rem;color:var(--ink3);margin-top:2px">${e.ex}</div>` : ''}
+          ${ex ? `<div style="font-size:0.82rem;color:var(--ink3);margin-top:2px">${ex}</div>` : ''}
         </div>
         <div style="display:flex;align-items:center;gap:0.5rem">
           <span class="entry-mood-tag ${MOOD_TAGS[e.mood]||'tag-ok'}">${MOOD_LABELS[e.mood]||e.mood}</span>
@@ -2534,6 +2762,7 @@ function renderEntries() {
       <div class="entry-scores"><span>Vireystila: <strong>${e.score}/10</strong></span></div>
     </div>`;
   }).join('');
+  renderProgressCharts();
 }
 
 function deleteEntry(idx) {
@@ -4178,5 +4407,6 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </body>
 </html>
