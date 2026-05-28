@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Akupunktio — Kliininen referenssi · Marko Oinas</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=DM+Mono:ital,wght@0,400;0,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#1a1208; --ink2:#3a2e1e; --ink3:#6a5e48; --dim:#8a7e68; --muted:#b0a490;
+  --sand:#f5f0e8; --sand2:#ede8e0; --sand3:#ddd8d0; --cream:#faf7f2;
+  --gold:#c8860a; --gold2:#e8a020; --goldbg:#fdf5e4;
+  --red:#c03020; --redbg:#fdf0ee;
+  --teal:#2a7a6a; --tealbg:#e8f5f2;
+  --blue:#2a508a; --bluebg:#eef2fa;
+  --pur:#6a40a0;  --purbg:#f2eefa;
+  --grn:#3a7a3a;  --grnbg:#eef5ee;
+  --wood:#4a8a30; --fire:#c04020; --earth:#c8860a; --metal:#7a8090; --water:#2a508a;
+  --serif:'Crimson Pro',Georgia,serif;
+  --mono:'DM Mono',monospace;
+  --r:8px; --r2:14px; --sb:252px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--serif);background:var(--cream);color:var(--ink);display:flex;min-height:100vh;line-height:1.6}
+
+/* ─── SIDEBAR ─── */
+.sb{width:var(--sb);height:100vh;background:#1a1208;position:fixed;top:0;left:0;display:flex;flex-direction:column;z-index:200}
+.sb-head{padding:1rem .95rem .8rem;border-bottom:1px solid rgba(255,255,255,.1);flex-shrink:0}
+.sb-title{font-family:var(--mono);font-size:.78rem;color:var(--gold2);letter-spacing:.05em;margin-bottom:.1rem}
+.sb-sub{font-size:.6rem;color:rgba(255,255,255,.32);font-family:var(--mono)}
+.sb-srch{padding:.5rem .95rem;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.sb-srch input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:var(--r);padding:.38rem .6rem;color:#fff;font-family:var(--mono);font-size:.7rem;outline:none}
+.sb-srch input::placeholder{color:rgba(255,255,255,.28)}
+.sb-srch input:focus{border-color:var(--gold2)}
+.sb-nav{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent;padding:.3rem 0 1.5rem}
+.sb-nav::-webkit-scrollbar{width:3px}
+.sb-nav::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1)}
+.ns{padding:.7rem .95rem .12rem;font-family:var(--mono);font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.26)}
+.ni{display:flex;align-items:center;gap:.45rem;padding:.35rem .95rem;cursor:pointer;transition:all .15s;font-size:.8rem;color:rgba(255,255,255,.55);border-left:2px solid transparent;white-space:nowrap}
+.ni:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.8)}
+.ni.active{background:rgba(200,134,10,.14);color:var(--gold2);border-left-color:var(--gold2)}
+.nd{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.45;flex-shrink:0}
+.ni.active .nd{opacity:1}
+.nb{margin-left:auto;font-family:var(--mono);font-size:.52rem;padding:.08rem .3rem;border-radius:3px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.32)}
+
+/* ─── MAIN ─── */
+.main{margin-left:var(--sb);flex:1;min-height:100vh}
+.page{display:none}.page.active{display:block}
+
+/* ─── PAGE HEADER ─── */
+.ph{background:var(--ink);padding:1.75rem 2.25rem 1.4rem;position:relative;overflow:hidden}
+.ph::after{content:'';position:absolute;right:-20px;top:-20px;width:140px;height:140px;border-radius:50%;background:rgba(200,134,10,.07)}
+.ph-ey{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2);margin-bottom:.35rem}
+.ph-t{font-family:var(--serif);font-size:1.8rem;font-weight:300;color:#fff;line-height:1.1;margin-bottom:.3rem}
+.ph-lead{font-size:.88rem;color:rgba(255,255,255,.42);font-style:italic}
+.pc{padding:1.6rem 2.25rem;max-width:1060px}
+
+/* ─── CARDS ─── */
+.card{background:#fff;border:1px solid var(--sand3);border-radius:var(--r2);padding:1.25rem;margin-bottom:1rem}
+.ct{font-family:var(--serif);font-size:1.05rem;font-style:italic;color:var(--ink);margin-bottom:.6rem}
+
+/* ─── INFO / WARN BOX ─── */
+.ib{background:var(--goldbg);border:1px solid #e8d090;border-left:3px solid var(--gold);border-radius:0 var(--r) var(--r) 0;padding:.7rem .9rem;font-size:.84rem;color:var(--ink2);line-height:1.6;margin-bottom:1rem}
+.wb{background:var(--redbg);border-left:3px solid var(--red);border-radius:0 var(--r) var(--r) 0;padding:.65rem .9rem;font-size:.82rem;color:var(--red);margin-top:.65rem}
+
+/* ─── CHANNEL HEADER ─── */
+.ch-hdr{display:flex;align-items:flex-start;gap:1.1rem;padding:1.1rem;background:var(--sand);border-radius:var(--r2);margin-bottom:1.1rem;border:1px solid var(--sand3)}
+.ch-abbr{font-family:var(--mono);font-size:2rem;font-weight:500;color:var(--ink2);line-height:1;min-width:58px}
+.ch-n{font-size:1.1rem;font-style:italic;color:var(--ink);margin-bottom:.12rem}
+.ch-sub{font-family:var(--mono);font-size:.63rem;color:var(--dim);letter-spacing:.1em;margin-bottom:.38rem}
+.ch-desc{font-size:.83rem;color:var(--ink3);line-height:1.58;max-width:500px}
+.ch-tags{display:flex;flex-wrap:wrap;gap:.22rem;margin-top:.5rem}
+.ch-tag{font-family:var(--mono);font-size:.56rem;padding:.15rem .45rem;border-radius:4px;background:rgba(0,0,0,.06);color:var(--ink3);letter-spacing:.04em}
+
+/* ─── POINT TABLE ─── */
+.pt-tbl{width:100%;border-collapse:collapse;font-size:.81rem}
+.pt-tbl th{text-align:left;font-family:var(--mono);font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);padding:.5rem .65rem;background:var(--sand);border-bottom:1px solid var(--sand3)}
+.pt-tbl td{padding:.55rem .65rem;border-bottom:1px solid var(--sand2);vertical-align:top}
+.pt-tbl tr:hover td{background:var(--sand);cursor:pointer}
+.pn{font-family:var(--mono);font-size:.74rem;font-weight:500;color:var(--ink3);white-space:nowrap}
+.pe{font-size:.8rem;color:var(--ink)}
+.py{font-size:.68rem;color:var(--gold);font-style:italic}
+.pl{font-size:.78rem;color:var(--ink2);line-height:1.48}
+.pi{font-size:.78rem;color:var(--ink2);line-height:1.52}
+.pc2{display:flex;flex-wrap:wrap;gap:.18rem;margin-top:.22rem}
+.pk{font-family:var(--mono);font-size:.5rem;padding:.1rem .35rem;border-radius:3px;letter-spacing:.04em;font-weight:500}
+.cj{background:#e8f4e0;color:#3a7a20} /* jing-well */
+.cy{background:var(--goldbg);color:var(--gold)} /* yuan */
+.cl{background:var(--purbg);color:var(--pur)} /* luo */
+.cx{background:var(--redbg);color:var(--red)} /* xi */
+.cs{background:var(--tealbg);color:var(--teal)} /* shu-back */
+.cm{background:var(--bluebg);color:var(--blue)} /* mu */
+.ch2{background:#f8f0fa;color:#8a30a0} /* hui */
+.cg{background:#f4eeff;color:#6030b0} /* ghost */
+.c5{background:#fef8e8;color:#a07010} /* 5VP */
+.cw{background:#f0f8f0;color:#2a6a2a} /* window */
+.cmr{background:#fff0f0;color:#c03030} /* master */
+.cco{background:#f0f4ff;color:#4060c0} /* command */
+
+/* ─── DETAIL PANEL ─── */
+.dp{position:fixed;right:0;top:0;width:390px;height:100vh;background:#fff;border-left:1px solid var(--sand3);box-shadow:-6px 0 32px rgba(0,0,0,.1);z-index:300;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
+.dp.open{transform:translateX(0)}
+.dp-x{position:absolute;top:.75rem;right:.75rem;width:26px;height:26px;border-radius:50%;background:var(--sand);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--ink3)}
+.dp-x:hover{background:var(--sand3)}
+.dp-head{padding:1.25rem;background:var(--ink);color:#fff;flex-shrink:0}
+.dp-num{font-family:var(--mono);font-size:.62rem;color:var(--gold2);letter-spacing:.12em;margin-bottom:.18rem}
+.dp-en{font-family:var(--serif);font-size:1.3rem;font-style:italic;color:#fff;line-height:1.1;margin-bottom:.12rem}
+.dp-py{font-style:italic;font-size:.84rem;color:rgba(255,255,255,.5)}
+.dp-body{flex:1;overflow-y:auto;padding:1.25rem}
+.dp-s{margin-bottom:.9rem}
+.dp-l{font-family:var(--mono);font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:.3rem}
+.dp-t{font-size:.84rem;color:var(--ink2);line-height:1.62}
+.dp-div{height:1px;background:var(--sand3);margin:.75rem 0}
+
+/* ─── GRIDS ─── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem}
+@media(max-width:1000px){.g2,.g3{grid-template-columns:1fr}}
+
+/* ─── SEARCH ─── */
+#s-ov{display:none;position:fixed;top:0;left:var(--sb);right:0;bottom:0;z-index:240;background:rgba(26,18,8,.4)}
+#s-bx{display:none;position:fixed;top:66px;left:calc(var(--sb) + 1.25rem);right:1.25rem;z-index:250;max-width:660px;max-height:66vh;overflow-y:auto;background:#fff;border:1px solid var(--sand3);border-radius:var(--r2);box-shadow:0 8px 40px rgba(0,0,0,.12)}
+.sri{padding:.7rem 1rem;border-bottom:1px solid var(--sand2);cursor:pointer;display:flex;align-items:center;gap:.75rem}
+.sri:hover{background:var(--sand)}
+.sn{font-family:var(--mono);font-size:.68rem;color:var(--dim);min-width:40px}
+.se{font-size:.83rem;color:var(--ink)}
+.sp{font-size:.72rem;color:var(--gold);font-style:italic}
+.ss{font-size:.72rem;color:var(--dim)}
+
+/* ─── TABS ─── */
+.tabs{display:flex;border-bottom:1px solid var(--sand3);margin-bottom:1.25rem;flex-wrap:wrap}
+.tb{padding:.5rem 1rem;font-family:var(--serif);font-size:.84rem;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;cursor:pointer;color:var(--dim);transition:all .15s}
+.tb:hover{color:var(--ink)}
+.tb.active{color:var(--ink);border-bottom-color:var(--gold)}
+.tp{display:none}.tp.active{display:block}
+
+/* ─── 5-ELEM TABLE ─── */
+.fe-t{width:100%;border-collapse:collapse;font-size:.78rem}
+.fe-t th{text-align:center;font-family:var(--mono);font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;padding:.45rem .45rem;border-bottom:2px solid var(--sand3);color:var(--dim)}
+.fe-t td{text-align:center;padding:.42rem .45rem;border-bottom:1px solid var(--sand2);vertical-align:top}
+.fe-t tr:hover td{background:var(--sand)}
+
+/* ─── CUN TABLE ─── */
+.cun-t{width:100%;border-collapse:collapse;font-size:.82rem}
+.cun-t th{text-align:left;font-family:var(--mono);font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;padding:.45rem .6rem;background:var(--sand);border-bottom:1px solid var(--sand3);color:var(--dim)}
+.cun-t td{padding:.48rem .6rem;border-bottom:1px solid var(--sand2);vertical-align:top}
+.cun-t tr:nth-child(even) td{background:var(--sand)}
+.cun-num{font-family:var(--mono);font-size:.9rem;font-weight:500;color:var(--gold);text-align:center}
+
+/* ─── MISC ─── */
+h2{font-family:var(--serif);font-size:1.2rem;font-style:italic;color:var(--ink);margin-bottom:.7rem}
+h3{font-family:var(--serif);font-size:.98rem;font-style:italic;color:var(--ink2);margin-bottom:.5rem}
+p{margin-bottom:.5rem}
+</style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sb">
+  <div class="sb-head">
+    <div class="sb-title">Akupunktio — Kliininen referenssi</div>
+    <div class="sb-sub">Marko Oinas · 14 kanavaa · 361+ pistettä</div>
+  </div>
+  <div class="sb-srch">
+    <input type="text" id="gs" placeholder="Hae: ST36, polvi, ahdistus..." oninput="gSearch(this.value)">
+  </div>
+  <div class="sb-nav">
+    <div class="ns">Teoria</div>
+    <div class="ni active" onclick="show('intro',this)"><span class="nd"></span>Perusteet</div>
+    <div class="ni" onclick="show('zangfu',this)"><span class="nd"></span>Zangfu — elimistö</div>
+    <div class="ni" onclick="show('5elem',this)"><span class="nd"></span>Viisi elementtiä</div>
+    <div class="ni" onclick="show('erikois',this)"><span class="nd"></span>Erikoispisteet</div>
+    <div class="ni" onclick="show('cun',this)"><span class="nd"></span>Cun-mittasuhteet</div>
+    <div class="ni" onclick="show('haku',this)"><span class="nd"></span>Pisteenhaku</div>
+    <div class="ni" onclick="show('protokollat',this);buildProtocolPage()"><span class="nd"></span>Kliiniset protokollat</div>
+    <div class="ns">Yin — käsi</div>
+    <div class="ni" onclick="show('LU',this)"><span class="nd"></span>LU — Keuhko<span class="nb">11</span></div>
+    <div class="ni" onclick="show('PC',this)"><span class="nd"></span>PC — Sydänverho<span class="nb">9</span></div>
+    <div class="ni" onclick="show('HT',this)"><span class="nd"></span>HT — Sydän<span class="nb">9</span></div>
+    <div class="ns">Yang — käsi</div>
+    <div class="ni" onclick="show('LI',this)"><span class="nd"></span>LI — Paksusuoli<span class="nb">20</span></div>
+    <div class="ni" onclick="show('SJ',this)"><span class="nd"></span>SJ — Sanjiao<span class="nb">23</span></div>
+    <div class="ni" onclick="show('SI',this)"><span class="nd"></span>SI — Ohutsuoli<span class="nb">19</span></div>
+    <div class="ns">Yin — jalka</div>
+    <div class="ni" onclick="show('SP',this)"><span class="nd"></span>SP — Perna<span class="nb">21</span></div>
+    <div class="ni" onclick="show('KI',this)"><span class="nd"></span>KI — Munuainen<span class="nb">27</span></div>
+    <div class="ni" onclick="show('LV',this)"><span class="nd"></span>LV — Maksa<span class="nb">14</span></div>
+    <div class="ns">Yang — jalka</div>
+    <div class="ni" onclick="show('ST',this)"><span class="nd"></span>ST — Mahalaukku<span class="nb">45</span></div>
+    <div class="ni" onclick="show('BL',this)"><span class="nd"></span>BL — Virtsarakko<span class="nb">67</span></div>
+    <div class="ni" onclick="show('GB',this)"><span class="nd"></span>GB — Sappirakko<span class="nb">44</span></div>
+    <div class="ns">Ylimääräiset</div>
+    <div class="ni" onclick="show('DU',this)"><span class="nd"></span>Du Mai<span class="nb">28</span></div>
+    <div class="ni" onclick="show('REN',this)"><span class="nd"></span>Ren Mai<span class="nb">24</span></div>
+  </div>
+</aside>
+
+<div id="s-ov" onclick="closeS()"></div>
+<div id="s-bx"></div>
+
+<div class="dp" id="dp">
+  <button class="dp-x" onclick="closeD()">✕</button>
+  <div class="dp-head">
+    <div class="dp-num" id="d-num"></div>
+    <div class="dp-en" id="d-en"></div>
+    <div class="dp-py" id="d-py"></div>
+  </div>
+  <div class="dp-body" id="d-body"></div>
+</div>
+
+<main class="main">
+<!-- INTRO -->
+<div id="page-intro" class="page active">
+<div class="ph"><div class="ph-ey">Kiinalainen lääketiede · Kliininen viitekehys</div>
+<h1 class="ph-t">Akupunktio — perusteet</h1>
+<p class="ph-lead">14 kanavaa · 361+ pistettä · Zangfu · Viisi elementtiä · Erikoispisteet · Cun-mitat</p></div>
+<div class="pc">
+<div class="g2">
+<div>
+<div class="card"><div class="ct">Mitä akupunktio on?</div>
+<p style="font-size:.87rem;color:var(--ink2);line-height:1.68">Akupunktio on kiinalaisen lääketieteen hoitomuoto — ohuita neuloja asetetaan tarkoin määriteltyihin anatomisiin pisteisiin kehon pinnalle. Teoria perustuu <strong>Qi:n</strong> (elinvoima) virtaukseen <strong>kanavissa</strong> (Jingluò). Qi:n epätasapaino tai tukos johtaa sairauksiin — neulotus palauttaa tasapainon.</p>
+<div class="ib" style="margin-top:.7rem;margin-bottom:0"><strong>Länsimaiset mekanismit:</strong> ANS-modulaatio, endorfiinivapautus (beta-endorfiini, enkefalini), HPA-akselin kortisolin lasku, anti-inflammatorinen vaikutus vagushermon kolinergisen polun kautta (Tracey 2002), neuroplastisuusvaikutukset fMRI-tutkimuksissa (default mode network).</div></div>
+<div class="card"><div class="ct">Kanavajärjestelmä — Jingluò</div>
+<p style="font-size:.85rem;color:var(--ink2);line-height:1.62;margin-bottom:.6rem">12 pääkanavaa + 2 ylimääräistä (Du Mai, Ren Mai). Yin-kanavat kulkevat sisäpinnoilla, yang-kanavat ulkopinnoilla. Jokainen kanava liittyy elinjärjestelmään.</p>
+<div style="display:flex;gap:.85rem">
+<div style="flex:1"><div style="font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:.32rem">Yin-kanavat</div>
+<div style="font-size:.78rem;color:var(--ink2);line-height:1.78">LU — Keuhko (Fei)<br>PC — Sydänverho (Xinbao)<br>HT — Sydän (Xin)<br>SP — Perna (Pi)<br>KI — Munuainen (Shen)<br>LV — Maksa (Gan)</div></div>
+<div style="flex:1"><div style="font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:.32rem">Yang-kanavat</div>
+<div style="font-size:.78rem;color:var(--ink2);line-height:1.78">LI — Paksusuoli (Dachang)<br>SJ — Sanjiao<br>SI — Ohutsuoli (Xiaochang)<br>ST — Mahalaukku (Wei)<br>BL — Virtsarakko (Pangguang)<br>GB — Sappirakko (Dan)</div></div></div></div>
+</div>
+<div>
+<div class="card"><div class="ct">Vitaaliaineet</div>
+<div style="display:flex;flex-direction:column;gap:.55rem">
+<div style="padding:.6rem .7rem;background:var(--sand);border-radius:var(--r);border-left:2px solid var(--gold)"><strong style="font-size:.85rem">Qi</strong> <span style="font-size:.78rem;color:var(--dim)">— elinvoima</span><p style="font-size:.8rem;color:var(--ink2);margin:0;margin-top:.2rem">Liikuttaa, lämmittää, suojaa, muuntaa. Yuan Qi (alkuvoima), Zong Qi (rintavoima), Ying Qi (ravitsemisvoima), Wei Qi (puolustusvoima).</p></div>
+<div style="padding:.6rem .7rem;background:var(--sand);border-radius:var(--r);border-left:2px solid var(--red)"><strong style="font-size:.85rem">Xue</strong> <span style="font-size:.78rem;color:var(--dim)">— veri</span><p style="font-size:.8rem;color:var(--ink2);margin:0;margin-top:.2rem">Ravitsee elimiä, ylläpitää Sheniä. "Qi johtaa verta, veri on Qi:n äiti."</p></div>
+<div style="padding:.6rem .7rem;background:var(--sand);border-radius:var(--r);border-left:2px solid var(--blue)"><strong style="font-size:.85rem">Jinye</strong> <span style="font-size:.78rem;color:var(--dim)">— kehonnesteet</span><p style="font-size:.8rem;color:var(--ink2);margin:0;margin-top:.2rem">Jin (pinnallinen) ja Ye (syvä). Kostuttavat, voitelevat kudoksia.</p></div>
+<div style="padding:.6rem .7rem;background:var(--sand);border-radius:var(--r);border-left:2px solid var(--pur)"><strong style="font-size:.85rem">Jing</strong> <span style="font-size:.78rem;color:var(--dim)">— esanssi</span><p style="font-size:.8rem;color:var(--ink2);margin:0;margin-top:.2rem">Synnynnäinen + hankittu. Säilytetään munuaisissa. Kasvu, kehitys, lisääntyminen.</p></div>
+<div style="padding:.6rem .7rem;background:var(--sand);border-radius:var(--r);border-left:2px solid var(--teal)"><strong style="font-size:.85rem">Shen</strong> <span style="font-size:.78rem;color:var(--dim)">— mieli/henki</span><p style="font-size:.8rem;color:var(--ink2);margin:0;margin-top:.2rem">Asuu sydämessä. Tietoisuus, muisti, ajattelu. Kaikki psyykkinen kulkee Shenin kautta.</p></div>
+</div></div>
+<div class="card"><div class="ct">Yin &amp; Yang — tasapaino</div>
+<p style="font-size:.85rem;color:var(--ink2);line-height:1.62;margin-bottom:.5rem">Terveys = tasapaino. Sairaus = epätasapaino. Yin (lepääminen, viileys, kosteus) vs Yang (aktiivisuus, lämpö, kuivuus).</p>
+<div style="display:flex;flex-wrap:wrap;gap:.25rem">
+<span style="font-family:var(--mono);font-size:.58rem;padding:.15rem .42rem;border-radius:3px;background:var(--sand2);color:var(--ink3)">Yin puutos → kuumuus, unettomuus, kuivuus</span>
+<span style="font-family:var(--mono);font-size:.58rem;padding:.15rem .42rem;border-radius:3px;background:var(--sand2);color:var(--ink3)">Yang puutos → kylmyys, väsymys, turvotus</span>
+<span style="font-family:var(--mono);font-size:.58rem;padding:.15rem .42rem;border-radius:3px;background:var(--sand2);color:var(--ink3)">Qi tukos → kipu, jäykkyys</span>
+<span style="font-family:var(--mono);font-size:.58rem;padding:.15rem .42rem;border-radius:3px;background:var(--sand2);color:var(--ink3)">Veri tukos → krooninen, terävä kipu</span>
+</div></div>
+</div></div>
+</div></div>
+
+<!-- ZANGFU -->
+<div id="page-zangfu" class="page">
+<div class="ph"><div class="ph-ey">Sisäelinoppi</div>
+<h1 class="ph-t">Zangfu — elimistö</h1>
+<p class="ph-lead">Zang = kiinteät yin-elimet · Fu = ontot yang-elimet · Toiminnalliset kokonaisuudet</p></div>
+<div class="pc">
+<div class="ib">Kiinalaisen lääketieteen elimet ≠ länsimaiset anatomiset elimet. Fysiologinen + psyykkinen + hengellinen ulottuvuus.</div>
+<h2>Zang-elimet (Yin)</h2>
+<div class="g2">
+<div class="card" style="border-left:3px solid var(--metal)"><div class="ct">LU — Keuhko (Fei) · Metalli</div>
+<p style="font-size:.83rem;color:var(--ink2);line-height:1.63"><strong>Fysiologia:</strong> Hallitsee Qi:tä ja hengitystä. Säätelee veden kiertoa. Wei Qi (puolustusvoima). Avautuu nenässä, hallitsee ihoa ja karvoja.<br><br><strong>Psyykkinen:</strong> Asuu Po — ruumiinsielu, vaistonvaraiset toiminnot, rytmi, rajat. Liittyy suruun ja menetykseen.<br><br><strong>Häiriöt:</strong> Yskä, hengenahdistus, iho-ongelmat, krooninen surullisuus, vetäytyminen. Qi puutos → väsymys, heikko ääni, spontaani hikoilu.</p></div>
+<div class="card" style="border-left:3px solid var(--wood)"><div class="ct">LV — Maksa (Gan) · Puu</div>
+<p style="font-size:.83rem;color:var(--ink2);line-height:1.63"><strong>Fysiologia:</strong> Varastoi verta. Sujuvoittaa Qi:n virtausta (Shu Xie). Kontrolloi jänteitä ja kynsiä. Avautuu silmissä.<br><br><strong>Psyykkinen:</strong> Asuu Hun — eläinsielu, luovuus, tulevaisuuden suunnittelu, unennäkö. Liittyy vihaan ja turhautumiseen.<br><br><strong>Häiriöt:</strong> Qi tukos → ahdistus, masennus, kylkikipu, PMS. Yang nousee → päänsärky, ärtyisyys. Tuuli → kouristukset, niksahdukset.</p></div>
+<div class="card" style="border-left:3px solid var(--fire)"><div class="ct">HT — Sydän (Xin) · Tuli</div>
+<p style="font-size:.83rem;color:var(--ink2);line-height:1.63"><strong>Fysiologia:</strong> Hallitsee verta ja verisuonia. Säilyttää mieltä (Shen). Avautuu kielessä. "Viiden zang-elimen hallitsija."<br><br><strong>Psyykkinen:</strong> Asuu Shen — mieli, tietoisuus, muisti, ajattelu. Kaikki psyykkinen häiriintyy sydämen kautta.<br><br><strong>Häiriöt:</strong> Unettomuus, levottomuus, palpitaatiot, muistiongelmat. Sydänpalo → kiihtyminen. Sydänveri puutos → ahdistus, pelko.</p></div>
+<div class="card" style="border-left:3px solid var(--earth)"><div class="ct">SP — Perna (Pi) · Maa</div>
+<p style="font-size:.83rem;color:var(--ink2);line-height:1.63"><strong>Fysiologia:</strong> Muuntaa ja kuljettaa ravintoa (Yun Hua). Ylläpitää verta astioissa. Nostaa Qi:n ylöspäin. Hallitsee lihaksia ja raajoja. Avautuu suussa.<br><br><strong>Psyykkinen:</strong> Asuu Yi — ajatus, muisti, keskittyminen. Liittyy huolestuneisuuteen ja märehtimiseen.<br><br><strong>Häiriöt:</strong> Ruoansulatushäiriöt, väsymys, turvotus, lihasheikkous, pakonomainen ajattelu, ruokahalu-ongelmat.</p></div>
+<div class="card" style="border-left:3px solid var(--water)"><div class="ct">KI — Munuainen (Shen) · Vesi</div>
+<p style="font-size:.83rem;color:var(--ink2);line-height:1.63"><strong>Fysiologia:</strong> Varastoi Jing. Hallitsee kasvua, kehitystä, lisääntymistä. Tuottaa luuytimen ja aivot. Hallitsee vettä. Avautuu korvissa.<br><br><strong>Psyykkinen:</strong> Asuu Zhi — tahto, päättäväisyys, motivaatio, pelko. "Elämän juuri."<br><br><strong>Häiriöt:</strong> Krooninen väsymys, alaselkäkipu, kuulohäiriöt, pelko. Yin puutos → unettomuus, kuumuus. Yang puutos → kylmyys, turvotus.</p></div>
+<div class="card" style="border-left:3px solid #4a8a60"><div class="ct">PC — Sydänverho (Xinbao) · Tuli</div>
+<p style="font-size:.83rem;color:var(--ink2);line-height:1.63"><strong>Fysiologia:</strong> Suojelee sydäntä ulkoisilta patogeeneiltä. Toimii sydämen suurlähettiläänä.<br><br><strong>Psyykkinen:</strong> Suojelee Sheniä liialta tunne-aktivaatiolta. Kliinisesti käytetään usein sydämen sijaan.<br><br><strong>Häiriöt:</strong> Kuten sydänhäiriöt — ahdistus, palpitaatiot, unettomuus. PC-kanava on käytännöllisin psyykkisiin häiriöihin.</p></div>
+</div>
+<h2 style="margin-top:1.2rem">Fu-elimet (Yang)</h2>
+<div class="g3">
+<div class="card" style="padding:.9rem"><strong style="font-size:.82rem">LI — Paksusuoli (Dachang)</strong><p style="font-size:.78rem;color:var(--ink2);line-height:1.55;margin-top:.28rem">Vastaanottaa jätteet, imee nesteitä, poistaa kuona-aineet. Psyykkisesti: kyky "päästää irti." Psyykkinen jäykkyys voi heijastua LI-häiriönä.</p></div>
+<div class="card" style="padding:.9rem"><strong style="font-size:.82rem">SI — Ohutsuoli (Xiaochang)</strong><p style="font-size:.78rem;color:var(--ink2);line-height:1.55;margin-top:.28rem">Erottelee puhtaan epäpuhtaasta. Psyykkisesti: erottelukyky, selkeys, arvostelukyky. Psyykkinen sekaannus → SI-häiriö.</p></div>
+<div class="card" style="padding:.9rem"><strong style="font-size:.82rem">ST — Mahalaukku (Wei)</strong><p style="font-size:.78rem;color:var(--ink2);line-height:1.55;margin-top:.28rem">Vastaanottaa ja murskaa ravintoa. Laskee Qi:tä alas. Häiriö → pahoinvointi, haponnousu. Psyykkisesti: kokemusten "sulattaminen."</p></div>
+<div class="card" style="padding:.9rem"><strong style="font-size:.82rem">BL — Virtsarakko (Pangguang)</strong><p style="font-size:.78rem;color:var(--ink2);line-height:1.55;margin-top:.28rem">Varastoi ja erittää virtsaa. BL-kanava sisältää kaikki Back-Shu-pisteet — tärkein yksittäinen kanava kroonisiin tiloihin.</p></div>
+<div class="card" style="padding:.9rem"><strong style="font-size:.82rem">GB — Sappirakko (Dan)</strong><p style="font-size:.78rem;color:var(--ink2);line-height:1.55;margin-top:.28rem">Varastoi sappinestettä. Psyykkisesti: päätöksentekokyky, rohkeus, aloitteellisuus. GB-häiriö → päättämättömyys, ahdistus.</p></div>
+<div class="card" style="padding:.9rem"><strong style="font-size:.82rem">SJ — Sanjiao</strong><p style="font-size:.78rem;color:var(--ink2);line-height:1.55;margin-top:.28rem">Ei anatominen elin. Kolme kehon aluetta: Ylä-Sanjiao (sydän/keuhko), Keski-Sanjiao (perna/mahalaukku), Ala-Sanjiao (munuainen/maksa). Koordinoi nesteen kiertoa.</p></div>
+</div>
+</div></div>
+
+<!-- 5 ELEMENTTIÄ -->
+<div id="page-5elem" class="page">
+<div class="ph"><div class="ph-ey">Viisielementtiteoria</div>
+<h1 class="ph-t">Viisi elementtiä — Wuxing</h1>
+<p class="ph-lead">Puu · Tuli · Maa · Metalli · Vesi — elimistön suhteet, tunteet, hoitostrategiat</p></div>
+<div class="pc">
+<div class="g2" style="margin-bottom:1rem">
+<div class="card"><div class="ct">Generointisykli (Sheng)</div>
+<p style="font-size:.85rem;color:var(--ink2);line-height:1.62">Puu → Tuli → Maa → Metalli → Vesi → Puu. Äiti ruokkii lasta.<br><strong>Hoitoperiaate:</strong> Vahvista äitiä auttaaksesi lasta. Esim. KI (Vesi) on äiti LV:lle (Puu) — KI-puutoksessa vahvista munuaista.</p></div>
+<div class="card"><div class="ct">Kontrollikykli (Ke)</div>
+<p style="font-size:.85rem;color:var(--ink2);line-height:1.62">Puu → Maa → Vesi → Tuli → Metalli → Puu. Normaali tasapaino — jokainen elementti pitää toista kurissa.<br><strong>Häiriö:</strong> Ylivalta (Cheng) tai vastagression (Wu) rikkoessa kontrollin.</p></div>
+</div>
+<div style="overflow-x:auto">
+<table class="fe-t">
+<thead><tr><th></th>
+<th style="color:var(--wood)">Puu</th>
+<th style="color:var(--fire)">Tuli</th>
+<th style="color:var(--earth)">Maa</th>
+<th style="color:var(--metal)">Metalli</th>
+<th style="color:var(--water)">Vesi</th>
+</tr></thead>
+<tbody>
+<tr><td style="font-family:var(--mono);font-size:.6rem;color:var(--dim)">Zang-elin</td><td>Maksa (LV)</td><td>Sydän (HT) / PC</td><td>Perna (SP)</td><td>Keuhko (LU)</td><td>Munuainen (KI)</td></tr>
+<tr><td style="font-family:var(--mono);font-size:.6rem;color:var(--dim)">Fu-elin</td><td>GB</td><td>SI / SJ</td><td>ST</td><td>LI</td><td>BL</td></tr>
+<tr><td style="font-family:var(--mono);font-size:.6rem;color:var(--dim)">Sielu</td><td>Hun</td><td>Shen</td><td>Yi</td><td>Po</td><td>Zhi</td></tr>
+<tr><td style="font-family:var(--mono);font-size:.6rem;color:var(--dim)">Tunne</td><td>Viha/turhautuminen</td><td>Ilo (kiihtymys)</td><td>Huoli/märehtiminen</td><td>Suru/menetys</td><td>Pelko</td></tr>
+<tr><td style="font-family:var(--mono);font-size:.6rem;color:var(--dim)">Aisti</td><td>Silmät</td><td>Kieli/puhe</td><td>Suu/maku</td><td>Nenä/haju</td><td>Korvat/kuulo</td></tr>
+<tr><td style="font-family:var(--mono);font-size:.6rem;color:var(--dim)">Kudos</td><td>Jänteet/kynnet</td><td>Verisuonet</td><td>Lihakset/huulet</td><td>Iho/karvat</td><td>Luut/hiukset</td></tr>
+<tr><td style="font-family:var(--mono);font-size:.6rem;color:var(--dim)">Väri</td><td>Vihreä</td><td>Punainen</td><td>Keltainen</td><td>Valkoinen</td><td>Musta/sininen</td></tr>
+<tr><td style="font-family:var(--mono);font-size:.6rem;color:var(--dim)">Maku</td><td>Hapan</td><td>Karvas</td><td>Makea</td><td>Tulinen</td><td>Suolainen</td></tr>
+<tr><td style="font-family:var(--mono);font-size:.6rem;color:var(--dim)">Vuodenaika</td><td>Kevät</td><td>Kesä</td><td>Myöhäiskesä</td><td>Syksy</td><td>Talvi</td></tr>
+<tr><td style="font-family:var(--mono);font-size:.6rem;color:var(--dim)">Sää</td><td>Tuuli</td><td>Kuumuus</td><td>Kosteus</td><td>Kuivuus</td><td>Kylmyys</td></tr>
+<tr><td style="font-family:var(--mono);font-size:.6rem;color:var(--dim)">Yin 5VP</td><td style="color:var(--wood)">Jing-Well</td><td style="color:var(--fire)">Ying-Spring</td><td style="color:var(--earth)">Shu-Stream</td><td style="color:var(--metal)">Jing-River</td><td style="color:var(--water)">He-Sea</td></tr>
+<tr><td style="font-family:var(--mono);font-size:.6rem;color:var(--dim)">Yang 5VP</td><td style="color:var(--metal)">Jing-River</td><td style="color:var(--water)">He-Sea</td><td style="color:var(--wood)">Jing-Well</td><td style="color:var(--fire)">Ying-Spring</td><td style="color:var(--earth)">Shu-Stream</td></tr>
+<tr><td style="font-family:var(--mono);font-size:.6rem;color:var(--dim)">Psyykkinen häiriö</td><td>Tukahtuneisuus, raivo, masennus</td><td>Levottomuus, mania, yhteyden puute</td><td>Ahdistus, pakonomainen ajattelu</td><td>Suru, irrottautuminen, perfektionismi</td><td>Pelko, paranoia, motivaation puute</td></tr>
+</tbody></table></div>
+
+<div class="card" style="margin-top:1rem"><div class="ct">5 Virtauspisteet (Wushuxue)</div>
+<p style="font-size:.85rem;color:var(--ink2);line-height:1.62;margin-bottom:.75rem">Jokaisella kanavalla 5 virtauspistettä kyynärpään/polven alapuolella. Yin-kanavat: Jing-Well=Puu, Ying-Spring=Tuli, Shu-Stream=Maa, Jing-River=Metalli, He-Sea=Vesi. Yang-kanavat päinvastoin metallin suunnasta.</p>
+<table class="fe-t"><thead><tr><th>Tyyppi</th><th>Liike</th><th>Yin-elem</th><th>Käyttö</th></tr></thead>
+<tbody>
+<tr><td><strong>Jing-Well</strong></td><td>Lähde — Qi nousee</td><td style="color:var(--wood)">Puu</td><td>Akuutit häiriöt, tajunnan palautus, sydänoireet</td></tr>
+<tr><td><strong>Ying-Spring</strong></td><td>Pursula — Qi virtaa</td><td style="color:var(--fire)">Tuli</td><td>Kuume, tulehdustilat, kanavassa esiintyvä kuumuus</td></tr>
+<tr><td><strong>Shu-Stream</strong></td><td>Virta — Qi kasvaa</td><td style="color:var(--earth)">Maa</td><td>Painavuus, kosteus, nivelkipu, krooninen sairaus</td></tr>
+<tr><td><strong>Jing-River</strong></td><td>Joki — virtaa vahvasti</td><td style="color:var(--metal)">Metalli</td><td>Ääni/puhe-oireet, yskä, astma, kuivuus</td></tr>
+<tr><td><strong>He-Sea</strong></td><td>Meri — Qi yhtyy</td><td style="color:var(--water)">Vesi</td><td>Sisäelinten häiriöt, krooninen sairaus, GI-oireet</td></tr>
+</tbody></table></div>
+</div></div>
+<!-- ERIKOISPISTEET -->
+<div id="page-erikois" class="page">
+<div class="ph"><div class="ph-ey">Pisteluokitukset</div>
+<h1 class="ph-t">Erikoispistekategoriat</h1>
+<p class="ph-lead">Kliinisen hoitovalinnan perusta — pisteluokitus ohjaa protokollavalintaa</p></div>
+<div class="pc"><div class="g2">
+<div class="card"><div class="ct">Yuan-lähdepisteet</div>
+<p style="font-size:.83rem;color:var(--ink2);line-height:1.6;margin-bottom:.5rem">Elimen alkuperäinen Qi kokoontuu. Kroonisiin elinhäiriöihin. Yin-kanavilla sama kuin Shu-Stream.</p>
+<div style="font-family:var(--mono);font-size:.68rem;color:var(--dim);display:grid;grid-template-columns:1fr 1fr;gap:.18rem">
+<span>LU-9 · Taiyuan</span><span>LI-4 · Hegu</span><span>ST-42 · Chongyang</span><span>SP-3 · Taibai</span>
+<span>HT-7 · Shenmen</span><span>SI-4 · Wangu</span><span>BL-64 · Jinggu</span><span>KI-3 · Taixi</span>
+<span>PC-7 · Daling</span><span>SJ-4 · Yangchi</span><span>GB-40 · Qiuxu</span><span>LV-3 · Taichong</span></div></div>
+<div class="card"><div class="ct">Luo-yhdistävät pisteet</div>
+<p style="font-size:.83rem;color:var(--ink2);line-height:1.6;margin-bottom:.5rem">Yhdistää kanavan vastinkanavaan. Yuan+Luo = klassinen protokollaperusta.</p>
+<div style="font-family:var(--mono);font-size:.68rem;color:var(--dim);display:grid;grid-template-columns:1fr 1fr;gap:.18rem">
+<span>LU-7 · Lieque</span><span>LI-6 · Pianli</span><span>ST-40 · Fenglong</span><span>SP-4 · Gongsun</span>
+<span>HT-5 · Tongli</span><span>SI-7 · Zhizheng</span><span>BL-58 · Feiyang</span><span>KI-4 · Dazhong</span>
+<span>PC-6 · Neiguan</span><span>SJ-5 · Waiguan</span><span>GB-37 · Guangming</span><span>LV-5 · Ligou</span></div></div>
+<div class="card"><div class="ct">Xi-Cleft-pisteet</div>
+<p style="font-size:.83rem;color:var(--ink2);line-height:1.6;margin-bottom:.5rem">Qi kokoontuu syvyyteen. Akuutteihin kipuihin. Yin-kanavilla myös verenhäiriöihin.</p>
+<div style="font-family:var(--mono);font-size:.68rem;color:var(--dim);display:grid;grid-template-columns:1fr 1fr;gap:.18rem">
+<span>LU-6 · Kongzui</span><span>LI-7 · Wenliu</span><span>ST-34 · Liangqiu</span><span>SP-8 · Diji</span>
+<span>HT-6 · Yinxi</span><span>SI-6 · Yanglao</span><span>BL-63 · Jinmen</span><span>KI-5 · Shuiquan</span>
+<span>PC-4 · Ximen</span><span>SJ-7 · Huizong</span><span>GB-36 · Waiqiu</span><span>LV-6 · Zhongdu</span></div></div>
+<div class="card"><div class="ct">Back-Shu-pisteet</div>
+<p style="font-size:.83rem;color:var(--ink2);line-height:1.6;margin-bottom:.5rem">BL-kanavalla selässä — suora yhteys elimeen. Kroonisiin Qi/Yin-puutoksiin. Shu-Mu-protokolla.</p>
+<div style="font-family:var(--mono);font-size:.68rem;color:var(--dim);display:grid;grid-template-columns:1fr 1fr;gap:.18rem">
+<span>BL-13 · Feishu (LU)</span><span>BL-14 · Jueyinshu (PC)</span>
+<span>BL-15 · Xinshu (HT)</span><span>BL-18 · Ganshu (LV)</span>
+<span>BL-19 · Danshu (GB)</span><span>BL-20 · Pishu (SP)</span>
+<span>BL-21 · Weishu (ST)</span><span>BL-22 · Sanjiaoshu (SJ)</span>
+<span>BL-23 · Shenshu (KI)</span><span>BL-25 · Dachangshu (LI)</span>
+<span>BL-27 · Xiaochangshu (SI)</span><span>BL-28 · Pangguangshu (BL)</span></div></div>
+<div class="card"><div class="ct">Front-Mu-pisteet</div>
+<p style="font-size:.83rem;color:var(--ink2);line-height:1.6;margin-bottom:.5rem">Vatsa/rintakehä — elimen Qi kokoontuu etupuolelle. Akuutteihin Fu-häiriöihin.</p>
+<div style="font-family:var(--mono);font-size:.68rem;color:var(--dim);display:grid;grid-template-columns:1fr 1fr;gap:.18rem">
+<span>LU-1 · Zhongfu (LU)</span><span>REN-17 · Tanzhong (PC)</span>
+<span>REN-14 · Juque (HT)</span><span>LV-14 · Qimen (LV)</span>
+<span>GB-24 · Riyue (GB)</span><span>LV-13 · Zhangmen (SP)</span>
+<span>REN-12 · Zhongwan (ST)</span><span>REN-5 · Shimen (SJ)</span>
+<span>GB-25 · Jingmen (KI)</span><span>ST-25 · Tianshu (LI)</span>
+<span>REN-4 · Guanyuan (SI)</span><span>REN-3 · Zhongji (BL)</span></div></div>
+<div class="card"><div class="ct">Hui-kokoontumispisteet</div>
+<div style="font-size:.82rem;color:var(--ink2);display:flex;flex-direction:column;gap:.25rem">
+<div><strong>Zang-elimet:</strong> LV-13 Zhangmen</div>
+<div><strong>Fu-elimet:</strong> REN-12 Zhongwan</div>
+<div><strong>Qi:</strong> REN-17 Tanzhong</div>
+<div><strong>Veri:</strong> BL-17 Geshu</div>
+<div><strong>Jänteet:</strong> GB-34 Yanglingquan</div>
+<div><strong>Verisuonet:</strong> LU-9 Taiyuan</div>
+<div><strong>Luut:</strong> BL-11 Dazhu</div>
+<div><strong>Ydin:</strong> GB-39 Xuanzhong</div></div></div>
+<div class="card"><div class="ct">Master-pisteet — 8 ylimääräistä kanavaa</div>
+<div style="font-size:.82rem;color:var(--ink2);display:flex;flex-direction:column;gap:.25rem">
+<div><strong>Chong Mai:</strong> SP-4 (master) + PC-6</div>
+<div><strong>Ren Mai:</strong> LU-7 (master) + KI-6</div>
+<div><strong>Du Mai:</strong> SI-3 (master) + BL-62</div>
+<div><strong>Dai Mai:</strong> GB-41 (master) + SJ-5</div>
+<div><strong>Yin Qiao:</strong> KI-6 (master) + LU-7</div>
+<div><strong>Yang Qiao:</strong> BL-62 (master) + SI-3</div>
+<div><strong>Yin Wei:</strong> PC-6 (master) + SP-4</div>
+<div><strong>Yang Wei:</strong> SJ-5 (master) + GB-41</div></div></div>
+<div class="card"><div class="ct">Ghost Points — Sun Simiao</div>
+<p style="font-size:.83rem;color:var(--ink2);line-height:1.6;margin-bottom:.5rem">13 pistettä psyykkisiin häiriöihin, addiktioon, epilepsiaan (581–682 jKr).</p>
+<div style="font-family:var(--mono);font-size:.68rem;color:var(--dim);display:grid;grid-template-columns:1fr 1fr;gap:.18rem">
+<span>DU-26 · Guigong</span><span>LU-11 · Guixin</span><span>SP-1 · Guilei</span><span>PC-7 · Guixin</span>
+<span>BL-62 · Guilu</span><span>DU-16 · Guizhen</span><span>ST-6 · Guichuang</span><span>REN-24 · Guishi</span>
+<span>PC-8 · Guiku</span><span>DU-23 · Guitang</span><span>REN-1 · Guicang</span><span>LI-11 · Guitui</span>
+<span>DU-6 · Guifeng</span></div></div>
+</div></div></div>
+
+<!-- CUN -->
+<div id="page-cun" class="page">
+<div class="ph"><div class="ph-ey">Anatominen mittausjärjestelmä</div>
+<h1 class="ph-t">Cun-mittasuhteet</h1>
+<p class="ph-lead">Cun (寸) = suhteellinen anatominen mitta — mukautuu potilaan omiin mittasuhteisiin</p></div>
+<div class="pc">
+<div class="ib"><strong>Tärkeä periaate:</strong> Cun on suhteellinen mitta — ei absoluuttinen senttimetri. Yksi cun vastaa potilaan oman peukalon leveyttä. Potilas on aina oma mittakaavansa.</div>
+<div class="g2">
+<div>
+<div class="card"><div class="ct">Sormileveysmittaus</div>
+<div style="display:flex;flex-direction:column;gap:.6rem">
+<div style="padding:.65rem .75rem;background:var(--sand);border-radius:var(--r);display:flex;align-items:center;gap:.75rem">
+<div style="font-family:var(--mono);font-size:1.2rem;font-weight:500;color:var(--gold);min-width:32px">1</div>
+<div><div style="font-weight:600;font-size:.84rem;margin-bottom:.15rem">1 cun — peukalonleveys</div>
+<div style="font-size:.8rem;color:var(--ink2)">Peukalo leveimmässä kohdassa (IPJ:n taso). Tai: keskisormen 2. nivelen välinen etäisyys taivutettuna.</div></div></div>
+<div style="padding:.65rem .75rem;background:var(--sand);border-radius:var(--r);display:flex;align-items:center;gap:.75rem">
+<div style="font-family:var(--mono);font-size:1.2rem;font-weight:500;color:var(--gold);min-width:32px">1.5</div>
+<div><div style="font-weight:600;font-size:.84rem;margin-bottom:.15rem">1,5 cun — kaksi sormea</div>
+<div style="font-size:.8rem;color:var(--ink2)">Etu- ja keskisormi yhdessä (2. nivel). Käytetään esim. ranteen mittauksissa.</div></div></div>
+<div style="padding:.65rem .75rem;background:var(--sand);border-radius:var(--r);display:flex;align-items:center;gap:.75rem">
+<div style="font-family:var(--mono);font-size:1.2rem;font-weight:500;color:var(--gold);min-width:32px">2</div>
+<div><div style="font-weight:600;font-size:.84rem;margin-bottom:.15rem">2 cun — kolme sormea</div>
+<div style="font-size:.8rem;color:var(--ink2)">Etu-, keski- ja nimetön sormi yhdessä (2. nivel).</div></div></div>
+<div style="padding:.65rem .75rem;background:var(--sand);border-radius:var(--r);display:flex;align-items:center;gap:.75rem">
+<div style="font-family:var(--mono);font-size:1.2rem;font-weight:500;color:var(--gold);min-width:32px">3</div>
+<div><div style="font-weight:600;font-size:.84rem;margin-bottom:.15rem">3 cun — neljä sormea</div>
+<div style="font-size:.8rem;color:var(--ink2)">Neljä sormea yhdessä (2. nivel). Tärkein käytännön mitta — SP-6, ST-36 jne.</div></div></div>
+</div></div>
+<div class="card"><div class="ct">Käytännön esimerkkejä</div>
+<div style="font-size:.84rem;color:var(--ink2);line-height:1.8;display:flex;flex-direction:column;gap:.4rem">
+<div style="padding:.5rem .65rem;background:var(--sand);border-radius:var(--r)"><strong>ST-36:</strong> Löydä ST-35 (polvilumpion lateraalinen kuoppa). Laske 3 cun alaspäin + 1 sormenleveys lateraalisesti sääriluusta.</div>
+<div style="padding:.5rem .65rem;background:var(--sand);border-radius:var(--r)"><strong>SP-6:</strong> Sisäkehräksen yläreuna → 3 cun ylöspäin, sääriluun posteriorinen reuna.</div>
+<div style="padding:.5rem .65rem;background:var(--sand);border-radius:var(--r)"><strong>PC-6:</strong> Ranteen poikkilinja → 2 cun proksimaalipuolelle, kahden fleksorijänteen välissä.</div>
+<div style="padding:.5rem .65rem;background:var(--sand);border-radius:var(--r)"><strong>BL-23:</strong> L2-nikama → 1,5 cun lateraalisesti kummallekin puolelle.</div>
+<div style="padding:.5rem .65rem;background:var(--sand);border-radius:var(--r)"><strong>REN-6:</strong> Napa → 1,5 cun alaspäin keskilinjaa pitkin.</div>
+<div style="padding:.5rem .65rem;background:var(--sand);border-radius:var(--r)"><strong>REN-12:</strong> Napa + rintalasta puolessa välissä = 4 cun navasta ylöspäin.</div>
+</div></div>
+</div>
+<div>
+<div class="card"><div class="ct">Kehon alueiden cun-mitat</div>
+<table class="cun-t">
+<thead><tr><th>Alue</th><th style="text-align:center">Cun</th><th>Mittausväli</th></tr></thead>
+<tbody>
+<tr><td><strong>Pää (pituus)</strong></td><td class="cun-num">9</td><td style="font-size:.8rem;color:var(--ink2)">Etunen hiusraja → takaraivo (DU-24 → DU-17)</td></tr>
+<tr><td><strong>Kasvot</strong></td><td class="cun-num">12</td><td style="font-size:.8rem;color:var(--ink2)">Etunen hiusraja → leuan alaosa</td></tr>
+<tr><td><strong>Rintakehä (leveys)</strong></td><td class="cun-num">8</td><td style="font-size:.8rem;color:var(--ink2)">Kainalolinja → keskilinja (kummallakin puolella erikseen)</td></tr>
+<tr><td><strong>Rintalasta → napa</strong></td><td class="cun-num">8</td><td style="font-size:.8rem;color:var(--ink2)">Xiphoid → napa (REN-1 ylöspäin)</td></tr>
+<tr><td><strong>Napa → häpyluu</strong></td><td class="cun-num">5</td><td style="font-size:.8rem;color:var(--ink2)">Napa → häpyluun yläreuna</td></tr>
+<tr><td><strong>Selkä 1. BL-linja</strong></td><td class="cun-num">1,5</td><td style="font-size:.8rem;color:var(--ink2)">Selkärangan okahaarake → BL 1. linja (Back-Shu)</td></tr>
+<tr><td><strong>Selkä 2. BL-linja</strong></td><td class="cun-num">3</td><td style="font-size:.8rem;color:var(--ink2)">Selkärangan okahaarake → BL 2. linja</td></tr>
+<tr><td><strong>Kainalon → kyynärpää</strong></td><td class="cun-num">9</td><td style="font-size:.8rem;color:var(--ink2)">Kainalolinja → kyynärtaipeen poikkilinja</td></tr>
+<tr><td><strong>Kyynärpää → ranne</strong></td><td class="cun-num">12</td><td style="font-size:.8rem;color:var(--ink2)">Kyynärtaipeen poikkilinja → ranteen poikkilinja</td></tr>
+<tr><td><strong>Häpyluu → polvilumpio</strong></td><td class="cun-num">18</td><td style="font-size:.8rem;color:var(--ink2)">Häpyluun yläreuna → polvilumpion yläreuna</td></tr>
+<tr><td><strong>Polvilumpio → ulkokehränen</strong></td><td class="cun-num">16</td><td style="font-size:.8rem;color:var(--ink2)">Polvilumpion alareunan taso → ulkokehräksen yläreuna</td></tr>
+<tr><td><strong>Sisäpuoli sääri</strong></td><td class="cun-num">13</td><td style="font-size:.8rem;color:var(--ink2)">Mediaalinen kondyyli (polvi) → sisäkehräksen yläreuna</td></tr>
+<tr><td><strong>Lonkka → polvi (taka)</strong></td><td class="cun-num">19</td><td style="font-size:.8rem;color:var(--ink2)">Gluteaalipoimu → popliteaalipoimu</td></tr>
+<tr><td><strong>Kehränen → jalkapohja</strong></td><td class="cun-num">3</td><td style="font-size:.8rem;color:var(--ink2)">Kehräksen yläreuna → jalkaterän pohja</td></tr>
+</tbody></table></div>
+</div>
+</div></div></div>
+<!-- KARTTA -->
+<div id="page-haku" class="page">
+<div class="ph"><div class="ph-ey">Pistetietokanta</div>
+<h1 class="ph-t">Pisteenhaku</h1>
+<p class="ph-lead">Hae numerolla, nimellä, pinyinillä tai indikaatiolla</p></div>
+<div class="pc">
+<input type="text" id="ps-i" placeholder="ST36, Zusanli, polvi, Yuan, Ghost, ahdistus..." oninput="searchPts(this.value)" style="width:100%;max-width:520px;padding:.78rem 1.1rem;border:1.5px solid var(--sand3);border-radius:var(--r2);font-family:var(--serif);font-size:.95rem;outline:none;background:#fff;margin-bottom:1.2rem">
+<div id="ps-r"></div>
+</div>
+</div>
+
+<!-- Channel pages built by JS -->
+<div id="page-LU" class="page"></div>
+<div id="page-LI" class="page"></div>
+<div id="page-ST" class="page"></div>
+<div id="page-SP" class="page"></div>
+<div id="page-HT" class="page"></div>
+<div id="page-SI" class="page"></div>
+<div id="page-BL" class="page"></div>
+<div id="page-KI" class="page"></div>
+<div id="page-PC" class="page"></div>
+<div id="page-SJ" class="page"></div>
+<div id="page-GB" class="page"></div>
+<div id="page-LV" class="page"></div>
+<div id="page-DU" class="page"></div>
+<div id="page-REN" class="page"></div>
+
+<!-- ══════════════════════════════════════
+     KLIINISET PROTOKOLLAT
+══════════════════════════════════════ -->
+<div id="page-protokollat" class="page">
+<div class="ph"><div class="ph-ey">Kliiniset hoitoprotokollit</div>
+<h1 class="ph-t">Protokollat</h1>
+<p class="ph-lead">Klassisiin teksteihin ja kliiniseen käytäntöön perustuvat pisteyhdistelmät. Klikkaa pistettä → yksityiskohdat.</p></div>
+<div class="pc" id="proto-content"></div>
+
+<!-- OMAT PROTOKOLLAT -->
+<div class="pc" style="border-top:1px solid var(--sand3);padding-top:1.5rem;margin-top:.5rem">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+    <div>
+      <h2 style="margin-bottom:.2rem">Omat protokollat</h2>
+      <div style="font-size:.82rem;color:var(--dim);font-style:italic">Tallennetaan paikallisesti selaimeen. Ei synkronoidu muille laitteille.</div>
+    </div>
+    <button onclick="showCustomProtoForm()" style="font-family:var(--mono);font-size:.65rem;padding:.4rem 1rem;border-radius:var(--r);background:var(--ink);color:#fff;border:none;cursor:pointer">+ Lisää protokolla</button>
+  </div>
+
+  <!-- Lisäyslomake (piilotettu oletuksena) -->
+  <div id="custom-proto-form" style="display:none;background:#fff;border:1.5px solid var(--sand3);border-radius:var(--r2);padding:1.25rem;margin-bottom:1.25rem">
+    <div style="font-family:var(--mono);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:.85rem">Uusi protokolla</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:.75rem">
+      <div>
+        <label style="font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:.3rem">Nimi *</label>
+        <input type="text" id="cp-name" placeholder="Esim. Oma migreenipöytä" style="width:100%;padding:.5rem .65rem;border:1px solid var(--sand3);border-radius:var(--r);font-family:var(--serif);font-size:.88rem;outline:none">
+      </div>
+      <div>
+        <label style="font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:.3rem">Kategoria</label>
+        <select id="cp-cat" style="width:100%;padding:.5rem .65rem;border:1px solid var(--sand3);border-radius:var(--r);font-family:var(--serif);font-size:.88rem;outline:none;background:#fff">
+          <option value="oma-psyyke">Psyyke</option>
+          <option value="oma-kipu">Kipu</option>
+          <option value="oma-gi">Ruoansulatuskanava</option>
+          <option value="oma-gyno">Gynekologia</option>
+          <option value="oma-energia">Energia</option>
+          <option value="oma-ans">ANS & hermosto</option>
+          <option value="oma-muu">Muu</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-bottom:.75rem">
+      <label style="font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:.3rem">Pattern / indikaatio</label>
+      <textarea id="cp-pattern" placeholder="Milloin käytetään? Mitkä oireet, mikä pattern..." style="width:100%;padding:.5rem .65rem;border:1px solid var(--sand3);border-radius:var(--r);font-family:var(--serif);font-size:.88rem;outline:none;min-height:60px;resize:vertical"></textarea>
+    </div>
+
+    <div style="margin-bottom:.75rem">
+      <label style="font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:.3rem">Pisteet * <span style="font-weight:400;text-transform:none;letter-spacing:0">(erota pilkulla, lisää rooli kaksoispisteellä)</span></label>
+      <input type="text" id="cp-points" placeholder="Esim. LV-3:Yuan/Four Gates, LI-4:Four Gates, PC-6:rauhoittaa, GB-20:päänsärky" style="width:100%;padding:.5rem .65rem;border:1px solid var(--sand3);border-radius:var(--r);font-family:var(--mono);font-size:.8rem;outline:none">
+      <div style="font-size:.72rem;color:var(--dim);margin-top:.3rem">Formaatti: PISTE:rooli — esim. ST-36:He-Sea, SP-6:kolmen yinin risteymä</div>
+    </div>
+
+    <div style="margin-bottom:.85rem">
+      <label style="font-family:var(--mono);font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:.3rem">Perustelu / muistiinpano</label>
+      <textarea id="cp-rationale" placeholder="Kliininen perustelu, erityishuomiot, kontraindikaatiot..." style="width:100%;padding:.5rem .65rem;border:1px solid var(--sand3);border-radius:var(--r);font-family:var(--serif);font-size:.88rem;outline:none;min-height:70px;resize:vertical"></textarea>
+    </div>
+
+    <div style="display:flex;gap:.5rem">
+      <button onclick="saveCustomProto()" style="font-family:var(--mono);font-size:.65rem;padding:.4rem 1rem;border-radius:var(--r);background:var(--gold);color:#fff;border:none;cursor:pointer">Tallenna</button>
+      <button onclick="hideCustomProtoForm()" style="font-family:var(--mono);font-size:.65rem;padding:.4rem 1rem;border-radius:var(--r);background:var(--sand2);color:var(--ink3);border:none;cursor:pointer">Peruuta</button>
+    </div>
+  </div>
+
+  <!-- Omat protokollat lista -->
+  <div id="custom-proto-list"></div>
+</div>
+</div>
+
+</main>
+<script>
+// ══════════════════════════════════════════════════════════════
+// PISTEDATA — 14 kanavaa, 361+ pistettä
+// cats: j=Jing-Well, ys=Ying-Spring, ss=Shu-Stream, jr=Jing-River,
+//       he=He-Sea, yu=Yuan, lu=Luo, xi=Xi-Cleft,
+//       bs=Back-Shu, mu=Front-Mu, hu=Hui, gh=Ghost,
+//       ma=Master, cm=Command, wi=Window
+// elem: wo/fi/ea/me/wa
+// ══════════════════════════════════════════════════════════════
+const CH = {
+
+LU:{name:'Keuhko',abbr:'LU',elem:'metal',pair:'LI',
+desc:'Hallitsee Qi:tä ja hengitystä. Wei Qi. Iho ja karvat. Liittyy suruun. Kanava kulkee rintakehästä peukalonpäähän.',
+ind:'Hengitystiesairaudet, iho-ongelmat, väsymys, suru, menetys, Wei Qi puutos, ahdistus.',
+pts:[
+{n:'LU-1',e:'Zhongfu',py:'Zhōngfǔ',fi:'Keskuksen palatsi',l:'6 cun keskilinjasta lateraalisesti, 1. kylkiluuvälissä solisluun alapuolella.',i:'Yskä, astma, rintakipu, hengenahdistus, hartiakipu, surullisuus.',c:['mu'],mu:'Keuhko'},
+{n:'LU-2',e:'Yunmen',py:'Yúnmén',fi:'Pilven portti',l:'Solisluun alapuolella, subalavicular fossa, 6 cun lateraalisesti.',i:'Yskä, astma, rintakipu, hartia- ja käsivaivat.',c:[]},
+{n:'LU-3',e:'Tianfu',py:'Tiānfǔ',fi:'Taivaan palatsi',l:'Olkavarren anteriorisesti, hauis lateraalisessa vaossa, 3 cun kyynärtaipeesta.',i:'Yskä, astma, nosebleedi, surullisuus, nostalgia.',c:['wi']},
+{n:'LU-4',e:'Xiabai',py:'Xiábái',fi:'Sieppauksen valkoinen',l:'Hauis lateraalisessa vaossa, 4 cun kyynärtaipeesta.',i:'Yskä, hengenahdistus, sydämentykytys, käsivarren kipu.',c:[]},
+{n:'LU-5',e:'Chize',py:'Chǐzé',fi:'Kyynärvirta',l:'Kyynärtaipeessa bicepsjänteen lateraalisella puolella.',i:'Yskä, astma, hemoptyysi, akuutti kurkunpäätulehdus, kyynärvaivat, lapsikouristukset.',c:['he'],elem:'wa'},
+{n:'LU-6',e:'Kongzui',py:'Kǒngzuì',fi:'Suurin reikä',l:'7 cun LU-9:stä proksimaalipuolelle, kyynärvarsipinnalla.',i:'Akuutti yskä, hemoptyysi, kurkkukipu, äänenmenetys, kyynärvaivat.',c:['xi']},
+{n:'LU-7',e:'Lieque',py:'Lièquē',fi:'Vaihteleva murtuma',l:'1,5 cun LU-9:stä proksimaalipuolelle, styloidiprosessuksen yläpuolella.',i:'Päänsärky, niskajäykkyys, yskä, astma, ranne, urogenitaaliset häiriöt.',c:['lu','ma'],ma:'Ren Mai',mc:'KI-6'},
+{n:'LU-8',e:'Jingqu',py:'Jīngqú',fi:'Kanavin oja',l:'1 cun LU-9:stä proksimaalipuolelle, rannepulssikohdan kohdalla.',i:'Yskä, astma, rintakipu, kurkkukipu.',c:['jr'],elem:'me'},
+{n:'LU-9',e:'Taiyuan',py:'Tàiyuān',fi:'Suuri syvänne',l:'Ranteen poikkilinjalla radialipulssikohdan radiaalisella puolella.',i:'Yskä, astma, hemoptyysi, sydämentykytys, rintakipu, ranteen kipu.',c:['yu','ss','hu'],elem:'ea',hu:'Verisuonet'},
+{n:'LU-10',e:'Yuji',py:'Yújì',fi:'Kalaverkko',l:'1. metakarpin puoliväli, mediaalinen reuna, tenar-alueen raja.',i:'Kurkkukipu, äänen häiriöt, yskä, peukalon kipu.',c:['ys'],elem:'fi'},
+{n:'LU-11',e:'Shaoshang',py:'Shàoshāng',fi:'Vähäinen kauppias',l:'Peukalonkynnen radiaalinen kulma, 0,1 cun.',i:'Kurkkukipu, tonsillitis, kuume, tajuttomuus, mielisairaus.',c:['j','gh'],elem:'wo'},
+]},
+
+LI:{name:'Paksusuoli',abbr:'LI',elem:'metal',pair:'LU',
+desc:'Yang-pari keuhkolle. Kulkee etusormesta hartiaan ja kasvoihin. Tärkeä immuunille, kivulle, detoksille.',
+ind:'Kasvot, suu, nenä, silmät. Kuume, kipu, ummetus, iho-ongelmat.',
+pts:[
+{n:'LI-1',e:'Shanyang',py:'Shāngyáng',fi:'Kauppiaan Yang',l:'Etusormen kynnen radiaalinen kulma, 0,1 cun.',i:'Hammassärky, kurkkukipu, tonsillitis, tajuttomuus, kuume.',c:['j'],elem:'me'},
+{n:'LI-2',e:'Erjian',py:'Èrjiān',fi:'Toinen väli',l:'Etusormen MCP-nivel, radiaalisesti, distaalisesti.',i:'Hammassärky, silmäoireet, nenäverenvuoto, kuume.',c:['ys'],elem:'wa'},
+{n:'LI-3',e:'Sanjian',py:'Sānjiān',fi:'Kolmas väli',l:'Etusormen proksimaalinen MCP-nivel, radiaalisesti.',i:'Hammassärky, silmäoireet, kurkunpään turvotus.',c:['ss'],elem:'wo'},
+{n:'LI-4',e:'Hegu',py:'Hégǔ',fi:'Suljettu laakso',l:'Peukalo-etusormi välilihaksen huippu, 1. ja 2. metakarpin välissä.',i:'Päänsärky, hammassärky, kasvojen kipu, kuume, hiki, synnytyskipu, menstruaatiokipu, yleinen kipu, immuuni.',c:['yu'],sp:'Command-piste: kasvot/suu'},
+{n:'LI-5',e:'Yangxi',py:'Yángxī',fi:'Yang-virta',l:'Ranteen radiaalisella puolella anatomisessa snuffboxissa.',i:'Päänsärky, hammassärky, ranteen kipu, silmäoireet.',c:['jr'],elem:'fi'},
+{n:'LI-6',e:'Pianli',py:'Piānlì',fi:'Sivusuuntainen kulku',l:'3 cun LI-5:stä proksimaalipuolelle.',i:'Korvaoireet, nenäverenvuoto, turvotus, ranteen kipu.',c:['lu']},
+{n:'LI-7',e:'Wenliu',py:'Wēnliū',fi:'Lämmin virta',l:'5 cun LI-5:stä proksimaalipuolelle.',i:'Päänsärky, kasvojen turvotus, suun ja kielen haavaumat.',c:['xi']},
+{n:'LI-8',e:'Xialian',py:'Xiàlián',fi:'Ala-yhdistyvä',l:'4 cun LI-11:sta distaalisesti.',i:'Vatsakipu, kyynärvaivat.',c:[]},
+{n:'LI-9',e:'Shanglian',py:'Shànglián',fi:'Ylä-yhdistyvä',l:'3 cun LI-11:sta distaalisesti.',i:'Vatsakipu, alaraajojen halvaus, käsivaivat.',c:[]},
+{n:'LI-10',e:'Shousanli',py:'Shǒusānlǐ',fi:'Käden kolme li',l:'2 cun LI-11:stä distaalisesti.',i:'Hammassärky, yläraajan kipu, vatsakipu, ripuli.',c:[]},
+{n:'LI-11',e:'Quchi',py:'Qūchí',fi:'Käyrä allas',l:'Kyynärtaipeen lateraalinen reuna.',i:'Kuume, silmäoireet, hammassärky, urtikaria, iho-ongelmat, hypertensio, yläraajan halvaus.',c:['he','gh'],elem:'ea'},
+{n:'LI-12',e:'Zhouliao',py:'Zhōuliáo',fi:'Kyynärkuoppa',l:'1 cun LI-11:stä superoradiaalisesti.',i:'Kyynärpäen kipu.',c:[]},
+{n:'LI-13',e:'Shouwuli',py:'Shǒuwǔlǐ',fi:'Käden viisi li',l:'3 cun LI-11:stä proksimaalipuolelle.',i:'Kyynärpäen kipu, limfadenopatiaa.',c:[]},
+{n:'LI-14',e:'Binao',py:'Bìnào',fi:'Olkavarren lihas',l:'Deltoideuslihaksen insertiossa, LI-11:n yläpuolella 7 cun.',i:'Silmäoireet, hartia- ja olkavarrenkipu.',c:[]},
+{n:'LI-15',e:'Jianyu',py:'Jiānyú',fi:'Hartian luu',l:'Hartianivelen etummainen kuoppa akromionin anteriorisesti.',i:'Hartiakipu, yläraajan halvaus, iho-ongelmat.',c:[]},
+{n:'LI-16',e:'Jugu',py:'Jùgǔ',fi:'Suuri luu',l:'Scapulan spina ja klavikulan välinen kuoppa.',i:'Hartiakipu, yläraajan halvaus.',c:[]},
+{n:'LI-17',e:'Tianding',py:'Tiāndǐng',fi:'Taivaan tripod',l:'SCM-lihaksen posteriorinen reuna, 1 cun LI-18:n alapuolella.',i:'Kurkkukipu, äänenmenetys, nielemishäiriöt.',c:[]},
+{n:'LI-18',e:'Futu',py:'Fútū',fi:'Tukeva prominenssi',l:'SCM:n posteriorisella puolella, Aadam omenaa molemmin puolin.',i:'Kurkkukipu, yskä, astma, kilpirauhanen.',c:['wi']},
+{n:'LI-19',e:'Heliao',py:'Héliao',fi:'Viljan aukko',l:'Ylähuulen yläpuolella, nenäseptumin lateraalisesti.',i:'Nenän tukkoisuus, nenäverenvuoto.',c:[]},
+{n:'LI-20',e:'Yingxiang',py:'Yíngxiāng',fi:'Tuoksun vastaanotto',l:'Nenän siipien vieressä nasolabiaalivakossa.',i:'Nenän tukkoisuus, nenäverenvuoto, haistamishäiriöt, kasvojen halvaus.',c:[]},
+]},
+
+ST:{name:'Mahalaukku',abbr:'ST',elem:'earth',pair:'SP',
+desc:'Pisin kanava — 45 pistettä. Kulkee kasvoista varpaisiin. Ruoansulatus, nesteet, "hankittu perusta".',
+ind:'Ruoansulatushäiriöt, GI-oireet, polvivaivat, jalkojen häiriöt, psykologiset oireet.',
+pts:[
+{n:'ST-1',e:'Chengqi',py:'Chéngqì',fi:'Kyynelten kantaja',l:'Silmän alla suoraan pupillin alla, infraorbitaalisen reunan yläpuolella.',i:'Silmäoireet, kasvojen halvaus, lihaskouristukset.',c:[]},
+{n:'ST-2',e:'Sibai',py:'Sìbái',fi:'Neljä valkoista',l:'1 cun ST-1:n alapuolella, infraorbitaalinen aukko.',i:'Silmäoireet, kasvojen halvaus, kasvojen kipu.',c:[]},
+{n:'ST-3',e:'Juliao',py:'Jùliáo',fi:'Iso aukko',l:'Pupillin alapuolella, nenän siiven yläreunaa.',i:'Kasvojen halvaus, hammassärky, nenäverenvuoto.',c:[]},
+{n:'ST-4',e:'Dicang',py:'Dìcāng',fi:'Maan varasto',l:'Suupielestä 0,4 cun lateraalisesti.',i:'Kasvojen halvaus, neuralgia, suun kipu.',c:[]},
+{n:'ST-5',e:'Daying',py:'Dàyíng',fi:'Suuri vastaanotto',l:'Mandibulan etukulman kuopassa.',i:'Leuan kipu, hammassärky, kasvojen halvaus.',c:[]},
+{n:'ST-6',e:'Jiache',py:'Jiáchē',fi:'Leuan rattaat',l:'Leukakulmasta 1 sormenleveys anterosuperiorisesti, masseteri.',i:'Hammassärky, leuan kipu ja jäykkyys, kasvojen halvaus.',c:['gh']},
+{n:'ST-7',e:'Xiaguan',py:'Xiàguān',fi:'Ala-aukon portti',l:'Poskikaaren alapuolella, mandibulan koronoidiprosessuksen kohdalla.',i:'Hammassärky, TMJ, kasvojen halvaus, tinnitus.',c:[]},
+{n:'ST-8',e:'Touwei',py:'Tóuwéi',fi:'Pään sidos',l:'Kulmakarvat yläpuolelta 0,5 cun hiusrajan sisään, 4,5 cun lateraalisesti.',i:'Migreenipäänsärky, silmäoireet.',c:[]},
+{n:'ST-9',e:'Renying',py:'Rényíng',fi:'Ihmisten vastaanotto',l:'SCM:n etupuolella, kaulavaltimon kohdalla, C4–C5 taso.',i:'Kurkku, astma, hypertensio.',c:['wi']},
+{n:'ST-10',e:'Shuitu',py:'Shuǐtū',fi:'Veden astia',l:'SCM:n etureuna, ST-9:n ja ST-11:n välissä.',i:'Kurkkukipu, astma.',c:[]},
+{n:'ST-11',e:'Qishe',py:'Qìshě',fi:'Qi:n asunto',l:'Mediaalinen pää klavikukin ja sternumin välissä.',i:'Kurkkukipu, astma.',c:[]},
+{n:'ST-12',e:'Quepen',py:'Quēpén',fi:'Kuoppa alustalla',l:'Supraklavikulaarinen fossa, ST-11:n lateraalisesti.',i:'Yskä, astma, hartiakipu.',c:[]},
+{n:'ST-13',e:'Qihu',py:'Qìhù',fi:'Qi:n portti',l:'Klavikulan alapuolella, 4 cun lateraalisesti keskilinjasta.',i:'Yskä, rintakipu.',c:[]},
+{n:'ST-14',e:'Kufang',py:'Kùfáng',fi:'Holvin huone',l:'1. kylkiluuvälissä, 4 cun lateraalisesti.',i:'Yskä, rintakipu.',c:[]},
+{n:'ST-15',e:'Wuyi',py:'Wūyì',fi:'Huoneen piha',l:'2. kylkiluuvälissä, 4 cun lateraalisesti.',i:'Yskä, rintakipu, mastitis.',c:[]},
+{n:'ST-16',e:'Yingchuang',py:'Yīngchuāng',fi:'Rintaikkuna',l:'3. kylkiluuvälissä, 4 cun lateraalisesti.',i:'Yskä, rintakipu.',c:[]},
+{n:'ST-17',e:'Ruzhong',py:'Rǔzhōng',fi:'Rinnan keskus',l:'Nänni.',i:'Mittauspiste — ei neuloilla eikä moxalla.',c:[]},
+{n:'ST-18',e:'Rugen',py:'Rǔgēn',fi:'Rinnan juuri',l:'5. kylkiluuvälissä nännilinjan kohdalla.',i:'Mastitis, maidontulo, rintakipu.',c:[]},
+{n:'ST-19',e:'Burong',py:'Bùróng',fi:'Sietokyvyttömyys',l:'6 cun navaa ylöspäin, 2 cun lateraalisesti.',i:'Vatsakipu, oksentelu, ruoansulatushäiriöt.',c:[]},
+{n:'ST-20',e:'Chengman',py:'Chéngmǎn',fi:'Kestäminen',l:'5 cun navaa ylöspäin, 2 cun lateraalisesti.',i:'Vatsakipu, ripuli.',c:[]},
+{n:'ST-21',e:'Liangmen',py:'Liángmén',fi:'Tukipalkki portti',l:'4 cun navaa ylöspäin, 2 cun lateraalisesti.',i:'Vatsakipu, ruoansulatushäiriöt, ripuli.',c:[]},
+{n:'ST-22',e:'Guanmen',py:'Guānmén',fi:'Sulkupuomi',l:'3 cun navaa ylöspäin, 2 cun lateraalisesti.',i:'Vatsakipu, turvotus, ripuli.',c:[]},
+{n:'ST-23',e:'Taiyi',py:'Tàiyǐ',fi:'Suurin Yksi',l:'2 cun navaa ylöspäin, 2 cun lateraalisesti.',i:'Mielisairaus, agitaatio, ruoansulatushäiriöt.',c:[]},
+{n:'ST-24',e:'Huaroumen',py:'Huáròumén',fi:'Liukas lihan portti',l:'1 cun navaa ylöspäin, 2 cun lateraalisesti.',i:'Mielisairaus, oksentelu.',c:[]},
+{n:'ST-25',e:'Tianshu',py:'Tiānshū',fi:'Taivaan akseli',l:'Navan tasolla, 2 cun lateraalisesti.',i:'Ripuli, ummetus, vatsakipu ja turvotus, kuukautishäiriöt.',c:['mu'],mu:'Paksusuoli'},
+{n:'ST-26',e:'Wailing',py:'Wàilíng',fi:'Ulkopuolinen mäki',l:'1 cun navaa alempana, 2 cun lateraalisesti.',i:'Vatsakipu, tyrät.',c:[]},
+{n:'ST-27',e:'Daju',py:'Dàjù',fi:'Suuri ylösnousu',l:'2 cun navaa alempana, 2 cun lateraalisesti.',i:'Urologiset vaivat, vatsakipu.',c:[]},
+{n:'ST-28',e:'Shuidao',py:'Shuǐdào',fi:'Veden tie',l:'3 cun navaa alempana, 2 cun lateraalisesti.',i:'Urologiset vaivat, gynekologiset häiriöt.',c:[]},
+{n:'ST-29',e:'Guilai',py:'Guīlái',fi:'Paluuta',l:'4 cun navaa alempana, 2 cun lateraalisesti.',i:'Gynekologiset häiriöt, hernia.',c:[]},
+{n:'ST-30',e:'Qichong',py:'Qìchōng',fi:'Qi:n hyökkäys',l:'5 cun navaa alempana, 2 cun lateraalisesti häpyluun reunan yläpuolella.',i:'Gynekologiset häiriöt, urologiset vaivat, hernia.',c:[]},
+{n:'ST-31',e:'Biguan',py:'Bìguān',fi:'Reiden portti',l:'Sartorius-lihaksen kohdalla, lonkan taivutuskohdassa.',i:'Alaraajojen halvaus, lonkkakipu.',c:[]},
+{n:'ST-32',e:'Futu',py:'Fútù',fi:'Kohotettu pöhö',l:'6 cun polvilumpion yläreunasta proksimaalipuolelle, reiden etupinnalla.',i:'Alaraajojen halvaus, polvi- ja selkäkipu.',c:[]},
+{n:'ST-33',e:'Yinshi',py:'Yīnshì',fi:'Yinin markkina',l:'3 cun polvilumpion yläreunasta proksimaalipuolelle.',i:'Polvikipu, alaraajojen halvaus.',c:[]},
+{n:'ST-34',e:'Liangqiu',py:'Liángqiū',fi:'Tukipalkki mäki',l:'3 cun polvilumpion yläkulmasta proksimaalipuolelle, lateraalisesti.',i:'Akuutti mahasuolikipu, polvivaivat, rintakipu.',c:['xi']},
+{n:'ST-35',e:'Dubi',py:'Dúbí',fi:'Vasikan nenä',l:'Polvilumpion alapuolella, patellaligamentin lateraalisessa kuopassa.',i:'Polven kipu ja turvotus, alaraajojen halvaus.',c:[]},
+{n:'ST-36',e:'Zusanli',py:'Zúsānlǐ',fi:'Jalan kolme li',l:'3 cun ST-35:n alapuolella, sääriluun lateraalisella reunalla.',i:'Ruoansulatushäiriöt, väsymys, immuunivajaus, ahdistus, masennus, polvivaivat, yleinen vahvistus.',c:['he','cm'],elem:'ea'},
+{n:'ST-37',e:'Shangjuxu',py:'Shàngjùxū',fi:'Ylemmän onttelon tyhjyys',l:'6 cun ST-35:n alapuolella.',i:'Paksusuolen häiriöt, ripuli, ummetus, alaraajojen halvaus.',c:[]},
+{n:'ST-38',e:'Tiaokou',py:'Tiáokǒu',fi:'Säätävä aukko',l:'8 cun ST-35:n alapuolella.',i:'Hartian kipu, alaraajojen halvaus.',c:[]},
+{n:'ST-39',e:'Xiajuxu',py:'Xiàjùxū',fi:'Alemman onttelon tyhjyys',l:'9 cun ST-35:n alapuolella.',i:'Ohutsuolen häiriöt, ripuli, alaraajojen halvaus.',c:[]},
+{n:'ST-40',e:'Fenglong',py:'Fēnglóng',fi:'Runsaan kerääminen',l:'Puolivälissä ST-35 ja ulkokehräksen välissä, 2 cun anteriorisesti fibulasta.',i:'Yskä, astma, huimaus, päänsärky, mielisairaus, turvotus, limaerite.',c:['lu']},
+{n:'ST-41',e:'Jiexi',py:'Jiěxī',fi:'Sulavirtainen puro',l:'Nilkan etupuolella, tibialis anterior ja extensor hallucis longuksen välissä.',i:'Päänsärky, huimaus, nilkkavaivat, kasvojen turvotus, epilepsia.',c:['jr'],elem:'fi'},
+{n:'ST-42',e:'Chongyang',py:'Chōngyáng',fi:'Hyökkäävä Yang',l:'Jalkaterän selässä, 2. metatarsaalin tyvessä, arteria dorsalis pediksen kohdalla.',i:'Hammassärky, kasvojen halvaus, jalka-alueen vaivat, mielisairaus.',c:['yu']},
+{n:'ST-43',e:'Xiangu',py:'Xiàngǔ',fi:'Uppoava laakso',l:'2. ja 3. metatarsaalin välissä, nivelen takana.',i:'Kasvojen ja silmien turvotus, vatsavaivat.',c:['ss'],elem:'wo'},
+{n:'ST-44',e:'Neiting',py:'Nèitíng',fi:'Sisäinen piha',l:'2. ja 3. varpaiden välissä, digitaalinen verkko.',i:'Hammassärky, kasvojen kipu, kuume, nenäverenvuoto, gastriitti.',c:['ys'],elem:'wa'},
+{n:'ST-45',e:'Lidui',py:'Lìduì',fi:'Tarkka pistos',l:'2. varpaankynnen lateraalinen kulma, 0,1 cun.',i:'Hammassärky, kasvojen halvaus, unettomuus, mielisairaus, kuume.',c:['j'],elem:'me'},
+]},
+
+SP:{name:'Perna',abbr:'SP',elem:'earth',pair:'ST',
+desc:'Kulkee isovarpaan sisäreunasta rintakehään. Ravinnon muuntaminen, veren säilyttäminen, lihasten toiminta.',
+ind:'Ruoansulatushäiriöt, turvotus, väsymys, lihasheikkous, verenvuodot, gynekologiset häiriöt.',
+pts:[
+{n:'SP-1',e:'Yinbai',py:'Yǐnbái',fi:'Piilotettu valkoinen',l:'Isovarpaan kynnen mediaalinen kulma, 0,1 cun.',i:'Verenvuodot, menorragia, hemoptyysi, mielisairaus, unettomuus.',c:['j','gh'],elem:'wo'},
+{n:'SP-2',e:'Dadu',py:'Dàdū',fi:'Suuri kaupunki',l:'Isovarpaan MTP-nivelen mediaalinen puoli, distaalisesti.',i:'Kuume, vatsakipu, ummetus, mielisairaus.',c:['ys'],elem:'fi'},
+{n:'SP-3',e:'Taibai',py:'Tàibái',fi:'Suuri valkoinen',l:'1. metatarsaalin pään posteromediaalinen puoli.',i:'Vatsakipu, turvotus, ripuli, ummetus, oksentelu, raskas tunne raajoissa.',c:['ss','yu'],elem:'ea'},
+{n:'SP-4',e:'Gongsun',py:'Gōngsūn',fi:'Isoisän sukupolvessa',l:'1. metatarsaalin kannan mediaalinen reuna, 1 cun proksimaalista.',i:'Vatsavaivat, oksentelu, ripuli, sydämentykytys.',c:['lu','ma'],ma:'Chong Mai',mc:'PC-6'},
+{n:'SP-5',e:'Shangqiu',py:'Shāngqiū',fi:'Kauppiasmäki',l:'Sisäkehräksen etualaosassa.',i:'Nilkkavaivat, ummetus, ripuli, vatsakipu.',c:['jr'],elem:'me'},
+{n:'SP-6',e:'Sanyinjiao',py:'Sānyīnjiāo',fi:'Kolmen yinin risteymä',l:'3 cun mediaalisen malleoluksen yläpuolella, sääriluun takareunan takana.',i:'Gynekologiset häiriöt, menstruaatiohäiriöt, unettomuus, ahdistus, ruoansulatushäiriöt, impotenssi. SP/KI/LV -risteymä.',c:[]},
+{n:'SP-7',e:'Lougu',py:'Lòugǔ',fi:'Vuotava aukko',l:'6 cun sisäkehräksen yläpuolella.',i:'Vatsakipu, turvotus, virtsavaivat.',c:[]},
+{n:'SP-8',e:'Diji',py:'Dìjī',fi:'Maan mekanismi',l:'3 cun SP-9:stä alaspäin.',i:'Menstruaatiokipu, ruoansulatushäiriöt, turvotus.',c:['xi']},
+{n:'SP-9',e:'Yinlingquan',py:'Yīnlínquán',fi:'Yinin kukkulan lähde',l:'Sääriluun sisäinen nivelkuoppa, polven alapuolella.',i:'Turvotus, virtsakarkailtu, urologiset vaivat, polvivaivat, gynekologiset häiriöt.',c:['he'],elem:'wa'},
+{n:'SP-10',e:'Xuehai',py:'Xuèhǎi',fi:'Veren meri',l:'2 cun polvilumpion yläkulmasta proksimaalipuolelle, mediaalisesti.',i:'Menstruaatiohäiriöt, urtikaria, iho-ongelmat, verenvuodot.',c:[]},
+{n:'SP-11',e:'Jimen',py:'Jīmén',fi:'Siteen portti',l:'6 cun SP-10:n yläpuolella.',i:'Virtsavaivat, nivusalueen kasvaimet.',c:[]},
+{n:'SP-12',e:'Chongmen',py:'Chōngmén',fi:'Hyökkäyksen portti',l:'Nivustaipeen yläpuolella, lateraalisesti.',i:'Vatsakipu, virtsavaivat, hernia.',c:[]},
+{n:'SP-13',e:'Fushe',py:'Fǔshě',fi:'Holvin asunto',l:'0,7 cun SP-12:n yläpuolella.',i:'Vatsakipu.',c:[]},
+{n:'SP-14',e:'Fujie',py:'Fùjié',fi:'Vatsan solmu',l:'1,3 cun SP-13:n yläpuolella.',i:'Vatsakipu, ummetus.',c:[]},
+{n:'SP-15',e:'Daheng',py:'Dàhéng',fi:'Suuri poikittainen',l:'Navan tasolla, 4 cun lateraalisesti.',i:'Ummetus, ripuli, jalkakipu.',c:[]},
+{n:'SP-16',e:'Fuai',py:'Fùāi',fi:'Vatsan suru',l:'3 cun SP-15:n yläpuolella.',i:'Ruoansulatushäiriöt, vatsakipu.',c:[]},
+{n:'SP-17',e:'Shidou',py:'Shídòu',fi:'Ruoan reikä',l:'5. kylkiluuvälissä, 6 cun lateraalisesti.',i:'Kylki- ja rintakipu.',c:[]},
+{n:'SP-18',e:'Tianxi',py:'Tiānxī',fi:'Taivaan laakso',l:'4. kylkiluuvälissä, 6 cun lateraalisesti.',i:'Rintakipu, yskä, mastitis.',c:[]},
+{n:'SP-19',e:'Xiongxiang',py:'Xiōngxiāng',fi:'Rintakehän kyljessä',l:'3. kylkiluuvälissä, 6 cun lateraalisesti.',i:'Rintakipu, kylkikipu.',c:[]},
+{n:'SP-20',e:'Zhourong',py:'Zhōuróng',fi:'Ympäröivä loisto',l:'2. kylkiluuvälissä, 6 cun lateraalisesti.',i:'Rintakipu, yskä.',c:[]},
+{n:'SP-21',e:'Dabao',py:'Dàbāo',fi:'Suuri kääre',l:'6. kylkiluuvälissä, keskiaksillaarilinjassa.',i:'Kylkiluukipu, koko kehon nivelkipu ja raajojen heikkous.',c:['lu']},
+]},
+
+HT:{name:'Sydän',abbr:'HT',elem:'fire',pair:'SI',
+desc:'Hallitsee verta ja Sheniä. Kulkee kainalosta pikkusormen kärjelle. Psyykkisten häiriöiden päätie.',
+ind:'Sydämen häiriöt, unihäiriöt, ahdistus, mielisairaudet, muistihäiriöt, palpitaatiot.',
+pts:[
+{n:'HT-1',e:'Jiquan',py:'Jíquán',fi:'Äärimmäinen lähde',l:'Kainalon kuopan keskus, aksillaariarterian kohdalla.',i:'Sydäntykytys, rintakipu, olkavarrenkipu, kainalon kivut.',c:[]},
+{n:'HT-2',e:'Qingling',py:'Qīnglíng',fi:'Vihreä henki',l:'3 cun kyynärtaipeesta proksimaalipuolelle, bicepsin mediaalinen vapo.',i:'Sydäntykytys, keltatauti, olkavarrenkipu.',c:[]},
+{n:'HT-3',e:'Shaohai',py:'Shàohǎi',fi:'Pienen meri',l:'Kyynärtaipeen mediaalinen reuna, epicondyylin ja taipeesta.',i:'Sydäntykytys, käsivarren kipu ja vapina, psykologiset häiriöt, hammasvaivat.',c:['he'],elem:'wa'},
+{n:'HT-4',e:'Lingdao',py:'Língdào',fi:'Hengen polku',l:'1,5 cun HT-7:stä proksimaalipuolelle.',i:'Sydäntykytys, rintakipu, psykologiset häiriöt, kurkkukipu.',c:['jr'],elem:'me'},
+{n:'HT-5',e:'Tongli',py:'Tōnglǐ',fi:'Viestivä sisus',l:'1 cun HT-7:stä proksimaalipuolelle.',i:'Sydäntykytys, palpitaatiot, psykologiset häiriöt, puheenhäiriöt.',c:['lu']},
+{n:'HT-6',e:'Yinxi',py:'Yīnxì',fi:'Yinin aukko',l:'0,5 cun HT-7:stä proksimaalipuolelle.',i:'Yöhikoilu, palpitaatiot, verenvuoto, sydäntykytys.',c:['xi']},
+{n:'HT-7',e:'Shenmen',py:'Shénmén',fi:'Mielen portti',l:'Ranteen mediaalinen puoli, fleksori carpi ulnariksen radiaalisella puolella, ranteen poikkilinja.',i:'Unettomuus, ahdistus, mania, pelko, sydäntykytys, sydänkipu. Tärkein psyykkinen piste.',c:['yu','ss','gh'],elem:'ea'},
+{n:'HT-8',e:'Shaofu',py:'Shàofǔ',fi:'Pienen virasto',l:'Kämmenessä, 4. ja 5. metakarpin välissä, pikkusormi löytää sen kun koukistetaan.',i:'Sydäntykytys, rintakipu, kutina, urologiset vaivat, psykologiset häiriöt.',c:['ys'],elem:'fi'},
+{n:'HT-9',e:'Shaochong',py:'Shàochōng',fi:'Pienen hyökkäys',l:'Pikkusormen kynnen radiaalinen kulma, 0,1 cun.',i:'Tajuttomuus, sydänkipu, rintakipu, mielisairaus, kuume.',c:['j'],elem:'wo'},
+]},
+
+SI:{name:'Ohutsuoli',abbr:'SI',elem:'fire',pair:'HT',
+desc:'Erottelee puhtaan epäpuhtaasta. Kulkee pikkusormelta korvaan. Kaula, hartia, korvavaivat.',
+ind:'Kaula, hartia, lapa, korvavaivat, kuulo, psyykkinen erottelu.',
+pts:[
+{n:'SI-1',e:'Shaoze',py:'Shàozé',fi:'Pienen kosteus',l:'Pikkusormen kynnen ulnaarinen kulma, 0,1 cun.',i:'Maidonvuoto, rintakipu, tajuttomuus, päänsärky, kurkkukipu.',c:['j'],elem:'me'},
+{n:'SI-2',e:'Qiangu',py:'Qiángǔ',fi:'Etulaakso',l:'Pikkusormen MCP-nivel, ulnarisesti, distaalisesti.',i:'Tinnitus, kasvojen halvaus, päänsärky, kurkkukipu.',c:['ys'],elem:'wa'},
+{n:'SI-3',e:'Houxi',py:'Hòuxī',fi:'Takavirtainen',l:'Pikkusormen MCP-nivelen posteriorinen puoli.',i:'Niskajäykkyys, selkäkipu, tinnitus, mielisairaus.',c:['ss','ma'],elem:'wo',ma:'Du Mai',mc:'BL-62'},
+{n:'SI-4',e:'Wangu',py:'Wàngǔ',fi:'Ranteen luu',l:'5. metakarpin ja hamate-luun välissä, ulnarisesti.',i:'Päänsärky, niskajäykkyys, ranteen kipu, keltatauti.',c:['yu']},
+{n:'SI-5',e:'Yanggu',py:'Yánggǔ',fi:'Yangin laakso',l:'Ranteen ulnarisella puolella, triquetraluun ja ulnan välissä.',i:'Tinnitus, päänsärky, ranteen kipu, mielisairaus.',c:['jr'],elem:'fi'},
+{n:'SI-6',e:'Yanglao',py:'Yǎnglǎo',fi:'Vanhuuden ravitseminen',l:'Ulnan styloidiprosessuksen radiaali reuna, rannetta fleksoitaessa.',i:'Näön hämärtyminen, kyynärvarren kipu, niskan jäykkyys.',c:['xi']},
+{n:'SI-7',e:'Zhizheng',py:'Zhīzhèng',fi:'Suora tuki',l:'5 cun SI-5:stä proksimaalipuolelle, ulna-radius välissä.',i:'Kyynärvarren kipu, päänsärky, huimaus, psykologiset häiriöt.',c:['lu']},
+{n:'SI-8',e:'Xiaohai',py:'Xiǎohǎi',fi:'Pienen meri',l:'Kyynärpää mediaalinen puoli, olecranokin ja mediaalisen epicondyylin välissä.',i:'Kyynärpäen kipu, epilepsia, kaula-alueen vaivat.',c:['he'],elem:'ea'},
+{n:'SI-9',e:'Jianzhen',py:'Jiānzhēn',fi:'Hartian suoruus',l:'1 cun aksillarisesti hartian takaosan alapuolella.',i:'Hartiakipu, käsivarren halvaus.',c:[]},
+{n:'SI-10',e:'Naoshu',py:'Nàoshū',fi:'Olkavarren kuljettaja',l:'Aksilaarihaavon yläpuolella, scapulan spina inferiori.',i:'Hartiakipu.',c:[]},
+{n:'SI-11',e:'Tianzong',py:'Tiānzōng',fi:'Taivaan esikunta',l:'Lapaluun fossa, kolmannes lapaluun alareunasta.',i:'Hartia ja lapaluun kipu, rintakipu.',c:[]},
+{n:'SI-12',e:'Bingfeng',py:'Bǐngfēng',fi:'Tuulipuolustus',l:'Suprascapular fossa, lapaluun spina yläpuolella.',i:'Hartiakipu, käsivarren halvaus.',c:[]},
+{n:'SI-13',e:'Quyuan',py:'Qūyuán',fi:'Käyrä seinä',l:'Mediaalinen suprascapular fossa.',i:'Hartiakipu.',c:[]},
+{n:'SI-14',e:'Jianwaishu',py:'Jiānwàishū',fi:'Hartian ulkoinen kuljettaja',l:'Th1:n tason kohdalla, 3 cun keskilinjasta lateraalisesti.',i:'Hartiakipu, niskajäykkyys.',c:[]},
+{n:'SI-15',e:'Jianzhongshu',py:'Jiānzhōngshū',fi:'Hartian keski-kuljettaja',l:'C7:n tason kohdalla, 2 cun keskilinjasta lateraalisesti.',i:'Yskä, niskajäykkyys, hartiakipu.',c:[]},
+{n:'SI-16',e:'Tianchuang',py:'Tiānchuāng',fi:'Taivaan ikkuna',l:'SCM:n posteriorinen reuna, kurkunpään tasossa.',i:'Tinnitus, kuurous, kurkkukipu.',c:['wi']},
+{n:'SI-17',e:'Tianrong',py:'Tiānróng',fi:'Taivaan vastaanotto',l:'Mandibulan kulmasta alaspäin, SCM:n etuosa.',i:'Tinnitus, kuurous, nielemisvaikeudet.',c:[]},
+{n:'SI-18',e:'Quanliao',py:'Quánliáo',fi:'Poskikorvan aukko',l:'Ulomman silmänurkan alapuolella, poskikaaren alapuolella.',i:'Kasvojen halvaus, hammassärky.',c:[]},
+{n:'SI-19',e:'Tinggong',py:'Tīnggōng',fi:'Kuulon palatsi',l:'Traguksen etuosa, mandibulan kondyylin posteriorinen reuna.',i:'Tinnitus, kuurous, korvasairaudet, TMJ.',c:[]},
+]},
+
+BL:{name:'Virtsarakko',abbr:'BL',elem:'water',pair:'KI',
+desc:'Pisin kanava — 67 pistettä. Silmistä pään yli, selkää pitkin jalkoihin. Kaikki Back-Shu-pisteet.',
+ind:'Selkäkipu, päänsärky, silmäoireet, virtsarakon häiriöt, kaikki krooniset elimelliset tilat.',
+pts:[
+{n:'BL-1',e:'Jingming',py:'Jīngmíng',fi:'Silmien kirkkaus',l:'Silmän sisäkantuksen mediaalinen reuna, 0,1 cun.',i:'Silmäoireet, näköhäiriöt, tinnitus.',c:[]},
+{n:'BL-2',e:'Zanzhu',py:'Zǎnzhú',fi:'Bambuvaippa',l:'Kulmakarvan mediaalinen pää, supraorbitaalinotch.',i:'Päänsärky, silmäoireet, kasvojen kipu, nenäverenvuoto.',c:[]},
+{n:'BL-3',e:'Meichong',py:'Méichōng',fi:'Kulmakarvan virtaus',l:'0,5 cun hiusrajasta BL-2:n yläpuolella.',i:'Päänsärky, silmäoireet.',c:[]},
+{n:'BL-4',e:'Quchai',py:'Qūchā',fi:'Käyrä ero',l:'0,5 cun hiusrajasta, 1,5 cun lateraalisesti keskilinjasta.',i:'Päänsärky, nenäoireet.',c:[]},
+{n:'BL-5',e:'Wuchu',py:'Wǔchù',fi:'Viiden asioiden tuki',l:'1 cun hiusrajasta, 1,5 cun lateraalisesti.',i:'Päänsärky, silmäoireet, epilepsia.',c:[]},
+{n:'BL-6',e:'Chengguang',py:'Chéngguāng',fi:'Vastaanotettu valo',l:'2,5 cun hiusrajasta, 1,5 cun lateraalisesti.',i:'Päänsärky, silmäoireet.',c:[]},
+{n:'BL-7',e:'Tongtian',py:'Tōngtiān',fi:'Taivaan viestintä',l:'4 cun hiusrajasta, 1,5 cun lateraalisesti.',i:'Päänsärky, nenäoireet.',c:[]},
+{n:'BL-8',e:'Luoque',py:'Luòquè',fi:'Vaihtelevat erot',l:'5,5 cun hiusrajasta, 1,5 cun lateraalisesti.',i:'Päänsärky, huimaus.',c:[]},
+{n:'BL-9',e:'Yuzhen',py:'Yùzhěn',fi:'Jadeinen tyyny',l:'Occipitaalin yläosassa, 1,3 cun lateraalisesti.',i:'Päänsärky, silmäoireet.',c:[]},
+{n:'BL-10',e:'Tianzhu',py:'Tiānzhù',fi:'Taivaan pylväs',l:'Trapezius-lihaksen lateraalinen reuna, C1:n ja C2:n välissä.',i:'Niskajäykkyys, päänsärky, hengitystiesairaudet, silmä- ja korvavaivat.',c:['wi']},
+{n:'BL-11',e:'Dazhu',py:'Dàzhù',fi:'Suuri sukkulalauta',l:'Th1:n alapuolella, 1,5 cun lateraalisesti.',i:'Yskä, astma, niskajäykkyys, luusairaudet.',c:['hu','bs'],hu:'Luut'},
+{n:'BL-12',e:'Fengmen',py:'Fēngmén',fi:'Tuulen portti',l:'Th2:n alapuolella, 1,5 cun lateraalisesti.',i:'Yskä, kuume, niskajäykkyys.',c:[]},
+{n:'BL-13',e:'Feishu',py:'Fèishū',fi:'Keuhkon kuljettaja',l:'Th3:n alapuolella, 1,5 cun lateraalisesti.',i:'Yskä, astma, hemoptyysi, rintakipu, ihosairaudet, suru.',c:['bs'],bs:'Keuhko'},
+{n:'BL-14',e:'Jueyinshu',py:'Juéyīnshū',fi:'Äärimmäinen Yin kuljettaja',l:'Th4:n alapuolella, 1,5 cun lateraalisesti.',i:'Sydän- ja rintavaivat, oksentelu.',c:['bs'],bs:'Sydänverho'},
+{n:'BL-15',e:'Xinshu',py:'Xīnshū',fi:'Sydämen kuljettaja',l:'Th5:n alapuolella, 1,5 cun lateraalisesti.',i:'Palpitaatiot, sydänkipu, unettomuus, muisti, mielisairaus, ahdistus.',c:['bs'],bs:'Sydän'},
+{n:'BL-16',e:'Dushu',py:'Dūshū',fi:'Ohjaajakanavan kuljettaja',l:'Th6:n alapuolella, 1,5 cun lateraalisesti.',i:'Sydän- ja vatsavaivat.',c:['bs'],bs:'Du Mai'},
+{n:'BL-17',e:'Geshu',py:'Géshū',fi:'Pallealihas kuljettaja',l:'Th7:n alapuolella, 1,5 cun lateraalisesti.',i:'Verenvuodot, hemoptyysi, oksentelu, pallean kouristukset.',c:['bs','hu'],hu:'Veri'},
+{n:'BL-18',e:'Ganshu',py:'Gānshū',fi:'Maksan kuljettaja',l:'Th9:n alapuolella, 1,5 cun lateraalisesti.',i:'Silmäoireet, kylkikipu, masennus, viha, unihäiriöt, krampit.',c:['bs'],bs:'Maksa'},
+{n:'BL-19',e:'Danshu',py:'Dǎnshū',fi:'Sappirakon kuljettaja',l:'Th10:n alapuolella, 1,5 cun lateraalisesti.',i:'Keltatauti, kylki- ja vatsakipu, katkeruus.',c:['bs'],bs:'Sappirakko'},
+{n:'BL-20',e:'Pishu',py:'Píshū',fi:'Pernan kuljettaja',l:'Th11:n alapuolella, 1,5 cun lateraalisesti.',i:'Ruoansulatushäiriöt, väsymys, turvotus, ripuli, ummetus.',c:['bs'],bs:'Perna'},
+{n:'BL-21',e:'Weishu',py:'Wèishū',fi:'Mahalaukun kuljettaja',l:'Th12:n alapuolella, 1,5 cun lateraalisesti.',i:'Vatsakipu, turvotus, ripuli, oksentelu.',c:['bs'],bs:'Mahalaukku'},
+{n:'BL-22',e:'Sanjiaoshu',py:'Sānjiāoshū',fi:'Sanjiaon kuljettaja',l:'L1:n alapuolella, 1,5 cun lateraalisesti.',i:'Turvotus, vesipöhö, urologiset vaivat, selkäkipu.',c:['bs'],bs:'Sanjiao'},
+{n:'BL-23',e:'Shenshu',py:'Shènshū',fi:'Munuaisen kuljettaja',l:'L2:n alapuolella, 1,5 cun lateraalisesti.',i:'Selkäkipu, urologiset vaivat, kuulonalenema, impotenssi, väsymys, pelko.',c:['bs'],bs:'Munuainen'},
+{n:'BL-24',e:'Qihaishu',py:'Qìhǎishū',fi:'Qi-meren kuljettaja',l:'L3:n alapuolella, 1,5 cun lateraalisesti.',i:'Selkäkipu, urologiset vaivat.',c:['bs'],bs:'Qi-meri'},
+{n:'BL-25',e:'Dachangshu',py:'Dàchángshū',fi:'Paksusuolen kuljettaja',l:'L4:n alapuolella, 1,5 cun lateraalisesti.',i:'Alaselkäkipu, ummetus, ripuli, vatsakipu.',c:['bs'],bs:'Paksusuoli'},
+{n:'BL-26',e:'Guanyuanshu',py:'Guānyuánshū',fi:'Suhteen alkuperän kuljettaja',l:'L5:n alapuolella, 1,5 cun lateraalisesti.',i:'Selkäkipu, urologiset vaivat.',c:['bs']},
+{n:'BL-27',e:'Xiaochangshu',py:'Xiǎochángshū',fi:'Ohutsuolen kuljettaja',l:'S1:n tasolla, 1,5 cun lateraalisesti.',i:'Alaselkäkipu, urologiset vaivat, ripuli.',c:['bs'],bs:'Ohutsuoli'},
+{n:'BL-28',e:'Pangguangshu',py:'Pángguāngshū',fi:'Virtsarakon kuljettaja',l:'S2:n tasolla, 1,5 cun lateraalisesti.',i:'Urologiset häiriöt, selkäkipu, ripuli.',c:['bs'],bs:'Virtsarakko'},
+{n:'BL-29',e:'Zhonglushu',py:'Zhōnglǔshū',fi:'Keski-selkärangan kuljettaja',l:'S3:n tasolla, 1,5 cun lateraalisesti.',i:'Selkäkipu.',c:[]},
+{n:'BL-30',e:'Baihuanshu',py:'Báihuánshū',fi:'Valkoisen renkaan kuljettaja',l:'S4:n tasolla, 1,5 cun lateraalisesti.',i:'Selkäkipu, gynekologiset vaivat.',c:[]},
+{n:'BL-31',e:'Shangliao',py:'Shàngliáo',fi:'Ylä-aukko',l:'S1:n sacralinen foramen.',i:'Gynekologiset häiriöt, selkäkipu.',c:[]},
+{n:'BL-32',e:'Ciliao',py:'Cìliáo',fi:'Toinen aukko',l:'S2:n sacralinen foramen.',i:'Gynekologiset häiriöt, selkäkipu.',c:[]},
+{n:'BL-33',e:'Zhongliao',py:'Zhōngliáo',fi:'Keski-aukko',l:'S3:n sacralinen foramen.',i:'Gynekologiset häiriöt, selkäkipu.',c:[]},
+{n:'BL-34',e:'Xialiao',py:'Xiàliáo',fi:'Ala-aukko',l:'S4:n sacralinen foramen.',i:'Gynekologiset häiriöt, selkäkipu.',c:[]},
+{n:'BL-35',e:'Huiyang',py:'Huìyáng',fi:'Yangin kokoontuminen',l:'0,5 cun coccyxin vieressä, lateraalisesti.',i:'Peräpukamat, prolapsit, urologiset vaivat.',c:[]},
+{n:'BL-36',e:'Chengfu',py:'Chéngfú',fi:'Tuen vastaanotto',l:'Gluteaalipoimu, puolivälissä.',i:'Peräpukamat, selkäkipu, iskias.',c:[]},
+{n:'BL-37',e:'Yinmen',py:'Yīnmén',fi:'Yinin portti',l:'6 cun BL-36:sta alaspäin, reiden takana.',i:'Selkäkipu, alaraajojen halvaus.',c:[]},
+{n:'BL-38',e:'Fuxi',py:'Fǔxì',fi:'Pintainen krivi',l:'1 cun BL-39:n yläpuolella.',i:'Popliteaalinen kipu.',c:[]},
+{n:'BL-39',e:'Weiyang',py:'Wěiyáng',fi:'Komission Yang',l:'Popliteaalihaavan lateraalinen reuna, biceps femoris-jänteen mediaalipuolella.',i:'Selkäkipu, SJ-häiriöt, urologiset vaivat.',c:[]},
+{n:'BL-40',e:'Weizhong',py:'Wěizhōng',fi:'Komission keskus',l:'Popliteaalihaavan keskipiste.',i:'Selkäkipu (alaselkä erityisesti), polvivaivat, virtsarakon häiriöt, kuume, iho.',c:['he','cm'],elem:'ea'},
+{n:'BL-41',e:'Fufen',py:'Fùfēn',fi:'Kiinnittynyt jako',l:'Th2:n alapuolella, 3 cun lateraalisesti. 2. BL-linja.',i:'Niskajäykkyys, hartiakipu.',c:[]},
+{n:'BL-42',e:'Pohu',py:'Pòhù',fi:'Po-hengen asunto',l:'Th3:n alapuolella, 3 cun lateraalisesti.',i:'Yskä, astma, suru.',c:[]},
+{n:'BL-43',e:'Gaohuangshu',py:'Gāohuāngshū',fi:'Elintärkeän alueen kuljettaja',l:'Th4:n alapuolella, 3 cun lateraalisesti.',i:'Tuberkuloosi, krooninen keuhkosairaus, emissiot, muistiongelmat. Tärkeä moxibustiolle.',c:[]},
+{n:'BL-44',e:'Shentang',py:'Shéntáng',fi:'Mielen sali',l:'Th5:n alapuolella, 3 cun lateraalisesti.',i:'Sydämentykytys, ahdistus.',c:[]},
+{n:'BL-45',e:'Yixi',py:'Yìxǐ',fi:'Ohh!',l:'Th6:n alapuolella, 3 cun lateraalisesti.',i:'Hartia- ja selkäkipu, yskä.',c:[]},
+{n:'BL-46',e:'Geguan',py:'Géguān',fi:'Pallean portti',l:'Th7:n alapuolella, 3 cun lateraalisesti.',i:'Ylä-GI-oireet, vatsakipu.',c:[]},
+{n:'BL-47',e:'Hunmen',py:'Húnmén',fi:'Hun-sielun portti',l:'Th9:n alapuolella, 3 cun lateraalisesti.',i:'Kylkikipu, masennus, huoli.',c:[]},
+{n:'BL-48',e:'Yanggang',py:'Yánggāng',fi:'Yang-varsi',l:'Th10:n alapuolella, 3 cun lateraalisesti.',i:'Keltatauti, ripuli.',c:[]},
+{n:'BL-49',e:'Yishe',py:'Yìshě',fi:'Yi-sielun asunto',l:'Th11:n alapuolella, 3 cun lateraalisesti.',i:'Ruoansulatushäiriöt, märehtiminen.',c:[]},
+{n:'BL-50',e:'Weicang',py:'Wèicāng',fi:'Mahalaukun varasto',l:'Th12:n alapuolella, 3 cun lateraalisesti.',i:'Vatsakipu, turvotus.',c:[]},
+{n:'BL-51',e:'Huangmen',py:'Huāngmén',fi:'Elintärkeän alueen portti',l:'L1:n alapuolella, 3 cun lateraalisesti.',i:'Epigastrinen kipu, ummetus.',c:[]},
+{n:'BL-52',e:'Zhishi',py:'Zhìshì',fi:'Zhi-sielun asunto',l:'L2:n alapuolella, 3 cun lateraalisesti.',i:'Urologiset vaivat, selkäkipu, pelko.',c:[]},
+{n:'BL-53',e:'Baohuang',py:'Bāohuāng',fi:'Kohdun elintärkeys',l:'S2:n tasolla, 3 cun lateraalisesti.',i:'Gynekologiset vaivat, urologiset vaivat.',c:[]},
+{n:'BL-54',e:'Zhibian',py:'Zhìbiān',fi:'Järjestyksen raja',l:'S4:n tasolla, 3 cun lateraalisesti.',i:'Iskias, lonkkakipu, urologiset vaivat.',c:[]},
+{n:'BL-55',e:'Heyang',py:'Héyáng',fi:'Yang-yhtymä',l:'2 cun BL-40:stä alaspäin.',i:'Selkäkipu, alaraajojen halvaus.',c:[]},
+{n:'BL-56',e:'Chengjin',py:'Chéngjīn',fi:'Jänteiden tuki',l:'BL-57:n yläpuolella 3 cun, gastrocnemius-lihaksessa.',i:'Krampit, peräpukamat.',c:[]},
+{n:'BL-57',e:'Chengshan',py:'Chéngshān',fi:'Vuoren tuki',l:'Gastrocnemius-lihaksen alapuolella, pohkeen kuopassa.',i:'Selkäkipu, pohjelihaskrampit, peräpukamat, nilkkavaivat.',c:[]},
+{n:'BL-58',e:'Feiyang',py:'Fēiyáng',fi:'Lentävä Yang',l:'7 cun BL-60:sta ylöspäin, fibula posteriorinen reuna.',i:'Päänsärky, huimaus, selkäkipu.',c:['lu']},
+{n:'BL-59',e:'Fuyang',py:'Fūyáng',fi:'Ulommaisin Yang',l:'3 cun BL-60:sta ylöspäin.',i:'Alaraajojen halvaus, pahoin vointi, päänsärky.',c:[]},
+{n:'BL-60',e:'Kunlun',py:'Kūnlún',fi:'Kunlun-vuori',l:'Ulkokehräksen ja akillesjänteen puolivälissä.',i:'Päänsärky, niskajäykkyys, selkäkipu, synnytyskipu, kantapäänkipu.',c:['jr'],elem:'fi'},
+{n:'BL-61',e:'Pucan',py:'Pùcān',fi:'Orjatar',l:'BL-60:n alapuolella.',i:'Kantapäänkipu, alaraajojen halvaus.',c:[]},
+{n:'BL-62',e:'Shenmai',py:'Shēnmài',fi:'Laajennettu kanava',l:'Ulkokehräksen alapuolella, 0,5 cun.',i:'Unettomuus, epilepsia, niskajäykkyys, jalkavaivat.',c:['ma','gh'],ma:'Yang Qiao / BL-62:SI-3',mc:'SI-3'},
+{n:'BL-63',e:'Jinmen',py:'Jīnmén',fi:'Kultainen portti',l:'BL-62:n etupuolella, 5. metatarsaalin tyvessä.',i:'Alaraajojen kipu, epilepsia, lapsikouristukset.',c:['xi']},
+{n:'BL-64',e:'Jinggu',py:'Jīnggǔ',fi:'Pääkaupunkiluu',l:'5. metatarsaalin takaosa, lateraalinen reuna.',i:'Päänsärky, niskajäykkyys, silmäoireet, epilepsia.',c:['yu']},
+{n:'BL-65',e:'Shugu',py:'Shùgǔ',fi:'Sitova luu',l:'5. MTP-nivel posteriorisesti.',i:'Päänsärky, niskajäykkyys, selkäkipu.',c:['ss'],elem:'wo'},
+{n:'BL-66',e:'Zutonggu',py:'Zútōnggǔ',fi:'Jalkojen läpäisy',l:'5. varpaankynnen proksimaalinen puoli, lateraalisesti.',i:'Päänsärky, niskajäykkyys, nenäverenvuoto.',c:['ys'],elem:'wa'},
+{n:'BL-67',e:'Zhiyin',py:'Zhìyīn',fi:'Äärimäinen Yin',l:'5. varpaankynnen lateraalinen kulma, 0,1 cun.',i:'Päänsärky, silmäoireet, tarjontavaikeuden kääntäminen synnytyksessä.',c:['j'],elem:'me'},
+]},
+
+KI:{name:'Munuainen',abbr:'KI',elem:'water',pair:'BL',
+desc:'Kulkee jalkapohjasta rintakehään. Synnynnäinen Jing, kasvu, lisääntyminen, vanheneminen.',
+ind:'Munuaishäiriöt, seksuaalitoiminto, hedelmällisyys, kuulonalenema, alaselkäkipu, pelko.',
+pts:[
+{n:'KI-1',e:'Yongquan',py:'Yǒngquán',fi:'Purskaava lähde',l:'Jalkapohjan etummainen kolmannes, varpaiden fleksiokuoppa.',i:'Tajuttomuus, paniikki, ylivireys, dissosiaatio, päänsärky, kuume, maadoitus.',c:['j'],elem:'wo'},
+{n:'KI-2',e:'Rangu',py:'Rángǔ',fi:'Palolaakso',l:'Navikulaarisesta luusta alaspäin, mediaalinen reuna.',i:'Munuais-Yin puutos, kuumeoireet, unettomuus, diabetes.',c:['ys'],elem:'fi'},
+{n:'KI-3',e:'Taixi',py:'Tàixī',fi:'Suuri virtavesi',l:'Sisäkehräksen ja akillesjänteen puoliväli.',i:'Munuaispuutos (Yin ja Yang), kuulohäiriö, tinnitus, alaselkäkipu, impotenssi, unettomuus, ahdistus.',c:['yu','ss'],elem:'ea'},
+{n:'KI-4',e:'Dazhong',py:'Dàzhōng',fi:'Suuri kello',l:'KI-3:n posteroinferiori, akillesjänteen mediaalinen puoli.',i:'Astma, alaselkäkipu, urologiset vaivat, dementia.',c:['lu']},
+{n:'KI-5',e:'Shuiquan',py:'Shuǐquán',fi:'Vesilähteet',l:'1 cun KI-3:sta alaspäin, kalkaneus-talus-nivel.',i:'Amenorrea, dysmenorrea, urologiset vaivat.',c:['xi']},
+{n:'KI-6',e:'Zhaohai',py:'Zhàohǎi',fi:'Hohde-meri',l:'Sisäkehräksen alapuolella, 1 cun.',i:'Unettomuus, ahdistus, kurkun kuivuus, silmäoireet, kuukautishäiriöt.',c:['ma'],ma:'Yin Qiao',mc:'LU-7'},
+{n:'KI-7',e:'Fuliu',py:'Fùliū',fi:'Palaava virta',l:'2 cun KI-3:sta ylöspäin, akillesjänteen etupuolella.',i:'Yöhikoilu, turvotus, vesipöhö, alaselkäkipu.',c:['jr'],elem:'me'},
+{n:'KI-8',e:'Jiaoxin',py:'Jiāoxìn',fi:'Usko risteymässä',l:'2 cun KI-3:sta ylöspäin, sääriluun posteriorinen reuna.',i:'Menstruaatiohäiriöt, hernia.',c:[]},
+{n:'KI-9',e:'Zhubin',py:'Zhùbīn',fi:'Vieraanrakentaja',l:'5 cun KI-3:sta ylöspäin.',i:'Epilepsia, mielisairaus, pohkeen kipu.',c:[]},
+{n:'KI-10',e:'Yingu',py:'Yīngǔ',fi:'Yinin laakso',l:'Polven takana, semimembranosuksen ja semitendinosuksen välissä.',i:'Impotenssi, urologiset vaivat, polven sisäsivu, mielisairaus.',c:['he'],elem:'wa'},
+{n:'KI-11',e:'Henggu',py:'Héngǔ',fi:'Horisontaalinen luu',l:'5 cun navaa alempana, 0,5 cun lateraalisesti.',i:'Impotenssi, hernia, urologiset vaivat.',c:[]},
+{n:'KI-12',e:'Dahe',py:'Dàhè',fi:'Suuri loisto',l:'4 cun navaa alempana, 0,5 cun lateraalisesti.',i:'Impotenssi, siemensyöks, gynekologiset vaivat.',c:[]},
+{n:'KI-13',e:'Qixue',py:'Qìxué',fi:'Qi:n reikä',l:'3 cun navaa alempana, 0,5 cun lateraalisesti.',i:'Gynekologiset häiriöt, ripuli.',c:[]},
+{n:'KI-14',e:'Siman',py:'Sìmǎn',fi:'Neljä täyttymystä',l:'2 cun navaa alempana, 0,5 cun lateraalisesti.',i:'Gynekologiset häiriöt, vatsakipu.',c:[]},
+{n:'KI-15',e:'Zhongzhu',py:'Zhōngzhù',fi:'Keski-virtaus',l:'1 cun navaa alempana, 0,5 cun lateraalisesti.',i:'Gynekologiset häiriöt, ummetus.',c:[]},
+{n:'KI-16',e:'Huangshu',py:'Huāngshū',fi:'Elintärkeän kuljettaja',l:'Navan tasolla, 0,5 cun lateraalisesti.',i:'Vatsakipu, ummetus, ripuli.',c:[]},
+{n:'KI-17',e:'Shangqu',py:'Shāngqǔ',fi:'Ylä-käyrä',l:'2 cun navaa ylöspäin, 0,5 cun lateraalisesti.',i:'Vatsakipu, ummetus.',c:[]},
+{n:'KI-18',e:'Shiguan',py:'Shíguān',fi:'Kivi-portti',l:'3 cun navaa ylöspäin, 0,5 cun lateraalisesti.',i:'Oksentelu, vatsakipu.',c:[]},
+{n:'KI-19',e:'Yindu',py:'Yīndū',fi:'Yinin pääkaupunki',l:'4 cun navaa ylöspäin, 0,5 cun lateraalisesti.',i:'Vatsakipu, oksentelu.',c:[]},
+{n:'KI-20',e:'Tonggu',py:'Tōnggǔ',fi:'Läpäisevä laakso',l:'5 cun navaa ylöspäin, 0,5 cun lateraalisesti.',i:'Vatsakipu, pahoinvointi.',c:[]},
+{n:'KI-21',e:'Youmen',py:'Yōumén',fi:'Tumma portti',l:'6 cun navaa ylöspäin, 0,5 cun lateraalisesti.',i:'Vatsakipu, oksentelu, ripuli.',c:[]},
+{n:'KI-22',e:'Bulang',py:'Bùláng',fi:'Kiiruhtamaton askel',l:'5. kylkiluuvälissä, 2 cun lateraalisesti.',i:'Yskä, rintakipu.',c:[]},
+{n:'KI-23',e:'Shenfeng',py:'Shénfēng',fi:'Mielen sinetti',l:'4. kylkiluuvälissä, 2 cun lateraalisesti.',i:'Yskä, rintakipu, mastitis.',c:[]},
+{n:'KI-24',e:'Lingxu',py:'Língxū',fi:'Hengen tyhjiö',l:'3. kylkiluuvälissä, 2 cun lateraalisesti.',i:'Yskä, rintakipu.',c:[]},
+{n:'KI-25',e:'Shencang',py:'Shéncáng',fi:'Mielen varasto',l:'2. kylkiluuvälissä, 2 cun lateraalisesti.',i:'Yskä, astma, rintakipu.',c:[]},
+{n:'KI-26',e:'Yuzhong',py:'Yùzhōng',fi:'Jadeinen loisto',l:'1. kylkiluuvälissä, 2 cun lateraalisesti.',i:'Yskä, astma.',c:[]},
+{n:'KI-27',e:'Shufu',py:'Shūfǔ',fi:'Kanavien palatsi',l:'Klavikulan alapuolella, 2 cun lateraalisesti.',i:'Yskä, astma, rintakipu, pahoinvointi.',c:[]},
+]},
+
+PC:{name:'Sydänverho',abbr:'PC',elem:'fire',pair:'SJ',
+desc:'Suojelee sydäntä. Kulkee rintakehästä keskisormeen. Sydän- ja psyykkiset häiriöt.',
+ind:'Sydän- ja rintavaivat, ahdistus, unettomuus, pahoinvointi, ranne.',
+pts:[
+{n:'PC-1',e:'Tianchi',py:'Tiānchí',fi:'Taivaan allas',l:'4. kylkiluuvälissä, 1 cun nännin lateraalisesti.',i:'Rintakipu, sydäntykytys, mastitis, kainalon turvotus.',c:[]},
+{n:'PC-2',e:'Tianquan',py:'Tiānquán',fi:'Taivaan lähde',l:'2 cun kainalolinjasta, bicepsin kahden pään välissä.',i:'Sydäntykytys, rintakipu, olkavarrenkipu.',c:[]},
+{n:'PC-3',e:'Quze',py:'Qūzé',fi:'Käyrä oja',l:'Kyynärtaipeessa bicepsjänteen mediaalinen puoli.',i:'Sydäntykytys, rintakipu, pahoinvointi, oksentelu, kyynärvaivat.',c:['he'],elem:'wa'},
+{n:'PC-4',e:'Ximen',py:'Xìmén',fi:'Aukkojen portti',l:'5 cun PC-7:stä proksimaalipuolelle.',i:'Akuutti sydänkipu, palpitaatiot, hemoptyysi.',c:['xi']},
+{n:'PC-5',e:'Jianshi',py:'Jiānshǐ',fi:'Välittäjä lähettiläs',l:'3 cun PC-7:stä proksimaalipuolelle, kahden jänteen välissä.',i:'Sydäntykytys, rintakipu, pahoinvointi, epilepsia, mielisairaus.',c:['jr'],elem:'me'},
+{n:'PC-6',e:'Neiguan',py:'Nèiguān',fi:'Sisäinen portti',l:'2 cun PC-7:stä proksimaalipuolelle, fleksori carpi radialiksen ja palmaris longuksen välissä.',i:'Sydäntykytys, pahoinvointi, unettomuus, ahdistus, rintakipu, matkapahuoinvointi, mielisairaus.',c:['lu','ma'],ma:'Yin Wei',mc:'SP-4'},
+{n:'PC-7',e:'Daling',py:'Dàlíng',fi:'Suuri kukkulainen',l:'Ranteen poikkilinjassa, kahden flexorijänteen välissä.',i:'Sydäntykytys, rintakipu, unettomuus, mielisairaus, ranteen kipu.',c:['yu','ss','gh'],elem:'ea'},
+{n:'PC-8',e:'Laogong',py:'Láogōng',fi:'Työn palatsi',l:'Kämmenessä, 2. ja 3. metakarpien välissä.',i:'Sydänkipu, pahoinvointi, mielisairaus, iho-ongelmat, kuume.',c:['ys','gh'],elem:'fi'},
+{n:'PC-9',e:'Zhongchong',py:'Zhōngchōng',fi:'Keskeinen hyökkäys',l:'Keskisormen kärki.',i:'Tajuttomuus, heatstroke, sydänkipu, lapsikouristukset.',c:['j'],elem:'wo'},
+]},
+
+SJ:{name:'Sanjiao',abbr:'SJ',elem:'fire',pair:'PC',
+desc:'Kolme kehon aluetta — ylä, keski, ala. Kulkee nimettömän sormen kärjestä korvaan. Koordinoi nesteen kiertoa.',
+ind:'Korvaongelmat, sivupään kipu, tinnitus, kaulaongelmat, lateraaliset yläraajaongelmat.',
+pts:[
+{n:'SJ-1',e:'Guanchong',py:'Guānchōng',fi:'Suhteen hyökkäys',l:'Nimettömän sormen kynnen ulnaarinen kulma, 0,1 cun.',i:'Päänsärky, kuume, kurkunkipu, tajuttomuus.',c:['j'],elem:'me'},
+{n:'SJ-2',e:'Yemen',py:'Yèmén',fi:'Nesteiden portti',l:'Nimettömän ja pikkusormen välissä, nivelen takana.',i:'Päänsärky, tinnitus, käden- ja ranteen kivut, kuume.',c:['ys'],elem:'wa'},
+{n:'SJ-3',e:'Zhongzhu',py:'Zhōngzhǔ',fi:'Keskiranta',l:'4. ja 5. metakarpin välissä, MCP-nivelen posteriorinen reuna.',i:'Päänsärky, tinnitus, kuulohäiriö, kyynärvaivat, kuume.',c:['ss'],elem:'wo'},
+{n:'SJ-4',e:'Yangchi',py:'Yángchí',fi:'Yangin allas',l:'Ranteen dorsaalipuolella, extensor digitorum communisin radiaalisella puolella, ranteen poikkilinja.',i:'Ranteen kipu, diabeteksen jano, fatigue, hartia- ja olkavarrenkipu.',c:['yu']},
+{n:'SJ-5',e:'Waiguan',py:'Wàiguān',fi:'Ulkoinen portti',l:'2 cun SJ-4:stä proksimaalipuolelle, radius-ulna välissä.',i:'Päänsärky, tinnitus, kyynärvaivat, lateraaliset häiriöt.',c:['lu','ma'],ma:'Yang Wei',mc:'GB-41'},
+{n:'SJ-6',e:'Zhigou',py:'Zhīgōu',fi:'Oksakanava',l:'3 cun SJ-4:stä proksimaalipuolelle.',i:'Ummetus, kylkikipu, päänsärky, korvakipu.',c:['jr'],elem:'fi'},
+{n:'SJ-7',e:'Huizong',py:'Huìzōng',fi:'Kokoontumisesikunta',l:'SJ-6:n ulnaarinen puoli, 1 cun.',i:'Tinnitus, epilepsia, kyynärvaivat.',c:['xi']},
+{n:'SJ-8',e:'Sanyangluo',py:'Sānyángluò',fi:'Kolmen yang-yhdistyminen',l:'4 cun SJ-4:stä proksimaalipuolelle.',i:'Päänsärky, äänen menetys, käsivaivat.',c:[]},
+{n:'SJ-9',e:'Sidu',py:'Sìdú',fi:'Neljä virtausta',l:'5 cun kyynärtaipeen poikkilinjasta.',i:'Tinnitus, kurkkukipu, käsivaivat.',c:[]},
+{n:'SJ-10',e:'Tianjing',py:'Tiānjǐng',fi:'Taivaan kaivo',l:'Kyynärpää takana, olecranon yläpuolella kuopassa.',i:'Kyynärpäen kipu, kaulalymfoomien turvotus, epilepsia.',c:['he'],elem:'ea'},
+{n:'SJ-11',e:'Qinglengyuan',py:'Qīngléngyuān',fi:'Viileän tyhjiön lähde',l:'2 cun SJ-10:n yläpuolella.',i:'Hartiakipu, päänsärky.',c:[]},
+{n:'SJ-12',e:'Xiaoluo',py:'Xiāoluó',fi:'Sulatettu luo',l:'Olecranonin yläpuolella 7 cun.',i:'Päänsärky, hartiakipu.',c:[]},
+{n:'SJ-13',e:'Naohui',py:'Nàohuì',fi:'Olkavarren kokoontuminen',l:'3 cun SJ-14:n alapuolella.',i:'Hartiakipu, käsivaivat.',c:[]},
+{n:'SJ-14',e:'Jianliao',py:'Jiānliáo',fi:'Hartian aukko',l:'Hartianivelen takaosa, akromionin posteriorisella puolella.',i:'Hartian kipu ja liikerajoitus.',c:[]},
+{n:'SJ-15',e:'Tianliao',py:'Tiānliáo',fi:'Taivaan aukko',l:'Lapaluun yläkulman yläpuolella.',i:'Hartiakipu, niskajäykkyys.',c:[]},
+{n:'SJ-16',e:'Tianyou',py:'Tiānyōu',fi:'Taivaan ikkuna-aukko',l:'SCM:n posteriorinen reuna, mandibulan kulman tasolla.',i:'Päänsärky, tinnitus, näköhäiriöt.',c:['wi']},
+{n:'SJ-17',e:'Yifeng',py:'Yìfēng',fi:'Suojaava tuuli',l:'Korvanlehden takana, mastoidin ja mandibulan välissä.',i:'Tinnitus, kuurous, kasvojen halvaus, korvavaivat.',c:[]},
+{n:'SJ-18',e:'Qimai',py:'Qìmài',fi:'Qi-kanava',l:'Mastoidin kohdalla, korvanlehden takaosa.',i:'Tinnitus, päänsärky.',c:[]},
+{n:'SJ-19',e:'Luxi',py:'Lúxī',fi:'Joen ankkuri',l:'SJ-18:n takaosa.',i:'Tinnitus, päänsärky.',c:[]},
+{n:'SJ-20',e:'Jiaosun',py:'Jiǎosūn',fi:'Korvan lapsenlapsi',l:'Korvanlehden huipun yläpuolella.',i:'Tinnitus, posken turvotus.',c:[]},
+{n:'SJ-21',e:'Ermen',py:'Ěrmén',fi:'Korvan portti',l:'Traguksen anteriorisesti, mandibulan kondyylin superiorisesti.',i:'Tinnitus, kuurous, korvakipu.',c:[]},
+{n:'SJ-22',e:'Heliao',py:'Héliao',fi:'Viljan aukko (pää)',l:'SJ-21:n anteriorisesti, ohimon hairline-kohdalla.',i:'Tinnitus, päänsärky.',c:[]},
+{n:'SJ-23',e:'Sizhukong',py:'Sīzhúkōng',fi:'Bambulanka tyhjässä',l:'Kulmakarvan ulkoinen pää.',i:'Päänsärky, silmäoireet, kasvojen halvaus.',c:[]},
+]},
+
+GB:{name:'Sappirakko',abbr:'GB',elem:'wood',pair:'LV',
+desc:'Kulkee silmistä jalkoihin ohimoiden ja kylkien kautta. Qi:n sujuva virtaus. Migreeni, lateraaliset tilat.',
+ind:'Migreeni, sivupäänsärky, silmäoireet, kylkikipu, lateraaliset jalkavaivat, päättämättömyys.',
+pts:[
+{n:'GB-1',e:'Tongziliao',py:'Tóngzǐliáo',fi:'Pupillin aukko',l:'Silmän ulkokantuksen lateraali, 0,5 cun.',i:'Silmäoireet, migreenipäänsärky, kasvojen halvaus.',c:[]},
+{n:'GB-2',e:'Tinghui',py:'Tīnghuì',fi:'Kuulon kokoontuminen',l:'Traguksen anteriorisesti, mandibulan kondyylin takana.',i:'Tinnitus, kuurous, TMJ, hammasvaivat.',c:[]},
+{n:'GB-3',e:'Shangguan',py:'Shàngguān',fi:'Ylemmän aukon portti',l:'Poskikaaren yläpuolella, mandibulan koronoidiprosessuksen etupuolella.',i:'Tinnitus, hammassärky, kasvojen halvaus.',c:[]},
+{n:'GB-4',e:'Hanyan',py:'Hányàn',fi:'Leuan salpa',l:'Ohimon hiusraja-alue, ST-8:n etupuolella.',i:'Migreenipäänsärky, tinnitus.',c:[]},
+{n:'GB-5',e:'Xuanlu',py:'Xuánlú',fi:'Riippuva kallo',l:'Ohimon hiusraja-alue, GB-4:n posteriorinen.',i:'Migreenipäänsärky.',c:[]},
+{n:'GB-6',e:'Xuanli',py:'Xuánlí',fi:'Riippuva liha',l:'Ohimon hiusraja-alue.',i:'Migreenipäänsärky.',c:[]},
+{n:'GB-7',e:'Qubin',py:'Qǔbìn',fi:'Käyrä ohimo',l:'Ohimon hiusraja, korvanlehden etuosa.',i:'Migreenipäänsärky, kasvojen halvaus.',c:[]},
+{n:'GB-8',e:'Shuaigu',py:'Shuàigǔ',fi:'Valloittanut laakso',l:'Korvanlehden huipusta 1,5 cun ylöspäin.',i:'Migreeni, sivupäänsärky, oksentelu.',c:[]},
+{n:'GB-9',e:'Tianchong',py:'Tiānchōng',fi:'Taivaan hyökkäys',l:'GB-8:n posteriorisesti 0,5 cun.',i:'Päänsärky, epilepsia.',c:[]},
+{n:'GB-10',e:'Fubai',py:'Fúbái',fi:'Kelluvanen valkoinen',l:'GB-9:n posteriorisesti.',i:'Päänsärky, tinnitus.',c:[]},
+{n:'GB-11',e:'Touqiaoyin',py:'Tóuqiàoyīn',fi:'Pään aukon Yin',l:'GB-10:n posteriorisesti.',i:'Päänsärky, tinnitus.',c:[]},
+{n:'GB-12',e:'Wangu',py:'Wángǔ',fi:'Mastoidiluu',l:'Mastoidin anteriorinferiorinen reuna.',i:'Päänsärky, unettomuus, kasvojen halvaus.',c:[]},
+{n:'GB-13',e:'Benshen',py:'Běnshén',fi:'Jumimielen sielu',l:'0,5 cun hiusrajasta, 3 cun lateraalisesti DU-24:stä.',i:'Epilepsia, päänsärky, psyykkiset häiriöt.',c:[]},
+{n:'GB-14',e:'Yangbai',py:'Yángbái',fi:'Yangin valkoisuus',l:'Kulmakarvan yläpuolella 1 cun.',i:'Silmäoireet, kasvojen halvaus, päänsärky.',c:[]},
+{n:'GB-15',e:'Toulinqi',py:'Tóulínqì',fi:'Pään itkevä pilvi',l:'0,5 cun hiusrajasta, suoraan GB-14:n yläpuolella.',i:'Päänsärky, silmäoireet, nenäoireet.',c:[]},
+{n:'GB-16',e:'Muchuang',py:'Mùchuāng',fi:'Silmäikkuna',l:'1,5 cun GB-15:n posteriorisesti.',i:'Päänsärky, silmäoireet.',c:[]},
+{n:'GB-17',e:'Zhengying',py:'Zhèngyíng',fi:'Upright Ying',l:'1,5 cun GB-16:n posteriorisesti.',i:'Päänsärky, hammasvaivat.',c:[]},
+{n:'GB-18',e:'Chengling',py:'Chénglíng',fi:'Hengen vastaanotto',l:'1,5 cun GB-17:n posteriorisesti.',i:'Päänsärky, nenäverenvuoto.',c:[]},
+{n:'GB-19',e:'Naokong',py:'Nǎokōng',fi:'Aivojen tyhjiö',l:'GB-20:n yläpuolella.',i:'Päänsärky, niskajäykkyys.',c:[]},
+{n:'GB-20',e:'Fengchi',py:'Fēngchí',fi:'Tuulenkuoppa',l:'SCM ja trapezius välissä, kallonpohjan taso.',i:'Päänsärky, migreeni, niskajäykkyys, huimaus, silmäoireet, korkea verenpaine, tuuli.',c:['wi']},
+{n:'GB-21',e:'Jianjing',py:'Jiānjǐng',fi:'Hartiakaivo',l:'Trapezius-harjalla, GV-14:n ja hartian puolivälissä.',i:'Niskajäykkyys, hartia- ja yläselkäkipu, päänsärky, synnytyskipu.',c:[],sp:'Kontraindikaatio raskauden aikana'},
+{n:'GB-22',e:'Yuanye',py:'Yuānyè',fi:'Kainalon neste',l:'4. kylkiluuvälissä, kainalolinja.',i:'Kylkikipu, käsivaivat.',c:[]},
+{n:'GB-23',e:'Zhejin',py:'Zhéjīn',fi:'Rintalihaskohtaus',l:'4. kylkiluuvälissä, 1 cun GB-22:n anteriorisesti.',i:'Kylkikipu, astma.',c:[]},
+{n:'GB-24',e:'Riyue',py:'Rìyuè',fi:'Aurinko ja kuu',l:'7. kylkiluuvälissä, mamillaarilinja.',i:'Sappirakko-oireet, maksavaivat, kylki- ja rintakipu.',c:['mu'],mu:'Sappirakko'},
+{n:'GB-25',e:'Jingmen',py:'Jīngmén',fi:'Pääkaupungin portti',l:'12. kylkiluun kärki, lateraalisesti.',i:'Munuaisvaivat, selkäkipu, turvotus.',c:['mu'],mu:'Munuainen'},
+{n:'GB-26',e:'Daimai',py:'Dàimài',fi:'Dai-kanava',l:'Navan tasolla, kainalolinja.',i:'Gynekologiset häiriöt, kylkikipu.',c:[]},
+{n:'GB-27',e:'Wushu',py:'Wǔshū',fi:'Viiden akseli',l:'ASIS:n etupuolella, 3 cun navaa alempana.',i:'Gynekologiset häiriöt, hernia.',c:[]},
+{n:'GB-28',e:'Weidao',py:'Wéidào',fi:'Linkin polku',l:'0,5 cun GB-27:n anteriori-inferiori.',i:'Gynekologiset häiriöt, alaraajojen halvaus.',c:[]},
+{n:'GB-29',e:'Juliao',py:'Jùliáo',fi:'Suuri aukko (lonkka)',l:'ASIS:n ja lonkkan suuremman trochantterin puolivälissä.',i:'Lonkkakipu, alaraajojen halvaus.',c:[]},
+{n:'GB-30',e:'Huantiao',py:'Huántiào',fi:'Ympäri hypätty',l:'Ison trochantterin ja hiatum sacraliksen linja, ulompi kolmannes.',i:'Alaselkäkipu, lonkkakipu, alaraajojen halvaus, iskias.',c:[]},
+{n:'GB-31',e:'Fengshi',py:'Fēngshì',fi:'Tuulikaupunki',l:'Reiden lateraalipuoli, 7 cun polvesta ylöspäin.',i:'Raajojen halvaus ja kivut, kutina.',c:[]},
+{n:'GB-32',e:'Zhongdu',py:'Zhōngdú',fi:'Keski-laakso',l:'5 cun polvesta ylöspäin, reiden lateraali.',i:'Alaraajojen halvaus, lihaskipu.',c:[]},
+{n:'GB-33',e:'Xiyangguan',py:'Xīyángguān',fi:'Polven Yang-portti',l:'3 cun GB-34:n yläpuolella, femurin epikondyylin takaosa.',i:'Polvikipu.',c:[]},
+{n:'GB-34',e:'Yanglingquan',py:'Yánglíngquán',fi:'Yangin kukkulan lähde',l:'Fibulakaulan anteriorisella puolella.',i:'Kylkikipu, polvivaivat, jänteiden häiriöt, turhautuminen.',c:['he','hu','cm'],elem:'ea',hu:'Jänteet'},
+{n:'GB-35',e:'Yangjiao',py:'Yángjiāo',fi:'Yangin risteymä',l:'7 cun ulkokehräksen yläpuolella, fibula posterior.',i:'Nilkkakipu, raajojen halvaus.',c:[]},
+{n:'GB-36',e:'Waiqiu',py:'Wàiqiū',fi:'Ulkoinen mäki',l:'7 cun ulkokehräksen yläpuolella, fibula anterior.',i:'Kaula- ja niska-alueen kipu, kouristukset.',c:['xi']},
+{n:'GB-37',e:'Guangming',py:'Guāngmíng',fi:'Kirkkaus',l:'5 cun ulkokehräksen yläpuolella, fibula etuosan reuna.',i:'Silmäoireet, migreeni, jalkojen kipu.',c:['lu']},
+{n:'GB-38',e:'Yangfu',py:'Yángfǔ',fi:'Yangin tuki',l:'4 cun ulkokehräksen yläpuolella.',i:'Migreenipäänsärky, kylkikipu, jänteiden häiriöt.',c:['jr'],elem:'fi'},
+{n:'GB-39',e:'Xuanzhong',py:'Xuánzhōng',fi:'Riippuva kello',l:'3 cun ulkokehräksen yläpuolella, fibula posteriorinen reuna.',i:'Niskajäykkyys, jalkojen halvaus, tinnitus.',c:['hu'],hu:'Ydin'},
+{n:'GB-40',e:'Qiuxu',py:'Qiūxū',fi:'Raunioiden kumpu',l:'Ulkokehräksen anteriorinen osa, nilkan kuoppa.',i:'Kylkikipu, nilkkavaivat, jalkojen kivut.',c:['yu']},
+{n:'GB-41',e:'Zulinqi',py:'Zúlínqì',fi:'Jalkojen itkevä pilvi',l:'4. ja 5. metatarsaalin välissä.',i:'Migreeni, silmäoireet, tinnitus, rinnan turvotus.',c:['ss','ma'],elem:'wo',ma:'Dai Mai',mc:'SJ-5'},
+{n:'GB-42',e:'Diwuhui',py:'Dìwǔhuì',fi:'Maan viiden kokoontuminen',l:'4. ja 5. metatarsaalin välissä, distaalisesti.',i:'Silmäoireet, tinnitus.',c:[]},
+{n:'GB-43',e:'Xiaxi',py:'Xiáxī',fi:'Pinched stream',l:'4. ja 5. varpaiden välissä.',i:'Migreeni, tinnitus, kuulonalenema, kuume.',c:['ys'],elem:'wa'},
+{n:'GB-44',e:'Zuqiaoyin',py:'Zúqiàoyīn',fi:'Jalkojen ontoton Yin',l:'4. varpaankynnen lateraalinen kulma, 0,1 cun.',i:'Migreeni, tinnitus, kurkunkipu, kuume.',c:['j'],elem:'me'},
+]},
+
+LV:{name:'Maksa',abbr:'LV',elem:'wood',pair:'GB',
+desc:'Kulkee isovarpaan sisäreunasta rintakehään. Sujuvoittaa Qi:n virtausta, varastoi verta. Silmät, jänteet, menstruaatio.',
+ind:'Maksa-Qi tukos (masennus, ahdistus), silmäoireet, gynekologiset häiriöt, migreeni.',
+pts:[
+{n:'LV-1',e:'Dadun',py:'Dàdūn',fi:'Suuri paksus',l:'Isovarpaan kynnen lateraalinen kulma, 0,1 cun.',i:'Herniat, genitaaliset vaivat, verenvuodot, epilepsia.',c:['j'],elem:'wo'},
+{n:'LV-2',e:'Xingjian',py:'Xíngjiān',fi:'Kulkuväli',l:'1. ja 2. varpaiden välissä, digitaalinen verkko.',i:'Unettomuus, silmäoireet, päänsärky, viha, kuume, gynekologiset häiriöt.',c:['ys'],elem:'fi'},
+{n:'LV-3',e:'Taichong',py:'Tàichōng',fi:'Suuri hyökkäys',l:'1. ja 2. metatarsaalin välissä, kuopassa, 2 cun varpaiden tyvestä.',i:'Päänsärky, huimaus, silmäoireet, viha, ahdistus, masennus, gynekologiset häiriöt, unettomuus.',c:['yu','ss'],elem:'ea'},
+{n:'LV-4',e:'Zhongfeng',py:'Zhōngfēng',fi:'Keskuksen sinetöinti',l:'Sisäkehräksen etuosa, tibialis anterior-jänteen mediaalinen puoli.',i:'Genitaalivaikeudet, virtsarakon ongelmat, nilkkavaivat.',c:['jr'],elem:'me'},
+{n:'LV-5',e:'Ligou',py:'Lígōu',fi:'Hyönteiskanava',l:'5 cun sisäkehräksen yläpuolella, sääriluun mediaalinen reuna.',i:'Genitaalivaikeudet, virtsarakon ongelmat, säärikivut.',c:['lu']},
+{n:'LV-6',e:'Zhongdu',py:'Zhōngdū',fi:'Keski-kaupunki',l:'7 cun sisäkehräksen yläpuolella.',i:'Akuutti gynekologinen kipu, genitaalivaikeudet.',c:['xi']},
+{n:'LV-7',e:'Xiguan',py:'Xīguān',fi:'Polven portti',l:'Tibiaaren medial kondyylin takaosa, 1 cun SP-9:n posteriorisesti.',i:'Polven kipu.',c:[]},
+{n:'LV-8',e:'Ququan',py:'Qūquán',fi:'Käyrä lähde',l:'Polven fleksiotaipeen mediaalinen osa, semimembranosuksen insertiossa.',i:'Genitaalivaikeudet, polven mediaalinen kipu, gynekologiset häiriöt.',c:['he'],elem:'wa'},
+{n:'LV-9',e:'Yinbao',py:'Yīnbāo',fi:'Yin-kääre',l:'4 cun SP-10:n yläpuolella, reiden sisäpinta.',i:'Gynekologiset häiriöt, dysuria.',c:[]},
+{n:'LV-10',e:'Zuwuli',py:'Zúwǔlǐ',fi:'Jalan viisi li',l:'3 cun LV-12:n alapuolella.',i:'Genitaalivaikeudet.',c:[]},
+{n:'LV-11',e:'Yinlian',py:'Yīnlián',fi:'Yin-liitos',l:'2 cun LV-12:n alapuolella.',i:'Genitaalivaikeudet.',c:[]},
+{n:'LV-12',e:'Jimai',py:'Jímài',fi:'Akuutti pulssikanava',l:'Inguinal-alueella, häpykyhmyn lateraalisesti.',i:'Genitaalivaikeudet, hernia.',c:[]},
+{n:'LV-13',e:'Zhangmen',py:'Zhāngmén',fi:'Kapteenin portti',l:'11. kylkiluun kärki.',i:'Kylki- ja vatsakipu, maksa- ja pernahäiriöt, väsymys, turvotus.',c:['mu','hu'],mu:'Perna',hu:'Zang-elimet'},
+{n:'LV-14',e:'Qimen',py:'Qīmén',fi:'Odotuksen portti',l:'6. kylkiluuvälissä mamillaarilinjassa.',i:'Kylkikipu, masennus, maksan ja rintakehän vaivat.',c:['mu'],mu:'Maksa'},
+]},
+
+DU:{name:'Du Mai',abbr:'DU',elem:null,pair:null,
+desc:'Ohjaajakanava. Kulkee peräaukosta pitkin selkärankaa päälaen yli suuhun. Hallitsee kaikkia yang-kanavia.',
+ind:'Selkäkipu, niskajäykkyys, yang-puutos, mielisairaus, epilepsia.',
+pts:[
+{n:'DU-1',e:'Changqiang',py:'Chángqiáng',fi:'Pitkä voima',l:'Häntäluun ja peräaukon välissä.',i:'Peräpukamat, ripuli, ummetus, mielisairaus.',c:['lu']},
+{n:'DU-2',e:'Yaoshu',py:'Yāoshū',fi:'Lantion kuljettaja',l:'Hiatus sacraliksen kohdalla.',i:'Selkäkipu, kuukautishäiriöt, epilepsia.',c:[]},
+{n:'DU-3',e:'Yaoyangguan',py:'Yāoyángguān',fi:'Lantion Yang-portti',l:'L4:n alapuolella.',i:'Alaselkäkipu, impotenssi, kuukautishäiriöt, alaraajojen halvaus.',c:[]},
+{n:'DU-4',e:'Mingmen',py:'Mìngmén',fi:'Elämän portti',l:'L2:n alapuolella.',i:'Impotenssi, alaselkäkipu, munuaisvajaus, yang-puutos, krooninen väsymys.',c:[]},
+{n:'DU-5',e:'Xuanshu',py:'Xuánshū',fi:'Akselin kuljettaja',l:'L1:n alapuolella.',i:'Selkäkipu, ruoansulatushäiriöt.',c:[]},
+{n:'DU-6',e:'Jizhong',py:'Jǐzhōng',fi:'Selkärangan keskus',l:'Th11:n alapuolella.',i:'Epilepsia, ripuli, keltatauti.',c:['gh']},
+{n:'DU-7',e:'Zhongshu',py:'Zhōngshū',fi:'Keski-akseli',l:'Th10:n alapuolella.',i:'Selkäkipu, vatsavaivat.',c:[]},
+{n:'DU-8',e:'Jinsuo',py:'Jīnsuō',fi:'Jänteiden supistus',l:'Th9:n alapuolella.',i:'Epilepsia, krampit, maksa- ja mahasuolioireet.',c:[]},
+{n:'DU-9',e:'Zhiyang',py:'Zhìyáng',fi:'Äärimmäinen Yang',l:'Th7:n alapuolella.',i:'Keltatauti, selkäkipu, maksa- ja sappirakko-oireet.',c:[]},
+{n:'DU-10',e:'Lingtai',py:'Língtái',fi:'Hengen kateterin taso',l:'Th6:n alapuolella.',i:'Yskä, astma, selkäkipu.',c:[]},
+{n:'DU-11',e:'Shendao',py:'Shéndào',fi:'Mielen polku',l:'Th5:n alapuolella.',i:'Sydäntykytys, unettomuus, muisti, selkäkipu.',c:[]},
+{n:'DU-12',e:'Shenzhu',py:'Shēnzhù',fi:'Kehon pylväs',l:'Th3:n alapuolella.',i:'Yskä, astma, epilepsia, selkäkipu.',c:[]},
+{n:'DU-13',e:'Taodao',py:'Táodào',fi:'Tasaisuuden tie',l:'Th1:n alapuolella.',i:'Kuume, malaria, selkäkipu.',c:[]},
+{n:'DU-14',e:'Dazhui',py:'Dàzhuī',fi:'Suuri nikama',l:'C7:n ja Th1:n välissä.',i:'Kuume, malaria, niskajäykkyys, epilepsia, immuunivahvistus.',c:[],sp:'Kaikkien yang-kanavien kohtaamispiste'},
+{n:'DU-15',e:'Yamen',py:'Yǎmén',fi:'Mykkyysportti',l:'C1:n alapuolella, 0,5 cun hiusrajasta.',i:'Mykkyys, äänenmenetys, päänsärky, niskajäykkyys, mielisairaus.',c:['wi']},
+{n:'DU-16',e:'Fengfu',py:'Fēngfǔ',fi:'Tuulen varasto',l:'1 cun hiusrajasta taaksepäin, occipitaalin alapuolella.',i:'Päänsärky, niskajäykkyys, huimaus, mielisairaus.',c:['gh','wi']},
+{n:'DU-17',e:'Naohu',py:'Nǎohù',fi:'Aivojen portti',l:'2,5 cun hiusrajasta taaksepäin.',i:'Päänsärky, niskajäykkyys.',c:[]},
+{n:'DU-18',e:'Qiangjian',py:'Qiángjian',fi:'Vahva väli',l:'4 cun hiusrajasta taaksepäin.',i:'Päänsärky, huimaus, epilepsia.',c:[]},
+{n:'DU-19',e:'Houding',py:'Hòudǐng',fi:'Takainen huippu',l:'5,5 cun hiusrajasta taaksepäin.',i:'Päänsärky, epilepsia.',c:[]},
+{n:'DU-20',e:'Baihui',py:'Bǎihuì',fi:'Sadan kokoontuminen',l:'Päälaen lakipisteessä, korvanlehtien välillä.',i:'Päänsärky, huimaus, prolapsit, mielisairaus, masennus, ahdistus.',c:['gh'],sp:'Kaikkien kanavien kohtaamispiste'},
+{n:'DU-21',e:'Qianding',py:'Qiándǐng',fi:'Etummainen huippu',l:'1,5 cun DU-20:n etupuolella.',i:'Päänsärky, epilepsia.',c:[]},
+{n:'DU-22',e:'Xinhui',py:'Xìnhuì',fi:'Fontenellan kokoontuminen',l:'3 cun hiusrajasta.',i:'Päänsärky, huimaus, nenäoireet.',c:[]},
+{n:'DU-23',e:'Shangxing',py:'Shàngxīng',fi:'Ylätähti',l:'1 cun hiusrajasta.',i:'Päänsärky, nenätulehdus, silmäoireet.',c:['gh']},
+{n:'DU-24',e:'Shenting',py:'Shéntíng',fi:'Mielen tuomioistuin',l:'0,5 cun hiusrajasta.',i:'Unettomuus, ahdistus, epilepsia, päänsärky.',c:[]},
+{n:'DU-25',e:'Suliao',py:'Sùliáo',fi:'Yksinkertainen kalvo',l:'Nenänkärjessä.',i:'Tajuttomuus, shokki, nenäverenvuoto.',c:[]},
+{n:'DU-26',e:'Shuigou',py:'Shuǐgōu',fi:'Vesioja',l:'Philtrumin yläkolmannes.',i:'Tajuttomuus, heatstroke, epilepsia, kasvojen halvaus.',c:['gh']},
+{n:'DU-27',e:'Duiduan',py:'Duìduān',fi:'Kärjen pää',l:'Ylähuulen yläosa.',i:'Iktus, epilepsia, suun haavaumat.',c:[]},
+{n:'DU-28',e:'Yinjiao',py:'Yínjiao',fi:'Ikenien risteymä',l:'Ylähuulen sisäpinnalla, ikenien ja suun välissä.',i:'Epilepsia, ikenien sairaudet.',c:[]},
+]},
+
+REN:{name:'Ren Mai',abbr:'REN',elem:null,pair:null,
+desc:'Käsittelykanava. Kulkee peräaukosta leuan alle. Hallitsee kaikkia yin-kanavia. Gynekologia, rintakehä, vatsa.',
+ind:'Gynekologiset häiriöt, hedelmällisyys, rintakehän ja vatsaongelmat, yin-puutos.',
+pts:[
+{n:'REN-1',e:'Huiyin',py:'Huìyīn',fi:'Yinin kokoontuminen',l:'Peräaukon ja genitaalien välissä.',i:'Genitaalivaikeudet, peräpukamat, epilepsia.',c:['gh']},
+{n:'REN-2',e:'Qugu',py:'Qūgǔ',fi:'Käyrä luu',l:'Häpyluun yläreuna, keskilinja.',i:'Urologiset vaivat, gynekologiset häiriöt.',c:[]},
+{n:'REN-3',e:'Zhongji',py:'Zhōngjí',fi:'Keskeinen napa',l:'4 cun navaa alempana.',i:'Urologiset vaivat, gynekologiset häiriöt, impotenssi.',c:['mu'],mu:'Virtsarakko'},
+{n:'REN-4',e:'Guanyuan',py:'Guānyuán',fi:'Suhteen alkuperä',l:'3 cun navaa alempana.',i:'Impotenssi, gynekologiset häiriöt, enuresis, moxibustio yang-puutokseen.',c:['mu'],mu:'Ohutsuoli',sp:'Tärkeä Yang-vahvistuspiste — moxibustio'},
+{n:'REN-5',e:'Shimen',py:'Shímén',fi:'Kivinen portti',l:'2 cun navaa alempana.',i:'Turvotus, urologiset vaivat, gynekologiset häiriöt.',c:['mu'],mu:'Sanjiao'},
+{n:'REN-6',e:'Qihai',py:'Qìhǎi',fi:'Qi:n meri',l:'1,5 cun navaa alempana.',i:'Yleinen Qi-puutos, väsymys, gynekologiset häiriöt, virtsavaivat.',c:[],sp:'Qi:n vahvistuspiste par excellence'},
+{n:'REN-7',e:'Yinjiao',py:'Yīnjiao',fi:'Yinin risteymä',l:'1 cun navaa alempana.',i:'Gynekologiset häiriöt, virtsavaivat.',c:[]},
+{n:'REN-8',e:'Shenque',py:'Shénquē',fi:'Mielen palatsio',l:'Napa.',i:'Ripuli, turvotus, shokki. Vain moxibustio — ei neuloja koskaan.',c:[],sp:'EI NEULOJA — vain moxibustio'},
+{n:'REN-9',e:'Shuifen',py:'Shuǐfēn',fi:'Vesijako',l:'1 cun navaa ylöspäin.',i:'Turvotus, askites, ripuli.',c:[]},
+{n:'REN-10',e:'Xiawan',py:'Xiàwǎn',fi:'Ala-vatsa',l:'2 cun navaa ylöspäin.',i:'Ruoansulatushäiriöt, vatsakipu, oksentelu.',c:[]},
+{n:'REN-11',e:'Jianli',py:'Jiànlǐ',fi:'Rakentava sisus',l:'3 cun navaa ylöspäin.',i:'Ruoansulatushäiriöt, vatsakipu, turvotus.',c:[]},
+{n:'REN-12',e:'Zhongwan',py:'Zhōngwǎn',fi:'Keskilatia',l:'4 cun navaa ylöspäin.',i:'Kaikki mahasuolisto-oireet, ruoansulatushäiriöt, masennus.',c:['mu','hu'],mu:'Mahalaukku',hu:'Fu-elimet'},
+{n:'REN-13',e:'Shangwan',py:'Shàngwǎn',fi:'Ylä-vatsa',l:'5 cun navaa ylöspäin.',i:'Vatsakipu, oksentelu.',c:[]},
+{n:'REN-14',e:'Juque',py:'Jùquē',fi:'Suuri portti',l:'6 cun navaa ylöspäin.',i:'Sydän- ja rintakipu, palpitaatiot, mielisairaus.',c:['mu'],mu:'Sydän'},
+{n:'REN-15',e:'Jiuwei',py:'Jiūwěi',fi:'Kananpoikanen häntä',l:'7 cun navaa ylöspäin, xiphoidin alapuolella.',i:'Rintakipu, mielisairaus, epilepsia.',c:['lu']},
+{n:'REN-16',e:'Zhongting',py:'Zhōngtíng',fi:'Keskus-eteinen',l:'5. kylkiluuvälissä, keskilinja.',i:'Rintakipu, oksentelu.',c:[]},
+{n:'REN-17',e:'Tanzhong',py:'Tánzhōng',fi:'Rinnansisäinen',l:'Rintalasta kohdalla, 4. kylkiluuvälissä, keskilinja.',i:'Astma, yskä, rintakipu, emotionaalinen ahdistus, maidontulo.',c:['mu','hu'],mu:'Sydänverho',hu:'Qi'},
+{n:'REN-18',e:'Yutang',py:'Yùtáng',fi:'Jade-halli',l:'3. kylkiluuvälissä, keskilinja.',i:'Rintakipu, yskä.',c:[]},
+{n:'REN-19',e:'Zigong',py:'Zǐgōng',fi:'Keisarillinen palatsi',l:'2. kylkiluuvälissä, keskilinja.',i:'Yskä, astma.',c:[]},
+{n:'REN-20',e:'Huagai',py:'Huàgài',fi:'Valtaistuimen peite',l:'1. kylkiluuvälissä, keskilinja.',i:'Yskä, astma.',c:[]},
+{n:'REN-21',e:'Xuanji',py:'Xuánjī',fi:'Jade-akseli',l:'Sternumin manubrium, keskilinja.',i:'Yskä, kurkkukipu.',c:[]},
+{n:'REN-22',e:'Tiantu',py:'Tiāntū',fi:'Taivaan läpimurto',l:'Sternumin suprasternal notch.',i:'Astma, yskä, kurkkukipu, äänen häiriöt.',c:[]},
+{n:'REN-23',e:'Lianquan',py:'Liánquán',fi:'Rehellinen lähde',l:'Alaleuan yläpuolella hyoidin yläpuolella.',i:'Puheenhäiriöt, dysfagia, suun haavaumat, kielen vaivat.',c:[]},
+{n:'REN-24',e:'Chengjiang',py:'Chéngjiāng',fi:'Syljen kantaja',l:'Leuankärjen sulcus mentolabialiksen kohdalla.',i:'Kasvojen halvaus, hammassärky, psyykkiset häiriöt.',c:['gh']},
+]},
+
+}; // END CH
+
+
+// ══════════════════════════════════════════════
+// LABEL MAPS
+// ══════════════════════════════════════════════
+const CAT_LABELS = {
+  j:'Jing-Well', ys:'Ying-Spring', ss:'Shu-Stream', jr:'Jing-River', he:'He-Sea',
+  yu:'Yuan', lu:'Luo', xi:'Xi-Cleft',
+  bs:'Back-Shu', mu:'Front-Mu', hu:'Hui', gh:'Ghost',
+  ma:'Master', cm:'Command', wi:'Window'
+};
+const CAT_CLS = {
+  j:'cj', ys:'cj', ss:'cj', jr:'cj', he:'c5',
+  yu:'cy', lu:'cl', xi:'cx',
+  bs:'cs', mu:'cm2', hu:'ch2', gh:'cg',
+  ma:'cmr', cm:'cco', wi:'cw'
+};
+const ELEM_LABELS = {wo:'Puu',fi:'Tuli',ea:'Maa',me:'Metalli',wa:'Vesi'};
+const ELEM_COLORS = {wo:'var(--wood)',fi:'var(--fire)',ea:'var(--earth)',me:'var(--metal)',wa:'var(--water)'};
+
+function catTag(c) {
+  const cls = CAT_CLS[c]||'';
+  // fix cm2 -> correct CSS class name
+  const finalCls = cls === 'cm2' ? 'cm' : cls;
+  return `<span class="pk ${finalCls}">${CAT_LABELS[c]||c}</span>`;
+}
+
+// ══════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════
+function show(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById('page-' + id);
+  if (pg) {
+    pg.classList.add('active');
+    if (CH[id] && !pg.dataset.built) buildCh(id);
+  }
+  if (el) el.classList.add('active');
+  closeD();
+}
+
+function showTab(id, el) {
+  const parent = el.closest('.pc') || document.body;
+  parent.querySelectorAll('.tp').forEach(t => t.classList.remove('active'));
+  parent.querySelectorAll('.tb').forEach(b => b.classList.remove('active'));
+  const tp = document.getElementById('tab-' + id);
+  if (tp) tp.classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// BUILD CHANNEL PAGE
+// ══════════════════════════════════════════════
+function buildCh(id) {
+  const ch = CH[id];
+  const pg = document.getElementById('page-' + id);
+  if (!ch || !pg) return;
+
+  const ec = ch.elem ? `<span style="font-family:var(--mono);font-size:.56rem;padding:.12rem .42rem;border-radius:3px;background:${ELEM_COLORS[ch.elem]}22;color:${ELEM_COLORS[ch.elem]};border:1px solid ${ELEM_COLORS[ch.elem]}44">${ELEM_LABELS[ch.elem]}</span>` : '';
+  const pairTag = ch.pair ? `<span class="ch-tag">Pari: ${ch.pair}</span>` : '';
+
+  const rows = ch.pts.map(pt => {
+    const cats = (pt.c||[]).map(catTag).join('');
+    const el5 = pt.elem ? `<span class="pk c5">${ELEM_LABELS[pt.elem]}</span>` : '';
+    const sp = pt.sp ? `<div style="font-size:.72rem;color:var(--dim);margin-top:.18rem;font-style:italic">${pt.sp}</div>` : '';
+    return `<tr onclick="quickDetail('${id}','${pt.n}')" style="cursor:pointer">
+      <td class="pn">${pt.n}</td>
+      <td><div class="pe">${pt.e}</div><div class="py">${pt.py}</div><div style="font-size:.68rem;color:var(--dim)">${pt.fi}</div></td>
+      <td class="pl">${pt.l||'—'}</td>
+      <td class="pi">${pt.i||'—'}${sp}</td>
+      <td><div class="pc2">${cats}${el5}</div></td>
+    </tr>`;
+  }).join('');
+
+  pg.innerHTML = `
+    <div class="ph">
+      <div class="ph-ey">${ch.abbr} · ${ch.elem ? ELEM_LABELS[ch.elem] : 'Ylimääräinen kanava'} · ${ch.pair ? 'Pari: '+ch.pair : ''}</div>
+      <h1 class="ph-t">${ch.name} — ${ch.abbr}</h1>
+      <p class="ph-lead">${ch.pts.length} pistettä · ${ch.abbr}-1 → ${ch.abbr}-${ch.pts.length}</p>
+    </div>
+    <div class="pc">
+      <div class="ch-hdr">
+        <div class="ch-abbr">${ch.abbr}</div>
+        <div style="flex:1">
+          <div class="ch-n">${ch.name} — ${ch.abbr}</div>
+          <div class="ch-sub">${ch.pts.length} pistettä</div>
+          <div class="ch-desc">${ch.desc}</div>
+          <div class="ch-tags">
+            ${ec} ${pairTag}
+            <span class="ch-tag">${(ch.ind||'').split(',')[0].trim()}...</span>
+          </div>
+        </div>
+      </div>
+      <div class="ib">${ch.ind}</div>
+      <table class="pt-tbl">
+        <thead><tr>
+          <th style="width:62px">Piste</th>
+          <th style="width:140px">Nimi</th>
+          <th>Sijainti</th>
+          <th>Indikaatiot</th>
+          <th style="width:170px">Kategoriat</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  pg.dataset.built = '1';
+}
+
+// ══════════════════════════════════════════════
+// QUICK DETAIL (map dots + table rows)
+// ══════════════════════════════════════════════
+function quickDetail(chId, ptNum) {
+  const ch = CH[chId];
+  if (!ch) return;
+  const pt = ch.pts.find(p => p.n === ptNum);
+  if (!pt) return;
+
+  document.getElementById('d-num').textContent = pt.n;
+  document.getElementById('d-en').textContent = pt.e + ' — ' + pt.fi;
+  document.getElementById('d-py').textContent = pt.py;
+
+  const cats = (pt.c||[]).map(catTag).join('');
+  const el5 = pt.elem ? `<span class="pk c5">${ELEM_LABELS[pt.elem]}</span>` : '';
+
+  let extra = '';
+  if (pt.bs)  extra += `<div class="dp-s"><div class="dp-l">Back-Shu kohde</div><div class="dp-t">${pt.bs}</div></div>`;
+  if (pt.mu)  extra += `<div class="dp-s"><div class="dp-l">Front-Mu kohde</div><div class="dp-t">${pt.mu}</div></div>`;
+  if (pt.hu)  extra += `<div class="dp-s"><div class="dp-l">Hui — kokoontuminen</div><div class="dp-t">${pt.hu}</div></div>`;
+  if (pt.ma)  extra += `<div class="dp-s"><div class="dp-l">Master — ylimääräinen kanava</div><div class="dp-t">${pt.ma}${pt.mc?' — pari: <strong>'+pt.mc+'</strong>':''}</div></div>`;
+  if (pt.sp)  extra += `<div class="dp-s"><div class="dp-l">Erityishuomio</div><div class="dp-t" style="color:var(--gold)">${pt.sp}</div></div>`;
+
+  document.getElementById('d-body').innerHTML = `
+    ${pt.l ? `<div class="dp-s"><div class="dp-l">Sijainti</div><div class="dp-t">${pt.l}</div></div><div class="dp-div"></div>` : ''}
+    <div class="dp-s"><div class="dp-l">Indikaatiot</div><div class="dp-t">${pt.i||'—'}</div></div>
+    ${(pt.c||[]).length||pt.elem ? `<div class="dp-div"></div><div class="dp-s"><div class="dp-l">Kategoriat</div><div class="pc2" style="margin-top:.3rem">${cats}${el5}</div></div>` : ''}
+    ${extra ? `<div class="dp-div"></div>${extra}` : ''}
+    <div class="dp-div"></div>
+    <div class="dp-s"><div class="dp-l">Kanava</div><div class="dp-t">${ch.name} (${ch.abbr})${ch.elem?' · '+ELEM_LABELS[ch.elem]:''}</div></div>
+    <div class="dp-s" style="margin-top:.5rem">
+      <button onclick="show('${chId}',document.querySelector('.ni[onclick*=\\'${chId}\\']'))" style="font-family:var(--mono);font-size:.65rem;padding:.38rem .85rem;border:1px solid var(--sand3);border-radius:var(--r);background:var(--sand);cursor:pointer;color:var(--ink3)">→ Avaa ${ch.abbr}-kanava</button>
+    </div>`;
+
+  document.getElementById('dp').classList.add('open');
+}
+
+function closeD() {
+  document.getElementById('dp').classList.remove('open');
+}
+
+// ══════════════════════════════════════════════
+// GLOBAL SEARCH (sidebar)
+// ══════════════════════════════════════════════
+let _st;
+function gSearch(val) {
+  clearTimeout(_st);
+  const ov = document.getElementById('s-ov');
+  const bx = document.getElementById('s-bx');
+  if (!val.trim()) { ov.style.display='none'; bx.style.display='none'; return; }
+  _st = setTimeout(() => {
+    const q = val.toLowerCase();
+    const res = [];
+    Object.keys(CH).forEach(cid => {
+      CH[cid].pts.forEach(pt => {
+        if (pt.n.toLowerCase().includes(q) ||
+            pt.e.toLowerCase().includes(q) ||
+            pt.py.toLowerCase().includes(q) ||
+            pt.fi.toLowerCase().includes(q) ||
+            (pt.i && pt.i.toLowerCase().includes(q)) ||
+            (pt.l && pt.l.toLowerCase().includes(q)) ||
+            (pt.sp && pt.sp.toLowerCase().includes(q))) {
+          res.push({cid, ch:CH[cid], pt});
+        }
+      });
+    });
+    if (!res.length) { ov.style.display='none'; bx.style.display='none'; return; }
+    ov.style.display='block';
+    bx.style.display='block';
+    bx.innerHTML = res.slice(0,22).map(r =>
+      `<div class="sri" onclick="closeS();show('${r.cid}',document.querySelector('.ni[onclick*=\\'${r.cid}\\']'));quickDetail('${r.cid}','${r.pt.n}')">
+        <div class="sn">${r.pt.n}</div>
+        <div style="flex:1">
+          <div class="se">${r.pt.e} <span class="sp">${r.pt.py}</span></div>
+          <div class="ss">${r.ch.name} · ${(r.pt.i||'').substring(0,55)}${(r.pt.i||'').length>55?'…':''}</div>
+        </div>
+      </div>`).join('') +
+      (res.length>22 ? `<div style="padding:.65rem 1rem;font-size:.75rem;color:var(--dim)">+${res.length-22} muuta — tarkenna hakua</div>` : '');
+  }, 180);
+}
+
+function closeS() {
+  document.getElementById('s-ov').style.display='none';
+  document.getElementById('s-bx').style.display='none';
+  document.getElementById('gs').value='';
+}
+
+// ══════════════════════════════════════════════
+// POINT SEARCH PAGE
+// ══════════════════════════════════════════════
+function searchPts(val) {
+  const el = document.getElementById('ps-r');
+  if (!val.trim()) { el.innerHTML=''; return; }
+  const q = val.toLowerCase();
+  const res = [];
+  Object.keys(CH).forEach(cid => {
+    CH[cid].pts.forEach(pt => {
+      if (pt.n.toLowerCase().includes(q) ||
+          pt.e.toLowerCase().includes(q) ||
+          pt.py.toLowerCase().includes(q) ||
+          pt.fi.toLowerCase().includes(q) ||
+          (pt.i && pt.i.toLowerCase().includes(q)) ||
+          (pt.l && pt.l.toLowerCase().includes(q)) ||
+          (pt.sp && pt.sp.toLowerCase().includes(q)) ||
+          (pt.c && pt.c.some(c => (CAT_LABELS[c]||'').toLowerCase().includes(q)))) {
+        res.push({cid, ch:CH[cid], pt});
+      }
+    });
+  });
+  if (!res.length) { el.innerHTML='<div style="color:var(--dim);font-style:italic;padding:1rem 0">Ei tuloksia hakusanalla "'+val+'"</div>'; return; }
+
+  const rows = res.slice(0,60).map(r => {
+    const cats = (r.pt.c||[]).map(catTag).join('');
+    const el5 = r.pt.elem ? `<span class="pk c5">${ELEM_LABELS[r.pt.elem]}</span>` : '';
+    return `<tr onclick="show('${r.cid}',document.querySelector('.ni[onclick*=\\'${r.cid}\\']'));quickDetail('${r.cid}','${r.pt.n}')" style="cursor:pointer">
+      <td class="pn">${r.pt.n}<br><span style="font-size:.62rem;color:var(--dim)">${r.ch.name}</span></td>
+      <td><div class="pe">${r.pt.e}</div><div class="py">${r.pt.py}</div><div style="font-size:.68rem;color:var(--dim)">${r.pt.fi}</div></td>
+      <td class="pl">${(r.pt.l||'—').substring(0,80)}</td>
+      <td class="pi">${(r.pt.i||'—').substring(0,100)}</td>
+      <td><div class="pc2">${cats}${el5}</div></td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div style="font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--dim);margin-bottom:.75rem">${res.length} tulosta</div>
+    <table class="pt-tbl">
+      <thead><tr>
+        <th>Piste</th><th>Nimi</th><th>Sijainti</th><th>Indikaatiot</th><th>Kategoriat</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    ${res.length>60?`<div style="padding:.75rem 0;font-size:.8rem;color:var(--dim)">Näytetään 60/${res.length} — tarkenna hakua</div>`:''}`;
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeD(); closeS(); }
+  });
+  // Alusta omat protokollat jos sivu on jo näkyvissä
+  renderCustomProtos();
+});
+</script>
+</body>
+</html>
+<script>
+// ══════════════════════════════════════════════════════════════
+// PROTOKOLLATIETOKANTA
+// Rakenne: { id, cat, title, pattern, points[], rationale, source, contraindications? }
+// points: { pt, role } — pt = pistetunnus, role = kliininen rooli
+// ══════════════════════════════════════════════════════════════
+const PROTO = [
+
+// ────────────────────────────────────────────
+// PSYYKKISET HÄIRIÖT & HERMOSTO
+// ────────────────────────────────────────────
+{
+  id:'anxshen', cat:'psyyke', title:'Ahdistus — Sydän-Qi puutos / Shen häiriö',
+  pattern:'Sydän-Qi tai Sydän-Veri puutos. Levottomuus, sydämentykytys, unettomuus, pelko, heikko muisti. Kalpea kieli, heikko pulssi.',
+  points:[
+    {pt:'HT-7', role:'Yuan — rauhoittaa Sheniä, tärkein psyykkinen piste'},
+    {pt:'PC-6', role:'Luo — avaa rintakehän, lievittää ahdistusta, vagusaktivointipiste'},
+    {pt:'REN-17',role:'Hui/Qi — vapauttaa Qi:n rintakehässä, emotionaalinen solmu'},
+    {pt:'SP-6', role:'Vahvistaa sydän-verta, rauhoittaa mieltä'},
+    {pt:'BL-15',role:'Back-Shu/Sydän — suora yhteys elimeen, krooninen hoito'},
+    {pt:'KI-3', role:'Munuainen tukee sydäntä (Vesi/Tuli -tasapaino)'},
+  ],
+  rationale:'Sydän säilyttää Sheniä — sen puutos ilmenee levottomuutena. PC-6 suojelee sydäntä ja aktivoi vagusta (parasympaattinen). REN-17 on Qi:n kokoontumispiste — emotionaalinen panssari vapautuu.',
+  source:'Maciocia, The Practice of Chinese Medicine; Deadman A Manual of Acupuncture',
+},
+{
+  id:'insomnia', cat:'psyyke', title:'Unettomuus — Sydän-Munuainen epätasapaino',
+  pattern:'Sydän-Yin tai Munuais-Yin puutos. Nukahtamisvaikeus, heräily, yöhikoilu, kuumuustunne iltaisin. Punainen kärjestä kieli, nopea/ohut pulssi.',
+  points:[
+    {pt:'HT-7', role:'Yuan — Shenin ankkuri, rauhoittaa yliaktiivisen sydäntulen'},
+    {pt:'KI-3', role:'Yuan — vahvistaa munuais-Yiniä, jäähdyttää sydäntä'},
+    {pt:'SP-6', role:'SP/KI/LV risteymä — ravitsee Yiniä, rauhoittaa mieltä'},
+    {pt:'PC-7', role:'Ghost — krooninen unettomuus, mielenhäiriö'},
+    {pt:'BL-15',role:'Back-Shu/Sydän — rauhoittaa Sheniä'},
+    {pt:'BL-23',role:'Back-Shu/Munuainen — vahvistaa Yiniä'},
+    {pt:'KI-6', role:'Yin Qiao master — säätelee uni-valvesykliä'},
+    {pt:'LU-7', role:'Ren Mai master — pari KI-6:lle unisyklissä'},
+  ],
+  rationale:'Unettomuuden klassinen pattern: sydän yliaktiivinen, munuainen ei tue sydäntä. KI-3+HT-7 on klassinen Vesi/Tuli -yhdistelmä. KI-6+LU-7 (Yin Qiao -pari) on erityisesti unihäiriöille.',
+  source:'Deadman; Maciocia; Flaws & Sionneau',
+},
+{
+  id:'depression', cat:'psyyke', title:'Masennus — Maksa-Qi tukos',
+  pattern:'Maksa ei sujuvoita Qi:tä. Alakuloisuus, tunne-etäisyys, kylkikipu, huokaaminen, PMS. Purppura kieli, jännittynyt pulssi (Xian).',
+  points:[
+    {pt:'LV-3', role:'Yuan — vapauttaa Maksa-Qi:n tukoksen, tärkein piste'},
+    {pt:'LI-4', role:'Four Gates (LI-4+LV-3) — tehokas Qi-tukoksen avaus'},
+    {pt:'PC-6', role:'Avaa sydämen ja rintakehän, lievittää ahdistusta'},
+    {pt:'REN-17',role:'Vapauttaa Qi:n rintakehässä — "emotionaalinen lukko"'},
+    {pt:'GB-34',role:'Sujuvoittaa Maksan Qi:tä, lievittää kylkikipua'},
+    {pt:'BL-18',role:'Back-Shu/Maksa — krooninen masennus'},
+    {pt:'HT-7', role:'Rauhoittaa Sheniä'},
+    {pt:'SP-6', role:'Tukee Maata, joka kärsii kun Puu tukoksisssa'},
+  ],
+  rationale:'Maksa-Qi tukos on yleisin masennuspattern. LI-4+LV-3 (Four Gates) on klassinen kombinaatio — LI-4 avaa ylös/ulos, LV-3 alas/sisään. Yhdessä ne liikuttavat Qi:tä koko kehossa.',
+  source:'Maciocia; Flaws; Peter Deadman',
+},
+{
+  id:'ptsd', cat:'psyyke', title:'Trauma & PTSD — Shen häiriö + Maksa-Qi tukos',
+  pattern:'Traumaperäinen Shen-häiriö: takautumat, ylivirieys, dissosiaatio, unettomuus. Maksan Qi tukossa. Usein munuais-Qi heikkous (pelkoreaktio).',
+  points:[
+    {pt:'DU-20', role:'Nostaa Yang:ia, kirkastaa mieltä — maadoittaa ylös'},
+    {pt:'KI-1',  role:'Maadoitus — paniikki, dissosiaatio, ylivireys'},
+    {pt:'HT-7',  role:'Rauhoittaa Sheniä — ydinpiste traumassa'},
+    {pt:'PC-6',  role:'Suojelee sydäntä, vagusaktivointipiste'},
+    {pt:'LV-3',  role:'Vapauttaa tukahtunutta tunnetta'},
+    {pt:'BL-23', role:'Munuainen — pelko, tahto, eloonjäämisrefleksi'},
+    {pt:'BL-15', role:'Back-Shu/Sydän — Shen-häiriö'},
+    {pt:'SP-6',  role:'Maadoittaa, ravitsee Yiniä'},
+  ],
+  rationale:'Trauma iskee kaikkiin vitaaliaineisiin. KI-1 on klassinen maadoituspiste paniikkiin ja dissosiaatioon. DU-20+KI-1 muodostaa vertikaalisen akselin — nostaa alhaalta ja ankkuroi ylhäältä.',
+  source:'NADA-protokolla; Acudetox; Deadman; Hicks & Hicks',
+  special:'Huom: voidaan yhdistää NADA-korvapisteisiin (Sympathetic, Shen Men, Kidney, Liver, Lung) ryhmäasetuksessa.',
+},
+{
+  id:'nada', cat:'psyyke', title:'NADA-protokolla — trauma, stressi, addiktio',
+  pattern:'Universaali — soveltuu stressiin, traumaan, päihderiippuvuuteen, ahdistukseen. Voidaan antaa hiljaa, ryhmässä, ilman diagnoosia.',
+  points:[
+    {pt:'', role:'1. Sympathetic — ANS-tasapaino, vaskulaarinen spasmi', custom:'Korva: Sympathetic'},
+    {pt:'', role:'2. Shen Men — rauhoittaa, kipua lievittää', custom:'Korva: Shen Men'},
+    {pt:'', role:'3. Kidney — pelko, eloonjääminen, endorfiinit', custom:'Korva: Kidney'},
+    {pt:'', role:'4. Liver — viha, detoksi, verenkierto', custom:'Korva: Liver'},
+    {pt:'', role:'5. Lung — suru, trauma, grief, Wei Qi', custom:'Korva: Lung'},
+  ],
+  rationale:'WHO-tunnustettu protokolla. Aktivoi parasympaattista hermostoa, vapauttaa endorfiineja, laskee kortisolia. Erityisen tehokas akuutissa stressissä ja addiktiohoidossa.',
+  source:'National Acupuncture Detoxification Association (NADA); Stuyt & Voyles 2016',
+  special:'Ryhmäakupunktioon sopiva. 30-45 min. Ei vaadi diagnoosia.',
+},
+
+// ────────────────────────────────────────────
+// KIPU
+// ────────────────────────────────────────────
+{
+  id:'lowback_cold', cat:'kipu', title:'Alaselkäkipu — Kylmyys/Kosteus + Munuaisvajaus',
+  pattern:'Krooninen alaselkäkipu, pahenee kylmässä ja kosteassa, helpottuu lämmöllä. Väsymys, kylmät raajat, tihentynyt virtsaaminen. Vaalea kieli, syvä/hidas pulssi.',
+  points:[
+    {pt:'BL-23', role:'Back-Shu/Munuainen — peruspiste, vahvistaa Yang:ia'},
+    {pt:'DU-4',  role:'Mingmen — elämän tuli, Yang-vahvistus — erityisesti moxibustio'},
+    {pt:'BL-40', role:'Command/Selkä — klassinen alaselkäpiste'},
+    {pt:'KI-3',  role:'Yuan/Munuainen — vahvistaa juurta'},
+    {pt:'BL-60', role:'Jing-River — selkäkanavan aktivointi'},
+    {pt:'GB-30', role:'Iskias, lonkka, alaraajaan säteilevä kipu'},
+  ],
+  rationale:'Kylmä alaselkäkipu = Munuais-Yang puutos. DU-4 + BL-23 on klassinen moxibustio-yhdistelmä. BL-40 on "command-piste selkäsairauksille" — klassinen sanonta: "selkä ja niska BL-40:lle".',
+  source:'Deadman; Bensky & O\'Brien; Cheng Xinnong',
+  special:'DU-4 ja BL-23: suositellaan moxibustiota neulojen lisäksi erityisesti kylmässä tyypissä.',
+},
+{
+  id:'lowback_bl', cat:'kipu', title:'Alaselkäkipu — BL-kanava, akuutti',
+  pattern:'Akuutti tai subakuutti alaselkäkipu BL-kanavan alueella (selän takaosa). Lihaskireys, liikerajoitus. Usein trauma tai ylikuormitus.',
+  points:[
+    {pt:'BL-40', role:'Command/Selkä — akuutissa kivussa usein yksin riittävä'},
+    {pt:'BL-57', role:'Rentouttaa selkälihakset, kramppi'},
+    {pt:'BL-60', role:'Aktivoi BL-kanavaa distaalisti'},
+    {pt:'SI-3',  role:'Du Mai -master — selkäranka, niskakireys'},
+    {pt:'BL-23', role:'Paikallinen — selän vahvistus'},
+    {pt:'GB-30', role:'Lonkka, ischias, alaraajan säteily'},
+  ],
+  rationale:'BL-40 on tärkein yksittäinen distaalipiste selkäkipuun — voidaan neuloa ensin ennen paikallisia pisteitä. SI-3+BL-62 avaa Du Mai -kanavan joka kulkee koko selkärankaa pitkin.',
+  source:'Deadman; kliininen käytäntö',
+},
+{
+  id:'neck', cat:'kipu', title:'Niskajäykkyys & niskan kipu',
+  pattern:'Niskajäykkyys, -kipu, liikerajoitus. Usein GB- tai BL-kanavan alueella. Voi liittyä "tuuleen" (ulkoinen patogeeeni) tai stressiin (Maksa-Yang nousee).',
+  points:[
+    {pt:'GB-20', role:'Tärkein — tuuli, niska, päänsärky, silmäoireet'},
+    {pt:'GB-21', role:'Paikallinen hartia/niska — älä raskaana'},
+    {pt:'BL-10', role:'Taivaan ikkuna — niska, occiput, päänsärky'},
+    {pt:'SI-3',  role:'Du Mai master — selkäranka, niska (distaalinen)'},
+    {pt:'LI-4',  role:'Yleinen kivunlievitys, kasvot ja niska'},
+    {pt:'DU-14', role:'C7 — yang-kanavat, kuume, niskajäykkyys'},
+    {pt:'BL-60', role:'Jing-River BL — niska, päänsärky distaalinen'},
+  ],
+  rationale:'GB-20 on niskakivun tärkein piste. SI-3+BL-62 aktivoi Du Mai -kanavan joka kulkee koko selkärangan alueella.',
+  source:'Deadman; Maciocia; Cheng',
+},
+{
+  id:'headache_migraine', cat:'kipu', title:'Migreeni — Maksa-Yang nousee',
+  pattern:'Sivupäänsärky ohimoilla tai silmien takana. Pahentuu stressistä, viinistä, hormoneista. Pahoinvointi, valonarkuus. Kirkas/punainen kieli, jännittynyt pulssi.',
+  points:[
+    {pt:'GB-20', role:'Tärkein migreenipiste — laskee Maksa-Yang:ia'},
+    {pt:'GB-41', role:'Dai Mai master — sivupäänsärky, GB-kanava'},
+    {pt:'SJ-5',  role:'Yang Wei master — pari GB-41:lle'},
+    {pt:'LV-3',  role:'Yuan/Maksa — laskee Maksa-Yang:ia'},
+    {pt:'LI-4',  role:'Four Gates — Qi-tukoksen avaus'},
+    {pt:'GB-8',  role:'Paikallinen — ohimo'},
+    {pt:'GB-43', role:'Ying-Spring — kuumuus GB-kanavassa'},
+  ],
+  rationale:'Migreeni = Maksa-Yang nousee pään alueelle. GB-41+SJ-5 aktivoi Dai Mai:n joka "sitoo" kaikkia Yang-kanavia. LV-3+LI-4 (Four Gates) on tehokkain yhdistelmä Qi-tukoksen vapauttamiseen.',
+  source:'Maciocia; Deadman; kliininen käytäntö',
+},
+{
+  id:'knee', cat:'kipu', title:'Polvikipu — Qi ja Veri tukos',
+  pattern:'Polvikipu — mekaaninen, artriitti, nivelrikko. Turpoaminen, liikerajoitus. Erotetaan tyyppi: kuuma (kuumuus-kosteus) vs. kylmä (kylmyys-kosteus).',
+  points:[
+    {pt:'ST-35', role:'Paikallinen — polvilumpion lateraalinen kuoppa'},
+    {pt:'ST-36', role:'He-Sea — vahvistaa Qi:tä ja verta, tulehdus'},
+    {pt:'SP-9',  role:'He-Sea SP — kosteus, turvotus'},
+    {pt:'GB-34', role:'Hui/Jänteet — kaikki jännesairaudet, polven lateraali'},
+    {pt:'SP-10', role:'Xuehai — veri-tukos, turvotus'},
+    {pt:'LV-8',  role:'He-Sea LV — polven mediaali, jänteet'},
+    {pt:'BL-40', role:'Command-piste — polvi + selkä'},
+  ],
+  rationale:'ST-35 + SP-9 muodostavat "polvikolmion" paikallishoitoon. GB-34 (Hui/Jänteet) on avainpiste kaikissa jänne-nivel-sairauksissa. BL-40 vaikuttaa sekä polveen että selkään.',
+  source:'Deadman; Cheng; kliininen käytäntö',
+},
+
+// ────────────────────────────────────────────
+// RUOANSULATUSKANAVA
+// ────────────────────────────────────────────
+{
+  id:'ibs_cold', cat:'gi', title:'IBS / Paksusuolen häiriö — Kylmyys/Perna puutos',
+  pattern:'Löysät ulosteet, turvotus, vatsakipu joka helpottuu lämmöstä, väsymys. Perna-Qi puutos. Vaalea turvonnut kieli.',
+  points:[
+    {pt:'ST-36', role:'He-Sea/Command — vahvistaa Mahalaukkua ja Pernaa'},
+    {pt:'REN-12',role:'Front-Mu/Mahalaukku + Hui/Fu — GI:n avainpiste'},
+    {pt:'SP-3',  role:'Yuan/Perna — vahvistaa muuntamista ja kuljetusta'},
+    {pt:'BL-20', role:'Back-Shu/Perna — krooninen vahvistus'},
+    {pt:'BL-21', role:'Back-Shu/Mahalaukku — ruoansulatus'},
+    {pt:'REN-6', role:'Qi-vahvistus, liikuttaa vatsan Qi:tä'},
+    {pt:'ST-25', role:'Front-Mu/Paksusuoli — suolistoireet'},
+  ],
+  rationale:'Perna-Qi puutos on yleisin IBS-pattern. ST-36 + REN-12 on klassinen GI-yhdistelmä. Moxibustio erityisen tehokas kylmässä tyypissä.',
+  source:'Maciocia; Flaws; Deadman',
+},
+{
+  id:'constipation', cat:'gi', title:'Ummetus — Qi tukos tai kuumuus',
+  pattern:'Ummetus, vatsan turvotus, epätäydellinen tyhjennys. Erotetaan: Qi-tukos (stressi, jännitys) vs. kuumuustyyppi (kuuma kieli, kuiva uloste).',
+  points:[
+    {pt:'ST-25', role:'Front-Mu/Paksusuoli — ummetuksen tärkein piste'},
+    {pt:'LI-4',  role:'Yuan/LI — distaalinen, tehostaa LI-toimintaa'},
+    {pt:'ST-37', role:'Paksusuolen He-Sea — distaalinen, sujuvoittaa'},
+    {pt:'SJ-6',  role:'Jing-River — ummetus, kylkikipu'},
+    {pt:'KI-6',  role:'Yin Qiao — kuivumisesta johtuva ummetus'},
+    {pt:'BL-25', role:'Back-Shu/Paksusuoli — krooninen'},
+  ],
+  rationale:'LI-4 on klassinen distaalinen ummetus-piste — "vastapuoli" ST-25:lle joka on Front-Mu/LI. SJ-6 on erityisen hyvä stressiummetukseen.',
+  source:'Deadman; Cheng',
+},
+
+// ────────────────────────────────────────────
+// GYNEKOLOGIA
+// ────────────────────────────────────────────
+{
+  id:'dysmenorrhea', cat:'gynekologia', title:'Kuukautiskipu — Qi ja Veri tukos',
+  pattern:'Kuukautiskipu ennen tai aikana, lievittyy vuodon alkaessa. Tumma/möykkyinen vuoto. Tunnekipu. Purppura kieli, jännittynyt/hidas pulssi.',
+  points:[
+    {pt:'SP-8',  role:'Xi-Cleft SP — akuutti kuukautiskipu, Yinin Xi-piste'},
+    {pt:'LV-3',  role:'Yuan/Maksa — vapauttaa Qi-tukoksen'},
+    {pt:'SP-6',  role:'Tuo Qi:tä ja verta, gynekologinen avainpiste'},
+    {pt:'SP-10', role:'Xuehai — veri-tukos'},
+    {pt:'REN-4', role:'Front-Mu/SI — kohdun alue, liikuttaa verta'},
+    {pt:'ST-29', role:'Paikallinen — alavatsapisteistö'},
+    {pt:'BL-17', role:'Hui/Veri — veri-tukos'},
+  ],
+  rationale:'SP-8 (Xi-Cleft) on akuutin kuukautiskivun tärkein piste — Xi-pisteet toimivat parhaiten akuuteissa Yin-kanavan tiloissa. SP-10+LV-3 vapauttaa veri-tukoksen.',
+  source:'Maciocia; Deadman; Lyttleton',
+},
+{
+  id:'pms', cat:'gynekologia', title:'PMS — Maksa-Qi tukos',
+  pattern:'Ennen kuukautisia: ärtyisyys, masennus, rintojen arkuus, turvotus, päänsärky. Lievittyy vuodon alkaessa.',
+  points:[
+    {pt:'LV-3',  role:'Yuan/Maksa — vapauttaa Maksa-Qi:n tukoksen'},
+    {pt:'LI-4',  role:'Four Gates — LI-4+LV-3 yhdistelmä'},
+    {pt:'PC-6',  role:'Avaa rintakehän, emotionaalinen jännitys'},
+    {pt:'SP-6',  role:'SP/KI/LV risteymä — gynekologinen'},
+    {pt:'GB-34', role:'Sujuvoittaa Maksan Qi:tä, kylkikipu'},
+    {pt:'REN-17',role:'Vapauttaa emotionaalisen jännityksen'},
+    {pt:'LV-14', role:'Front-Mu/Maksa — paikallinen'},
+  ],
+  rationale:'PMS on lähes aina Maksa-Qi tukos. Four Gates (LI-4+LV-3) on yksinkertaisin ja tehokkain yhdistelmä. Hoidetaan 1-2 viikkoa ennen kuukautisia.',
+  source:'Maciocia; Lyttleton; Deadman',
+},
+
+// ────────────────────────────────────────────
+// UNIRYTMI & VÄSYMYS
+// ────────────────────────────────────────────
+{
+  id:'fatigue_qi', cat:'energia', title:'Krooninen väsymys — Qi puutos (Perna/Keuhko)',
+  pattern:'Väsymys lepäämisestä huolimatta, heikko ääni, ruokahaluttomuus, löysät ulosteet, helppo hikoilu. Vaalea kieli, heikko pulssi.',
+  points:[
+    {pt:'ST-36', role:'He-Sea — tärkein Qi-vahvistuspiste'},
+    {pt:'REN-6', role:'Qi:n meri — Qi-vahvistus'},
+    {pt:'SP-3',  role:'Yuan/Perna — Pernan ravinnonsulatus'},
+    {pt:'LU-9',  role:'Yuan/Keuhko — Qi:n hallinta'},
+    {pt:'BL-20', role:'Back-Shu/Perna — krooninen'},
+    {pt:'BL-13', role:'Back-Shu/Keuhko — Wei Qi, immuuni'},
+    {pt:'DU-4',  role:'Mingmen — Yang-vahvistus, moxibustio'},
+    {pt:'REN-4', role:'Qi:n juuri — moxibustio pitkäaikaisessa hoidossa'},
+  ],
+  rationale:'Perna muuntaa ruoan Qi:ksi — sen puutos on yleisin väsymyksen syy. ST-36+REN-4+DU-4 moxibustiolla on klassinen tonifioiva yhdistelmä pitkäaikaisessa väsymyksessä.',
+  source:'Maciocia; Deadman; Flaws',
+  special:'Moxibustio erityisen tehokas: DU-4, REN-4, ST-36 säännöllisesti.',
+},
+{
+  id:'longcovid', cat:'energia', title:'Long COVID — Qi puutos + Veri tukos + Tan',
+  pattern:'Post-COVID oireet: väsymys, hengenahdistus, aivosumu, lihasheikkous, sydämentykytys. Usein Keuhko-Qi puutos + Tan (lima) + Veri-tukos.',
+  points:[
+    {pt:'LU-1',  role:'Front-Mu/Keuhko — paikallinen keuhkojen hoito'},
+    {pt:'BL-13', role:'Back-Shu/Keuhko — keuhkojen vahvistus'},
+    {pt:'ST-36', role:'Qi-vahvistus, immuuni'},
+    {pt:'REN-17',role:'Hui/Qi — avaa rintakehän, hengenahdistus'},
+    {pt:'ST-40', role:'Luo — poistaa tan/limaa, aivosumu'},
+    {pt:'SP-6',  role:'Ravitsee Yiniä, väsymys'},
+    {pt:'PC-6',  role:'Sydämentykytys, rintakipu'},
+    {pt:'BL-17', role:'Hui/Veri — veri-tukos'},
+  ],
+  rationale:'Long COVID:n patternissa on usein useita tasoja: Keuhko-Qi heikentynyt jäljellä olevasta patogeenistä; tan/lima sekoittaa mielen (aivosumu); veri-tukos aiheuttaa paikallisia oireita.',
+  source:'Kliininen käytäntö post-COVID; He et al. 2021; WHO-guidelines',
+  special:'Hoito pitkäjänteinen — tyypillisesti 3-6 kk. Aloita varovaisesti väsymyksen vuoksi.',
+},
+
+// ────────────────────────────────────────────
+// HERMOSTO & ANS
+// ────────────────────────────────────────────
+{
+  id:'ans_vagus', cat:'ans', title:'ANS-säätely — Parasympaattinen vahvistus',
+  pattern:'Sympaattinen yliaktiivisuus: ylivireys, paniikki, HRV heikko, ruoansulatus heikko, unettomuus. Polyvagaalinen: dorsal tai sympathetic activation.',
+  points:[
+    {pt:'PC-6',  role:'Sisäinen portti — vagusaktivointipiste, HRV-vaikutus'},
+    {pt:'HT-7',  role:'Rauhoittaa sydämen ylilyöntejä, Shen'},
+    {pt:'KI-1',  role:'Maadoitus — paniikki, dissosiaatio, "jalat maahan"'},
+    {pt:'REN-17',role:'Hui/Qi — rintakehän avaus, parasympaattinen'},
+    {pt:'ST-36', role:'Vagushermon stimulaatio GI:ssä'},
+    {pt:'SP-6',  role:'Rauhoittaa, maadoittaa'},
+    {pt:'BL-15', role:'Back-Shu/Sydän — sydämen rytmin säätely'},
+    {pt:'DU-20', role:'Kirkastaa mielen, laskee ylivireyttä'},
+  ],
+  rationale:'PC-6:n vaikutus vagukseen on neurologisesti dokumentoitu (fMRI, HRV-tutkimukset). KI-1 stimuloi jalkaterän reseptoreita jotka aktivoivat parasympaattista kautta. Yhdistelmä tukee ventraalista vagaalia.',
+  source:'Rong et al. 2020 (PC-6 HRV); Tracey 2002 (kolinerginen anti-inflammatorinen polku); Porges polyvagal theory',
+},
+{
+  id:'ans_grounding', cat:'ans', title:'Maadoittavat pisteet — Dorsal shutdown',
+  pattern:'Dorsal vagal shutdown: emotionaalinen jähmettyminen, dissosiaatio, poissaolo, matala energia, turtuneisuus. Ei voida lähteä suoraan aktivoiviin pisteisiin.',
+  points:[
+    {pt:'KI-1',  role:'Purskaava lähde — jalkapohja, maadoitus'},
+    {pt:'SP-6',  role:'Kolmen yinin risteymä — kehollinen läsnäolo'},
+    {pt:'ST-36', role:'Varovaisesti vahvistava, ei liian aktivoiva'},
+    {pt:'REN-12',role:'Keskilatia — keho-yhteys, "kotiin"'},
+    {pt:'KI-3',  role:'Munuainen — juureen palauttaminen'},
+    {pt:'BL-23', role:'Back-Shu/Munuainen — eloonjäämisenergia'},
+  ],
+  rationale:'Shutdown-tilassa ei aleta avata Qi:tä ylhäältä (DU-20) tai vahvistaa sydäntä — se voi aiheuttaa panic-reaktion. Aloitetaan jalkapohjista ja maadoittamalla ennen siirtymistä ylöspäin.',
+  source:'Kliininen käytäntö; Hicks; polyvagal-pohjainen akupunktiokäytäntö',
+  special:'Traumainformoi: kysy suostumus ennen jokaista pistettä. Lyhyt hoito aluksi (20 min).',
+},
+
+// ────────────────────────────────────────────
+// KLASSIKOT
+// ────────────────────────────────────────────
+{
+  id:'fourgates', cat:'klassikot', title:'Four Gates — Neljä porttia',
+  pattern:'Qi-tukos kaikkialla kehossa: kipu, jännitys, stressi, masennus, PMS, päänsärky. Yksinkertainen, tehokas yleisprotokolla.',
+  points:[
+    {pt:'LI-4',  role:'Oikea käsi — avaa ylös ja ulos, yang-puoli'},
+    {pt:'LV-3',  role:'Oikea jalka — avaa alas ja sisään, yin-puoli'},
+  ],
+  rationale:'Neljä porttia = LI-4 (molemmat) + LV-3 (molemmat). LI-4 on Yang Ming -kanavan Yuan-piste, liikuttaa Qi:tä ylös ja ulospäin. LV-3 on Jueyin-kanavan Yuan-piste, liikuttaa Qi:tä alas ja sisäänpäin. Yhdistelmä avaa Qi:n koko kehoon.',
+  source:'Zhen Jiu Da Cheng; Maciocia; kliininen klassikko',
+  special:'Raskauden aikana LI-4 varoen — vahvistaa laskevaa Qi:tä. Voidaan lisätä LV-2 kuumuustyypissä.',
+},
+{
+  id:'threelegmile', cat:'klassikot', title:'ST-36 — Kolmen li:n maailmanpiste',
+  pattern:'Yleinen heikkous, Qi ja Veri puutos, immuniteetti, GI-oireet, krooninen sairaus, pitkämatkat (legendan mukaan "kolme li lisää matkaa").',
+  points:[
+    {pt:'ST-36', role:'He-Sea/Mahalaukku — Qi, veri, immuuni, GI'},
+  ],
+  rationale:'ST-36 on akupunktion tunnetuin piste maailmanlaajuisesti. He-Sea/Maa-piste mahalaukkukanavalla = ruoansulatus + Qi-tuotanto + immuuni. Tutkimusnäyttöä: β-endorfiini, immunomodulaatio, vagus.',
+  source:'Zhen Jiu Da Cheng; Cheng Xinnong; laajalti tutkittu',
+  special:'Moxibustio säännöllisesti = pitkäikäisyyden piste (perinteinen käyttö). Suomessa: "sytytä moxa ST-36:lle ennen talvea".',
+},
+
+];
+
+// ══════════════════════════════════════════════
+// PROTOKOLLA UI — RAKENTAMINEN
+// ══════════════════════════════════════════════
+
+const PROTO_CATS = {
+  psyyke:     {label:'Psyyke & mielenterveys', color:'#6a40a0', bg:'#f2eefa'},
+  kipu:       {label:'Kipu & tuki-liikuntaelin', color:'#c03020', bg:'#fdf0ee'},
+  gi:         {label:'Ruoansulatuskanava', color:'#c8860a', bg:'#fdf5e4'},
+  gynekologia:{label:'Gynekologia', color:'#b02060', bg:'#fdf0f5'},
+  energia:    {label:'Energia & väsymys', color:'#2a7a6a', bg:'#e8f5f2'},
+  ans:        {label:'ANS & hermosto', color:'#2a508a', bg:'#eef2fa'},
+  klassikot:  {label:'Klassiset protokollat', color:'#7a6030', bg:'#faf5e4'},
+};
+
+const CAT_LABELS_P = {j:'Jing-Well',ys:'Ying-Spring',ss:'Shu-Stream',jr:'Jing-River',he:'He-Sea',yu:'Yuan',lu:'Luo',xi:'Xi-Cleft',bs:'Back-Shu',mu:'Front-Mu',hu:'Hui',gh:'Ghost',ma:'Master',cm:'Command',wi:'Window'};
+const CAT_CLS_P    = {j:'cj',ys:'cj',ss:'cj',jr:'cj',he:'c5',yu:'cy',lu:'cl',xi:'cx',bs:'cs',mu:'cm',hu:'ch2',gh:'cg',ma:'cmr',cm:'cco',wi:'cw'};
+
+function buildProtocolPage() {
+  const el = document.getElementById('proto-content');
+  if (!el || el.dataset.built) return;
+
+  // Kategoriafiltterit
+  const filterHtml = `
+    <div style="display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:1.5rem">
+      <button class="pf-btn active" data-cat="all" onclick="filterProto('all',this)" style="font-family:var(--mono);font-size:.62rem;padding:.28rem .7rem;border-radius:4px;border:1px solid rgba(0,0,0,.15);cursor:pointer;background:var(--ink);color:#fff">Kaikki (${PROTO.length})</button>
+      ${Object.entries(PROTO_CATS).map(([k,v]) => {
+        const count = PROTO.filter(p=>p.cat===k).length;
+        return `<button class="pf-btn" data-cat="${k}" onclick="filterProto('${k}',this)" style="font-family:var(--mono);font-size:.62rem;padding:.28rem .7rem;border-radius:4px;border:1px solid ${v.color};cursor:pointer;background:#fff;color:${v.color}">${v.label} (${count})</button>`;
+      }).join('')}
+    </div>`;
+
+  // Protokollakortit
+  const cardsHtml = PROTO.map(p => {
+    const cat = PROTO_CATS[p.cat] || {color:'#888', bg:'#f8f8f8', label:p.cat};
+    const pointsHtml = p.points.map(pt => {
+      if (pt.custom) {
+        return `<div class="proto-pt-row" style="border-left-color:${cat.color}">
+          <div class="proto-pt-num" style="color:${cat.color};opacity:.6">♦</div>
+          <div style="flex:1"><div class="proto-pt-role">${pt.custom}</div><div class="proto-pt-role-text">${pt.role}</div></div>
+        </div>`;
+      }
+      const ptData = (() => {
+        for (const chId of Object.keys(CH)) {
+          const found = CH[chId].pts.find(x => x.n === pt.pt);
+          if (found) return {ch:CH[chId], pt:found};
+        }
+        return null;
+      })();
+      const cats = ptData ? (ptData.pt.c||[]).map(c=>`<span class="pk ${CAT_CLS_P[c]||''}" style="font-size:.48rem">${CAT_LABELS_P[c]||c}</span>`).join('') : '';
+      return `<div class="proto-pt-row" onclick="protoOpenPt('${pt.pt}')" style="border-left-color:${cat.color};cursor:pointer">
+        <div class="proto-pt-num" style="color:${cat.color}">${pt.pt}</div>
+        <div style="flex:1">
+          <div class="proto-pt-role-text">${pt.role}</div>
+          ${ptData ? `<div style="margin-top:.15rem">${cats}</div>` : ''}
+        </div>
+        ${ptData ? `<div style="font-size:.7rem;font-style:italic;color:var(--dim);white-space:nowrap">${ptData.pt.py}</div>` : ''}
+      </div>`;
+    }).join('');
+
+    const special = p.special ? `<div style="background:var(--goldbg);border-left:2px solid var(--gold);border-radius:0 var(--r) var(--r) 0;padding:.55rem .75rem;font-size:.82rem;color:var(--ink2);line-height:1.55;margin-top:.75rem"><strong>Huomio:</strong> ${p.special}</div>` : '';
+
+    return `<div class="proto-card" data-cat="${p.cat}" style="border-top:3px solid ${cat.color}">
+      <div style="display:flex;align-items:center;gap:.65rem;margin-bottom:.65rem">
+        <span style="font-family:var(--mono);font-size:.58rem;padding:.18rem .55rem;border-radius:3px;background:${cat.bg};color:${cat.color};letter-spacing:.05em">${cat.label}</span>
+      </div>
+      <h3 style="font-family:var(--serif);font-size:1.08rem;font-style:italic;color:var(--ink);margin-bottom:.5rem">${p.title}</h3>
+      <div style="font-size:.84rem;color:var(--ink3);font-style:italic;line-height:1.6;margin-bottom:.85rem;border-left:2px solid var(--sand3);padding-left:.75rem">${p.pattern}</div>
+      <div style="font-family:var(--mono);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:.45rem">Pisteyhdistelmä</div>
+      <div class="proto-pts">${pointsHtml}</div>
+      <div class="proto-rationale">
+        <div style="font-family:var(--mono);font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:.35rem">Kliininen perustelu</div>
+        <div style="font-size:.83rem;color:var(--ink2);line-height:1.65">${p.rationale}</div>
+      </div>
+      ${special}
+      <div style="margin-top:.65rem;font-family:var(--mono);font-size:.58rem;color:var(--muted)">Lähde: ${p.source}</div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = filterHtml + `<div id="proto-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1.1rem">${cardsHtml}</div>`;
+  el.dataset.built = '1';
+  renderCustomProtos();
+}
+
+function filterProto(cat, btn) {
+  document.querySelectorAll('.pf-btn').forEach(b => {
+    b.style.background = '#fff';
+    b.style.color = b.dataset.cat === 'all' ? 'var(--ink)' : (PROTO_CATS[b.dataset.cat]?.color || '#888');
+  });
+  if (cat === 'all') {
+    btn.style.background = 'var(--ink)'; btn.style.color = '#fff';
+  } else {
+    btn.style.background = PROTO_CATS[cat]?.bg || '#f0f0f0';
+    btn.style.color = PROTO_CATS[cat]?.color || '#333';
+  }
+  document.querySelectorAll('.proto-card').forEach(c => {
+    c.style.display = (cat === 'all' || c.dataset.cat === cat) ? '' : 'none';
+  });
+}
+
+function protoOpenPt(ptId) {
+  for (const chId of Object.keys(CH)) {
+    const pt = CH[chId].pts.find(x => x.n === ptId);
+    if (pt) { quickDetail(chId, ptId); return; }
+  }
+}
+
+// buildProtocolPage kutsutaan suoraan nav-itemistä
+
+// ══════════════════════════════════════════════
+// OMAT PROTOKOLLAT
+// ══════════════════════════════════════════════
+const CUSTOM_CATS = {
+  'oma-psyyke':'Psyyke','oma-kipu':'Kipu','oma-gi':'Ruoansulatuskanava',
+  'oma-gyno':'Gynekologia','oma-energia':'Energia','oma-ans':'ANS & hermosto','oma-muu':'Muu'
+};
+const CUSTOM_COLORS = {
+  'oma-psyyke':'#6a40a0','oma-kipu':'#c03020','oma-gi':'#c8860a',
+  'oma-gyno':'#b02060','oma-energia':'#2a7a6a','oma-ans':'#2a508a','oma-muu':'#5a5a5a'
+};
+
+function loadCustomProtos() {
+  try { return JSON.parse(localStorage.getItem('acu_custom_protos') || '[]'); }
+  catch(e) { return []; }
+}
+function saveCustomProtos(arr) {
+  localStorage.setItem('acu_custom_protos', JSON.stringify(arr));
+}
+
+function showCustomProtoForm() {
+  document.getElementById('custom-proto-form').style.display = 'block';
+  document.getElementById('cp-name').focus();
+}
+function hideCustomProtoForm() {
+  document.getElementById('custom-proto-form').style.display = 'none';
+  ['cp-name','cp-pattern','cp-points','cp-rationale'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+}
+
+function saveCustomProto() {
+  const name     = document.getElementById('cp-name').value.trim();
+  const cat      = document.getElementById('cp-cat').value;
+  const pattern  = document.getElementById('cp-pattern').value.trim();
+  const pointsRaw= document.getElementById('cp-points').value.trim();
+  const rationale= document.getElementById('cp-rationale').value.trim();
+
+  if (!name || !pointsRaw) {
+    document.getElementById('cp-name').style.borderColor = name ? '' : 'var(--red)';
+    document.getElementById('cp-points').style.borderColor = pointsRaw ? '' : 'var(--red)';
+    return;
+  }
+
+  // Parse points: "LV-3:rooli, LI-4:rooli" tai "LV-3, LI-4"
+  const points = pointsRaw.split(',').map(s => {
+    const [pt, ...rest] = s.trim().split(':');
+    return { pt: pt.trim().toUpperCase(), role: rest.join(':').trim() || '' };
+  }).filter(p => p.pt);
+
+  const protos = loadCustomProtos();
+  protos.push({
+    id: 'custom-' + Date.now(),
+    name, cat, pattern, points, rationale,
+    source: 'Oma protokolla',
+    created: new Date().toLocaleDateString('fi-FI')
+  });
+  saveCustomProtos(protos);
+  hideCustomProtoForm();
+  renderCustomProtos();
+}
+
+function deleteCustomProto(id) {
+  if (!confirm('Poistetaanko protokolla?')) return;
+  const protos = loadCustomProtos().filter(p => p.id !== id);
+  saveCustomProtos(protos);
+  renderCustomProtos();
+}
+
+function editCustomProto(id) {
+  const proto = loadCustomProtos().find(p => p.id === id);
+  if (!proto) return;
+  document.getElementById('cp-name').value = proto.name;
+  document.getElementById('cp-cat').value = proto.cat;
+  document.getElementById('cp-pattern').value = proto.pattern || '';
+  document.getElementById('cp-points').value = proto.points.map(p => p.pt + (p.role ? ':'+p.role : '')).join(', ');
+  document.getElementById('cp-rationale').value = proto.rationale || '';
+  // Delete old and save new on submit
+  const protos = loadCustomProtos().filter(p => p.id !== id);
+  saveCustomProtos(protos);
+  showCustomProtoForm();
+}
+
+function renderCustomProtos() {
+  const el = document.getElementById('custom-proto-list');
+  if (!el) return;
+  const protos = loadCustomProtos();
+
+  if (!protos.length) {
+    el.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--dim);font-style:italic;font-size:.88rem">
+      Ei omia protokollia vielä. Paina "+ Lisää protokolla" lisätäksesi oman pisteyhdistelmän.
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">` +
+    protos.map(p => {
+      const color = CUSTOM_COLORS[p.cat] || '#888';
+      const catLabel = CUSTOM_CATS[p.cat] || p.cat;
+
+      const ptRows = p.points.map(pt => {
+        // Try to find point data
+        let ptData = null;
+        for (const chId of Object.keys(CH)) {
+          const found = CH[chId].pts.find(x => x.n === pt.pt);
+          if (found) { ptData = {ch:CH[chId], pt:found}; break; }
+        }
+        return `<div class="proto-pt-row" onclick="protoOpenPt('${pt.pt}')" style="border-left-color:${color};cursor:pointer">
+          <div class="proto-pt-num" style="color:${color}">${pt.pt}</div>
+          <div style="flex:1">
+            ${ptData ? `<div style="font-size:.75rem;color:var(--dim)">${ptData.pt.e} — ${ptData.pt.py}</div>` : ''}
+            ${pt.role ? `<div class="proto-pt-role-text">${pt.role}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+
+      return `<div class="proto-card" style="border-top:3px solid ${color};position:relative">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.65rem">
+          <span style="font-family:var(--mono);font-size:.58rem;padding:.18rem .55rem;border-radius:3px;background:${color}18;color:${color}">${catLabel}</span>
+          <div style="display:flex;gap:.35rem">
+            <button onclick="editCustomProto('${p.id}')" style="font-family:var(--mono);font-size:.55rem;padding:.18rem .5rem;border-radius:3px;background:var(--sand2);color:var(--dim);border:none;cursor:pointer">✎ Muokkaa</button>
+            <button onclick="deleteCustomProto('${p.id}')" style="font-family:var(--mono);font-size:.55rem;padding:.18rem .5rem;border-radius:3px;background:var(--redbg);color:var(--red);border:none;cursor:pointer">✕</button>
+          </div>
+        </div>
+        <h3 style="font-family:var(--serif);font-size:1.05rem;font-style:italic;color:var(--ink);margin-bottom:.5rem">${p.name}</h3>
+        ${p.pattern ? `<div style="font-size:.83rem;color:var(--ink3);font-style:italic;line-height:1.58;margin-bottom:.75rem;border-left:2px solid var(--sand3);padding-left:.65rem">${p.pattern}</div>` : ''}
+        <div style="font-family:var(--mono);font-size:.52rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:.4rem">Pisteyhdistelmä</div>
+        <div class="proto-pts">${ptRows}</div>
+        ${p.rationale ? `<div class="proto-rationale"><div style="font-family:var(--mono);font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:.3rem">Muistiinpano</div><div style="font-size:.82rem;color:var(--ink2);line-height:1.62">${p.rationale}</div></div>` : ''}
+        <div style="margin-top:.6rem;font-family:var(--mono);font-size:.56rem;color:var(--muted)">Lisätty ${p.created}</div>
+      </div>`;
+    }).join('') + `</div>`;
+}
+
+// Päivitetty buildProtocolPage — renderoi myös omat protokollat
+const _origBuildProto = buildProtocolPage;
+
+</script>
+
+<style>
+.proto-card{
+  background:#fff;border:1px solid var(--sand3);border-radius:var(--r2);
+  padding:1.35rem;break-inside:avoid;
+}
+.proto-pts{
+  display:flex;flex-direction:column;gap:.35rem;margin-bottom:.85rem;
+}
+.proto-pt-row{
+  display:flex;align-items:flex-start;gap:.7rem;
+  padding:.5rem .65rem;background:var(--sand);border-radius:var(--r);
+  border-left:3px solid var(--sand3);transition:background .12s;
+}
+.proto-pt-row:hover{background:var(--sand2)}
+.proto-pt-num{
+  font-family:var(--mono);font-size:.72rem;font-weight:500;
+  min-width:52px;padding-top:.1rem;
+}
+.proto-pt-role-text{font-size:.8rem;color:var(--ink2);line-height:1.5}
+.proto-rationale{
+  background:var(--cream);border-radius:var(--r);
+  padding:.75rem .9rem;margin-top:.75rem;
+}
+@media(max-width:900px){
+  #proto-grid{grid-template-columns:1fr!important}
+}
+</style>

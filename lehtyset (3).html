@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+<meta charset="UTF-8">
+<title>Harjoituslehtyset — Marko Oinas</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Source Sans 3',sans-serif; background:#e8e4de; padding:2rem; color:#1a1510; }
+
+.screen-header {
+  max-width:220mm; margin:0 auto 1.5rem;
+  display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+}
+.screen-title { font-family:'Lora',serif; font-size:1.1rem; font-style:italic; color:#3a3020; }
+.btn-group { display:flex; gap:0.5rem; flex-wrap:wrap; }
+.print-btn {
+  font-family:'Source Sans 3',sans-serif; font-size:0.78rem; font-weight:700;
+  padding:0.5rem 1.2rem; background:#4a7c5e; color:#fff;
+  border:none; border-radius:8px; cursor:pointer; transition:all 0.2s;
+}
+.print-btn:hover { background:#3a6a4e; }
+.filter-btn {
+  font-family:'Source Sans 3',sans-serif; font-size:0.72rem; font-weight:600;
+  padding:0.4rem 0.9rem; background:#fff; color:#4a3e30;
+  border:1.5px solid #c4a882; border-radius:8px; cursor:pointer; transition:all 0.2s;
+}
+.filter-btn.active { background:#4a7c5e; color:#fff; border-color:#4a7c5e; }
+
+/* A4 */
+.a4-page {
+  width:210mm; min-height:297mm; background:#fff;
+  margin:0 auto 2rem; box-shadow:0 4px 24px rgba(0,0,0,0.15);
+  display:flex; flex-direction:column; position:relative; overflow:hidden;
+}
+.a4-page.hidden-page { display:none; }
+
+/* Page header */
+.page-header {
+  padding:5mm 10mm 4mm;
+  border-bottom:0.3mm solid #e8dfd0;
+  display:flex; align-items:flex-start; justify-content:space-between; gap:4mm;
+  background:#faf6ef; flex-shrink:0;
+}
+.th-name { font-family:'Lora',serif; font-size:11pt; font-style:italic; color:#1a1510; margin-bottom:0.5mm; }
+.th-titles { font-size:6.5pt; color:#5a4e3e; line-height:1.55; margin-bottom:1mm; }
+.th-contact { font-size:6.5pt; color:#4a7c5e; }
+.th-contact a { color:#4a7c5e; text-decoration:none; }
+.page-header-right { display:flex; flex-direction:column; align-items:flex-end; gap:1.5mm; flex-shrink:0; }
+.qr-box { width:18mm; height:18mm; display:flex; align-items:center; justify-content:center; }
+.qr-box canvas { width:18mm !important; height:18mm !important; }
+.tool-label { font-size:5.5pt; color:#8a7e6e; text-align:right; letter-spacing:0.04em; }
+
+/* Section banner */
+.section-banner {
+  padding:3mm 10mm; background:#f0ede7;
+  border-bottom:0.3mm solid #d8cfc0;
+  display:flex; align-items:center; gap:3mm; flex-shrink:0;
+}
+.section-icon { font-size:11pt; }
+.section-title { font-family:'Lora',serif; font-size:10pt; font-style:italic; color:#3a3020; }
+.section-sub { font-size:6.5pt; color:#8a7e6e; margin-top:0.3mm; }
+
+/* 2-column layout for standard exercises */
+.exercises-area {
+  flex:1; display:grid; grid-template-columns:1fr 1fr; gap:0; min-height:0;
+}
+/* 3-column compact for kids */
+.exercises-area-3col {
+  flex:1; display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; min-height:0;
+}
+
+/* Exercise block */
+.ex-block {
+  padding:6mm 8mm 6mm;
+  border-right:0.3mm solid #e8dfd0;
+  display:flex; flex-direction:column; gap:2.5mm;
+  min-height:0;
+}
+.ex-block:last-child { border-right:none; }
+.ex-block.compact { padding:5mm 7mm; gap:2mm; }
+
+.ex-cat-label {
+  font-size:5.5pt; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:0.5mm;
+}
+.cat-breath  { color:#3a7a55; }
+.cat-vagus   { color:#3a6a9a; }
+.cat-ground  { color:#8a6020; }
+.cat-body    { color:#6050a0; }
+.cat-image   { color:#8a5828; }
+.cat-bi      { color:#3a7060; }
+.cat-somatic { color:#7a4050; }
+.cat-cognitive{ color:#505a8a; }
+.cat-kids    { color:#5a8a3a; }
+.cat-story   { color:#8a5a3a; }
+
+.ex-title {
+  font-family:'Lora',serif; font-size:13pt; font-style:italic; font-weight:500;
+  color:#1a1510; line-height:1.2; margin-bottom:0.5mm;
+}
+.ex-title.small { font-size:11pt; }
+.ex-duration { font-size:7pt; font-weight:600; color:#8a7e6e; }
+.ex-duration::before { content:'⏱ '; }
+
+.ex-desc {
+  font-size:7.5pt; color:#4a3e30; line-height:1.55;
+  padding:2mm 2.5mm; background:#f7f3ec;
+  border-radius:1.5mm; border-left:0.8mm solid #c4a882;
+}
+.ex-desc.story {
+  background:#f0ede7; border-left-color:#8a7060;
+  font-style:italic;
+}
+
+.steps-label {
+  font-size:6pt; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:#8a7e6e;
+}
+.steps-list {
+  list-style:none; counter-reset:steps;
+  display:flex; flex-direction:column; gap:1.5mm; flex:1;
+}
+.steps-list li {
+  counter-increment:steps; display:flex; gap:2mm; align-items:flex-start;
+  font-size:7.5pt; line-height:1.45; color:#2a1e10;
+}
+.steps-list li::before {
+  content:counter(steps); font-size:6pt; font-weight:700; color:#4a7c5e;
+  background:#e8f2ec; border-radius:50%;
+  min-width:3.5mm; height:3.5mm;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; margin-top:0.4mm;
+}
+
+.ex-tip {
+  padding:2mm 2.5mm; background:#edf7f2;
+  border-left:0.8mm solid #4a7c5e; border-radius:0 1.5mm 1.5mm 0;
+  font-size:7pt; color:#3a5e48; font-style:italic; line-height:1.5; margin-top:auto;
+}
+.ex-tip.story-tip { background:#f7f0ea; border-left-color:#8a7060; color:#5a4030; }
+
+/* Kids story card */
+.story-badge {
+  display:inline-block; font-size:5.5pt; font-weight:700; letter-spacing:0.1em;
+  text-transform:uppercase; padding:0.5mm 1.5mm;
+  background:#f7e8d0; border-radius:1mm; color:#8a5828; margin-bottom:1mm;
+}
+.age-badge {
+  display:inline-block; font-size:5.5pt; font-weight:700; letter-spacing:0.1em;
+  text-transform:uppercase; padding:0.5mm 1.5mm;
+  background:#e8f0e0; border-radius:1mm; color:#4a7a2a; margin-left:1.5mm;
+}
+
+/* Page footer */
+.page-footer {
+  padding:2.5mm 10mm; border-top:0.3mm solid #e8dfd0;
+  display:flex; align-items:center; justify-content:space-between;
+  background:#faf6ef; flex-shrink:0;
+}
+.footer-url { font-size:6pt; color:#4a7c5e; }
+.footer-page { font-size:6pt; color:#8a7e6e; }
+
+/* Intro page */
+.intro-area {
+  flex:1; padding:12mm 14mm; display:flex; flex-direction:column; gap:8mm;
+}
+.intro-title {
+  font-family:'Lora',serif; font-size:24pt; font-style:italic; color:#1a1510; line-height:1.2;
+}
+.intro-sub { font-size:10pt; color:#5a4e3e; line-height:1.7; }
+.intro-cats { display:flex; flex-direction:column; gap:3mm; }
+.intro-cat-row { display:flex; align-items:center; gap:3mm; }
+.intro-cat-dot { width:3mm; height:3mm; border-radius:50%; flex-shrink:0; }
+.intro-cat-name { font-size:8pt; font-weight:700; color:#2a2010; min-width:28mm; }
+.intro-cat-desc { font-size:8pt; color:#5a4e3e; line-height:1.5; }
+.intro-divider { height:0.3mm; background:#e8dfd0; }
+.intro-note { font-size:7.5pt; color:#8a7e6e; line-height:1.6; font-style:italic; }
+.intro-kids-section { margin-top:4mm; }
+.intro-kids-title { font-family:'Lora',serif; font-size:13pt; font-style:italic; color:#3a6020; margin-bottom:2mm; }
+.intro-age-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:3mm; }
+.intro-age-card {
+  padding:3mm 4mm; border:0.3mm solid #d8e8c8; border-radius:2mm;
+  background:#f0f7e8;
+}
+.intro-age-head { font-size:9pt; font-weight:700; color:#3a6020; margin-bottom:1mm; }
+.intro-age-list { font-size:7pt; color:#4a5e30; line-height:1.6; }
+
+@media print {
+  body { background:none; padding:0; }
+  .screen-header { display:none; }
+  .a4-page { width:210mm; min-height:297mm; margin:0; box-shadow:none; page-break-after:always; }
+  .a4-page:last-child { page-break-after:auto; }
+  .a4-page.hidden-page { display:none !important; }
+}
+@page { size:A4; margin:0; }
+</style>
+</head>
+<body>
+
+<div class="screen-header">
+  <div class="screen-title">Harjoituslehtyset — Marko Oinas</div>
+  <div class="btn-group">
+    <button class="filter-btn active" onclick="filterPages('all',this)">Kaikki sivut</button>
+    <button class="filter-btn" onclick="filterPages('adults',this)">Aikuiset</button>
+    <button class="filter-btn" onclick="filterPages('kids',this)">Lapset</button>
+    <button class="filter-btn" onclick="filterPages('psychoed',this)">Psykoedukaatio</button>
+    <button class="print-btn" onclick="window.print()">🖨️ Tulosta / PDF</button>
+  </div>
+</div>
+
+<div id="pages-container"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const QR_URL = 'https://markooinas-source.github.io/stressijarjestelma/asiakas.html';
+
+const THERAPIST = {
+  name: 'Marko Oinas',
+  titles: 'Psykofyysinen fysioterapeutti · Urheilufysioterapeutti · Kipufysioterapeutti\nAkupunktio · Lasten ja nuorten kognitiivinen psykoterapia (opisk.)',
+  clinic: 'Turun Fysiokulma',
+  email: 'marko.oinas@turunfysiokulma.fi',
+  booking: 'nordhealth.fi — Turun Fysiokulma / Marko Oinas',
+};
+
+// ════════════════════════════════════════════════
+// HARJOITEDATA
+// ════════════════════════════════════════════════
+const EXERCISES = [
+  // ── HENGITYS ──
+  { id:'fysiologinen', name:'Fysiologinen huokaus', cat:'breath', catLabel:'Hengitys', catClass:'cat-breath', dur:'2–5 min',
+    desc:'Nopein tapa rauhoittua. Kaksoissisäänhengitys ja pitkä uloshengitys laskee stressihormoneja sekunneissa.',
+    steps:['Hengitä sisään nenän kautta noin 80%.','Ota välittömästi pieni lisähenkäinen — keuhkot täyttyvät kokonaan.','Hengitä pitkästi ulos suun kautta — kaksinkertainen aika sisäänhengitykseen.','Toista 2–5 kertaa. Jo yksi sykli auttaa.','Huomaa kehon reaktio — lihasrentoutuminen.'],
+    tip:'Toimii ennen nukkumaan menoa tai jännittävää tilannetta.' },
+  { id:'neliohengitys', name:'Neliöhengitys', cat:'breath', catLabel:'Hengitys', catClass:'cat-breath', dur:'5–10 min',
+    desc:'Tasapainottava hengitysharjoite. Sisään, pidätä, ulos, pidätä — kaikki neljä sekuntia.',
+    steps:['Istu selkä tuettuna, jalat lattiassa.','Sisään nenän kautta laskien 4.','Pidätä laskien 4.','Ulos suun kautta laskien 4.','Pidätä tyhjänä laskien 4.','Toista 4–8 kierrosta.'],
+    tip:'Iltaisin ennen nukkumaan menoa tai stressin kasautuessa.' },
+  { id:'478', name:'4-7-8 Hengitys', cat:'breath', catLabel:'Hengitys', catClass:'cat-breath', dur:'5 min',
+    desc:'Pidennetty pidätys aktivoi rauhoittavan hermoston voimakkaasti. Erityisen hyvä unihäiriöihin.',
+    steps:['Tyhjennä keuhkot täysin.','Sisään nenän kautta laskien 4.','Pidätä laskien 7.','Puhista ulos laskien 8.','Toista 4 kertaa.'],
+    tip:'Päivittäinen harjoittelu vahvistaa vaikutusta. Jos huimausta, lyhennä pidätystä.' },
+  // ── ANKKUROINTI ──
+  { id:'54321', name:'5-4-3-2-1 Aistit', cat:'ground', catLabel:'Ankkurointi', catClass:'cat-ground', dur:'3–5 min',
+    desc:'Pysähdy hetkeen aistien avulla. Keskeyttää ahdistuksen kierteen ja tuo sinut takaisin nykyhetkeen.',
+    steps:['Pysähdy. Hengitä kerran syvään.','Nimeä 5 asiaa jotka NÄET.','Nimeä 4 joita voit KOSKETTAA — kosketa niitä.','Nimeä 3 joita KUULET.','Nimeä 2 joita HAISTAA.','Nimeä 1 jonka voit MAISTAA.','Kolme rauhallista hengitystä.'],
+    tip:'Toimii missä tahansa — kaupassa, liikenteessä, ulkona.' },
+  // ── RAUHOITTAVA ──
+  { id:'hyraile', name:'Hyräily', cat:'vagus', catLabel:'Rauhoittava', catClass:'cat-vagus', dur:'5–10 min',
+    desc:'Hyräily aktivoi rauhoittavan hermoston suoraan kurkun kautta. Erityisen hyvä kun olo on tyhjä tai lamaantunut.',
+    steps:['Istu suorana tai seiso.','Hyräile ulos hengittäessäsi — "mmmmm" koko uloshengityksen ajan.','Tunne värähtely huulissa, kasvoissa, rinnassa.','Kokeile eri äänenkorkeuksia.','Jatka 5–10 minuuttia.'],
+    tip:'Suihkussa, autossa tai keittiössä — missä tahansa.' },
+  { id:'kylmavesi', name:'Kylmää kasvoille', cat:'vagus', catLabel:'Rauhoittava', catClass:'cat-vagus', dur:'1–3 min',
+    desc:'Kylmä vesi kasvoille aktivoi luonnollisen rauhoitusrefleksin — syke laskee välittömästi.',
+    steps:['Täytä allas kylmällä vedellä tai ota kylmä pyyhe.','Pidätä hengitystä.','Laske kasvot veteen 15–30 sek tai paina kylmää pyyhettä silmien alueelle.','Tule ylös, hengitä rauhallisesti.','Toista tarvittaessa 2–3 kertaa.'],
+    tip:'Nopein keino paniikkikohtauksen katkaisemiseen. Vältä sydänvaivoissa.' },
+  // ── BILATERAALINEN ──
+  { id:'perhos', name:'Perhoshalaus', cat:'bi', catLabel:'Bilateraalinen', catClass:'cat-bi', dur:'3–10 min',
+    desc:'Risti kädet rinnalle ja taputa vuorotellen. Rauhoittaa aivoja symmetrisellä stimulaatiolla.',
+    steps:['Istu mukavasti, selkä tuettuna.','Risti kädet rintakehällesi.','Taputa hitaasti vuorotellen — vasen, oikea, vasen, oikea.','Löydä rauhallinen rytmi.','Hengitä rauhallisesti. Anna tunteiden tulla ja mennä.','Jatka 1–5 minuuttia.'],
+    tip:'Sopii myös lapsille. Voit tehdä julkisessa paikassa.' },
+  // ── KEHOLLINEN ──
+  { id:'kehoskannaus', name:'Kehoskannaus', cat:'body', catLabel:'Kehollinen', catClass:'cat-body', dur:'10–20 min',
+    desc:'Käy keho läpi päästä varpaisiin. Auttaa tunnistamaan jännityksen ja löytämään yhteyden omaan kehoon.',
+    steps:['Makaa tai istu tuettuna. Sulje silmät.','Aloita jalkapohjista — lämpö, paino, pistely.','Liiku ylöspäin: nilkat, säärret, polvet, reidet.','Lantio ja vatsa — hengityksen liike.','Rintakehä, kädet, hartiat.','Niska, kaula, kasvot, päälaki.','Ota koko keho huomioon.'],
+    tip:'Hyvä ennen nukkumaan menoa. Lyhyt versio: vain hartiat ja niska.' },
+  { id:'jannitysvapautus', name:'Jännitys–vapautus (PMR)', cat:'body', catLabel:'Kehollinen', catClass:'cat-body', dur:'15–30 min',
+    desc:'Jännitä ja vapauta lihaksia järjestelmällisesti. Opettaa kehon tunnistamaan rentouden ja jännityksen eron.',
+    steps:['Makaa selällesi. Sulje silmät.','Aloita jalkapohjista — jännitä 5 sek, vapauta.','Etene ylöspäin: säärret, reidet, pakarat.','Vatsa — hengitä sisään ja jännitä, uloshengityksellä vapauta.','Kädet, hartiat, niska, kasvot.','Huomaa lopussa kehon pehmeys.'],
+    tip:'15–20 min ennen nukkumaan menoa. Aloita hitaasti — 3–4 lihasryhmää.' },
+  // ── SOMAATTINEN ──
+  { id:'ravistelu', name:'Ravistelu ja vapina', cat:'somatic', catLabel:'Somaattinen', catClass:'cat-somatic', dur:'10–20 min',
+    desc:'Keho purkaa jännitystä luonnollisen ravistelun kautta. Eläinten selviytymismekanismi — nyt sinullekin.',
+    steps:['Seiso jalkaterät hartianlevyisessä asennossa.','Aloita pienellä polvennostoliikkeellä — anna kehon alkaa värähtelemään.','Kokeile eri asentoja: kumartuminen eteenpäin, käsien laskeminen.','Anna ravistelun levitä — se menee itsestään.','Jatka 5–15 minuuttia.','Lopeta rauhallisesti, seiso hiljaa, hengitä.'],
+    tip:'Normaali reaktio — älä yritä hallita sitä. Anna kehon tehdä mitä haluaa.' },
+  // ── MIELIKUVA ──
+  { id:'turva', name:'Turvapaikka', cat:'image', catLabel:'Mielikuva', catClass:'cat-image', dur:'10–15 min',
+    desc:'Kuvittele mielessäsi paikka jossa olet täysin turvassa. Harjoittelemalla tähän paikkaan on helppo palata.',
+    steps:['Sulje silmät tai katso pehmeästi alas.','Kuvittele paikka — todellinen tai kuvitteellinen — täydellisen turvallinen.','Mitä näet? Kuulet? Tunnet ihollasi?','Missä kehossasi tunnet turvallisuuden?','Anna paikalle nimi.','Harjoittele palaamaan ja lähtemään muutama kerta.','Avaa silmät hitaasti.'],
+    tip:'Kun harjoittelet riittävästi, pelkkä paikan nimi riittää rauhoittamaan.' },
+  { id:'resurssointi', name:'Voimavarat', cat:'image', catLabel:'Mielikuva', catClass:'cat-image', dur:'10–15 min',
+    desc:'Tuo mieleen ihmiset, paikat ja ominaisuudet jotka tukevat sinua. Rakentaa sisäistä turvaa.',
+    steps:['Istu mukavasti. Muutama rauhallinen hengitys.','Ajattele ihmistä jonka kanssa sinulla on turvallinen olo.','Tuo esiin jokin ominaisuus jota arvostat itsessäsi.','Muistele paikka jossa sinulla on hyvä olo.','Kuljeta näitä mielikuvia. Missä kehossasi tunnet ne?','Palauta huomio rauhallisesti.'],
+    tip:'Käytä ennen haastavaa tilannetta. Rakentuu ajan myötä.' },
+  // ── KOGNITIIVINEN ──
+  { id:'meditaatio', name:'Meditaatio', cat:'cognitive', catLabel:'Tietoisuus', catClass:'cat-cognitive', dur:'5–20 min',
+    desc:'Hengitykseen keskittyvä meditaatio. Ei tyhjennetä mieltä — opitaan katsomaan ajatuksia ilman niihin tarttumista.',
+    steps:['Istu selkä suorana, silmät kiinni tai puolikinni.','Huomaa hengitys — sisäänhengitys, uloshengitys.','Kun mieli vaeltaa, huomaa se lempeästi ja palauta hengitykseen.','Jokainen palaaminen on harjoitus — ei virhe.','Jatka valitsemasi ajan.'],
+    tip:'Aloita 5 minuutista. Ajatuksia tulee aina — se on normaalia.' },
+  { id:'ystavallisyys', name:'Ystävällisyysmeditaatio', cat:'cognitive', catLabel:'Tietoisuus', catClass:'cat-cognitive', dur:'10–20 min',
+    desc:'Kehitä myötätuntoa itseäsi ja muita kohtaan. Tutkitusti tehokas masennusta ja itsekritiikkiä vastaan.',
+    steps:['Istu mukavasti, silmät kiinni.','Tuo itsesi mieleesi. Toista: "Olkoon minulla hyvä olla. Olkoon minulla rauha."','Tuo mieleen läheinen. Toista samat toiveet hänelle.','Laajenna neutraaliin henkilöön, sitten vaikeaan henkilöön.','Lopussa: kaikki olennot kaikkialla.'],
+    tip:'Itsekritiikki vähenee harjoittelun myötä. Aloita itsestäsi.' },
+
+  // ── UUDET HARJOITTEET ──
+
+  { id:'kehoskannaus-tarkka', name:'Kehoskannaus — syvä', cat:'body', catLabel:'Kehollinen', catClass:'cat-body', dur:'15–20 min',
+    desc:'Hidas matka läpi koko kehon — jokainen alue saa oman huomionsa. Tuntemuksia ei tarvitse muuttaa, vain havaita.',
+    steps:['Asetu makuulle tai istu tuettuna. Sulje silmät. Ota kolme syvää hengitystä.','Jalkapohjat — jokainen varvas, holvi, kantapää. Mitä tunnet?','Nilkat, säärret, polvet, reidet. Liiku hitaasti ylöspäin.','Lantio ja alaselkä — hengitä tähän alueeseen. Päästä irti.','Vatsa — tunne hengityksen liike. Rintakehä ja sydämen rytmi.','Kädet sormenpäistä hartioihin. Anna niiden painua alustalle.','Niska, leuka, kasvot, otsa — anna kaiken pehmetä.','Ota koko keho huomioon yhtä aikaa. Hengitä.'],
+    tip:'60 min versio saatavilla Oma työkalu -sovelluksessa. Säännöllinen harjoittelu vahvistaa kehon kuuntelua.' },
+
+  { id:'mielikuva-metsa', name:'Mielikuvamatka — Metsä', cat:'image', catLabel:'Mielikuva', catClass:'cat-image', dur:'15–60 min',
+    desc:'Ohjattu matka rauhalliseen metsään. Kaikki aistit aktivoituvat — keho ei aina erota todellista kuvitellusta.',
+    steps:['Asetu makuulle tai istu mukavasti. Sulje silmät.','Ota kolme syvää hengitystä — jokainen uloshengitys vie syvemmälle rauhaan.','Kuvittele metsä. Anna sen muodostua itsestään — koivu, mänty, kuusi.','Katso latvustoon. Kuuntele — tuuli, linnut, ehkä puro.','Tunne maaperä jalkojen alla. Haista metsän tuoksu.','Löydä paikka jossa haluat pysähtyä. Istu tai makaa siellä.','Olet turvassa. Kukaan ei tarvitse sinua nyt. Vain ole.','Tallenna tämä paikka. Voit palata tänne aina.','Tule hitaasti takaisin. Avaa silmät rauhallisesti.'],
+    tip:'15–60 min versiot saatavilla Oma työkalu -sovelluksessa. Jos jokin mielikuva ahdistaa — avaa silmät ja palaa huoneeseen.' },
+
+  { id:'mielikuva-lapsuus', name:'Lapsuuden turvapaikka', cat:'image', catLabel:'Mielikuva', catClass:'cat-image', dur:'15–60 min',
+    desc:'Palaa turvalliseen muistoon lapsuudesta. Rakentaa sisäistä turvaa ja resurssia haastaviin hetkiin.',
+    steps:['Asetu mukavaan asentoon. Sulje silmät. Hengitä rauhallisesti.','Kutsu esiin muisto lapsuudesta — turvallinen, lämmin hetki. Pieni riittää.','Katso ympärillesi. Missä olet? Mitä värejä ja valoa?','Kuuntele muistoasi. Haista sen tuoksut.','Tunne kehossasi se tuttu turvallisuus — missä se tuntuu?','Anna lapsen — sinun — olla siinä hetkessä täysin.','Hengitä tätä tunnetta. Se on sinussa aina — aina saatavilla.','Tule hitaasti takaisin. Avaa silmät.'],
+    tip:'Jos sopivia lapsuusmuistoja ei löydy, kuvittele turvallinen paikka — se toimii yhtä hyvin. Terapeutti voi ohjata pidemmän version.' },
+
+  { id:'ankkuri-aistihetki', name:'Ankkuri — nopea paluu', cat:'ground', catLabel:'Ankkurointi', catClass:'cat-ground', dur:'2–5 min',
+    desc:'Nopea paluu nykyhetkeen kolmen asteen kautta. Toimii kaikkialla — kaupassa, liikenteessä, kesken kokouksen.',
+    steps:['Pysähdy missä olet. Sinun ei tarvitse sulkea silmiä.','Paina jalat lattiaan — tunne paino. Lattia kantaa sinut.','Hengitä kerran pitkästi ulos suun kautta.','Nimeä 3 asiaa joita NÄET. Tavallisia — katto, ikkuna, kuppi.','Tunnustele jotain käsillä — pöytä, vaate, oma iho.','Yksi hidas hengitys. Olet tässä. Nyt. Tämä riittää.'],
+    tip:'Mitä useammin harjoittelet, sitä nopeammin se toimii. Voit käyttää ennaltaehkäisevästi.' },
+];
+
+// ════════════════════════════════════════════════
+// LASTEN HARJOITTEET
+// ════════════════════════════════════════════════
+const KIDS_EXERCISES = [
+  // PIKKU 3-7v
+  { name:'Puhalla pallo', age:'3–7 v', ageClass:'pikku', emoji:'🫧', cat:'Hengitys',
+    desc:'Hengitä sisään kuin täyttäisit palloa. Hengitä ulos hitaasti. Pallo kasvaa ja pienenee.',
+    steps:['Istu tai seiso.','Kuvittele iso pallo edessäsi.','Hengitä sisään — pallo kasvaa!','Hengitä ulos hitaasti — pallo pienenee.','Toista 5 kertaa.'],
+    tip:'Voi tehdä myös oikean pallon kanssa!' },
+  { name:'Lohikäärmeen hengitys', age:'3–7 v', ageClass:'pikku', emoji:'🐉', cat:'Satu',
+    desc:'Olet lohikäärme! Kerää tuli vattsaan ja puhalla se ulos pitkänä, lämpimänä henkäyksenä.',
+    steps:['Istu suorana.','Hengitä syvään sisään — kerää tuli vatssaan.','Puhalla ulos pitkästi — "huuuuu" — kuin lohikäärme!','Toista 3–5 kertaa.'],
+    tip:'Kuvittele millainen lohikäärme sinä olet!' },
+  { name:'Lumihiutale sulaa', age:'3–7 v', ageClass:'pikku', emoji:'❄️', cat:'Rentoutus-satu',
+    desc:'Olet pieni lumihiutale taivaalla. Leijailet hitaasti alas ja sulat pehmeästi maahan.',
+    steps:['Makaa tai istu.','Kuvittele olevasi lumihiutale taivaalla.','Leijailet hitaasti, hitaasti alas.','Jalkasi pehmenevät, kädet pehmenevät.','Sulat rauhallisesti — kaikki jännitys menee pois.'],
+    tip:'Voit silittää lapsen käsivarsia kevyesti harjoitteen aikana.' },
+  { name:'Mielikuvamatka metsään', age:'3–7 v', ageClass:'pikku', emoji:'🌲', cat:'Mielikuvasatu',
+    desc:'Kuvittele kävelevät pehmeässä metsässä. Kuulet linnut, tunnet sammalen jalkojen alla.',
+    steps:['Sulje silmät.','Olet metsässä — jalkojen alla pehmeä sammal.','Kuulet lintujen laulua.','Aurinko paistaa lehtien läpi.','Tunne metsän rauha kehossasi.'],
+    tip:'Kerro lapselle tarina rauhallisella äänellä.' },
+  { name:'Taikuri herää', age:'3–7 v', ageClass:'pikku', emoji:'✨', cat:'Aistisatu',
+    desc:'Olet taikuri joka herää ja aktivoi kaikki aistinsa! Katso, kuule, koske, haista.',
+    steps:['Avaa silmät — katso 3 asiaa.','Kuuntele — kuulet 2 ääntä.','Koske jotain — tunne onko se karhea vai sileä.','Haista — mitä tuoksuu?','Taikuri on nyt täysin hereillä!'],
+    tip:'Tekee 5-4-3-2-1:stä satu — sopii myös alle kouluikäisille.' },
+  { name:'Perhoshalaus', age:'3–7 v', ageClass:'pikku', emoji:'🦋', cat:'Rauhoittava',
+    desc:'Risti kädet rinnalle ja taputa itseäsi lempeästi. Kuin perhonen taputtaa siipojaan.',
+    steps:['Risti kädet rinnalle.','Taputa lempeästi vuorotellen — vasen, oikea.','Hengitä rauhallisesti.','Jatka kunnes tuntuu hyvältä.'],
+    tip:'Voi tehdä yhdessä vanhemman kanssa.' },
+
+  // KOULU 8-12v
+  { name:'Merimatka', age:'8–12 v', ageClass:'koulu', emoji:'🌊', cat:'Hengitys-satu',
+    desc:'Hengityksesi on kuin meren aallot. Aalto nousee sisäänhengityksellä ja laskee uloshengityksellä.',
+    steps:['Sulje silmät — olet rannalla.','Kuulet meren kohinan.','Hengitä sisään — aalto nousee.','Hengitä ulos — aalto vetäytyy.','Löydä meren rytmi, jatka 5 minuuttia.'],
+    tip:'Kuvittele aurinko, hiekka ja meren tuuli.' },
+  { name:'Olet vahva puu', age:'8–12 v', ageClass:'koulu', emoji:'🌳', cat:'Kehotietoisuus-satu',
+    desc:'Sinä olet vahva puu. Juuret pitävät sinut paikallaan, oksat kestävät tuulen.',
+    steps:['Seiso tukevasti.','Kuvittele juuret kasvavat jalkapohjistasi maahan.','Selkärankasi on puun runko — vahva ja suora.','Kädet ovat oksat — heilauta niitä lempeästi.','Puu taipuu tuulessa mutta ei kaadu.'],
+    tip:'Muistuta: vaikeat hetket menevät ohi, juuret pitävät.' },
+  { name:'Salainen aistiagentti', age:'8–12 v', ageClass:'koulu', emoji:'🕵️', cat:'Aistiharjoitus',
+    desc:'Olet salainen agentti. Tehtäväsi: skannaa ympäristö kaikilla viidellä aistilla täydellisesti.',
+    steps:['NÄKÖ: Nimeä 5 asiaa mitä näet.','KUULO: Kuuntele — nimeä 3 ääntä.','KOSKETUS: Kosketa 4 eri pintaa.','HAJU: Hengitä — mitä tuoksuu?','Agentti on nyt täysin läsnä!'],
+    tip:'5-4-3-2-1 agentin hahmossa — motivoi lapsia.' },
+  { name:'Metsämatka', age:'8–12 v', ageClass:'koulu', emoji:'🦊', cat:'Mielikuvamatka',
+    desc:'Mielikuvamatka rauhalliseen metsään — puron äärelle, eläinten luo.',
+    steps:['Sulje silmät — seisot metsäpolun alussa.','Kävelet pehmeää polkua — sammal ja lehdet.','Löydät puron. Istu kivelle, kuuntele veden solinaa.','Ehkä näet eläimen — ketun tai linnun.','Palaat rauhallisena takaisin.'],
+    tip:'Kerro tarina rauhallisella äänellä.' },
+  { name:'Matka omaan itseen', age:'8–12 v', ageClass:'koulu', emoji:'💫', cat:'Kehotietoisuus',
+    desc:'Tänään tutustumme sinun kehoosi — ei ulkonäköön, vaan mitä keho tuntee ja tekee.',
+    steps:['Sulje silmät. Laita käsi sydämelle.','Tunne sydämesi lyövän.','Liikuta sormiasi hitaasti.','Tunne jalat lattiassa.','Keho on sinun koti — se on aina mukana.'],
+    tip:'Hyvä johdatus kehotietoisuuteen.' },
+
+  // NUORI 13-17v
+  { name:'Syvä sukellus', age:'13–17 v', ageClass:'nuori', emoji:'🌊', cat:'Hengitys-satu',
+    desc:'Hengitys on kuin sukeltamista — sisäänhengitys vie pinnan alle, uloshengitys tuo takaisin.',
+    steps:['Sulje silmät.','Hengitä syvään — sukellat pinnan alle. Hiljaisuus.','Pidätä hetki — olet syvällä. Rauha.','Hengitä pitkästi ulos — nouset hitaasti pintaan.','Löydä oma sukelluksesi rytmi.'],
+    tip:'Pidemmät hengitysjaksot tuottavat syvemmän rauhoittumisen.' },
+  { name:'Matka metsään', age:'13–17 v', ageClass:'nuori', emoji:'🌲', cat:'Mielikuvamatka',
+    desc:'Pitkä mielikuvamatka metsään — puron äärelle, hiljaisuuteen, läsnäoloon.',
+    steps:['Sulje silmät. Varhainen aamu metsässä.','Kuulet lintujen äänet, tunnet kostean ilman.','Löydät puron — istu kiville, kuuntele veden solinaa.','Ajatukset liikkuvat kuin lehdet purossa.','Palaat rauhallisena, kantaen metsän rauhaa.'],
+    tip:'Anna itsesi todella uppoutua — vähintään 8 minuuttia.' },
+  { name:'Matka omaan itseen', age:'13–17 v', ageClass:'nuori', emoji:'🔮', cat:'Sisäinen matka',
+    desc:'Matka sisäänpäin — kehon kohtaaminen, vahvuudet, myötätunto.',
+    steps:['Sulje silmät. Hengitä muutama kerta.','Kohtaa kehosi sellaisena kuin se on.','Tuo mieleen jokin ominaisuus josta olet ylpeä.','Tuo myös jokin vaikea asia — anna sen olla.','Kohtele itseäsi kuten parhasta kaveriasi.'],
+    tip:'Itsemyötätunto kehittyy harjoittelun myötä.' },
+  { name:'Kehonkuvan hahmottaminen', age:'13–17 v', ageClass:'nuori', emoji:'🗺️', cat:'Kehotietoisuus',
+    desc:'Keho ei ole koristus — se on kotisi. Tutustumme siihen mitä keho tekee ja tuntee.',
+    steps:['Makaa tai istu. Sulje silmät.','Jalat kantavat sinua päivittäin — tunne niiden paino.','Kädet tekevät, luovat, koskettavat — liikuta sormia.','Sydän on lyönyt koko elämäsi.','Keho ansaitsee sinulta kiitollisuutta.'],
+    tip:'Hyvä vastapaine kehoa arvioivalle kulttuurille.' },
+];
+
+// ════════════════════════════════════════════════
+// PAGE DEFINITIONS
+// ════════════════════════════════════════════════
+const PAGES = [
+  { type:'intro', audience:'all' },
+  { type:'exercises', audience:'adults', exercises:[0,1,2,3], section:{ icon:'😮‍💨', title:'Hengitys & Ankkurointi', sub:'Hengitysharjoitteet · Stressinsäätely · Paniikinhallinta' } },
+  { type:'exercises', audience:'adults', exercises:[4,5,6,7], section:{ icon:'🎵', title:'Rauhoittava & Kehollinen', sub:'Vagus-aktivaatio · Kehotietoisuus · Lihasrentoutus' } },
+  { type:'exercises', audience:'adults', exercises:[8,9,10,11], section:{ icon:'💚', title:'Somaattinen & Mielikuva', sub:'Somaattiset harjoitteet · Mielikuvatyöskentely · Voimavarat' } },
+  { type:'exercises', audience:'adults', exercises:[12,13], section:{ icon:'🧘', title:'Tietoisuustaidot', sub:'Meditaatio · Ystävällisyysmeditaatio · Mielen harjoittelu' } },
+  { type:'exercises', audience:'adults', exercises:[14,15,16,17], section:{ icon:'🌿', title:'Kehoskannaus & Mielikuvamatkat', sub:'Syvä kehollinen läsnäolo · Metsä · Lapsuuden turvapaikka · Ankkuri' } },
+  { type:'psychoed', audience:'adults', topic:'stressi' },
+  { type:'psychoed', audience:'adults', topic:'kipu' },
+  { type:'psychoed', audience:'adults', topic:'trauma' },
+  { type:'kids-intro', audience:'kids' },
+  { type:'kids-exercises', audience:'kids', group:'pikku', label:'🐣 3–7-vuotiaat', sub:'Satu- ja leikkimuotoiset harjoitteet', exercises:[0,1,2,3,4,5] },
+  { type:'kids-exercises', audience:'kids', group:'koulu', label:'🌱 8–12-vuotiaat', sub:'Metaforat ja tarinat · Aistikokemukset', exercises:[6,7,8,9,10] },
+  { type:'kids-exercises', audience:'kids', group:'nuori', label:'🌿 13–17-vuotiaat', sub:'Syvemmät mielikuvamatkat · Kehotietoisuus', exercises:[11,12,13,14] },
+];
+
+// ════════════════════════════════════════════════
+// PSYKOEDUKAATIODATA
+// ════════════════════════════════════════════════
+const PSYCHOED = {
+  stressi: {
+    icon:'😮‍💨', title:'Stressi — mitä kehossasi tapahtuu',
+    sub:'Stressireaktio · ANS · Rauhoittuminen',
+    sections:[
+      { heading:'Mitä stressi on?', text:'Stressi on kehon normaali reaktio haasteisiin. Sympaattinen hermosto aktivoituu — sydän löö nopeammin, hengitys tihenee, lihakset jännittyvät. Keho valmistautuu toimintaan. Tämä on tarkoituksellista — lyhytkestoisena stressireaktio on hyödyllinen.' },
+      { heading:'Kun stressi pitkittyy', text:'Kroonisessa stressissä kortisoli pysyy koholla. Tämä väsyttää, heikentää unta, laskee immuunipuolustusta ja vaikeuttaa ajattelua. Keho pysyy hälytystilassa vaikka uhkaa ei enää ole.' },
+      { heading:'Miten keho rauhoittuu', text:'Parasympaattinen hermosto — erityisesti vagushermo — on kehon "jarru". Pidennetty uloshengitys aktivoi sen välittömästi. Hyräily, kylmä vesi ja hidas hengitysrytmi ovat suoria tapoja aktivoida tämä järjestelmä.' },
+      { heading:'Mitä voit tehdä', items:['Fysiologinen huokaus — 2 sisäänhengitystä + pitkä uloshengitys','Neliöhengitys — 4-4-4-4 rauhoittaa 5 minuutissa','Liiku — keho purkaa stressihormoneita liikkeen kautta','Yhteys toiseen ihmiseen — co-regulation on biologinen mekanismi'] },
+    ]
+  },
+  kipu: {
+    icon:'🔥', title:'Kipu — miten hermosto käsittelee sitä',
+    sub:'Kivun neurotiede · Sentraalinen sensitisaatio · Rauhoittuminen',
+    sections:[
+      { heading:'Kipu syntyy aivoissa', text:'Kipu ei ole pelkästään kudosvaurion mittari — se on aivojen suojelureaktio. Samat ärsykkeet tuottavat eri tilanteissa täysin erilaisen kipukokemuksen. Stressi, pelko ja odotukset muokkaavat kipukokemusta suoraan.' },
+      { heading:'Krooninen kipu — hermosto herkistyy', text:'Kroonisessa kivussa kipuhermoston kynnys laskee — pienikin ärsyke tuntuu suurelta. Tätä sanotaan sentraaliseksi sensitisaatioksi. Kudos voi olla parantunut, mutta hermosto on oppinut reagoimaan herkästi.' },
+      { heading:'Stressi pahentaa kipua', text:'Kortisoli kiihdyttää tulehdusreaktioita pitkäaikaisesti. Sympaattinen aktivaatio lisää lihasjännitystä. Pelko kivusta lisää kipua — fear-avoidance -loukku. Tämä ei tarkoita että kipu "on päässä" — se on fysiologinen tosiasia.' },
+      { heading:'Mitä auttaa', items:['Rauhoittuminen — hermosto tarvitsee turvallisuuden signaalin','Hidas liike — pitää hermoston aktiivisena ilman ylikuormitusta','Hengitysharjoitteet — vagushermon aktivointi vähentää tulehdusta','Tieto — ymmärrys kivun mekanismista vähentää pelkoa ja kipua'] },
+    ]
+  },
+  trauma: {
+    icon:'🫀', title:'Trauma — keho muistaa',
+    sub:'Traumareaktio · Kehon reaktiot · Palautuminen',
+    sections:[
+      { heading:'Trauma tallentuu kehoon', text:'Traumaattinen kokemus tallentuu kehollisena muistijälkenä — tuntemuksina, reaktioina ja automaattisina vasteina. Nämä voivat aktivoitua ilman tietoista muistoa. "Keho muistaa mitä mieli ei."' },
+      { heading:'Taistele, pakene, jähmetty', text:'Uhkatilanteessa hermosto mobilisoi: taistele (aggressio, viha), pakene (pako, levottomuus) tai jähmetty (lamaantuminen, dissosiaatio). Nämä reaktiot ovat automaattisia ja suojaavia — ne eivät ole valinta.' },
+      { heading:'Toipuminen vie aikaa', text:'Traumaoireet ovat normaali reaktio epänormaaleihin tilanteisiin. Toipuminen tapahtuu vaiheistettuna: ensin turvallisuus ja säätely, sitten hidas integraatio. Harjoitteet tukevat hermoston rauhoittumista ja toleranssi-ikkunan laajentamista.' },
+      { heading:'Mitä auttaa', items:['Grounding — ankkuroi nykyhetkeen kun oireet aktivoituvat','Hidas hengitys — rauhoittaa hermoston suoraan','Turvallisuus — yhteys turvalliseen ihmiseen tai paikkaan','Kehotietoisuus — opitaan tunnistamaan kehon viestit'] },
+    ]
+  },
+};
+
+
+let qrPageCount = 0;
+
+function header(qrId) {
+  return `
+    <div class="page-header">
+      <div class="therapist-info">
+        <div class="th-name">${THERAPIST.name}</div>
+        <div class="th-titles">${THERAPIST.titles.replace('\n','<br>')}</div>
+        <div class="th-contact">✉ <a href="mailto:${THERAPIST.email}">${THERAPIST.email}</a> &nbsp;·&nbsp; 📅 ${THERAPIST.booking}</div>
+      </div>
+      <div class="page-header-right">
+        <div class="qr-box" id="${qrId}"></div>
+        <div class="tool-label">Oma harjoittelutyökalu</div>
+      </div>
+    </div>`;
+}
+
+function footer(pageNum, total) {
+  return `
+    <div class="page-footer">
+      <div class="footer-url">${QR_URL}</div>
+      <div class="footer-page">Sivu ${pageNum} / ${total}</div>
+    </div>`;
+}
+
+function exBlock(ex, compact) {
+  const cls = compact ? 'ex-block compact' : 'ex-block';
+  const titleCls = compact ? 'ex-title small' : 'ex-title';
+  const stepsHTML = ex.steps.map(s => `<li>${s}</li>`).join('');
+  const isStory = ex.cat && (ex.cat.includes('satu') || ex.cat.includes('Satu') || ex.cat.includes('matka'));
+  const descCls = isStory ? 'ex-desc story' : 'ex-desc';
+  const tipCls = isStory ? 'ex-tip story-tip' : 'ex-tip';
+  return `
+    <div class="${cls}">
+      <div>
+        <div class="ex-cat-label ${ex.catClass || 'cat-kids'}">${ex.catLabel || ex.cat}</div>
+        <div class="${titleCls}">${ex.name}</div>
+        <div class="ex-duration">${ex.dur}</div>
+      </div>
+      <div class="${descCls}">${ex.desc}</div>
+      <div class="steps-label">Ohje vaiheittain</div>
+      <ol class="steps-list">${stepsHTML}</ol>
+      <div class="${tipCls}">${ex.tip}</div>
+    </div>`;
+}
+
+function kidsBlock(ex, compact) {
+  const stepsHTML = ex.steps.map(s => `<li>${s}</li>`).join('');
+  const isStory = ex.cat && (ex.cat.toLowerCase().includes('satu') || ex.cat.toLowerCase().includes('mielikuva') || ex.cat.toLowerCase().includes('matka'));
+  const descCls = isStory ? 'ex-desc story' : 'ex-desc';
+  const tipCls = isStory ? 'ex-tip story-tip' : 'ex-tip';
+  return `
+    <div class="ex-block${compact?' compact':''}">
+      <div>
+        <span style="font-size:12pt">${ex.emoji}</span>
+        <span class="story-badge">${ex.cat}</span>
+        <span class="age-badge">${ex.age}</span>
+        <div class="ex-title small" style="margin-top:1mm">${ex.name}</div>
+      </div>
+      <div class="${descCls}">${ex.desc}</div>
+      <div class="steps-label">Ohje vaiheittain</div>
+      <ol class="steps-list">${stepsHTML}</ol>
+      <div class="${tipCls}">${ex.tip}</div>
+    </div>`;
+}
+
+function buildPages() {
+  const container = document.getElementById('pages-container');
+  const total = PAGES.length;
+
+  PAGES.forEach((pageDef, pi) => {
+    const page = document.createElement('div');
+    page.className = 'a4-page';
+    page.dataset.audience = pageDef.type === 'psychoed' ? 'psychoed' : pageDef.audience;
+    const qrId = `qr-p${pi}`;
+    const pageNum = pi + 1;
+
+    if (pageDef.type === 'intro') {
+      page.innerHTML = header(qrId) + `
+        <div class="intro-area">
+          <div>
+            <div class="intro-title">Psykofyysiset harjoitteet</div>
+            <div class="intro-sub" style="margin-top:3mm">Tämä lehtinen sisältää harjoitteet joita terapiassasi käytetään. Harjoitteet toimivat hermostosi rauhoittamiseksi, kehon kuuntelemiseksi ja arjen stressinhallinnan tueksi.</div>
+          </div>
+          <div class="intro-divider"></div>
+          <div class="intro-cats">
+            <div class="intro-cat-row"><div class="intro-cat-dot" style="background:#3a7a55"></div><div class="intro-cat-name">😮‍💨 Hengitys</div><div class="intro-cat-desc">Aktivoi parasympaattisen hermoston. Hengitys on suorin tapa vaikuttaa stressireaktioon.</div></div>
+            <div class="intro-cat-row"><div class="intro-cat-dot" style="background:#8a6020"></div><div class="intro-cat-name">🌍 Ankkurointi</div><div class="intro-cat-desc">Palauttaa sinut nykyhetkeen. Erityisen hyvä ahdistukseen ja mielen pyörimiseen.</div></div>
+            <div class="intro-cat-row"><div class="intro-cat-dot" style="background:#3a6a9a"></div><div class="intro-cat-name">🎵 Rauhoittava</div><div class="intro-cat-desc">Aktivoi vagushermon suoraan — ääni, kylmä, hengityksen rytmi.</div></div>
+            <div class="intro-cat-row"><div class="intro-cat-dot" style="background:#6050a0"></div><div class="intro-cat-name">🧘 Kehollinen</div><div class="intro-cat-desc">Kehotietoisuus, jännityksen tunnistaminen ja vapauttaminen.</div></div>
+            <div class="intro-cat-row"><div class="intro-cat-dot" style="background:#7a4050"></div><div class="intro-cat-name">⚡ Somaattinen</div><div class="intro-cat-desc">Kehon luonnollinen tapa purkaa jännitystä — ravistelu, liike, vapina.</div></div>
+            <div class="intro-cat-row"><div class="intro-cat-dot" style="background:#8a5828"></div><div class="intro-cat-name">💚 Mielikuva</div><div class="intro-cat-desc">Mielikuvat aktivoivat samat aivoalueet kuin todelliset kokemukset.</div></div>
+          </div>
+          <div class="intro-divider"></div>
+          <div class="intro-note">Harjoittele säännöllisesti — myös silloin kun olo on hyvä. Hermosto oppii säätelyä toiston kautta. Pienikin päivittäinen harjoittelu on tehokkaampaa kuin suuri satunnainen.</div>
+          <div class="intro-kids-section">
+            <div class="intro-kids-title">Lapsille ja nuorille</div>
+            <div class="intro-age-grid">
+              <div class="intro-age-card"><div class="intro-age-head">🐣 3–7 v</div><div class="intro-age-list">Satu- ja leikkimuotoiset<br>Lohikäärme, lumihiutale<br>Pallo, taikuri, metsämatka</div></div>
+              <div class="intro-age-card"><div class="intro-age-head">🌱 8–12 v</div><div class="intro-age-list">Metaforat ja tarinat<br>Merimatka, vahva puu<br>Salainen aistiagentti</div></div>
+              <div class="intro-age-card"><div class="intro-age-head">🌿 13–17 v</div><div class="intro-age-list">Syvemmät mielikuvamatkat<br>Kehontietoisuus, sukellus<br>Matka omaan itseen</div></div>
+            </div>
+          </div>
+        </div>
+      ` + footer(pageNum, total);
+
+    } else if (pageDef.type === 'exercises') {
+      const exs = pageDef.exercises.map(i => EXERCISES[i]).filter(Boolean);
+      const cols = exs.length <= 2 ? 'exercises-area' : 'exercises-area';
+      const blocksHTML = exs.map(ex => exBlock(ex, false)).join('');
+      page.innerHTML = header(qrId) + `
+        <div class="section-banner">
+          <span class="section-icon">${pageDef.section.icon}</span>
+          <div><div class="section-title">${pageDef.section.title}</div><div class="section-sub">${pageDef.section.sub}</div></div>
+        </div>
+        <div class="${cols}">${blocksHTML}</div>
+      ` + footer(pageNum, total);
+
+    } else if (pageDef.type === 'psychoed') {
+      const pd = PSYCHOED[pageDef.topic];
+      if (!pd) { container.appendChild(page); return; }
+      const sectionsHTML = pd.sections.map(s => `
+        <div style="margin-bottom:5mm">
+          <div style="font-family:'Lora',serif;font-size:11pt;font-style:italic;color:#1a1510;margin-bottom:1.5mm">${s.heading}</div>
+          ${s.text ? `<p style="font-size:8pt;line-height:1.6;color:#3a3020">${s.text}</p>` : ''}
+          ${s.items ? `<ul style="margin:0;padding-left:4mm;display:flex;flex-direction:column;gap:1.5mm">${s.items.map(i=>`<li style="font-size:8pt;line-height:1.5;color:#3a3020">${i}</li>`).join('')}</ul>` : ''}
+        </div>`).join('');
+      page.innerHTML = header(qrId) + `
+        <div class="section-banner">
+          <span class="section-icon">${pd.icon}</span>
+          <div><div class="section-title">${pd.title}</div><div class="section-sub">${pd.sub}</div></div>
+        </div>
+        <div style="flex:1;padding:8mm 10mm;display:flex;flex-direction:column;gap:2mm">
+          <div style="padding:3mm 4mm;background:#f0ede7;border-radius:2mm;border-left:1mm solid #8a7060;font-size:7.5pt;color:#4a3e30;font-style:italic;line-height:1.55;margin-bottom:4mm">
+            Tämä lehtinen on tarkoitettu terapiasi tueksi. Palaa tähän tietoon kotona — ymmärtäminen itsessään on osa toipumista.
+          </div>
+          ${sectionsHTML}
+          <div style="margin-top:auto;padding:3mm 4mm;background:#edf7f2;border-left:1mm solid #4a7c5e;border-radius:0 2mm 2mm 0;font-size:7.5pt;color:#3a5e48;font-style:italic">
+            Lisää tietoa ja harjoitteita: <strong>${QR_URL}</strong>
+          </div>
+        </div>
+      ` + footer(pageNum, total);
+
+    } else if (pageDef.type === 'kids-intro') {
+      page.innerHTML = header(qrId) + `
+        <div class="section-banner">
+          <span class="section-icon">🧸</span>
+          <div><div class="section-title">Lasten ja nuorten harjoitteet</div><div class="section-sub">Satumuotoiset · Ikätasoiset · Kehollinen oppiminen</div></div>
+        </div>
+        <div class="intro-area">
+          <div class="intro-sub">Lasten harjoitteet on suunniteltu ikätasoisesti sadun, leikin ja mielikuvien kautta. Lapset uppoutuvat mielikuviin helpommin kuin aikuiset — tämä on kliininen vahvuus, ei heikkous.</div>
+          <div class="intro-divider"></div>
+          <div class="intro-age-grid">
+            <div class="intro-age-card" style="border-color:#d0e8f0;background:#e8f4f8">
+              <div class="intro-age-head" style="color:#1a5070">🐣 3–7-vuotiaat</div>
+              <div class="intro-age-list" style="color:#2a6080">Kaikki harjoitteet sadun muodossa. Vanhempi tai terapeutti kertoo tarinan rauhallisesti. Harjoite voidaan tehdä yhdessä, esimerkiksi Perhoshalussa terapeutti taputtaa lapsen hartioita.</div>
+            </div>
+            <div class="intro-age-card" style="border-color:#d8f0d0;background:#edf7e8">
+              <div class="intro-age-head" style="color:#2a5020">🌱 8–12-vuotiaat</div>
+              <div class="intro-age-list" style="color:#3a6030">Metaforat ja tarinat joissa lapsi on itse toimija — agentti, puu, aalto. Harjoitteet toimivat itsenäisesti tai ohjatusti. Kesto 5–10 minuuttia.</div>
+            </div>
+            <div class="intro-age-card" style="border-color:#e8d8f0;background:#f4eef8">
+              <div class="intro-age-head" style="color:#4a2070">🌿 13–17-vuotiaat</div>
+              <div class="intro-age-list" style="color:#5a3080">Syvemmät mielikuvamatkat ja kehotietoisuusharjoitteet. Lähes aikuisten tason harjoitteet mutta nuoren kokemusmaailmaan sovitettuina. Voidaan tehdä itsenäisesti.</div>
+            </div>
+          </div>
+          <div class="intro-divider"></div>
+          <div style="font-size:8pt;color:#4a3e30;line-height:1.65">
+            <strong>Ohjeet vanhemmalle / terapeutille:</strong> Lue harjoitteen ohjeet ennen kuin aloitat. Puhu rauhallisesti, hitaasti. Anna lapselle aikaa — älä kiirehdi. Harjoitteet voidaan toistaa useita kertoja. Lapsen reaktio (nauru, liikehtiminen) on normaalia — se ei tarkoita ettei harjoite toimi.
+          </div>
+        </div>
+      ` + footer(pageNum, total);
+
+    } else if (pageDef.type === 'kids-exercises') {
+      const exs = pageDef.exercises.map(i => KIDS_EXERCISES[i]).filter(Boolean);
+      const cols = exs.length >= 3 ? 'exercises-area-3col' : 'exercises-area';
+      const compact = exs.length >= 3;
+      const blocksHTML = exs.map(ex => kidsBlock(ex, compact)).join('');
+      page.innerHTML = header(qrId) + `
+        <div class="section-banner">
+          <span class="section-icon">${pageDef.label.split(' ')[0]}</span>
+          <div><div class="section-title">${pageDef.label}</div><div class="section-sub">${pageDef.sub}</div></div>
+        </div>
+        <div class="${cols}">${blocksHTML}</div>
+      ` + footer(pageNum, total);
+    }
+
+    container.appendChild(page);
+  });
+
+  // QR codes
+  requestAnimationFrame(() => {
+    PAGES.forEach((_, pi) => {
+      const el = document.getElementById(`qr-p${pi}`);
+      if (el && typeof QRCode !== 'undefined') {
+        try {
+          new QRCode(el, { text:QR_URL, width:68, height:68, colorDark:'#1a1510', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.M });
+        } catch(e) { el.innerHTML='<div style="font-size:5pt;color:#8a7e6e;text-align:center">QR</div>'; }
+      }
+    });
+  });
+}
+
+function filterPages(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.a4-page').forEach(page => {
+    const aud = page.dataset.audience;
+    if (type === 'all') page.classList.remove('hidden-page');
+    else if (type === 'adults') page.classList.toggle('hidden-page', aud === 'kids' || aud === 'psychoed');
+    else if (type === 'kids') page.classList.toggle('hidden-page', aud !== 'kids');
+    else if (type === 'psychoed') page.classList.toggle('hidden-page', aud !== 'psychoed');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', buildPages);
+</script>
+</body>
+</html>
