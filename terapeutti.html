@@ -52,6 +52,72 @@
   --r2: 14px;
 }
 
+/* ── VAALEA TEEMA ── */
+body.light {
+  --bg:       #f4f6fa;
+  --bg2:      #ffffff;
+  --bg3:      #eaecf4;
+  --surface:  #e0e4f0;
+  --border:   #c8cedc;
+  --border2:  #b0b8cc;
+  --muted:    #8890a8;
+  --dim:      #6070a0;
+  --mid:      #3a4878;
+  --text:     #1a2040;
+  --bright:   #0a1030;
+
+  --gold:     #9a7020;
+  --gold-bg:  #fdf8ec;
+  --gold-bd:  #e8d8a0;
+
+  --teal:     #2a7860;
+  --teal-bg:  #eaf6f2;
+  --teal-bd:  #a0d8c8;
+
+  --rose:     #a03050;
+  --rose-bg:  #faeaee;
+  --rose-bd:  #e0a0b0;
+
+  --blue:     #2858b0;
+  --blue-bg:  #eaeffa;
+  --blue-bd:  #a0b8e0;
+
+  --amber:    #a06020;
+  --amber-bg: #fdf2e8;
+  --amber-bd: #e8c090;
+
+  color-scheme: light;
+}
+
+body.light .sidebar {
+  background: #ffffff;
+  border-right: 1px solid var(--border);
+}
+body.light .top-bar {
+  background: rgba(244,246,250,0.96);
+  border-bottom: 1px solid var(--border);
+}
+body.light .nav-item:hover { background: var(--bg3); }
+body.light .nav-item.active { background: var(--teal-bg); border-color: var(--teal); }
+body.light .dash-card { background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+body.light .page { background: var(--bg); }
+body.light .info-box { background: var(--gold-bg); border-color: var(--gold-bd); }
+body.light .field-input,
+body.light .field-textarea,
+body.light .field-select {
+  background: #fff;
+  border-color: var(--border);
+  color: var(--text);
+}
+body.light .note-entry { background: #fff; border-color: var(--border); }
+body.light .ass-panel { background: transparent; }
+body.light .q-item { background: #fff; border-color: var(--border); }
+body.light .q-opt { background: var(--bg3); border-color: var(--border); color: var(--text); }
+body.light .q-opt.selected { background: var(--teal-bg); border-color: var(--teal); color: var(--teal); }
+body.light .method-check { color: var(--text); }
+body.light .hamburger { background: #fff; border-color: var(--border); }
+body.light .hamburger span { background: var(--text); }
+
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 html { scroll-behavior:smooth; }
 
@@ -880,7 +946,12 @@ h3.section-h {
 
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <div class="logo-name">Marko Oinas</div>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div class="logo-name">Marko Oinas</div>
+      <button id="theme-toggle" onclick="toggleTheme()"
+        style="background:none;border:none;cursor:pointer;font-size:1rem;padding:0.2rem;border-radius:6px;opacity:0.7;transition:opacity 0.2s"
+        title="Vaihda teema">🌙</button>
+    </div>
     <div class="logo-title">Kliininen työkalu · v1.0</div>
   </div>
 
@@ -2504,6 +2575,18 @@ const EXERCISES_T = [
   { id:'ankkuri-aistihetki', name:'Ankkuri — aistien paluu', cat:'grounding', catLabel:'Ankkurointi', desc:'Nopea maadoitus 2–5 minuutissa. Toimii kaikkialla.', dur:'2–5 min', forState:['hyper','panic'], clientSafe:true,
     steps:['Pysähdy. Jalat lattiaan.','Ulos hengitys suun kautta.','Nimeä 3 näkemääsi asiaa.','Tunnustele jotain käsillä.','Yksi hidas hengitys.'],
     clinical:'Sensorinen reorientaatio keskeyttää paniikkikierteen. Opetettavissa yhden session aikana.', contra:''},
+  { id:'ylikierroksilta-lepoon', name:'Ylikierroksilta lepoon (15–45 min)', cat:'somatic', catLabel:'Somaattinen', desc:'ANS-säätely sympaattisen yliaktivaation purkamiseen. 5 vaihetta.', dur:'15–45 min', forState:['hyper','panic'], clientSafe:true,
+    steps:['Liike + ravistelu: purkaa motorinen levottomuus','Sensorinen maadoitus istuen: reisien silitys, jalkapohjat','Fysiologinen huokaus: 2+1 hengitys, uloshengityksen pidennys','PMR: hartiat + kasvot kontrastirentoutus','Palautuminen: sormenpäät, katse ympärille'],
+    clinical:'Trauma-sensitiivinen. Alkaa liikkeestä — ei pakoteta hiljaisuuteen. Soveltuu dissosiaatioon ja ylikierroksille. Polyvagaali: sympaattisesta ventrasaaliin.', contra:'⚠ Modifioi jos asiakkaalla vaikea krooninen kipu tai liikkumisrajoite.'},
+  { id:'rajat-ja-kannateltavuus', name:'Rajat ja kannateltavuus (45 min)', cat:'somatic', catLabel:'Somaattinen', desc:'Proprioseptiivinen harjoite kehon rajojen löytämiseen ja kannateltavuuden kokemukseen.', dur:'45 min', forState:['hypo','panic'], clientSafe:true,
+    steps:['Orientointi huoneeseen silmät auki','Taputtelusekvenssi: olkapäät → kädet → rintakehä → vatsa → reidet','Itsensä halaus + keinu','Lattia-tuki: jalkapohjat, istuinluut, selkä','Painovoiman vastaanottaminen'],
+    clinical:'Erityisen tehokas dissosiaatiossa ja derealisation/depersonalisaatio-oireissa. Kehon rajat palauttavat kehollisen identiteetin. SE + somaattinen psykoterapia.', contra:'⚠ Arvioi ensin — joillekin oman kehon koskettaminen voi aktivoida traumamuistoja.'},
+  { id:'sisainen-aani', name:'Sisäinen ääni ja liike (45 min)', cat:'vagus', catLabel:'Vagus', desc:'Vagushermon suora stimulaatio äänivärähtelyllä. Sopii kun hiljaisuus on laukaiseva tekijä.', dur:'45 min', forState:['hyper','hypo'], clientSafe:true,
+    steps:['Mikroliike: hartiaympyrät + ylävartalon kierto','Huokaus-liike yhdistelmä','Rintakehähyrinä: Mmmmm... käsi päällä','Äänenkorkeus-kokeilu + kehon seuranta','Terapeutti ja asiakas yhdessä — co-regulation äänellä'],
+    clinical:'Polyvagaali: kurkunpään vagusärsytys aktivoi ventraalisen vagaalin. Erityisen tehokas kun hiljaisuus on trauma-laukaisija. Käytetään freeze-tilan katkaisuun.', contra:'⚠ Joillekin oman äänen kuuleminen voi olla haastavaa. Aloita terapeutin äänellä.'},
+  { id:'turvapaikka-kehossa', name:'Turvapaikka kehossa (15 min)', cat:'grounding', catLabel:'Ankkurointi', desc:'Asteittainen mikroaltistus silmien sulkemiselle kehon ankkurin avulla.', dur:'15 min', forState:['hyper','panic'], clientSafe:true,
+    steps:['Kehon resurssin etsiminen: vakain kohta = ankkuri','3 sek silmät kiinni — ankkuri — avaa','5 sek silmät kiinni — ankkuri + hengitys — avaa','8 sek silmät kiinni — ankkuri — avaa','Ravistelu + integraatio'],
+    clinical:'Graded exposure / systemaattinen desensitisaatio. Rakentaa toleranssia pimeydelle ja yksinololle. Trauma-sensitiivinen — asiakas kontrolloi 100%. Sopii kun silmien sulkeminen on este muille harjoitteille.', contra:'⚠ Älä käytä aktiivisessa kriisitilassa. Vaaditaan hyvä terapiasuhde.'},
 ];
 
 const PSYCHOED_T = [
@@ -2548,6 +2631,26 @@ const PSYCHOED_T = [
 // ═══════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════
+// ══════════════════════════════════════════════
+// TEEMA — tumma / vaalea
+// ══════════════════════════════════════════════
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  localStorage.setItem('t_theme', isLight ? 'light' : 'dark');
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = isLight ? '☀️' : '🌙';
+}
+
+(function initTheme() {
+  const saved = localStorage.getItem('t_theme');
+  const preferLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  if (saved === 'light' || (!saved && preferLight)) {
+    document.body.classList.add('light');
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = '☀️';
+  }
+})();
+
 // ══════════════════════════════════════════════
 // MOBIILI — sidebar toggle
 // ══════════════════════════════════════════════

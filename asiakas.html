@@ -3584,6 +3584,26 @@ const SPIRIT_ANIMALS = [
     sound:'FHHHHUUU! 🐉',
     body:'Voimakas, intensiivinen, tulinen.',
     tip:'Lohikäärme auttaa kun tuntuu palavan sisällä.' },
+  // ── UUDET HARJOITTEET ──
+  { id:'ylikierroksilta-lepoon', name:'Ylikierroksilta lepoon', cat:'somatic', catLabel:'Somaattinen',
+    desc:'ANS-säätely sympaattisen tonuksen laskemiseen. Yhdistää liikkeen, hengityksen ja lihaksen rentoutumisen.',
+    multiDur:true, durations:['15 min','45 min'], durationIds:['ylikierroksilta-lepoon-lyhyt','ylikierroksilta-lepoon'],
+    steps:[] },
+
+  { id:'rajat-ja-kannateltavuus', name:'Rajat ja kannateltavuus', cat:'somatic', catLabel:'Somaattinen',
+    desc:'Kehon fyysisten rajojen aktivointi ja painovoiman tuen kokemus. Sopii erityisesti dissosiaatioon ja kehon rajojen katoamisen tunteeseen.',
+    dur:'45 min', forState:['low','panic'],
+    steps:[] },
+
+  { id:'sisainen-aani', name:'Sisäinen ääni ja liike', cat:'vagus', catLabel:'Vagus',
+    desc:'Vagushermon stimulaatio äänivärähtelyllä ja mikroliikkeellä. Sopii kun hiljaisuus on laukaiseva tekijä.',
+    dur:'45 min', forState:['panic','high'],
+    steps:[] },
+
+  { id:'turvapaikka-kehossa', name:'Turvapaikka kehossa', cat:'ground', catLabel:'Ankkurointi',
+    desc:'Asteittainen altistus sisäiselle epävarmuudelle. Rakennetaan kehon resurssi pienin, hallituin askelin.',
+    dur:'15 min', forState:['panic','low'],
+    steps:[] },
 ];
 
 let selectedSpirit = null;
@@ -6374,9 +6394,108 @@ const GUIDED_PROGRAMS = {
     ]
   },
 
-};
+  // ── UUDET HARJOITTEET ──
 
-// Guided timer state
+  'ylikierroksilta-lepoon': {
+    name:'Ylikierroksilta lepoon',
+    rounds:1,
+    phases:[
+      { text:'Noustaan seisomaan. Jalat leveään asentoon. Aloitetaan pienellä polven joustomisella — anna käsien roikkua rentoina.', dur:90 },
+      { text:'Jatka rytmikästä hytkymistä. Anna koko kehon liikkua polvien mukana.', dur:60 },
+      { text:'Ravistele oikeaa kättä — kuin ravistelisit siitä vettä pois. Sitten vasen käsi. Oikea jalka. Vasen jalka.', dur:60 },
+      { text:'Hengitä sisään, nosta hartiat korviin ja purista kädet nyrkkiin... ja ulos: Puhhhhh! Anna hartioiden pudota ja avaa nyrkit.', dur:30 },
+      { text:'Toista neljä kertaa. Sisään — purista — ja ulos: Puhhhhh!', dur:90 },
+      { text:'Pysähdy. Pidä silmät auki. Huomaa miltä jalkapohjat tuntuvat lattiaa vasten nyt.', dur:30 },
+      { text:'Istuudu tuolille tukevasti. Ota molemmat kädet ja ala silittää reisiäsi — painamalla hitaasti lonkista kohti polvia.', dur:60 },
+      { text:'Tunne käsien jämäkkä paine. Tee tämä hidas silitys muutaman kerran.', dur:60 },
+      { text:'Paina jalkapohjia — erityisesti kantapäitä — tietoisesti lattiaa vasten. Huomaa luja alusta.', dur:45 },
+      { text:'Laita toinen käsi rintalastan päälle. Toinen käsi vatsalle. Seuraa miten rintakehä nousee ja laskee kämmentä vasten.', dur:60 },
+      { text:'Hengitys — fysiologinen huokaus: sisään nenästä... ja vielä pieni lisäimu... ja pitkä hidas huokaus suusta: Haaaaaaaaa...', dur:30 },
+      { text:'Uudestaan. Sisään... vähän lisää... ja pitkä huokaus: Haaaaaaaaa... Tunne hartioiden laskeutuminen.', dur:60 },
+      { text:'Jatka tätä rytmiä. Uloshengitys aina pidempi kuin sisäänhengitys. Kuvittele puhaltavasi höyhentä — se lepattaa mutta ei sammu.', dur:90 },
+      { text:'Anna kehon painon painua raskaammaksi tuolia vasten. Tuoli kantaa sinua. Ei ole mitään suoritettavaa.', dur:60 },
+      { text:'Vedä hartiat korviin — jännitä niskat ja hartiat lukkoon. Pidä... kolme... kaksi... yksi... ja päästä kokonaan irti.', dur:45 },
+      { text:'Purista silmät tiukasti kiinni, rypistä nenää, pure hampaat yhteen. Jännitä kasvot ruttuun... kolme... kaksi... yksi... rentouta.', dur:45 },
+      { text:'Anna leuan laskeutua hieman auki. Kieli lepää suun pohjalla. Tunne ero jännityksen ja hellittämisen välillä.', dur:45 },
+      { text:'Ala liikutella sormenpäitä hitaasti. Hieroa peukalolla muiden sormien päitä. Tunne niiden pinta.', dur:30 },
+      { text:'Katso rauhallisesti ympärillesi. Anna katseesi poimia jokin esine joka näyttää levolliselta.', dur:30 },
+      { text:'Huomaa miltä keho tuntuu nyt verrattuna siihen kun aloitit. Olet antanut hermostollesi tilaa palautua.', dur:45 },
+    ]
+  },
+
+  'ylikierroksilta-lepoon-lyhyt': {
+    name:'Ylikierroksilta lepoon — lyhyt',
+    rounds:1,
+    phases:[
+      { text:'Seiso jalat leveässä asennossa. Aloita pienellä polven joustomisella. Anna käsien roikkua rentoina.', dur:60 },
+      { text:'Ravistele oikeaa kättä, vasenta kättä, oikeaa jalkaa, vasenta jalkaa. Päästä energia liikkeeseen.', dur:45 },
+      { text:'Hengitä sisään, nosta hartiat korviin... ja ulos: Puhhhhh! Toista kolme kertaa.', dur:60 },
+      { text:'Istuudu. Paina jalkapohjia lattiaan. Tunnista luja alusta kantapäiden alla.', dur:30 },
+      { text:'Fysiologinen huokaus: sisään nenästä... vähän lisää... ja pitkä huokaus ulos: Haaaaaaaaa...', dur:30 },
+      { text:'Toista neljä kertaa. Jokainen uloshengitys pidempi kuin sisäänhengitys.', dur:60 },
+      { text:'Vedä hartiat korviin — jännitä — ja pudota. Purista kasvot — ja rentouta. Tunne ero.', dur:45 },
+      { text:'Hengitä rauhallisesti. Huomaa miltä keho tuntuu nyt.', dur:30 },
+    ]
+  },
+
+  'rajat-ja-kannateltavuus': {
+    name:'Rajat ja kannateltavuus',
+    rounds:1,
+    phases:[
+      { text:'Istuudu tuolille. Katso ympärillesi rauhassa. Etsi kaksi tai kolme esinettä jotka näyttävät vakailta tai neutraaleilta.', dur:30 },
+      { text:'Anna katseesi levätä niissä. Huomaa tämä huone, tämä hetki. Olet turvassa.', dur:30 },
+      { text:'Ota oikea käsi ja ala taputtelemaan vasenta olkapäätä. Etene alaspäin kyynärvarteen, ranteeseen, kämmeneen.', dur:60 },
+      { text:'Vaihda kättä. Taputtele vasemmalla kädellä oikea olkapää, käsivarsi ja käsi. Tunne ihon pinta.', dur:60 },
+      { text:'Taputtele sormenpäillä rintalastaa. Päästä pieni huokaus: Haa... Siirry vatsalle — hiero kämmenellä pyörivin liikkein.', dur:60 },
+      { text:'Ota tukeva ote reisistä. Puristele reisilihaksia molemmin käsin. Etene polviin ja sääriin.', dur:60 },
+      { text:'Risti kädet rinnallasi — ota kiinni omista olkavarsistasi. Tee itsellesi lämmin halaus. Keinu hitaasti puolelta toiselle.', dur:45 },
+      { text:'Tässä olet sinä. Olet turvassa omassa ihossasi. Kehosi pysyy täydellisesti koossa.', dur:30 },
+      { text:'Paina jalkapohjia lattiaan — tunne lattian kovuus ja vastus. Lattia kantaa sinua, se ei putoa alta.', dur:45 },
+      { text:'Tunne istuinluut ja reidet tuolilla. Salli tuolin kannatella lantiosi painoa. Sinun ei tarvitse kannatella itseäsi.', dur:45 },
+      { text:'Anna selän nojata luottavaisesti tuolin selkänojaan. Tunne tuki takanasi.', dur:45 },
+      { text:'Hengitä sisään... ja uloshengityksellä anna kehon painon laskeutua vielä syvemmin tuolin ja lattian varaan.', dur:60 },
+      { text:'Maapallon painovoima pitää sinusta kiinni joka sekunti. Sinä olet kannateltu.', dur:45 },
+      { text:'Ala liikutella sormiasi ja varpaitasi hitaasti. Suorista selkää, venyttele käsiä. Katso huoneeseen.', dur:30 },
+      { text:'Mikä kohta kehossa tuntui kaikkein vakaimmalta tai jämäkimmältä? Anna sen tunteen levätä muistissasi.', dur:30 },
+    ]
+  },
+
+  'sisainen-aani': {
+    name:'Sisäinen ääni ja liike',
+    rounds:1,
+    phases:[
+      { text:'Ala hitaasti pyöritellä hartioita ympäri — etukautta ylös ja takakautta alas. Tee liikkeestä pehmeä.', dur:60 },
+      { text:'Anna ylävartalon lähteä piirtämään pientä ympyrää istuinluiden päällä. Vaihda suuntaa.', dur:60 },
+      { text:'Yhdistä liikkeeseen huokaus: sisään... ja ulos: Haaaaaaa... Toista neljä kertaa.', dur:60 },
+      { text:'Laita toinen käsi rintakehälle, toinen vatsalle. Hengitä sisään... ja uloshengityksellä hyri: Mmmmmmm...', dur:30 },
+      { text:'Jatka hyrinnää. Tunne kämmenten alla miten rintakehäsi värähtelee. Tee tämä viisi kertaa.', dur:90 },
+      { text:'Nosta hyrinä vähän korkeammaksi. Kokeile eri korkeuksia. Mikä tuntuu parhaalta kehossasi?', dur:60 },
+      { text:'Hyri niin pitkään kuin uloshengitys riittää luontevasti. Tunne värähtely koko rintakehässä.', dur:60 },
+      { text:'Kokeile humista nenän kautta — Nnnnnnnn... Mikä tuntuu eri tavalla kuin suun kautta?', dur:45 },
+      { text:'Anna äänen muuttua huokaukseksi: Mmmmm... Haaaaaa... Mmmmm... Haaaaaa...', dur:60 },
+      { text:'Ravistele kämmeniä ja sormia — kuin ravistelisit vettä pois. Ravistele vähän jalkoja.', dur:30 },
+      { text:'Sinun äänesi täyttää tämän tilan. Sisäinen maailmasi on elossa, se värähtelee ja pitää sinusta huolta.', dur:30 },
+    ]
+  },
+
+  'turvapaikka-kehossa': {
+    name:'Turvapaikka kehossa',
+    rounds:1,
+    phases:[
+      { text:'Etsi kehostasi kohta joka tuntuu juuri nyt kaikkein vakaimmalta tai rauhallisimmalta. Voi olla jalkapohjat, takapuoli tuolilla, tai jokin muu.', dur:45 },
+      { text:'Paina tätä kohtaa tietoisesti. Tunne se jämäkkä tunne. Tämä on sinun ankkurisi.', dur:30 },
+      { text:'Sulje silmät kolmeksi sekunniksi. Pidä huomio ankkurissasi. Yksi... kaksi... kolme... avaa silmät.', dur:20 },
+      { text:'Huomaa — huone on täysin ennallaan. Mikään ei muuttunut. Hengitä kerran syvään ulos.', dur:20 },
+      { text:'Sulje silmät viideksi sekunniksi. Ankkuri jaloissa. Yksi... kaksi... kolme... neljä... viisi... avaa.', dur:25 },
+      { text:'Loistavaa. Rekisteröi kehollesi — selvisit viisi sekuntia. Kehosi on tässä ja turvassa.', dur:20 },
+      { text:'Sulje silmät kahdeksaksi sekunniksi. Ankkuri jalkapohjissa. Hengitys virtaa. Olet turvassa...', dur:35 },
+      { text:'Avaa silmät. Katso ympärillesi. Olet tehnyt jotain rohkeaa — kohdannut epävarmuutta turvallisesti.', dur:30 },
+      { text:'Nouse seisomaan. Ravistele koko kehoa kunnolla. Ravistele kädet, jalat, päästä huokauksia ulos.', dur:60 },
+      { text:'Istuudu takaisin. Miltä sinusta tuntuu kehossa nyt? Mikä auttoi sinua kaikkein eniten pysymään turvassa?', dur:30 },
+    ]
+  },
+
+};
 let guidedActive = false;
 let guidedTimeout = null;
 let guidedCurrentRound = 0;

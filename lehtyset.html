@@ -311,6 +311,27 @@ const EXERCISES = [
     desc:'Nopea paluu nykyhetkeen kolmen asteen kautta. Toimii kaikkialla — kaupassa, liikenteessä, kesken kokouksen.',
     steps:['Pysähdy missä olet. Sinun ei tarvitse sulkea silmiä.','Paina jalat lattiaan — tunne paino. Lattia kantaa sinut.','Hengitä kerran pitkästi ulos suun kautta.','Nimeä 3 asiaa joita NÄET. Tavallisia — katto, ikkuna, kuppi.','Tunnustele jotain käsillä — pöytä, vaate, oma iho.','Yksi hidas hengitys. Olet tässä. Nyt. Tämä riittää.'],
     tip:'Mitä useammin harjoittelet, sitä nopeammin se toimii. Voit käyttää ennaltaehkäisevästi.' },
+
+  // ── UUDET HARJOITTEET ──
+  { id:'ylikierroksilta-lepoon', name:'Ylikierroksilta lepoon', cat:'somatic', catLabel:'Somaattinen', catClass:'cat-somatic', dur:'15–45 min',
+    desc:'ANS-säätely ylikierroksilla olevalle hermostolle. Yhdistää liikkeen, hengityksen ja lihaksen rentoutumisen vaiheistettuna.',
+    steps:['Seiso jalat leveässä asennossa. Aloita pienellä polven joustomisella. Anna käsien roikkua rentoina.','Ravistele kädet ja jalat — päästä energia liikkeeseen.','Hengitä sisään, nosta hartiat korviin... ja ulos: Puhhhhh! Toista 4–5 kertaa.','Istuudu. Silittele reisiä hitaasti — paina kämmenet jämäkästi.','Paina jalkapohjia lattiaan. Tunnista luja alusta kantapäiden alla.','Fysiologinen huokaus: sisään... vähän lisää... ja pitkä huokaus ulos: Haaaaaaaaa...','Vedä hartiat korviin — jännitä — pudota. Purista kasvot — rentouta. Tunne ero.','Sormenpäiden liikuttelua. Katso ympärillesi. Huomaa muutos.'],
+    tip:'Harjoitus alkaa liikkeestä, ei rauhallisuudesta. Anna hermoston purkaa ennen kuin rauhoitat.' },
+
+  { id:'rajat-ja-kannateltavuus', name:'Rajat ja kannateltavuus', cat:'somatic', catLabel:'Somaattinen', catClass:'cat-somatic', dur:'45 min',
+    desc:'Kehon fyysisten rajojen aktivointi ja painovoiman tuen kokemus. Sopii dissosiaatioon ja kehon rajojen katoamisen tunteeseen.',
+    steps:['Katso ympärillesi. Etsi kaksi esinettä jotka näyttävät vakailta.','Taputtele olkapäätä → käsivartta → kämmentä. Vaihda puoli.','Taputtele rintalastaa. Hiero vatsa pyöreästi. Purista reisilihaksia.','Halaa itseäsi — risti kädet rintakehälle. Keinu hitaasti.','Paina jalkapohjia lattiaan. Tunnista lattian tuki.','Salli tuolin kannatella painosi. Sinun ei tarvitse kannatella itse.','Anna selän nojata selkänojaan. Tunne tuki takanasi.','Maapallon painovoima pitää sinusta kiinni. Olet kannateltu.'],
+    tip:'Keho on turvallisin paikka — harjoitus palauttaa tähän kokemukseen.' },
+
+  { id:'sisainen-aani', name:'Sisäinen ääni ja liike', cat:'vagus', catLabel:'Vagus', catClass:'cat-vagus', dur:'45 min',
+    desc:'Vagushermon stimulaatio äänivärähtelyllä ja mikroliikkeellä. Oman äänen käyttö täyttää sisäistä tilaa turvallisesti.',
+    steps:['Pyöritä hartioita pehmeästi. Anna vartalon piirtää pientä ympyrää.','Yhdistä liikkeeseen huokaus: sisään... ulos: Haaaaaaa...','Laita käsi rintakehälle. Hyri: Mmmmmmm... Tunne värähtely.','Jatka hyrinnää viisi kertaa. Kokeile eri korkeuksia.','Yhdistä: Mmmmm... Haaaaaa... Mmmmm... Haaaaaa...','Sinun äänesi täyttää tilan. Sisäinen maailmasi on elossa.'],
+    tip:'Äänellä on suora yhteys vagushermoon kurkunpään kautta. Tämä ei vaadi laulamisen taitoa.' },
+
+  { id:'turvapaikka-kehossa', name:'Turvapaikka kehossa', cat:'ground', catLabel:'Ankkurointi', catClass:'cat-ground', dur:'15 min',
+    desc:'Asteittainen altistus epävarmuudelle kehon resurssia rakentaen. Rakennetaan turva pienin, hallituin askelin.',
+    steps:['Etsi kehostasi vakainta kohtaa — jalkapohjat, takapuoli, peukalo.','Paina tätä kohtaa. Tämä on ankkurisi.','Sulje silmät 3 sekunniksi. Pidä huomio ankkurissa. Avaa.','Huomaa: huone on ennallaan. Mikään ei muuttunut.','Sulje silmät 5 sekunniksi. Ankkuri. Hengitys. Avaa.','Selvisit. Kehosi oli koko ajan turvassa.','Ravistele kädet ja jalat — integroi kokemus.'],
+    tip:'Jokainen onnistunut sekunta rakentaa turvallisuuden kokemusta hermostoon.' },
 ];
 
 // ════════════════════════════════════════════════
@@ -394,6 +415,7 @@ const PAGES = [
   { type:'exercises', audience:'adults', exercises:[8,9,10,11], section:{ icon:'💚', title:'Somaattinen & Mielikuva', sub:'Somaattiset harjoitteet · Mielikuvatyöskentely · Voimavarat' } },
   { type:'exercises', audience:'adults', exercises:[12,13], section:{ icon:'🧘', title:'Tietoisuustaidot', sub:'Meditaatio · Ystävällisyysmeditaatio · Mielen harjoittelu' } },
   { type:'exercises', audience:'adults', exercises:[14,15,16,17], section:{ icon:'🌿', title:'Kehoskannaus & Mielikuvamatkat', sub:'Syvä kehollinen läsnäolo · Metsä · Lapsuuden turvapaikka · Ankkuri' } },
+  { type:'exercises', audience:'adults', exercises:[18,19,20,21], section:{ icon:'🧠', title:'Syväsäätely & kehon turva', sub:'ANS-säätely · Kehon rajat · Äänivärähtely · Asteittainen altistus' } },
   { type:'psychoed', audience:'adults', topic:'stressi' },
   { type:'psychoed', audience:'adults', topic:'kipu' },
   { type:'psychoed', audience:'adults', topic:'trauma' },
