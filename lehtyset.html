@@ -487,6 +487,14 @@ function footer(pageNum, total) {
     </div>`;
 }
 
+function qrImg(url, size=48) {
+  // QR-koodi Google Charts API:lla
+  const encoded = encodeURIComponent(url);
+  return `<img src="https://chart.googleapis.com/chart?cht=qr&chs=${size}x${size}&chl=${encoded}&choe=UTF-8" width="${size}" height="${size}" style="display:block">`;
+}
+
+const APP_URL = 'https://markooinas-source.github.io/stressijarjestelma/asiakas.html';
+
 function exBlock(ex, compact) {
   const cls = compact ? 'ex-block compact' : 'ex-block';
   const titleCls = compact ? 'ex-title small' : 'ex-title';
@@ -496,10 +504,16 @@ function exBlock(ex, compact) {
   const tipCls = isStory ? 'ex-tip story-tip' : 'ex-tip';
   return `
     <div class="${cls}">
-      <div>
-        <div class="ex-cat-label ${ex.catClass || 'cat-kids'}">${ex.catLabel || ex.cat}</div>
-        <div class="${titleCls}">${ex.name}</div>
-        <div class="ex-duration">${ex.dur}</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div style="flex:1">
+          <div class="ex-cat-label ${ex.catClass || 'cat-kids'}">${ex.catLabel || ex.cat}</div>
+          <div class="${titleCls}">${ex.name}</div>
+          <div class="ex-duration">${ex.dur}</div>
+        </div>
+        <div style="text-align:center;margin-left:6px;flex-shrink:0">
+          ${qrImg(APP_URL, 44)}
+          <div style="font-size:6pt;color:#999;margin-top:1mm">Avaa sovellus</div>
+        </div>
       </div>
       <div class="${descCls}">${ex.desc}</div>
       <div class="steps-label">Ohje vaiheittain</div>

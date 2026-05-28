@@ -2176,24 +2176,59 @@ body.kids-mode .site-footer { display:none; }
         <div id="reminder-status" style="font-size:0.72rem;color:var(--green);font-style:italic;margin-top:0.1rem"></div>
         <div id="reminder-next" style="font-size:0.72rem;color:var(--green);opacity:0.75;display:none;margin-top:0.1rem"></div>
       </div>
-      <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
-        <input type="time" id="reminder-time" value="09:00"
-          style="padding:0.32rem 0.6rem;border:1.5px solid var(--green-bd);border-radius:8px;font-size:0.85rem;background:transparent;color:var(--green);cursor:pointer">
-        <button id="reminder-on-btn" onclick="enableReminder()"
-          style="padding:0.35rem 1rem;border-radius:20px;border:none;cursor:pointer;font-size:0.78rem;font-weight:700;background:var(--green);color:#fff;white-space:nowrap">
-          🔔 Ota käyttöön
-        </button>
-        <button id="reminder-off-btn" onclick="disableReminder()" style="display:none;
-          padding:0.35rem 1rem;border-radius:20px;border:1.5px solid var(--green-bd);cursor:pointer;font-size:0.78rem;font-weight:600;background:transparent;color:var(--green);white-space:nowrap">
-          🔕 Poista muistutus
-        </button>
+    </div>
+
+    <!-- Muistutusajat -->
+    <div style="margin-top:0.75rem">
+      <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--green);margin-bottom:0.4rem">Muistutusajat (valitse 1–3)</div>
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center">
+        <div style="display:flex;align-items:center;gap:0.3rem;background:rgba(255,255,255,0.5);padding:0.3rem 0.6rem;border-radius:8px;border:1px solid var(--green-bd)">
+          <span style="font-size:0.75rem;color:var(--green)">🌅</span>
+          <input type="time" id="reminder-time-1" value="09:00"
+            style="padding:0.2rem 0.4rem;border:1px solid var(--green-bd);border-radius:6px;font-size:0.82rem;background:transparent;color:var(--green);cursor:pointer;width:90px">
+        </div>
+        <div style="display:flex;align-items:center;gap:0.3rem;background:rgba(255,255,255,0.5);padding:0.3rem 0.6rem;border-radius:8px;border:1px solid var(--green-bd)">
+          <span style="font-size:0.75rem;color:var(--green)">🌞</span>
+          <input type="time" id="reminder-time-2" value=""
+            placeholder="—"
+            style="padding:0.2rem 0.4rem;border:1px solid var(--green-bd);border-radius:6px;font-size:0.82rem;background:transparent;color:var(--green);cursor:pointer;width:90px">
+        </div>
+        <div style="display:flex;align-items:center;gap:0.3rem;background:rgba(255,255,255,0.5);padding:0.3rem 0.6rem;border-radius:8px;border:1px solid var(--green-bd)">
+          <span style="font-size:0.75rem;color:var(--green)">🌙</span>
+          <input type="time" id="reminder-time-3" value=""
+            placeholder="—"
+            style="padding:0.2rem 0.4rem;border:1px solid var(--green-bd);border-radius:6px;font-size:0.82rem;background:transparent;color:var(--green);cursor:pointer;width:90px">
+        </div>
       </div>
     </div>
+
+    <!-- Viesti -->
+    <div style="margin-top:0.6rem">
+      <input type="text" id="reminder-msg" value="Aika harjoitella! 🌿" maxlength="80"
+        placeholder="Muistutusviesti..."
+        style="width:100%;padding:0.35rem 0.65rem;border:1.5px solid var(--green-bd);border-radius:8px;font-size:0.82rem;background:rgba(255,255,255,0.5);color:var(--ink);outline:none">
+    </div>
+
+    <div style="display:flex;gap:0.5rem;margin-top:0.65rem;flex-wrap:wrap">
+      <button id="reminder-on-btn" onclick="enableReminder()"
+        style="padding:0.35rem 1rem;border-radius:20px;border:none;cursor:pointer;font-size:0.78rem;font-weight:700;background:var(--green);color:#fff;white-space:nowrap">
+        🔔 Ota käyttöön
+      </button>
+      <button id="reminder-off-btn" onclick="disableReminder()" style="display:none;
+        padding:0.35rem 1rem;border-radius:20px;border:1.5px solid var(--green-bd);cursor:pointer;font-size:0.78rem;font-weight:600;background:transparent;color:var(--green);white-space:nowrap">
+        🔕 Poista muistutus
+      </button>
+      <button onclick="testReminder()" title="Testaa ilmoitus"
+        style="padding:0.35rem 0.75rem;border-radius:20px;border:1.5px solid var(--green-bd);cursor:pointer;font-size:0.75rem;background:transparent;color:var(--green)">
+        🔔 Testaa
+      </button>
+    </div>
+
     <div id="reminder-denied-msg" style="display:none;margin-top:0.6rem;font-size:0.75rem;color:var(--amber);background:var(--amber-bg);border-radius:6px;padding:0.5rem 0.75rem">
       ⚠ Selain ei salli ilmoituksia — muuta asetukset selaimen osoitepalkista (🔒-kuvake).
     </div>
-    <div style="margin-top:0.6rem;font-size:0.72rem;color:var(--green);opacity:0.65;line-height:1.5">
-      Ilmoitus tulee tähän laitteeseen kun sivu on auki. Muistuttaa vain jos et ole harjoitellut päivällä.
+    <div style="margin-top:0.5rem;font-size:0.7rem;color:var(--green);opacity:0.65;line-height:1.5">
+      Ilmoitus tulee kun sivu on auki selaimessa. Muistuttaa vain jos et ole kirjannut harjoitetta kyseisellä vuorokaudella.
     </div>
   </div>
 
@@ -2315,6 +2350,7 @@ body.kids-mode .site-footer { display:none; }
         <div style="font-size:0.85rem;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink3)">Edistyminen</div>
         <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
           <button onclick="shareProgress('copy')" style="font-family:var(--font-m);font-size:0.68rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green);cursor:pointer">📋 Kopioi yhteenveto</button>
+          <button onclick="shareProgress('email')" style="font-family:var(--font-m);font-size:0.68rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--sand2);border:1px solid var(--sand3);color:var(--ink3);cursor:pointer">✉ Lähetä terapeutille</button>
           <button onclick="shareProgress('csv')" style="font-family:var(--font-m);font-size:0.68rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--sand2);border:1px solid var(--sand3);color:var(--ink3);cursor:pointer">⬇ Vie CSV</button>
           <button onclick="shareProgress('print')" style="font-family:var(--font-m);font-size:0.68rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--sand2);border:1px solid var(--sand3);color:var(--ink3);cursor:pointer">🖨 Tulosta / PDF</button>
         </div>
@@ -4124,16 +4160,19 @@ function initReminder() {
   const saved = JSON.parse(localStorage.getItem('reminder_settings') || 'null');
   if (!saved) return updateReminderUI(false);
 
-  // Palauta tallennetut arvot
-  const timeEl = document.getElementById('reminder-time');
-  const msgEl  = document.getElementById('reminder-msg');
-  if (timeEl && saved.time) timeEl.value = saved.time;
-  if (msgEl  && saved.msg)  msgEl.value  = saved.msg;
+  const t1 = document.getElementById('reminder-time-1');
+  const t2 = document.getElementById('reminder-time-2');
+  const t3 = document.getElementById('reminder-time-3');
+  const msgEl = document.getElementById('reminder-msg');
+  if (t1 && saved.times?.[0]) t1.value = saved.times[0];
+  if (t2 && saved.times?.[1]) t2.value = saved.times[1];
+  if (t3 && saved.times?.[2]) t3.value = saved.times[2];
+  if (msgEl && saved.msg) msgEl.value = saved.msg;
 
   if (saved.enabled && 'Notification' in window) {
     if (Notification.permission === 'granted') {
-      scheduleReminder(saved.time, saved.msg);
-      updateReminderUI(true, saved.time);
+      scheduleReminder(saved.times, saved.msg);
+      updateReminderUI(true, saved.times?.[0]);
     } else if (Notification.permission === 'denied') {
       showReminderDenied();
     }
@@ -4146,8 +4185,18 @@ async function enableReminder() {
     return;
   }
 
-  const time = document.getElementById('reminder-time')?.value || '09:00';
-  const msg  = document.getElementById('reminder-msg')?.value  || 'Aika harjoitella! 🌿';
+  const times = [
+    document.getElementById('reminder-time-1')?.value,
+    document.getElementById('reminder-time-2')?.value,
+    document.getElementById('reminder-time-3')?.value,
+  ].filter(t => t && t.trim());
+
+  if (!times.length) {
+    alert('Valitse vähintään yksi muistutusaika.');
+    return;
+  }
+
+  const msg = document.getElementById('reminder-msg')?.value || 'Aika harjoitella! 🌿';
 
   if (Notification.permission === 'denied') {
     showReminderDenied();
@@ -4160,14 +4209,11 @@ async function enableReminder() {
   }
 
   if (permission === 'granted') {
-    localStorage.setItem('reminder_settings', JSON.stringify({
-      enabled: true, time, msg
-    }));
-    scheduleReminder(time, msg);
-    updateReminderUI(true, time);
-    // Testaa heti
+    localStorage.setItem('reminder_settings', JSON.stringify({ enabled: true, times, msg }));
+    scheduleReminder(times, msg);
+    updateReminderUI(true, times[0]);
     new Notification('Muistutus aktivoitu ✓', {
-      body: `Saat päivittäin muistutuksen klo ${time}`,
+      body: `Saat muistutuksen klo ${times.join(', ')}`,
       icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🌿</text></svg>'
     });
   } else if (permission === 'denied') {
@@ -4175,42 +4221,52 @@ async function enableReminder() {
   }
 }
 
+function testReminder() {
+  if (!('Notification' in window) || Notification.permission !== 'granted') {
+    alert('Ota muistutukset ensin käyttöön.');
+    return;
+  }
+  const msg = document.getElementById('reminder-msg')?.value || 'Aika harjoitella! 🌿';
+  new Notification(msg, {
+    body: 'Tämä on testioilmoitus — kaikki toimii! 🌿',
+    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🌿</text></svg>'
+  });
+}
 function disableReminder() {
   if (reminderInterval) { clearInterval(reminderInterval); reminderInterval = null; }
   localStorage.setItem('reminder_settings', JSON.stringify({ enabled: false }));
   updateReminderUI(false);
 }
 
-function scheduleReminder(time, msg) {
+function scheduleReminder(times, msg) {
   if (reminderInterval) clearInterval(reminderInterval);
+  if (!Array.isArray(times)) times = [times].filter(Boolean);
 
   function checkAndNotify() {
-    const now  = new Date();
-    const [h, m] = time.split(':').map(Number);
-    const target = new Date();
-    target.setHours(h, m, 0, 0);
+    const now = new Date();
+    const entries = loadEntries();
+    const todayStr = now.toLocaleDateString('fi-FI');
+    const doneToday = entries.some(e => e.date && e.date.startsWith(todayStr.split('.').slice(0,2).join('.')));
+    if (doneToday) return;
 
-    // Tarkista onko aika ±30 sekuntia
-    const diff = Math.abs(now - target);
-    if (diff < 30000) {
-      // Onko jo harjoiteltu tänään?
-      const entries = loadEntries();
-      const todayStr = now.toLocaleDateString('fi-FI');
-      const doneToday = entries.some(e => e.date && e.date.startsWith(todayStr.split('.').slice(0,2).join('.')));
-
-      if (!doneToday) {
-        new Notification(msg, {
-          body: 'Avaa sovellus ja tee yksi harjoite. Pienkin riittää! 🌿',
-          icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🌿</text></svg>',
-          tag: 'harjoite-reminder'
+    for (const time of times) {
+      if (!time) continue;
+      const [h, m] = time.split(':').map(Number);
+      const target = new Date();
+      target.setHours(h, m, 0, 0);
+      const diff = Math.abs(now - target);
+      if (diff < 30000) {
+        new Notification(msg || 'Aika harjoitella! 🌿', {
+          body: 'Muista tehdä päivän harjoite 🌱',
+          icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🌿</text></svg>'
         });
+        break;
       }
     }
   }
 
-  // Tarkista kerran minuutissa
-  reminderInterval = setInterval(checkAndNotify, 60000);
-  checkAndNotify(); // Tarkista heti
+  checkAndNotify();
+  reminderInterval = setInterval(checkAndNotify, 15000);
 }
 
 function updateReminderUI(active, time) {
@@ -5075,6 +5131,36 @@ function shareProgress(mode) {
         setTimeout(() => fb.style.display = 'none', 4000);
       }
     }).catch(() => showShareModal(text));
+
+  } else if (mode === 'email') {
+    // Rakenna sähköpostiviesti
+    const moodMap  = { ok:'Rauhallinen', high:'Stressaantunut', low:'Väsynyt', panic:'Ylikuormittunut' };
+    const subject = encodeURIComponent(`Edistymisraportti — ${new Date().toLocaleDateString('fi-FI')}`);
+    const recent14 = entries.slice(-14).reverse();
+    const painSection = avgPain ? `\nKIPUSEURANTA\nKipumerkintöjä: ${withPain}\nKeskim. VAS: ${avgPain}/10\n` : '';
+    const body = encodeURIComponent([
+      'Hei Marko,',
+      '',
+      'Tässä edistymisraporttini:',
+      '',
+      '═══════════════════════════',
+      `Kirjauksia: ${entries.length} | Seurantajakso: ${first.date?.split(' ')[0]||'—'} – ${last.date?.split(' ')[0]||'—'}`,
+      `Keskim. vireystila: ${avg}/10 | Kehitys: ${trendStr}`,
+      `Harjoittelupäiviä: ${withEx} | Putki: ${streak} pv`,
+      painSection,
+      'VIIMEISET 14 KIRJAUSTA',
+      ...recent14.map(e => {
+        let line = `${e.date?.split(' ')[0]||'—'} Vireystila:${e.score}/10 ${moodMap[e.mood]||e.mood||'—'}`;
+        if (e.spirit) line += ` ${e.spirit.emoji}${e.spirit.name}`;
+        if (e.pain?.score > 0) line += ` Kipu:${e.pain.score}/10`;
+        if (e.exercise) line += ` | ${e.exercise}`;
+        return line;
+      }),
+      '',
+      '─────────────────────────',
+      'Lähetetty Oma työkalu -sovelluksesta',
+    ].join('\n'));
+    window.location.href = `mailto:marko.oinas@turunfysiokulma.fi?subject=${subject}&body=${body}`;
 
   } else if (mode === 'csv') {
     const header = 'Päivämäärä,Vireystila,Mieliala,Voimahahmo,Harjoite,Kipu VAS,Kivun sijainti,Kivun laatu,Muistiinpano';
