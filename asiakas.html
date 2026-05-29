@@ -1789,6 +1789,7 @@ body.kids-mode .site-footer { display:none; }
     <button class="nav-tab adult-only" onclick="showPanel('paivakirja',this)">Päiväkirja</button>
     <button class="nav-tab adult-only" onclick="showPanel('kehokartta',this)">🫀 Kehokartta</button>
     <button class="nav-tab adult-only" onclick="showPanel('ajatukset',this)">💭 Ajatukset</button>
+    <button class="nav-tab adult-only" onclick="showPanel('elamanjana',this)">📅 Elämänjana</button>
     <button class="nav-tab adult-only" onclick="showPanel('kriisi',this)" style="color:var(--red);font-weight:800">🆘 Apua nyt</button>
   </div>
   <button class="kid-toggle" id="kid-toggle-btn" onclick="toggleKids()">🧸 Lapsi</button>
@@ -2598,6 +2599,119 @@ body.kids-mode .site-footer { display:none; }
 </div>
 
 <!-- ════ KRIISI ════ -->
+<div id="panel-elamanjana" class="panel adult-only">
+<div style="padding:1rem 1rem 0">
+  <div style="font-size:1.1rem;font-weight:800;color:var(--ink);margin-bottom:0.2rem">📅 Oma elämänjana</div>
+  <div style="font-size:0.76rem;color:var(--ink3);margin-bottom:1rem;line-height:1.5">Merkitse elämäsi tärkeät hetket janalle. Voit lisätä kuvan ja kuvauksen jokaiselle tapahtumalle.</div>
+
+  <!-- Asetukset -->
+  <div style="display:flex;gap:0.65rem;flex-wrap:wrap;align-items:flex-end;margin-bottom:1rem;padding:0.85rem;background:var(--sand2);border-radius:10px;border:1px solid var(--sand3)">
+    <div>
+      <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:0.25rem">Syntymävuosi</div>
+      <input type="number" id="atj-birth" min="1950" max="2020" placeholder="esim. 1990"
+        style="width:100px;padding:0.38rem 0.55rem;border:1.5px solid var(--sand3);border-radius:8px;font-size:0.88rem;background:var(--bg);color:var(--ink);outline:none"
+        oninput="atjRender()">
+    </div>
+    <button onclick="atjNewEvent()" style="padding:0.4rem 1rem;background:var(--green);color:#fff;border:none;border-radius:8px;font-size:0.8rem;font-weight:700;cursor:pointer">＋ Lisää hetki</button>
+  </div>
+
+  <!-- Värikoodi -->
+  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.85rem">
+    <div style="display:flex;align-items:center;gap:0.25rem;font-size:0.7rem;color:var(--ink3)"><span style="width:10px;height:10px;border-radius:50%;background:#2d9a4f;display:inline-block"></span>Voimavara</div>
+    <div style="display:flex;align-items:center;gap:0.25rem;font-size:0.7rem;color:var(--ink3)"><span style="width:10px;height:10px;border-radius:50%;background:#4a90d9;display:inline-block"></span>Neutraali</div>
+    <div style="display:flex;align-items:center;gap:0.25rem;font-size:0.7rem;color:var(--ink3)"><span style="width:10px;height:10px;border-radius:50%;background:#e0a020;display:inline-block"></span>Haastava</div>
+    <div style="display:flex;align-items:center;gap:0.25rem;font-size:0.7rem;color:var(--ink3)"><span style="width:10px;height:10px;border-radius:50%;background:#c0392b;display:inline-block"></span>Vaikea</div>
+    <div style="margin-left:auto;font-size:0.68rem;color:var(--ink3);font-style:italic">Vedä · Rullaa zoomaukseen · Kosketa</div>
+  </div>
+</div>
+
+<!-- Jana -->
+<div id="atj-container" style="position:relative;overflow:hidden;background:var(--bg);border-top:1px solid var(--sand3);border-bottom:1px solid var(--sand3);touch-action:none">
+  <canvas id="atj-canvas" style="display:block"></canvas>
+  <div id="atj-tooltip" style="display:none;position:absolute;background:var(--bg);border:1px solid var(--sand3);border-radius:10px;padding:0.65rem 0.9rem;max-width:220px;pointer-events:none;z-index:10;box-shadow:0 4px 20px rgba(0,0,0,0.12)">
+    <div id="atj-tt-title" style="font-weight:800;font-size:0.85rem;margin-bottom:0.15rem"></div>
+    <div id="atj-tt-date" style="font-size:0.7rem;color:var(--ink3);margin-bottom:0.3rem"></div>
+    <div id="atj-tt-desc" style="font-size:0.76rem;color:var(--ink2);line-height:1.5"></div>
+    <div id="atj-tt-img" style="margin-top:0.4rem"></div>
+    <div style="margin-top:0.5rem;display:flex;gap:0.35rem">
+      <button id="atj-tt-edit" style="font-size:0.68rem;padding:0.18rem 0.5rem;border-radius:5px;border:1px solid var(--sand3);background:transparent;color:var(--ink3);cursor:pointer">✏ Muokkaa</button>
+      <button id="atj-tt-del" style="font-size:0.68rem;padding:0.18rem 0.5rem;border-radius:5px;border:1px solid #c0392b33;background:transparent;color:#c0392b;cursor:pointer">🗑 Poista</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lista -->
+<div style="padding:0.85rem 1rem 2rem">
+  <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:0.6rem">Kaikki hetket</div>
+  <div id="atj-list"></div>
+</div>
+</div>
+
+<!-- Asiakas-modaali -->
+<div id="atj-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:var(--bg);border-radius:14px;padding:1.3rem;width:100%;max-width:400px;max-height:88vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,0.25)">
+    <div style="font-size:0.95rem;font-weight:800;color:var(--ink);margin-bottom:1rem" id="atj-modal-title">Uusi hetki</div>
+    <div style="display:flex;flex-direction:column;gap:0.8rem">
+      <div>
+        <label style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);display:block;margin-bottom:0.25rem">Otsikko *</label>
+        <input id="atj-m-title" type="text" placeholder="esim. Muutto uuteen kaupunkiin"
+          style="width:100%;padding:0.45rem 0.65rem;border:1.5px solid var(--sand3);border-radius:8px;font-size:0.85rem;background:var(--sand2);color:var(--ink);outline:none;box-sizing:border-box">
+      </div>
+      <div style="display:flex;gap:0.6rem">
+        <div style="flex:1">
+          <label style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);display:block;margin-bottom:0.25rem">Vuosi *</label>
+          <input id="atj-m-year" type="number" min="1950" max="2030"
+            style="width:100%;padding:0.45rem 0.65rem;border:1.5px solid var(--sand3);border-radius:8px;font-size:0.85rem;background:var(--sand2);color:var(--ink);outline:none;box-sizing:border-box">
+        </div>
+        <div style="flex:1">
+          <label style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);display:block;margin-bottom:0.25rem">Tarkka päivä</label>
+          <input id="atj-m-date" type="date"
+            style="width:100%;padding:0.45rem 0.65rem;border:1.5px solid var(--sand3);border-radius:8px;font-size:0.85rem;background:var(--sand2);color:var(--ink);outline:none;box-sizing:border-box">
+        </div>
+      </div>
+      <div style="display:flex;gap:0.6rem">
+        <div style="flex:1">
+          <label style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);display:block;margin-bottom:0.25rem">Tyyppi</label>
+          <select id="atj-m-type" style="width:100%;padding:0.45rem 0.65rem;border:1.5px solid var(--sand3);border-radius:8px;font-size:0.85rem;background:var(--sand2);color:var(--ink);outline:none">
+            <option value="positive">🟢 Voimavara</option>
+            <option value="neutral" selected>🔵 Neutraali</option>
+            <option value="hard">🟡 Haastava</option>
+            <option value="trauma">🔴 Vaikea</option>
+          </select>
+        </div>
+        <div style="flex:1">
+          <label style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);display:block;margin-bottom:0.25rem">Aihe</label>
+          <select id="atj-m-cat" style="width:100%;padding:0.45rem 0.65rem;border:1.5px solid var(--sand3);border-radius:8px;font-size:0.85rem;background:var(--sand2);color:var(--ink);outline:none">
+            <option value="perhe">👨‍👩‍👦 Perhe</option>
+            <option value="suhteet">❤️ Suhteet</option>
+            <option value="tyo">💼 Työ / koulu</option>
+            <option value="terveys">🏥 Terveys</option>
+            <option value="menetys">🕊 Menetys</option>
+            <option value="muutto">🏠 Muutto</option>
+            <option value="koulutus">🎓 Koulutus</option>
+            <option value="trauma">⚡ Vaikea kokemus</option>
+            <option value="muu">✦ Muu</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);display:block;margin-bottom:0.25rem">Mitä tapahtui?</label>
+        <textarea id="atj-m-desc" rows="3" placeholder="Kirjoita omin sanoin..."
+          style="width:100%;padding:0.45rem 0.65rem;border:1.5px solid var(--sand3);border-radius:8px;font-size:0.83rem;background:var(--sand2);color:var(--ink);outline:none;resize:vertical;box-sizing:border-box;font-family:inherit"></textarea>
+      </div>
+      <div>
+        <label style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);display:block;margin-bottom:0.25rem">Kuva (valinnainen)</label>
+        <input type="file" id="atj-m-img" accept="image/*" onchange="atjPreviewImg(this)" style="font-size:0.78rem;color:var(--ink3)">
+        <div id="atj-m-img-preview" style="margin-top:0.4rem"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:0.6rem;margin-top:1.1rem;justify-content:flex-end">
+      <button onclick="atjCloseModal()" style="padding:0.45rem 1.1rem;border:1.5px solid var(--sand3);border-radius:8px;background:transparent;color:var(--ink3);cursor:pointer;font-size:0.83rem">Peruuta</button>
+      <button onclick="atjSaveEvent()" style="padding:0.45rem 1.2rem;border:none;border-radius:8px;background:var(--green);color:#fff;cursor:pointer;font-size:0.83rem;font-weight:700">Tallenna</button>
+    </div>
+  </div>
+</div>
+
 <div id="panel-kriisi" class="panel adult-only">
 <div class="section">
   <div style="background:var(--red-bg);border:2px solid var(--red-bd);border-radius:var(--r2);padding:1.25rem;margin-bottom:1.25rem">
@@ -8215,4 +8329,216 @@ document.querySelectorAll('[onclick*="tunnekortti"]').forEach(btn => {
     }, 50);
   });
 });
+</script>
+<script>
+// ══════════════════════════════════════════════════
+// ELÄMÄNJANA — ASIAKAS
+// ══════════════════════════════════════════════════
+(function() {
+  const STORE_KEY = 'atj_data';
+  const TYPE_COLORS = { positive:'#2d9a4f', neutral:'#4a90d9', hard:'#e0a020', trauma:'#c0392b' };
+  const CAT_ICONS   = { perhe:'👨‍👩‍👦', suhteet:'❤️', tyo:'💼', terveys:'🏥', menetys:'🕊', muutto:'🏠', koulutus:'🎓', trauma:'⚡', muu:'✦' };
+  const CAT_LABELS  = { perhe:'Perhe', suhteet:'Suhteet', tyo:'Työ/koulu', terveys:'Terveys', menetys:'Menetys', muutto:'Muutto', koulutus:'Koulutus', trauma:'Vaikea kokemus', muu:'Muu' };
+
+  let state = { birth:null, events:[] };
+  let editId=null, imgData=null;
+  let zoom=1, panX=0, isDragging=false, dragStartX=0, panStartX=0, lastPinch=0;
+
+  function load()  { try { state=JSON.parse(localStorage.getItem(STORE_KEY))||{birth:null,events:[]}; } catch(e){} if(!state.events) state.events=[]; }
+  function save()  { localStorage.setItem(STORE_KEY,JSON.stringify(state)); }
+
+  window.atjRender = function() {
+    const b=parseInt(document.getElementById('atj-birth')?.value);
+    if(b>1900&&b<2020){state.birth=b;save();}
+    draw(); renderList();
+  };
+
+  function draw() {
+    const container=document.getElementById('atj-container');
+    const canvas=document.getElementById('atj-canvas');
+    if(!canvas||!container) return;
+    const W=container.clientWidth||360; const H=220;
+    container.style.height=H+'px'; canvas.width=W; canvas.height=H;
+    const ctx=canvas.getContext('2d');
+    const isDark=document.body.classList.contains('dark');
+    const bg=isDark?'#1a1f2e':'#f8f7f4', grid=isDark?'#2a3050':'#e0dbd5';
+    const txt=isDark?'#8a90a0':'#7a7570', line=isDark?'#404870':'#b8b3ae';
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    const birth=state.birth||new Date().getFullYear()-35;
+    const now=new Date().getFullYear(); const total=now-birth;
+    if(total<=0) return;
+    const visY=total/zoom;
+    const cy=birth+total/2-(panX/(W*zoom))*total;
+    const sy=cy-visY/2, ey=cy+visY/2;
+    const toX=y=>((y-sy)/(ey-sy))*W;
+    const step=visY>60?10:visY>30?5:visY>15?2:1;
+    ctx.strokeStyle=grid; ctx.lineWidth=1; ctx.setLineDash([2,4]);
+    for(let y=Math.ceil(sy/step)*step;y<=ey;y+=step){
+      const x=toX(y); ctx.beginPath(); ctx.moveTo(x,25); ctx.lineTo(x,H-22); ctx.stroke();
+      ctx.fillStyle=txt; ctx.font='10px system-ui'; ctx.textAlign='center'; ctx.fillText(y,x,H-8);
+    }
+    ctx.setLineDash([]);
+    const lY=H/2;
+    ctx.strokeStyle=line; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(toX(birth),lY); ctx.lineTo(toX(now),lY); ctx.stroke();
+    ctx.fillStyle=TYPE_COLORS.neutral; ctx.beginPath(); ctx.arc(toX(birth),lY,7,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=txt; ctx.font='bold 10px system-ui'; ctx.textAlign='center'; ctx.fillText('Syntymä',toX(birth),lY-12);
+    ctx.fillStyle=line; ctx.beginPath(); ctx.arc(toX(now),lY,5,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=txt; ctx.font='10px system-ui'; ctx.fillText('Nyt',toX(now),lY-10);
+    [...state.events].sort((a,b)=>a.year-b.year).forEach((ev,i)=>{
+      if(ev.year<sy-1||ev.year>ey+1) return;
+      const x=toX(ev.year+(ev.month?(ev.month-1)/12:0));
+      const color=TYPE_COLORS[ev.type]||TYPE_COLORS.neutral;
+      ctx.fillStyle=color; ctx.beginPath(); ctx.arc(x,lY,9,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(x,lY,9,0,Math.PI*2); ctx.stroke();
+      const above=i%2===0;
+      ctx.strokeStyle=color+'88'; ctx.lineWidth=1; ctx.setLineDash([2,3]);
+      ctx.beginPath(); ctx.moveTo(x,above?lY-11:lY+11); ctx.lineTo(x,above?lY-26:lY+28); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.font='12px system-ui'; ctx.textAlign='center'; ctx.fillText(CAT_ICONS[ev.cat]||'✦',x,above?lY-28:lY+40);
+      const lbl=ev.title.length>14?ev.title.slice(0,13)+'…':ev.title;
+      ctx.font='bold 10px system-ui';
+      const tw=ctx.measureText(lbl).width;
+      ctx.fillStyle=isDark?'#252a3a':'#fff';
+      ctx.beginPath(); ctx.roundRect(x-tw/2-4,above?lY-45:lY+44,tw+8,14,3); ctx.fill();
+      ctx.fillStyle=color; ctx.textAlign='center'; ctx.fillText(lbl,x,above?lY-34:lY+55);
+    });
+  }
+
+  function renderList() {
+    const el=document.getElementById('atj-list'); if(!el) return;
+    if(!state.events.length){el.innerHTML='<div style="font-size:0.78rem;color:var(--ink3);font-style:italic">Ei vielä hetkiä. Lisää ensimmäinen napilla.</div>';return;}
+    el.innerHTML=[...state.events].sort((a,b)=>a.year-b.year||(a.month||0)-(b.month||0)).map(ev=>{
+      const color=TYPE_COLORS[ev.type]||TYPE_COLORS.neutral;
+      const d=ev.exactDate?new Date(ev.exactDate).toLocaleDateString('fi-FI'):ev.year;
+      return `<div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.55rem 0.75rem;background:var(--sand2);border-radius:8px;border-left:3px solid ${color};margin-bottom:0.4rem;cursor:pointer" onclick="atjEditEvent('${ev.id}')">
+        <div style="font-size:1.2rem;line-height:1;margin-top:2px">${CAT_ICONS[ev.cat]||'✦'}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:0.82rem;color:var(--ink)">${ev.title} <span style="font-weight:400;font-size:0.7rem;color:var(--ink3)">${d}</span></div>
+          ${ev.desc?`<div style="font-size:0.76rem;color:var(--ink2);margin-top:0.15rem;line-height:1.45">${ev.desc}</div>`:''}
+          ${ev.img?`<img src="${ev.img}" style="max-width:80px;max-height:55px;border-radius:5px;object-fit:cover;margin-top:0.35rem">`:''}
+        </div>
+        <button onclick="event.stopPropagation();atjDeleteEvent('${ev.id}')" style="font-size:0.68rem;padding:0.18rem 0.45rem;border-radius:5px;border:1px solid #c0392b33;color:#c0392b;background:transparent;cursor:pointer;flex-shrink:0">🗑</button>
+      </div>`;
+    }).join('');
+  }
+
+  window.atjNewEvent=function(){
+    editId=null;imgData=null;
+    document.getElementById('atj-modal-title').textContent='Uusi hetki';
+    ['atj-m-title','atj-m-desc'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('atj-m-year').value=state.birth?Math.floor((state.birth+new Date().getFullYear())/2):'';
+    document.getElementById('atj-m-date').value='';
+    document.getElementById('atj-m-type').value='neutral';
+    document.getElementById('atj-m-cat').value='perhe';
+    document.getElementById('atj-m-img-preview').innerHTML='';
+    document.getElementById('atj-modal').style.display='flex';
+  };
+  window.atjEditEvent=function(id){
+    const ev=state.events.find(e=>e.id===id);if(!ev)return;
+    editId=id;imgData=ev.img||null;
+    document.getElementById('atj-modal-title').textContent='Muokkaa hetkeä';
+    document.getElementById('atj-m-title').value=ev.title||'';
+    document.getElementById('atj-m-year').value=ev.year||'';
+    document.getElementById('atj-m-date').value=ev.exactDate||'';
+    document.getElementById('atj-m-type').value=ev.type||'neutral';
+    document.getElementById('atj-m-cat').value=ev.cat||'perhe';
+    document.getElementById('atj-m-desc').value=ev.desc||'';
+    document.getElementById('atj-m-img-preview').innerHTML=ev.img?`<img src="${ev.img}" style="max-width:100px;max-height:70px;border-radius:6px;object-fit:cover">`:'';
+    document.getElementById('atj-modal').style.display='flex';
+  };
+  window.atjCloseModal=()=>{document.getElementById('atj-modal').style.display='none';};
+  window.atjPreviewImg=function(input){
+    const f=input.files[0];if(!f)return;
+    const r=new FileReader();r.onload=e=>{imgData=e.target.result;document.getElementById('atj-m-img-preview').innerHTML=`<img src="${imgData}" style="max-width:100px;max-height:70px;border-radius:6px;object-fit:cover">`;};r.readAsDataURL(f);
+  };
+  window.atjSaveEvent=function(){
+    const title=document.getElementById('atj-m-title').value.trim();
+    const year=parseInt(document.getElementById('atj-m-year').value);
+    if(!title||!year){alert('Otsikko ja vuosi ovat pakollisia.');return;}
+    const exactDate=document.getElementById('atj-m-date').value;
+    const ev={id:editId||Date.now().toString(36),title,year,
+      month:exactDate?new Date(exactDate).getMonth()+1:null,exactDate,
+      type:document.getElementById('atj-m-type').value,
+      cat:document.getElementById('atj-m-cat').value,
+      desc:document.getElementById('atj-m-desc').value.trim(),img:imgData};
+    if(editId){const i=state.events.findIndex(e=>e.id===editId);if(i>=0)state.events[i]=ev;}
+    else state.events.push(ev);
+    save();atjCloseModal();draw();renderList();
+  };
+  window.atjDeleteEvent=function(id){
+    if(!confirm('Poistetaanko tämä hetki?'))return;
+    state.events=state.events.filter(e=>e.id!==id);save();draw();renderList();
+  };
+
+  function initCanvas(){
+    const container=document.getElementById('atj-container');
+    const canvas=document.getElementById('atj-canvas');
+    const tooltip=document.getElementById('atj-tooltip');
+    if(!canvas||!container) return;
+    function getEv(mx,my){
+      const birth=state.birth||new Date().getFullYear()-35;
+      const now=new Date().getFullYear();const total=now-birth;
+      const W=canvas.width;const H=canvas.height;const lY=H/2;
+      const vis=total/zoom;const cy=birth+total/2-(panX/(W*zoom))*total;
+      const sy=cy-vis/2,ey=cy+vis/2;
+      const toX=y=>((y-sy)/(ey-sy))*W;
+      for(const ev of state.events){const x=toX(ev.year+(ev.month?(ev.month-1)/12:0));if(Math.sqrt((mx-x)**2+(my-lY)**2)<14)return ev;}
+      return null;
+    }
+    canvas.addEventListener('mousedown',e=>{isDragging=true;dragStartX=e.clientX;panStartX=panX;container.style.cursor='grabbing';});
+    window.addEventListener('mousemove',e=>{
+      if(!isDragging){
+        const r=canvas.getBoundingClientRect();const ev=getEv(e.clientX-r.left,e.clientY-r.top);
+        if(ev){
+          const color=TYPE_COLORS[ev.type]||TYPE_COLORS.neutral;
+          document.getElementById('atj-tt-title').textContent=ev.title;
+          document.getElementById('atj-tt-title').style.color=color;
+          document.getElementById('atj-tt-date').textContent=ev.exactDate?new Date(ev.exactDate).toLocaleDateString('fi-FI'):ev.year;
+          document.getElementById('atj-tt-desc').textContent=ev.desc||'';
+          document.getElementById('atj-tt-img').innerHTML=ev.img?`<img src="${ev.img}" style="max-width:90px;max-height:60px;border-radius:5px;object-fit:cover">`:'';
+          document.getElementById('atj-tt-edit').onclick=()=>{tooltip.style.display='none';atjEditEvent(ev.id);};
+          document.getElementById('atj-tt-del').onclick=()=>{tooltip.style.display='none';atjDeleteEvent(ev.id);};
+          const cw=container.clientWidth;
+          let left=e.clientX-r.left+10;if(left+230>cw)left=e.clientX-r.left-235;
+          tooltip.style.left=Math.max(2,left)+'px';tooltip.style.top=Math.max(2,e.clientY-r.top-50)+'px';
+          tooltip.style.display='block';canvas.style.cursor='pointer';
+        } else {tooltip.style.display='none';canvas.style.cursor='grab';}
+        return;
+      }
+      panX=panStartX+(e.clientX-dragStartX);draw();
+    });
+    window.addEventListener('mouseup',e=>{
+      if(isDragging){isDragging=false;container.style.cursor='grab';
+        if(Math.abs(e.clientX-dragStartX)<5){const r=canvas.getBoundingClientRect();const ev=getEv(e.clientX-r.left,e.clientY-r.top);if(ev)atjEditEvent(ev.id);}
+      }
+    });
+    canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(0.5,Math.min(20,zoom*(e.deltaY<0?1.12:0.89)));draw();},{passive:false});
+    canvas.addEventListener('touchstart',e=>{
+      if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX;const dy=e.touches[0].clientY-e.touches[1].clientY;lastPinch=Math.sqrt(dx*dx+dy*dy);}
+      else{isDragging=true;dragStartX=e.touches[0].clientX;panStartX=panX;}
+    },{passive:true});
+    canvas.addEventListener('touchmove',e=>{
+      e.preventDefault();
+      if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX;const dy=e.touches[0].clientY-e.touches[1].clientY;const d=Math.sqrt(dx*dx+dy*dy);if(lastPinch>0){zoom=Math.max(0.5,Math.min(20,zoom*(d/lastPinch)));draw();}lastPinch=d;}
+      else if(isDragging){panX=panStartX+(e.touches[0].clientX-dragStartX);draw();}
+    },{passive:false});
+    canvas.addEventListener('touchend',()=>{isDragging=false;lastPinch=0;});
+  }
+
+  function init(){
+    load();
+    const bi=document.getElementById('atj-birth');if(bi&&state.birth)bi.value=state.birth;
+    initCanvas();
+    const obs=new MutationObserver(()=>{
+      const p=document.getElementById('panel-elamanjana');
+      if(p&&p.classList.contains('active')){draw();renderList();}
+    });
+    const p=document.getElementById('panel-elamanjana');
+    if(p)obs.observe(p,{attributes:true,attributeFilter:['class']});
+    window.addEventListener('resize',draw);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);
+  else setTimeout(init,150);
+})();
 </script>
