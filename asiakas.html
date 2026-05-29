@@ -1779,6 +1779,48 @@ body.kids-mode .site-footer { display:none; }
 </head>
 <body>
 
+<!-- ═══ LUKITUSNÄYTTÖ ═══ -->
+<div id="lockscreen" style="display:none;position:fixed;inset:0;z-index:9999;background:var(--bg,#f5f0eb);flex-direction:column;align-items:center;justify-content:center;padding:2rem">
+  <div style="width:100%;max-width:340px;text-align:center">
+    <div id="lock-setup">
+      <div style="font-size:2.5rem;margin-bottom:0.75rem">🔒</div>
+      <div style="font-size:1.15rem;font-weight:800;color:var(--ink,#2a2520);margin-bottom:0.4rem">Aseta salasana</div>
+      <div style="font-size:0.8rem;color:var(--ink3,#8a8078);margin-bottom:1.5rem;line-height:1.5">Salasana suojaa päiväkirjasi, kehokarttasi ja muut henkilökohtaiset tiedot. Sitä ei lähetetä minnekään.</div>
+      <input id="lock-pw1" type="password" placeholder="Uusi salasana" autocomplete="new-password"
+        style="width:100%;padding:0.65rem 0.9rem;border:1.5px solid var(--sand3,#d0c8be);border-radius:10px;font-size:1rem;background:var(--sand2,#f0ebe4);color:var(--ink,#2a2520);outline:none;margin-bottom:0.65rem;box-sizing:border-box;text-align:center;letter-spacing:0.1em">
+      <input id="lock-pw2" type="password" placeholder="Toista salasana" autocomplete="new-password"
+        style="width:100%;padding:0.65rem 0.9rem;border:1.5px solid var(--sand3,#d0c8be);border-radius:10px;font-size:1rem;background:var(--sand2,#f0ebe4);color:var(--ink,#2a2520);outline:none;margin-bottom:0.9rem;box-sizing:border-box;text-align:center;letter-spacing:0.1em">
+      <div id="lock-setup-err" style="color:#c0392b;font-size:0.78rem;margin-bottom:0.6rem;min-height:1.2em"></div>
+      <button onclick="lockSetPassword()" style="width:100%;padding:0.7rem;background:var(--green,#3a7a50);color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;margin-bottom:0.75rem">Aseta salasana</button>
+      <button onclick="lockSkip()" style="width:100%;padding:0.6rem;background:transparent;color:var(--ink3,#8a8078);border:1px solid var(--sand3,#d0c8be);border-radius:10px;font-size:0.85rem;cursor:pointer">Jätä suojaamatta</button>
+    </div>
+    <div id="lock-unlock" style="display:none">
+      <div style="font-size:2.5rem;margin-bottom:0.75rem">🔒</div>
+      <div style="font-size:1.15rem;font-weight:800;color:var(--ink,#2a2520);margin-bottom:0.4rem">Syötä salasana</div>
+      <div style="font-size:0.8rem;color:var(--ink3,#8a8078);margin-bottom:1.5rem">Tervetuloa takaisin</div>
+      <input id="lock-pw-in" type="password" placeholder="Salasana" autocomplete="current-password"
+        style="width:100%;padding:0.65rem 0.9rem;border:1.5px solid var(--sand3,#d0c8be);border-radius:10px;font-size:1rem;background:var(--sand2,#f0ebe4);color:var(--ink,#2a2520);outline:none;margin-bottom:0.9rem;box-sizing:border-box;text-align:center;letter-spacing:0.1em"
+        onkeydown="if(event.key==='Enter')lockUnlock()">
+      <div id="lock-unlock-err" style="color:#c0392b;font-size:0.78rem;margin-bottom:0.6rem;min-height:1.2em"></div>
+      <button onclick="lockUnlock()" style="width:100%;padding:0.7rem;background:var(--green,#3a7a50);color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;margin-bottom:0.75rem">Avaa</button>
+      <button onclick="lockForgot()" style="width:100%;padding:0.55rem;background:transparent;color:var(--ink3,#8a8078);border:none;font-size:0.78rem;cursor:pointer;text-decoration:underline">Unohdin salasanan</button>
+    </div>
+    <div id="lock-forgot" style="display:none">
+      <div style="font-size:2rem;margin-bottom:0.75rem">⚠️</div>
+      <div style="font-size:1rem;font-weight:800;color:var(--ink,#2a2520);margin-bottom:0.75rem">Nollaa salasana</div>
+      <div style="font-size:0.82rem;color:var(--ink3,#8a8078);margin-bottom:1.2rem;line-height:1.6;background:#fff3cd;border-radius:8px;padding:0.75rem;border:1px solid #f0c040">
+        ⚠ Salasanaa ei voi palauttaa. Nollaaminen <strong>poistaa kaikki tiedot</strong> — päiväkirjat, kehokartat ja elämänjanan.
+      </div>
+      <button onclick="lockReset()" style="width:100%;padding:0.65rem;background:#c0392b;color:#fff;border:none;border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;margin-bottom:0.65rem">Nollaa kaikki tiedot</button>
+      <button onclick="lockShowUnlock()" style="width:100%;padding:0.6rem;background:transparent;color:var(--ink3,#8a8078);border:1px solid var(--sand3,#d0c8be);border-radius:10px;font-size:0.85rem;cursor:pointer">Peruuta</button>
+    </div>
+  </div>
+</div>
+<button id="lock-btn" onclick="lockNow()" title="Lukitse sovellus"
+  style="display:none;position:fixed;bottom:1.2rem;right:1rem;z-index:800;padding:0.4rem 0.75rem;background:var(--sand2);border:1px solid var(--sand3);border-radius:20px;font-size:0.72rem;color:var(--ink3);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.08)">
+  🔒 Lukitse
+</button>
+
 <!-- NAV -->
 <nav class="nav">
   <span class="nav-brand">Oma työkalu</span>
@@ -2231,6 +2273,20 @@ body.kids-mode .site-footer { display:none; }
     </div>
     <div style="margin-top:0.5rem;font-size:0.7rem;color:var(--green);opacity:0.65;line-height:1.5">
       Ilmoitus tulee kun sivu on auki selaimessa. Muistuttaa vain jos et ole kirjannut harjoitetta kyseisellä vuorokaudella.
+    </div>
+  </div>
+
+  <!-- Salasana-asetukset -->
+  <div id="lock-settings-section" style="margin-top:1.2rem;padding:0.75rem 1rem;background:var(--sand2);border:1px solid var(--sand3);border-radius:var(--r);display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap">
+    <div>
+      <div style="font-size:0.75rem;font-weight:700;color:var(--ink2)">🔒 Sovelluksen suojaus</div>
+      <div id="lock-settings-status" style="font-size:0.7rem;color:var(--ink3);margin-top:0.1rem"></div>
+    </div>
+    <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
+      <button id="lock-settings-btn" onclick="lockChangePassword()"
+        style="font-size:0.75rem;padding:0.3rem 0.75rem;border-radius:16px;border:1px solid var(--sand3);background:transparent;color:var(--ink3);cursor:pointer"></button>
+      <button id="lock-remove-btn" onclick="lockRemovePassword()"
+        style="display:none;font-size:0.75rem;padding:0.3rem 0.75rem;border-radius:16px;border:1px solid #c0392b33;background:transparent;color:#c0392b;cursor:pointer">Poista salasana</button>
     </div>
   </div>
 
@@ -7670,19 +7726,22 @@ function toggleInfoBlock(topicId, idx) {
 
 // ══════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-  renderQuick();
-  renderExGrid();
-  renderInfoContent('stressi');
-  renderEntries();
-  initRx();
-  initReminder();
-  initGoalTracker();
-  initStreakAndPlant();
-  renderMicros();
-  initSpiritGrid();
-  initOnboarding();
-  initBm();
-  renderThoughtHistory();
+  // Lukitusjärjestelmä käynnistyy ensin
+  initLock().then(() => {
+    renderQuick();
+    renderExGrid();
+    renderInfoContent('stressi');
+    renderEntries();
+    initRx();
+    initReminder();
+    initGoalTracker();
+    initStreakAndPlant();
+    renderMicros();
+    initSpiritGrid();
+    initOnboarding();
+    initBm();
+    renderThoughtHistory();
+  });
 });
 </script>
 <!-- FOOTER -->
@@ -8329,6 +8388,182 @@ document.querySelectorAll('[onclick*="tunnekortti"]').forEach(btn => {
     }, 50);
   });
 });
+</script>
+<script>
+
+// ══════════════════════════════════════════════════
+// LUKITUSJÄRJESTELMÄ
+// ══════════════════════════════════════════════════
+const LOCK_KEY   = 'app_lock_hash';
+const UNLOCK_KEY = 'app_unlocked'; // sessionStorage — häviää kun välilehti suljetaan
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function initLock() {
+  const hash = localStorage.getItem(LOCK_KEY);
+
+  // Ei salasanaa asetettu — näytä setup (ensimmäinen käynnistys)
+  if (!hash) {
+    // Onko onboarding tehty? Jos ei, ohita lukitus — onboarding hoitaa ensin
+    const done = localStorage.getItem('onboarding_done');
+    if (!done) return; // onboarding näyttää ensin, ei lukitusnäyttöä
+    return new Promise(resolve => {
+      showLockscreen('setup', resolve);
+    });
+  }
+
+  // Salasana asetettu — onko jo avattu tässä sessiossa?
+  const unlocked = sessionStorage.getItem(UNLOCK_KEY);
+  if (unlocked === '1') {
+    showLockBtn();
+    return;
+  }
+
+  // Vaadi salasana
+  return new Promise(resolve => {
+    showLockscreen('unlock', resolve);
+  });
+}
+
+function showLockscreen(mode, resolve) {
+  const ls = document.getElementById('lockscreen');
+  ls.style.display = 'flex';
+  document.getElementById('lock-setup').style.display  = mode==='setup'  ? 'block' : 'none';
+  document.getElementById('lock-unlock').style.display = mode==='unlock' ? 'block' : 'none';
+  document.getElementById('lock-forgot').style.display = 'none';
+  ls._resolve = resolve;
+  // Fokus
+  setTimeout(() => {
+    const el = document.getElementById(mode==='setup' ? 'lock-pw1' : 'lock-pw-in');
+    if (el) el.focus();
+  }, 100);
+}
+
+function hideLockscreen() {
+  const ls = document.getElementById('lockscreen');
+  ls.style.display = 'none';
+  showLockBtn();
+  if (ls._resolve) { ls._resolve(); ls._resolve = null; }
+}
+
+function showLockBtn() {
+  const btn = document.getElementById('lock-btn');
+  if (btn && localStorage.getItem(LOCK_KEY)) btn.style.display = 'block';
+}
+
+window.lockSetPassword = async function() {
+  const pw1 = document.getElementById('lock-pw1').value;
+  const pw2 = document.getElementById('lock-pw2').value;
+  const err = document.getElementById('lock-setup-err');
+  if (pw1.length < 4) { err.textContent = 'Salasanan pitää olla vähintään 4 merkkiä.'; return; }
+  if (pw1 !== pw2)    { err.textContent = 'Salasanat eivät täsmää.'; return; }
+  err.textContent = '';
+  const hash = await sha256(pw1);
+  localStorage.setItem(LOCK_KEY, hash);
+  sessionStorage.setItem(UNLOCK_KEY, '1');
+  document.getElementById('lock-pw1').value = '';
+  document.getElementById('lock-pw2').value = '';
+  hideLockscreen();
+};
+
+window.lockSkip = function() {
+  // Merkitään että käyttäjä on tietoisesti ohittanut — ei kysytä uudelleen
+  localStorage.setItem(LOCK_KEY, 'NONE');
+  hideLockscreen();
+};
+
+window.lockUnlock = async function() {
+  const pw  = document.getElementById('lock-pw-in').value;
+  const err = document.getElementById('lock-unlock-err');
+  if (!pw) return;
+  const hash    = await sha256(pw);
+  const stored  = localStorage.getItem(LOCK_KEY);
+  if (hash === stored) {
+    err.textContent = '';
+    sessionStorage.setItem(UNLOCK_KEY, '1');
+    document.getElementById('lock-pw-in').value = '';
+    hideLockscreen();
+  } else {
+    err.textContent = 'Väärä salasana. Yritä uudelleen.';
+    document.getElementById('lock-pw-in').value = '';
+    document.getElementById('lock-pw-in').focus();
+    // Pieni tärinä-efekti
+    const input = document.getElementById('lock-pw-in');
+    input.style.borderColor = '#c0392b';
+    setTimeout(() => input.style.borderColor = '', 1200);
+  }
+};
+
+window.lockForgot = function() {
+  document.getElementById('lock-unlock').style.display = 'none';
+  document.getElementById('lock-forgot').style.display = 'block';
+};
+
+window.lockShowUnlock = function() {
+  document.getElementById('lock-forgot').style.display = 'none';
+  document.getElementById('lock-unlock').style.display = 'block';
+};
+
+window.lockReset = function() {
+  // Poista kaikki tiedot
+  localStorage.clear();
+  sessionStorage.clear();
+  location.reload();
+};
+
+window.lockNow = function() {
+  sessionStorage.removeItem(UNLOCK_KEY);
+  const ls = document.getElementById('lockscreen');
+  ls.style.display = 'flex';
+  document.getElementById('lock-setup').style.display  = 'none';
+  document.getElementById('lock-unlock').style.display = 'block';
+  document.getElementById('lock-forgot').style.display = 'none';
+  document.getElementById('lock-btn').style.display = 'none';
+  setTimeout(() => { const el=document.getElementById('lock-pw-in'); if(el)el.focus(); }, 100);
+};
+
+// Automaattinen lukitus kun sivu piiloutuu (välilehti suljetaan / vaihdetaan)
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    const hash = localStorage.getItem(LOCK_KEY);
+    if (hash && hash !== 'NONE') {
+      sessionStorage.removeItem(UNLOCK_KEY);
+    }
+  }
+});
+
+window.lockRemovePassword = function() {
+  if (!confirm('Poistetaanko salasana? Sovellus jää avoimeksi.')) return;
+  localStorage.removeItem(LOCK_KEY);
+  sessionStorage.removeItem(UNLOCK_KEY);
+  document.getElementById('lock-btn').style.display = 'none';
+  updateLockSettingsUI();
+};
+
+function updateLockSettingsUI() {
+  const hash = localStorage.getItem(LOCK_KEY);
+  const hasLock = hash && hash !== 'NONE';
+  const statusEl = document.getElementById('lock-settings-status');
+  const btn      = document.getElementById('lock-settings-btn');
+  const rmBtn    = document.getElementById('lock-remove-btn');
+  if (!statusEl) return;
+  if (hasLock) {
+    statusEl.textContent = 'Salasana asetettu — sovellus lukittuu automaattisesti.';
+    btn.textContent = 'Vaihda salasana';
+    if (rmBtn) rmBtn.style.display = 'block';
+  } else {
+    statusEl.textContent = 'Ei salasanaa — kaikki voivat avata sovelluksen.';
+    btn.textContent = 'Aseta salasana';
+    if (rmBtn) rmBtn.style.display = 'none';
+  }
+}
+
+// Kutsutaan kun app on avattu
+document.addEventListener('DOMContentLoaded', () => { setTimeout(updateLockSettingsUI, 300); });
+
 </script>
 <script>
 // ══════════════════════════════════════════════════
