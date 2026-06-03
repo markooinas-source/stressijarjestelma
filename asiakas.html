@@ -119,7 +119,7 @@ body.dark .streak-dot { background: #2e2820; }
 body.dark .streak-dot.done { background: var(--green); }
 
 /* Pimeä teema — lapset */
-body.dark .kids-panel { background: transparent; }
+body.dark .kids-panel { background: var(--bg); }
 body.dark .age-btn {
   background: #221e18;
   border-color: #3a3028;
@@ -373,6 +373,11 @@ body {
   margin-bottom: 1.25rem;
 }
 .hidden { display: none !important; }
+@keyframes sfsPop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  70%  { transform: scale(1.15); }
+  100% { transform: scale(1);   opacity: 1; }
+}
 .filter-btn {
   font-size: 0.72rem; font-weight: 700;
   letter-spacing: 0.04em; text-transform: uppercase;
@@ -1128,7 +1133,7 @@ body {
 /* ── KIDS MODE ── */
 body.kids-mode { --sand: #fff8ee; --sand2: #ffefd4; --sand3: #ffdcaa; }
 .kids-overlay { display:none; }
-body.kids-mode .kids-overlay { display:block; }
+body.kids-mode .kids-overlay { display:block; background:var(--bg); min-height:100vh; }
 body.kids-mode .adult-only { display:none; }
 body.kids-mode .site-footer { display:none; }
 
@@ -3688,7 +3693,35 @@ const KID_EXERCISES = [];
 let kidsMode = false;
 
 function animateAnimalSound(el) {
-  // Pomppaa ja kasvaa kun klikataan
+  // Hae eläimen ääni ja emoji lähimmästä kortista
+  const sound = el.closest('[data-sound]')?.dataset.sound || el.textContent;
+  const emoji = el.closest('[data-emoji]')?.dataset.emoji || '';
+
+  // Luo koko näytön overlay
+  let overlay = document.getElementById('sound-fullscreen');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'sound-fullscreen';
+    overlay.style.cssText = `
+      position:fixed;inset:0;z-index:9998;
+      background:#1a0a2e;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      cursor:pointer;
+    `;
+    overlay.innerHTML = `
+      <div id="sfs-emoji" style="font-size:5rem;margin-bottom:1rem;animation:sfsPop 0.3s ease"></div>
+      <div id="sfs-text" style="font-size:2.2rem;font-weight:900;color:#fff;text-align:center;padding:0 1.5rem;line-height:1.3;animation:sfsPop 0.3s ease"></div>
+      <div style="margin-top:2rem;font-size:0.85rem;color:rgba(255,255,255,0.5)">Paina sulkeaksesi</div>
+    `;
+    overlay.addEventListener('click', () => overlay.style.display = 'none');
+    document.body.appendChild(overlay);
+  }
+
+  document.getElementById('sfs-emoji').textContent = emoji;
+  document.getElementById('sfs-text').textContent  = sound;
+  overlay.style.display = 'flex';
+
+  // Pomppuefekti pienelle elementille myös
   el.style.transform = 'scale(1.4)';
   el.style.color = '#ff4090';
   setTimeout(() => {
@@ -3852,7 +3885,9 @@ function selectKidsSpirit(idx, btn) {
 
       <div style="background:var(--purple-bg);border-radius:12px;padding:0.75rem;margin-bottom:0.65rem">
         <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--purple);margin-bottom:0.5rem">🔊 ${a.name} sanoo</div>
-        <div id="animal-sound-display-${idx}" style="text-align:center;font-size:2.2rem;font-weight:900;color:var(--purple);letter-spacing:0.05em;line-height:1.3;cursor:pointer;user-select:none;transition:transform 0.1s"
+        <div id="animal-sound-display-${idx}" 
+          data-sound="${a.sound}" data-emoji="${a.emoji}"
+          style="text-align:center;font-size:2.2rem;font-weight:900;color:var(--purple);letter-spacing:0.05em;line-height:1.3;cursor:pointer;user-select:none;transition:transform 0.1s"
           onclick="animateAnimalSound(this)"
           title="Paina ja sano ääneen!">${a.sound.split(' ')[0]}</div>
         <div style="text-align:center;font-size:0.78rem;color:var(--purple);margin-top:0.35rem;opacity:0.8">${a.sound}</div>
