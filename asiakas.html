@@ -4589,7 +4589,8 @@ function applyState(state) {
   document.getElementById('result-title').textContent = s.title;
   document.getElementById('result-text').textContent = s.text;
   document.getElementById('suggest-btns').innerHTML = s.exIds.map(id => {
-    const ex = EXERCISES.find(e => e.id===id);
+    const ex = EXERCISES.find(e => e.id===id)
+            || (GUIDED_PROGRAMS[id] ? { name: GUIDED_PROGRAMS[id].name, id } : null);
     if (!ex) return '';
     return `<button class="suggest-btn" onclick="openModal('${id}')">${ex.name}</button>`;
   }).join('');
@@ -5036,10 +5037,11 @@ function obFinish() {
   const container = document.getElementById('ob-suggestions');
   container.innerHTML = recs.map(id => {
     const ex = EXERCISES.find(e => e.id === id) ||
-               EXERCISES.find(e => e.durationIds && e.durationIds.includes(id));
+               EXERCISES.find(e => e.durationIds && e.durationIds.includes(id)) ||
+               (GUIDED_PROGRAMS[id] ? { name: GUIDED_PROGRAMS[id].name, desc: GUIDED_PROGRAMS[id].phases?.[0]?.text || '', id } : null);
     if (!ex) return '';
     const name = ex.name;
-    const desc = ex.desc?.substring(0, 80) + '...';
+    const desc = (ex.desc||'').substring(0, 80) + ((ex.desc||'').length > 80 ? '...' : '');
     return `<div class="ob-suggestion" onclick="obLaunch('${id}')">
       <div class="ob-sug-name">${name}</div>
       <div class="ob-sug-desc">${desc}</div>
