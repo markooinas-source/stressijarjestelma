@@ -2462,31 +2462,58 @@ body.kids-mode .site-footer { display:none; }
 
   <div class="entries-list" id="entries-list"></div>
 
-  <div class="progress-chart-wrap" id="progress-section" style="display:none">
-    <div class="card" style="margin-top:1.25rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem">
-        <div style="font-size:0.85rem;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink3)">Edistyminen</div>
-        <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
-          <button onclick="shareProgress('copy')" style="font-family:var(--font-m);font-size:0.68rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green);cursor:pointer">📋 Kopioi yhteenveto</button>
-          <button onclick="shareProgress('email')" style="font-family:var(--font-m);font-size:0.68rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--sand2);border:1px solid var(--sand3);color:var(--ink3);cursor:pointer">✉ Lähetä terapeutille</button>
-          <button onclick="shareProgress('csv')" style="font-family:var(--font-m);font-size:0.68rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--sand2);border:1px solid var(--sand3);color:var(--ink3);cursor:pointer">⬇ Vie CSV</button>
-          <button onclick="shareProgress('print')" style="font-family:var(--font-m);font-size:0.68rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--sand2);border:1px solid var(--sand3);color:var(--ink3);cursor:pointer">🖨 Tulosta / PDF</button>
-        </div>
-      </div>
-      <div id="share-feedback" style="display:none;font-size:0.78rem;color:var(--green);margin-bottom:0.5rem;font-style:italic"></div>
-      <div class="progress-stats" id="progress-stats"></div>
-
-      <div class="chart-title" style="margin-top:1.25rem;margin-bottom:0.5rem">Vireystila ajan yli</div>
-      <div style="position:relative;height:160px;margin-bottom:1rem">
-        <canvas id="score-chart-canvas"></canvas>
-      </div>
-
-      <div class="chart-title" style="margin-top:1rem">Harjoitusstreak — viimeiset 30 päivää</div>
-      <div class="streak-row" id="streak-row"></div>
-
-      <div class="chart-title" style="margin-top:1rem">Mielialat — jakautuminen</div>
-      <div id="mood-stats" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem"></div>
+  <div <div class="progress-chart-wrap" id="progress-section" style="display:none">
+  <!-- ── YHTEENVETOKORTIT ── -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.6rem;margin-bottom:1.1rem">
+    <div style="background:var(--green-bg);border:1px solid var(--green-bd);border-radius:10px;padding:0.75rem;text-align:center">
+      <div id="stat-streak" style="font-size:1.8rem;font-weight:900;color:var(--green)">0</div>
+      <div style="font-size:0.68rem;color:var(--green);opacity:0.8;margin-top:0.15rem">päivän putki 🌱</div>
     </div>
+    <div style="background:var(--sand2);border:1px solid var(--sand3);border-radius:10px;padding:0.75rem;text-align:center">
+      <div id="stat-total" style="font-size:1.8rem;font-weight:900;color:var(--ink)">0</div>
+      <div style="font-size:0.68rem;color:var(--ink3);margin-top:0.15rem">kirjausta yhteensä</div>
+    </div>
+    <div style="background:var(--sand2);border:1px solid var(--sand3);border-radius:10px;padding:0.75rem;text-align:center">
+      <div id="stat-avg" style="font-size:1.8rem;font-weight:900;color:var(--ink)">—</div>
+      <div style="font-size:0.68rem;color:var(--ink3);margin-top:0.15rem">keskim. vireystila</div>
+    </div>
+    <div id="stat-trend-card" style="background:var(--sand2);border:1px solid var(--sand3);border-radius:10px;padding:0.75rem;text-align:center">
+      <div id="stat-trend" style="font-size:1.8rem;font-weight:900;color:var(--ink)">—</div>
+      <div style="font-size:0.68rem;color:var(--ink3);margin-top:0.15rem">viikon trendi</div>
+    </div>
+  </div>
+
+  <!-- ── HENKILÖKOHTAINEN PALAUTE ── -->
+  <div id="progress-insight" style="background:var(--amber-bg);border:1px solid var(--amber-bd);border-radius:10px;padding:0.8rem 1rem;margin-bottom:1rem;font-size:0.82rem;color:var(--ink2);line-height:1.6;display:none"></div>
+
+  <!-- ── JAKAMINEN ── -->
+  <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1rem">
+    <button onclick="shareProgress('copy')" style="font-family:var(--font-m);font-size:0.68rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green);cursor:pointer">📋 Kopioi</button>
+    <button onclick="shareProgress('email')" style="font-family:var(--font-m);font-size:0.68rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--sand2);border:1px solid var(--sand3);color:var(--ink3);cursor:pointer">✉ Lähetä terapeutille</button>
+    <button onclick="shareProgress('csv')" style="font-family:var(--font-m);font-size:0.68rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--sand2);border:1px solid var(--sand3);color:var(--ink3);cursor:pointer">⬇ CSV</button>
+    <button onclick="shareProgress('print')" style="font-family:var(--font-m);font-size:0.68rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--sand2);border:1px solid var(--sand3);color:var(--ink3);cursor:pointer">🖨 Tulosta</button>
+  </div>
+  <div id="share-feedback" style="display:none;font-size:0.78rem;color:var(--green);margin-bottom:0.5rem;font-style:italic"></div>
+
+  <!-- ── VIIKKOHEATMAP ── -->
+  <div style="font-size:0.68rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:0.5rem">Viikot — harjoittelupäivät</div>
+  <div id="heatmap-grid" style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:1.1rem"></div>
+
+  <!-- ── VIREYSTILA KAAVIO ── -->
+  <div style="font-size:0.68rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:0.5rem">Vireystila 30 pv</div>
+  <div style="position:relative;height:140px;margin-bottom:1rem">
+    <canvas id="score-chart-canvas"></canvas>
+  </div>
+
+  <!-- ── TUNNEMAASTO ── -->
+  <div style="font-size:0.68rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:0.5rem">Mielialajakauma</div>
+  <div id="mood-bars" style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1rem"></div>
+
+  <!-- ── SUOSITUIMMAT HARJOITTEET ── -->
+  <div style="font-size:0.68rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:0.5rem">Käytetyimmät harjoitteet</div>
+  <div id="top-exercises" style="display:flex;flex-direction:column;gap:0.35rem"></div>
+
+</div>
   </div>
 
     </div>
@@ -3606,88 +3633,147 @@ function renderProgressCharts() {
   if (!entries.length) { if (section) section.style.display='none'; return; }
   if (section) section.style.display='block';
 
-  // Stats
-  const statsEl = document.getElementById('progress-stats');
-  const total = entries.length;
-  const withEx = entries.filter(e => e.exercise && e.exercise.trim()).length;
-  const scores = entries.map(e => parseInt(e.score)||5);
-  const avgScore = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1) : '–';
-  const trend = scores.length >= 2 ? scores[scores.length-1] - scores[0] : 0;
-  const trendStr = trend < 0 ? `↓ ${Math.abs(trend).toFixed(0)} parantunut` : trend > 0 ? `↑ ${trend.toFixed(0)} noussut` : '→ Tasainen';
-  if (statsEl) statsEl.innerHTML = `
-    <div class="pstat"><div class="pstat-num">${total}</div><div class="pstat-lbl">Kirjausta</div></div>
-    <div class="pstat"><div class="pstat-num">${withEx}</div><div class="pstat-lbl">Harjoittelupäivää</div></div>
-    <div class="pstat"><div class="pstat-num">${avgScore}</div><div class="pstat-lbl">Keskim. vireystila</div></div>
-    <div class="pstat"><div class="pstat-num" style="font-size:0.9rem">${trendStr}</div><div class="pstat-lbl">Kehitys</div></div>
-  `;
+  const total   = entries.length;
+  const scores  = entries.map(e => parseInt(e.score)||5);
+  const avg     = scores.length ? (scores.reduce((a,b)=>a+b,0)/scores.length) : 5;
+  const withEx  = entries.filter(e => e.exercise && e.exercise.trim()).length;
 
-  // Line chart with Chart.js
-  const canvas = document.getElementById('score-chart-canvas');
+  // Streak
+  let streak = 0;
+  const today = new Date();
+  for (let i=0; i<60; i++) {
+    const d = new Date(today); d.setDate(d.getDate()-i);
+    const dStr = d.toLocaleDateString('fi-FI').split('.').slice(0,2).join('.');
+    if (entries.some(e => e.date && e.date.startsWith(dStr))) streak++;
+    else if (i > 0) break;
+  }
+
+  // Viikon trendi (viim. 7 vs edelliset 7)
+  const last7  = entries.slice(-7).map(e=>parseInt(e.score)||5);
+  const prev7  = entries.slice(-14,-7).map(e=>parseInt(e.score)||5);
+  const avgL7  = last7.length  ? last7.reduce((a,b)=>a+b,0)/last7.length  : null;
+  const avgP7  = prev7.length  ? prev7.reduce((a,b)=>a+b,0)/prev7.length  : null;
+  let trendIcon='→', trendColor='var(--ink3)', trendText='Tasainen';
+  if (avgL7 && avgP7) {
+    const diff = avgL7 - avgP7;
+    if (diff < -0.5)      { trendIcon='↓'; trendColor='var(--green)';  trendText='Paranee'; }
+    else if (diff > 0.5)  { trendIcon='↑'; trendColor='var(--amber)';  trendText='Noussut'; }
+  }
+
+  // ── Yhteenvetokortit
+  const el = id => document.getElementById(id);
+  if (el('stat-streak'))  el('stat-streak').textContent  = streak;
+  if (el('stat-total'))   el('stat-total').textContent   = total;
+  if (el('stat-avg'))     el('stat-avg').textContent     = avg.toFixed(1);
+  if (el('stat-trend'))   { el('stat-trend').textContent = trendIcon; el('stat-trend').style.color = trendColor; }
+  const tc = el('stat-trend-card');
+  if (tc) { const lbl = tc.querySelector('div:last-child'); if(lbl) lbl.textContent = trendText; }
+
+  // ── Henkilökohtainen palaute
+  const insight = el('progress-insight');
+  if (insight) {
+    let msg = '';
+    if (streak >= 7)       msg = `🌟 Mahtavaa! Olet harjoitellut ${streak} päivää peräkkäin. Johdonmukaisuus on terapian ydin.`;
+    else if (streak >= 3)  msg = `🌱 Hyvä rytmi — ${streak} päivän putki. Jatka samaan tahtiin!`;
+    else if (total >= 20)  msg = `📊 ${total} kirjausta — sinulla on jo hyvä kokonaiskuva edistymisestäsi.`;
+    else if (avg < 5)      msg = `💚 Vireystilasi on viime aikoina ollut matala. Pienikin harjoite auttaa.`;
+    else if (avgL7 && avgP7 && avgL7 < avgP7 - 0.5) msg = `📉 Vireystilasi on laskenut viimeisen viikon aikana — voisit mainita tästä terapeutillesi.`;
+    else                   msg = `Jatka kirjaamista — ${total >= 5 ? 'edistymisesi alkaa näkyä selkeästi' : 'jo muutaman kirjauksen jälkeen näet trendin'}.`;
+    insight.textContent = '💡 ' + msg;
+    insight.style.display = 'block';
+  }
+
+  // ── Viikkoheatmap (8 viikkoa)
+  const heatmap = el('heatmap-grid');
+  if (heatmap) {
+    const days = [];
+    for (let i=55; i>=0; i--) {
+      const d = new Date(today); d.setDate(d.getDate()-i);
+      const dStr = d.toLocaleDateString('fi-FI').split('.').slice(0,2).join('.');
+      const hasEntry = entries.some(e => e.date && e.date.startsWith(dStr));
+      const isToday  = i === 0;
+      days.push(`<div title="${d.toLocaleDateString('fi-FI')}" style="
+        width:14px;height:14px;border-radius:3px;
+        background:${hasEntry ? 'var(--green)' : 'var(--sand3)'};
+        opacity:${isToday ? '1' : hasEntry ? '0.85' : '0.4'};
+        outline:${isToday ? '2px solid var(--green)' : 'none'};
+      "></div>`);
+    }
+    heatmap.innerHTML = days.join('');
+  }
+
+  // ── Vireystila kaavio
+  const canvas = el('score-chart-canvas');
   if (canvas) {
-    const last20 = entries.slice(-20);
-    const labels = last20.map(e => e.date ? e.date.split(' ')[0] : '');
-    const data = last20.map(e => parseInt(e.score)||5);
+    const last30 = entries.slice(-30);
+    const labels = last30.map(e => e.date ? e.date.split(' ')[0].split('.').slice(0,2).join('.') : '');
+    const data   = last30.map(e => parseInt(e.score)||5);
     if (canvas._chartInst) canvas._chartInst.destroy();
-    const isDark = document.body.classList.contains('dark') || window.matchMedia('(prefers-color-scheme:dark)').matches;
-    const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-    const textColor = isDark ? '#8a8070' : '#6a6050';
+    const isDark = document.body.classList.contains('dark');
+    const gridC  = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+    const textC  = isDark ? '#7a8070' : '#6a6050';
     canvas._chartInst = new Chart(canvas.getContext('2d'), {
       type:'line',
-      data:{
-        labels,
-        datasets:[{
-          label:'Vireystila',
-          data,
-          borderColor:'#5a8a60',
-          backgroundColor:'rgba(90,138,96,0.1)',
-          tension:0.4,
-          pointRadius:4,
-          pointBackgroundColor:'#5a8a60',
-          fill:true
-        }]
-      },
+      data:{ labels, datasets:[{
+        label:'Vireystila', data,
+        borderColor:'#5a8a60', backgroundColor:'rgba(90,138,96,0.1)',
+        tension:0.35, pointRadius:3, pointBackgroundColor:'#5a8a60', fill:true
+      }]},
       options:{
-        responsive:true,
-        maintainAspectRatio:false,
+        responsive:true, maintainAspectRatio:false,
         scales:{
-          y:{min:0,max:10,ticks:{stepSize:2,color:textColor},grid:{color:gridColor}},
-          x:{ticks:{color:textColor,maxTicksLimit:7},grid:{color:gridColor}}
+          y:{ min:0, max:10, ticks:{stepSize:2,color:textC}, grid:{color:gridC} },
+          x:{ ticks:{color:textC,maxTicksLimit:8}, grid:{color:gridC} }
         },
-        plugins:{legend:{display:false}}
+        plugins:{ legend:{display:false} }
       }
     });
   }
 
-  // Streak dots
-  const streakEl = document.getElementById('streak-row');
-  if (streakEl) {
-    const today = new Date();
-    const dots = [];
-    for (let i=29; i>=0; i--) {
-      const d = new Date(today);
-      d.setDate(d.getDate()-i);
-      const dStr = d.toLocaleDateString('fi-FI');
-      const hasEntry = entries.some(e => e.date && e.date.startsWith(dStr.split('.').slice(0,2).join('.')));
-      dots.push(`<div class="streak-dot${hasEntry?' done':''}" title="${dStr}"></div>`);
-    }
-    streakEl.innerHTML = dots.join('');
-  }
-
-  // Mood stats
-  const moodEl = document.getElementById('mood-stats');
-  if (moodEl) {
-    const moodMap = {'ok':'😌 Rauhallinen','high':'😬 Stressaantunut','low':'😶 Väsynyt','panic':'😰 Ylikuormittunut'};
-    const moodColors = {'ok':'var(--green)','high':'var(--amber)','low':'var(--blue)','panic':'var(--red)'};
+  // ── Mielialajakauma palkkina
+  const moodBars = el('mood-bars');
+  if (moodBars) {
+    const moodDefs = [
+      { key:'ok',    label:'😌 Rauhallinen',    color:'var(--green)' },
+      { key:'high',  label:'😬 Stressaantunut', color:'var(--amber)' },
+      { key:'low',   label:'😶 Väsynyt',        color:'var(--blue)'  },
+      { key:'panic', label:'😰 Ylikuormittunut',color:'var(--red)'   },
+    ];
     const counts = {};
     entries.forEach(e => { if(e.mood) counts[e.mood]=(counts[e.mood]||0)+1; });
-    moodEl.innerHTML = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([m,c])=>
-      `<div style="display:flex;align-items:center;gap:0.4rem;padding:0.3rem 0.75rem;border-radius:20px;background:var(--sand2);font-size:0.78rem">
-        <span>${moodMap[m]||m}</span>
-        <span style="font-weight:800;color:${moodColors[m]||'var(--ink)'}">${c}</span>
+    const maxC = Math.max(...Object.values(counts), 1);
+    moodBars.innerHTML = moodDefs.map(m => {
+      const c = counts[m.key] || 0;
+      const pct = Math.round((c/total)*100);
+      return `<div style="display:flex;align-items:center;gap:0.6rem">
+        <div style="font-size:0.75rem;color:var(--ink2);min-width:130px">${m.label}</div>
+        <div style="flex:1;height:8px;background:var(--sand3);border-radius:4px;overflow:hidden">
+          <div style="height:100%;background:${m.color};width:${Math.round((c/maxC)*100)}%;border-radius:4px;transition:width 0.4s"></div>
+        </div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--ink3);min-width:36px;text-align:right">${c > 0 ? pct+'%' : ''}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Suosituimmat harjoitteet
+  const topEl = el('top-exercises');
+  if (topEl) {
+    const exCounts = {};
+    entries.forEach(e => { if(e.exercise && e.exercise.trim()) exCounts[e.exercise]=(exCounts[e.exercise]||0)+1; });
+    const top5 = Object.entries(exCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    const maxEx = top5[0]?.[1] || 1;
+    topEl.innerHTML = top5.length ? top5.map(([name,count]) =>
+      `<div style="display:flex;align-items:center;gap:0.6rem">
+        <div style="font-size:0.78rem;color:var(--ink2);min-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</div>
+        <div style="flex:1;height:6px;background:var(--sand3);border-radius:3px;overflow:hidden">
+          <div style="height:100%;background:var(--teal,#3a9880);width:${Math.round((count/maxEx)*100)}%;border-radius:3px"></div>
+        </div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--ink3);min-width:20px;text-align:right">${count}×</div>
       </div>`
-    ).join('') || '<span style="color:var(--ink3);font-size:0.82rem">Ei mielialoja kirjattu</span>';
+    ).join('') : '<div style="font-size:0.78rem;color:var(--ink3)">Ei harjoitteita kirjattu vielä.</div>';
   }
 }
+
 
 
 function renderKidsInfo(age) {
