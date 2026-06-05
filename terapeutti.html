@@ -2024,7 +2024,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
       <div class="card" style="margin-bottom:1rem">
         <div style="font-family:var(--font-m);font-size:0.56rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Perustiedot</div>
         <div class="field-row"><label class="field-label">Asiakaskoodi</label>
-          <input type="text" class="field-input" id="plan-client" placeholder="sama koodi kuin muistiinpanoissa"></div>
+          <input type="text" class="field-input" id="plan-client" placeholder="sama koodi kuin muistiinpanoissa"
+            list="plan-client-list" oninput="planClientChanged(this.value)">
+          <datalist id="plan-client-list"></datalist></div>
         <div class="field-row"><label class="field-label">Diagnoosi / pääongelma</label>
           <input type="text" class="field-input" id="plan-diagnosis" placeholder="Esim. PTSD, krooninen kipu, ahdistus..."></div>
         <div class="field-row"><label class="field-label">Hoidon aloituspvm</label>
@@ -2076,6 +2078,30 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
     <div>
       <div style="font-family:var(--font-m);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Tallennetut suunnitelmat</div>
       <div id="plan-list"></div>
+
+      <!-- Asiakasdata-yhteenveto -->
+      <div id="plan-client-summary" style="display:none;margin-top:1rem">
+        <div style="font-family:var(--font-m);font-size:0.56rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Asiakasdata</div>
+
+        <!-- Istunnot -->
+        <div class="card" style="margin-bottom:0.75rem;padding:0.75rem 1rem">
+          <div style="font-size:0.7rem;font-weight:700;color:var(--text);margin-bottom:0.5rem">📝 Istuntohistoria</div>
+          <div id="plan-session-summary" style="font-size:0.78rem;color:var(--dim)"></div>
+        </div>
+
+        <!-- Arvioinnit -->
+        <div class="card" style="margin-bottom:0.75rem;padding:0.75rem 1rem">
+          <div style="font-size:0.7rem;font-weight:700;color:var(--text);margin-bottom:0.5rem">📊 Viimeisimmät arvioinnit</div>
+          <div id="plan-ass-summary" style="font-size:0.78rem;color:var(--dim)"></div>
+        </div>
+
+        <!-- Vireystila-trendi -->
+        <div class="card" style="padding:0.75rem 1rem">
+          <div style="font-size:0.7rem;font-weight:700;color:var(--text);margin-bottom:0.5rem">📈 Vireystila istunnoissa</div>
+          <div id="plan-arousal-summary" style="font-size:0.78rem;color:var(--dim)"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -4747,6 +4773,96 @@ function renderProgress() {
 // ═══════════════════════════════════════════
 // HOITOSUUNNITELMA
 // ═══════════════════════════════════════════
+function planClientChanged(client) {
+  const summary = document.getElementById('plan-client-summary');
+  if (!client || client.length < 2) { if (summary) summary.style.display = 'none'; return; }
+  if (summary) summary.style.display = 'block';
+
+  // Istuntohistoria
+  const notes = loadNotes().filter(n => n.client === client);
+  const sessionEl = document.getElementById('plan-session-summary');
+  if (sessionEl) {
+    if (!notes.length) {
+      sessionEl.innerHTML = '<span style="color:var(--muted)">Ei istuntomerkintöjä.</span>';
+    } else {
+      const last = notes[notes.length - 1];
+      const avgStart = (notes.reduce((a,n) => a + parseInt(n.start||5), 0) / notes.length).toFixed(1);
+      const avgEnd   = (notes.reduce((a,n) => a + parseInt(n.end||5),   0) / notes.length).toFixed(1);
+      const delta    = (parseFloat(avgEnd) - parseFloat(avgStart)).toFixed(1);
+      const deltaCol = delta < 0 ? 'var(--teal)' : delta > 0 ? 'var(--rose)' : 'var(--muted)';
+      sessionEl.innerHTML = `
+        <div style="margin-bottom:0.4rem"><strong style="color:var(--text)">${notes.length} istuntoa</strong> — viimeisin ${last.date?.split(' ')[0] || '—'}</div>
+        <div style="margin-bottom:0.3rem">Keskim. vireystila: ${avgStart}/10 → ${avgEnd}/10 <span style="color:${deltaCol};font-weight:700">${delta > 0 ? '+' : ''}${delta}</span></div>
+        ${last.homework ? `<div style="color:var(--teal)">📋 Viim. kotitehtävä: ${last.homework}</div>` : ''}
+        ${last.next ? `<div style="color:var(--dim);font-style:italic">Seuraava: ${last.next}</div>` : ''}`;
+    }
+  }
+
+  // Arvioinnit
+  const assEl = document.getElementById('plan-ass-summary');
+  if (assEl) {
+    const prefixes = ['gad7','phq9','pcl5','dass21'];
+    const names    = { gad7:'GAD-7', phq9:'PHQ-9', pcl5:'PCL-5', dass21:'DASS-21' };
+    const rows = [];
+    prefixes.forEach(p => {
+      const h = JSON.parse(localStorage.getItem(`ass_history_${p}`) || '[]')
+                  .filter(e => !e.client || e.client === client);
+      if (!h.length) return;
+      const last = h[h.length - 1];
+      const prev = h.length > 1 ? h[h.length - 2] : null;
+      const diff = prev ? last.score - prev.score : null;
+      const diffStr = diff !== null
+        ? `<span style="color:${diff < 0 ? 'var(--teal)' : diff > 0 ? 'var(--rose)' : 'var(--muted)'};font-weight:700;margin-left:4px">${diff > 0 ? '+' : ''}${diff}</span>`
+        : '';
+      rows.push(`<div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.25rem">
+        <span style="font-family:var(--font-m);font-size:0.7rem;min-width:52px;color:var(--dim)">${names[p]}</span>
+        <strong style="color:var(--text)">${last.score}</strong>${diffStr}
+        <span style="color:var(--dim);font-size:0.7rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${last.interp}</span>
+      </div>`);
+    });
+    assEl.innerHTML = rows.length
+      ? rows.join('')
+      : '<span style="color:var(--muted)">Ei arvioinnit tallennettu tälle asiakkaalle.</span>';
+  }
+
+  // Vireystila-palkit
+  const arousalEl = document.getElementById('plan-arousal-summary');
+  if (arousalEl && notes.length) {
+    const maxVal = 10;
+    const bars = notes.slice(-8).map((n, i) => {
+      const startH = Math.round((parseInt(n.start||5)/maxVal)*32);
+      const endH   = Math.round((parseInt(n.end||5)/maxVal)*32);
+      const improved = parseInt(n.end||5) < parseInt(n.start||5);
+      return `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1">
+        <div style="font-size:0.55rem;font-family:var(--font-m);color:var(--dim)">${i+1}</div>
+        <div style="width:100%;display:flex;gap:1px;align-items:flex-end;height:36px">
+          <div style="flex:1;background:var(--rose);opacity:0.5;border-radius:2px 2px 0 0;height:${startH}px"></div>
+          <div style="flex:1;background:${improved?'var(--teal)':'var(--rose)'};border-radius:2px 2px 0 0;height:${endH}px"></div>
+        </div>
+      </div>`;
+    }).join('');
+    arousalEl.innerHTML = `
+      <div style="display:flex;gap:3px;align-items:flex-end;height:44px;margin-bottom:0.3rem">${bars}</div>
+      <div style="display:flex;gap:0.75rem;font-size:0.65rem;color:var(--dim)">
+        <span><span style="color:var(--rose)">■</span> Alku</span>
+        <span><span style="color:var(--teal)">■</span> Loppu (parantunut)</span>
+      </div>`;
+  } else if (arousalEl) {
+    arousalEl.innerHTML = '<span style="color:var(--muted)">Ei vireystiladata.</span>';
+  }
+}
+
+function initPlanClientList() {
+  const clients = new Set();
+  try { loadNotes().forEach(n => { if(n.client) clients.add(n.client); }); } catch(e){}
+  ['gad7','phq9','pcl5','dass21'].forEach(p => {
+    const h = JSON.parse(localStorage.getItem(`ass_history_${p}`)||'[]');
+    h.forEach(e => { if(e.client) clients.add(e.client); });
+  });
+  const dl = document.getElementById('plan-client-list');
+  if (dl) dl.innerHTML = [...clients].sort().map(c => `<option value="${c}">`).join('');
+}
+
 function loadPlans() {
   try { return JSON.parse(localStorage.getItem('hoitosuunnitelmat')||'[]'); } catch { return []; }
 }
@@ -4880,6 +4996,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initProgressClient();
   renderPlanList();
   updateAssClientList();
+  initPlanClientList();
   ['gad7','phq9','pcl5','psqi','dass21'].forEach(p => renderAssHistory(p));
 });
 </script>
