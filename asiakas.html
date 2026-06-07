@@ -5825,6 +5825,8 @@ function openModal(id) {
   document.getElementById('modal-bg').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+window.openModal = openModal;
+
 
 function closeBg(e) {
   if (e.target === document.getElementById('modal-bg')) closeModal();

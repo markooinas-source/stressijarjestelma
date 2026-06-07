@@ -3968,7 +3968,7 @@ function openTExModal(id) {
       ${stepsHTML ? `<div style="font-size:0.65rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);margin-bottom:0.5rem">Ohjaus vaiheittain</div>
         <ol style="padding-left:1.2rem;font-size:0.82rem;color:var(--text);line-height:1.6">${stepsHTML}</ol>` : ''}
     </div>`;
-  openModal('harjoite-' + id);
+  document.getElementById('modal-bg').classList.add('open');
 }
 
 function toggleNavSection(id) {
