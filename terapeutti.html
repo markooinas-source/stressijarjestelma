@@ -2450,6 +2450,7 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
   <div class="page-eyebrow">Asiakaskohtainen seuranta</div>
   <h1 class="page-title">Edistymisseuranta</h1>
   <p class="page-lead">Seuraa asiakkaan kehitystä ajan yli — vireystila, arviointitulokset ja istuntojen laatu. Data kerätään automaattisesti muistiinpanoista.</p>
+  <div style="margin-bottom:1rem"><select id="progress-client" onchange="renderProgressCharts()" style="padding:0.4rem 0.75rem;border:1.5px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);font-size:0.85rem;cursor:pointer"><option value="">— valitse asiakas —</option></select></div>
 
   <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap">
     <label class="field-label" style="margin:0;white-space:nowrap">Asiakaskoodi</label>
@@ -4000,6 +4001,9 @@ function showPage(id, el) {
   if (id === 'harjoitteet') renderTExGrid();
   if (id === 'lapset-nuoret') lnInit();
   if (id === 'psykoed') renderPsychoedT();
+  if (id === 'edistyminen') { initProgressClient(); renderProgressCharts(); }
+  if (id === 'arvioinnit') updateAssClientList();
+  if (id === 'hoitosuunnitelma') initPlanClientList();
   if (id === 'muistiinpanot') {
     const kdState = JSON.parse(localStorage.getItem('kd_session')||'{}');
     const nClient = document.getElementById('n-client');
@@ -5298,7 +5302,7 @@ document.addEventListener('DOMContentLoaded', () => {
   buildDASSQuestionnaire();
   buildPVObs();
   buildWOTObs();
-  renderExercisesT();
+  // renderExercisesT replaced by renderTExGrid (called on showPage)
   renderPsychoedT();
   renderRxList();
   renderNotes();
