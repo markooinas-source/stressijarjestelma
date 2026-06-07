@@ -188,7 +188,31 @@ body::before {
   color: var(--muted);
 }
 
-.nav-group {
+.t-ex-filter {
+  font-size: 0.72rem; font-weight: 600; padding: 0.3rem 0.75rem;
+  border-radius: 16px; border: 1px solid var(--border);
+  background: transparent; color: var(--dim); cursor: pointer; transition: all 0.15s;
+  font-family: var(--font-m);
+}
+.t-ex-filter.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+.t-ex-filter:hover:not(.active) { border-color: var(--teal); color: var(--teal); }
+.t-ex-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.9rem 1rem; cursor: pointer;
+  transition: all 0.15s; position: relative; overflow: hidden;
+}
+.t-ex-card:hover { border-color: var(--teal-bd); transform: translateY(-1px); }
+.t-ex-card.hidden { display: none; }
+.t-ex-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2.5px;
+}
+.t-ex-cat-breath::before  { background: var(--blue); }
+.t-ex-cat-vagus::before   { background: var(--teal); }
+.t-ex-cat-somatic::before { background: var(--amber); }
+.t-ex-cat-grounding::before { background: var(--gold); }
+.t-ex-cat-bilateral::before { background: var(--rose); }
+.t-ex-cat-cognitive::before { background: var(--mid); }
+
   padding: 1rem 0.75rem 0.5rem;
 }
 .nav-group-label {
@@ -977,6 +1001,9 @@ h3.section-h {
   <!-- Hoito -->
   <div class="nav-group">
     <div class="nav-group-label">Hoito</div>
+    <div class="nav-item" onclick="showPage('harjoitteet',this)">
+      <span class="nav-dot"></span>Harjoitteet
+    </div>
     <div class="nav-item" onclick="showPage('harjoitteet',this)">
       <span class="nav-dot"></span>Harjoitteet
     </div>
@@ -2687,6 +2714,36 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 </div>
 
 
+<!-- ── HARJOITTEET ──────────────────────────── -->
+<div id="page-harjoitteet" class="page">
+<div class="page-content">
+  <div class="page-eyebrow">Kliiniset harjoitteet</div>
+  <h1 class="page-title">Harjoitteet</h1>
+  <p class="page-lead">Selaa ja hae harjoitteita. Suodata vireystilan tai kategorian mukaan.</p>
+
+  <!-- Haku + filtterit -->
+  <div style="display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem">
+    <input type="search" id="t-ex-search" placeholder="🔍 Hae harjoitteita..."
+      oninput="filterTEx()"
+      style="flex:1;min-width:160px;padding:0.45rem 0.85rem;border:1.5px solid var(--border);border-radius:20px;font-size:0.85rem;background:var(--bg);color:var(--text);outline:none;font-family:var(--font-m)">
+  </div>
+  <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1.25rem">
+    <button class="t-ex-filter active" data-filter="all" onclick="filterTEx('all',this)">Kaikki</button>
+    <button class="t-ex-filter" data-filter="hyper" onclick="filterTEx('hyper',this)">↑ Ylivireys</button>
+    <button class="t-ex-filter" data-filter="ok" onclick="filterTEx('ok',this)">● Sietoikkuna</button>
+    <button class="t-ex-filter" data-filter="hypo" onclick="filterTEx('hypo',this)">↓ Alivireys</button>
+    <button class="t-ex-filter" data-filter="breath" onclick="filterTEx('breath',this)">Hengitys</button>
+    <button class="t-ex-filter" data-filter="vagus" onclick="filterTEx('vagus',this)">Vagus</button>
+    <button class="t-ex-filter" data-filter="somatic" onclick="filterTEx('somatic',this)">Somaattinen</button>
+    <button class="t-ex-filter" data-filter="grounding" onclick="filterTEx('grounding',this)">Ankkurointi</button>
+    <button class="t-ex-filter" data-filter="bilateral" onclick="filterTEx('bilateral',this)">Bilateraalinen</button>
+    <button class="t-ex-filter" data-filter="cognitive" onclick="filterTEx('cognitive',this)">Kognitiivinen</button>
+  </div>
+
+  <div id="t-ex-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:0.75rem"></div>
+</div>
+</div>
+
 <div id="page-elamanjana" class="page">
 <div style="padding:1.5rem 1.5rem 0">
   <div style="font-size:1.25rem;font-weight:800;color:var(--text);margin-bottom:0.25rem">📅 Elämänjana</div>
@@ -3683,6 +3740,104 @@ function closeSidebar() {
   else setTimeout(init, 100);
 })();
 
+function renderTExGrid() {
+  const grid = document.getElementById('t-ex-grid');
+  if (!grid || grid.dataset.built) return;
+  grid.dataset.built = '1';
+  const CAT_COLORS = {
+    breath:'var(--blue)', vagus:'var(--teal)', somatic:'var(--amber)',
+    grounding:'var(--gold)', bilateral:'var(--rose)', cognitive:'var(--mid)'
+  };
+  const STATE_LABELS = { hyper:'↑ Ylivireys', ok:'● Sietoikkuna', hypo:'↓ Alivireys', panic:'⚡ Paniikki' };
+  grid.innerHTML = EXERCISES_T.map(ex => {
+    const color = CAT_COLORS[ex.cat] || 'var(--teal)';
+    const states = (ex.forState||[]).map(s =>
+      `<span style="font-size:0.62rem;padding:0.1rem 0.4rem;border-radius:3px;background:var(--surface);border:1px solid var(--border);color:var(--dim);font-family:var(--font-m)">${STATE_LABELS[s]||s}</span>`
+    ).join('');
+    const contra = ex.contraindications?.length
+      ? `<div style="font-size:0.7rem;color:var(--rose);margin-top:0.4rem">⚠ ${ex.contraindications.join(' · ')}</div>` : '';
+    return `<div class="t-ex-card t-ex-cat-${ex.cat}"
+      data-cat="${ex.cat}"
+      data-state="${(ex.forState||[]).join(',')}"
+      data-name="${ex.name.toLowerCase()}"
+      onclick="openTExModal('${ex.id}')">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.4rem">
+        <div>
+          <div style="font-size:0.6rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:${color};margin-bottom:0.25rem">${ex.catLabel||ex.cat}</div>
+          <div style="font-size:0.88rem;font-weight:700;color:var(--text);line-height:1.25">${ex.name}</div>
+        </div>
+        <div style="font-size:0.68rem;color:var(--dim);font-family:var(--font-m);white-space:nowrap;flex-shrink:0">${ex.dur}</div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--text2);line-height:1.5;margin-bottom:0.5rem">${ex.desc}</div>
+      <div style="display:flex;gap:0.25rem;flex-wrap:wrap">${states}</div>
+      ${contra}
+    </div>`;
+  }).join('');
+}
+
+function filterTEx(filter, btn) {
+  if (btn) {
+    document.querySelectorAll('.t-ex-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const search = document.getElementById('t-ex-search')?.value.toLowerCase() || '';
+  const activeFilter = btn ? filter : document.querySelector('.t-ex-filter.active')?.dataset.filter || 'all';
+  const stateFilters = ['hyper','ok','hypo','panic'];
+
+  document.querySelectorAll('#t-ex-grid .t-ex-card').forEach(card => {
+    const cat   = card.dataset.cat || '';
+    const state = card.dataset.state || '';
+    const name  = card.dataset.name || '';
+    let show = true;
+    if (search && !name.includes(search)) show = false;
+    if (show && activeFilter !== 'all') {
+      if (stateFilters.includes(activeFilter)) {
+        show = state.includes(activeFilter);
+      } else {
+        show = cat === activeFilter;
+      }
+    }
+    card.classList.toggle('hidden', !show);
+  });
+}
+
+function openTExModal(id) {
+  const ex = EXERCISES_T.find(e => e.id === id);
+  if (!ex) return;
+  const STATE_LABELS = { hyper:'↑ Ylivireys', ok:'● Sietoikkuna', hypo:'↓ Alivireys', panic:'⚡ Paniikki' };
+  const CAT_COLORS = { breath:'var(--blue)', vagus:'var(--teal)', somatic:'var(--amber)', grounding:'var(--gold)', bilateral:'var(--rose)', cognitive:'var(--mid)' };
+  const color = CAT_COLORS[ex.cat] || 'var(--teal)';
+  const stepsHTML = (ex.steps||[]).map(s => `<li style="margin-bottom:0.4rem;line-height:1.5">${s}</li>`).join('');
+  const contraHTML = ex.contraindications?.length
+    ? `<div style="background:var(--rose-bg);border:1px solid var(--rose-bd);border-radius:8px;padding:0.6rem 0.85rem;margin-bottom:0.75rem">
+        <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--rose);margin-bottom:0.3rem">⚠ Kontraindikaatiot</div>
+        <div style="font-size:0.78rem;color:var(--rose)">${ex.contraindications.join(', ')}</div>
+      </div>` : '';
+  const pvHTML = ex.polyvagal
+    ? `<div style="background:var(--teal-bg);border:1px solid var(--teal-bd);border-radius:8px;padding:0.6rem 0.85rem;margin-bottom:0.75rem">
+        <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);margin-bottom:0.3rem">Polyvagaalinen viitekehys</div>
+        <div style="font-size:0.78rem;color:var(--text2)">${ex.polyvagal}</div>
+      </div>` : '';
+  const states = (ex.forState||[]).map(s =>
+    `<span style="font-size:0.7rem;padding:0.2rem 0.6rem;border-radius:10px;background:var(--surface);border:1px solid var(--border);color:var(--dim)">${STATE_LABELS[s]||s}</span>`
+  ).join(' ');
+
+  const body = document.getElementById('modal-body');
+  if (!body) return;
+  body.innerHTML = `
+    <div style="padding:1.25rem">
+      <div style="font-size:0.62rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:${color};margin-bottom:0.3rem">${ex.catLabel||ex.cat}</div>
+      <div style="font-size:1.2rem;font-weight:800;color:var(--text);margin-bottom:0.3rem">${ex.name}</div>
+      <div style="font-size:0.75rem;font-family:var(--font-m);color:var(--dim);margin-bottom:0.85rem">${ex.dur}</div>
+      <div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-bottom:0.9rem">${states}</div>
+      ${contraHTML}${pvHTML}
+      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;margin-bottom:1rem">${ex.desc}</div>
+      ${stepsHTML ? `<div style="font-size:0.65rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);margin-bottom:0.5rem">Ohjaus vaiheittain</div>
+        <ol style="padding-left:1.2rem;font-size:0.82rem;color:var(--text);line-height:1.6">${stepsHTML}</ol>` : ''}
+    </div>`;
+  openModal('harjoite-' + id);
+}
+
 function toggleNavSection(id) {
   const el = document.getElementById(id);
   const arrow = document.getElementById(id + '-arrow');
@@ -3709,6 +3864,15 @@ function showPage(id, el) {
 
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
+  if (id === 'harjoitteet') renderTExGrid();
+  if (id === 'psykoed') renderPsychoedT();
+  if (id === 'muistiinpanot') {
+    const kdState = JSON.parse(localStorage.getItem('kd_session')||'{}');
+    const nClient = document.getElementById('n-client');
+    if (nClient && kdState.client && !nClient.value) nClient.value = kdState.client;
+    updateClientFilter();
+    renderNotes();
+  }
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if (el) el.classList.add('active');
   else {
