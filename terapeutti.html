@@ -2749,80 +2749,35 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 
 <!-- ── LASTEN & NUORTEN PSYKOTERAPIA ──────────── -->
 <div id="page-lapset-nuoret" class="page">
-<style>
-.ln-hero { background: linear-gradient(135deg, #2d6a4f 0%, #1a4a30 100%); padding: 1.25rem 1.5rem 1rem; }
-.ln-hero-title { font-family: var(--font-d); font-size: 1.3rem; font-style: italic; color: #fff; margin-bottom: 0.2rem; }
-.ln-hero-sub { font-size: 0.78rem; color: rgba(255,255,255,0.75); }
-.ln-controls { padding: 1rem 1.5rem 0; display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; }
-.ln-age-btn { padding: 0.35rem 1rem; border-radius: 20px; border: 1.5px solid var(--border); background: transparent; color: var(--dim); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: var(--font-m); }
-.ln-age-btn.active { background: var(--teal); color: #fff; border-color: var(--teal); }
-.ln-theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 0.6rem; padding: 1rem 1.5rem; }
-.ln-theme-card { border-radius: 10px; padding: 0.85rem 1rem; cursor: pointer; border: 1.5px solid; transition: all 0.15s; }
-.ln-theme-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
-.ln-theme-icon { font-size: 1.5rem; margin-bottom: 0.4rem; }
-.ln-theme-label { font-size: 0.88rem; font-weight: 800; margin-bottom: 0.2rem; }
-.ln-theme-desc { font-size: 0.7rem; opacity: 0.7; line-height: 1.4; }
-
-/* Detail view */
-.ln-detail { display: none; padding: 0 1.5rem 2rem; }
-.ln-detail.active { display: block; }
-.ln-back { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 0; cursor: pointer; color: var(--dim); font-size: 0.8rem; font-family: var(--font-m); border: none; background: transparent; margin-bottom: 0.5rem; }
-.ln-back:hover { color: var(--text); }
-.ln-section-title { font-family: var(--font-m); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 1.25rem 0 0.6rem; }
-.ln-psychoed-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1.1rem; font-size: 0.83rem; color: var(--text2); line-height: 1.65; border-left: 3px solid var(--teal); }
-.ln-arviointi-list { display: flex; flex-direction: column; gap: 0.3rem; }
-.ln-arviointi-item { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.8rem; color: var(--text2); padding: 0.35rem 0.6rem; background: var(--surface); border-radius: 6px; border: 1px solid var(--border); }
-.ln-protocol-steps { display: flex; flex-direction: column; gap: 0.6rem; }
-.ln-protocol-step { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.85rem 1rem; }
-.ln-step-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
-.ln-step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--teal); color: #fff; font-size: 0.72rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.ln-step-title { font-size: 0.88rem; font-weight: 700; color: var(--text); }
-.ln-step-sessions { font-size: 0.68rem; font-family: var(--font-m); color: var(--dim); margin-left: auto; flex-shrink: 0; }
-.ln-step-desc { font-size: 0.78rem; color: var(--text2); line-height: 1.55; margin-bottom: 0.5rem; }
-.ln-method-tags { display: flex; gap: 0.3rem; flex-wrap: wrap; }
-.ln-method-tag { font-size: 0.65rem; padding: 0.15rem 0.45rem; border-radius: 4px; background: var(--bg); border: 1px solid var(--border); color: var(--dim); font-family: var(--font-m); }
-.ln-ex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 0.65rem; }
-.ln-ex-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.85rem 1rem; cursor: pointer; transition: all 0.15s; position: relative; overflow: hidden; }
-.ln-ex-card:hover { border-color: var(--teal-bd); }
-.ln-ex-card::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px; }
-.ln-ex-cbt::before    { background: var(--blue); }
-.ln-ex-keho::before   { background: var(--teal); }
-.ln-ex-luova::before  { background: var(--gold); }
-.ln-ex-type { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.3rem; margin-left: 0.5rem; }
-.ln-ex-cbt .ln-ex-type    { color: var(--blue); }
-.ln-ex-keho .ln-ex-type   { color: var(--teal); }
-.ln-ex-luova .ln-ex-type  { color: var(--gold); }
-.ln-ex-name { font-size: 0.85rem; font-weight: 700; color: var(--text); margin-left: 0.5rem; margin-bottom: 0.3rem; }
-.ln-ex-desc { font-size: 0.77rem; color: var(--text2); line-height: 1.5; margin-left: 0.5rem; }
-.ln-ex-meta { display: flex; gap: 0.5rem; margin-top: 0.5rem; margin-left: 0.5rem; flex-wrap: wrap; }
-.ln-ex-meta span { font-size: 0.65rem; color: var(--dim); font-family: var(--font-m); }
-
-/* Modal */
-#ln-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; }
-#ln-modal.open { display: flex; }
-.ln-modal-box { background: var(--bg); border-radius: 14px; padding: 1.5rem; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
-</style>
 
 <div class="ln-hero">
-  <div class="ln-hero-title">Lasten & nuorten psykoterapia</div>
-  <div class="ln-hero-sub">Protokollat · Arviointi · Harjoitteet · CBT + Keho + Luovat menetelmät</div>
+  <div class="ln-hero-title">Lasten &amp; nuorten psykoterapia</div>
+  <div class="ln-hero-sub">Protokollat · Arviointi · Harjoitteet</div>
+  <div class="ln-hero-badges">
+    <span class="ln-hero-badge">🔵 CBT</span>
+    <span class="ln-hero-badge">🟢 Kehollinen</span>
+    <span class="ln-hero-badge">🟡 Luovat menetelmät</span>
+    <span class="ln-hero-badge">7 teemaa</span>
+  </div>
 </div>
 
-<!-- Teema-grid -->
+<!-- Theme view -->
 <div id="ln-theme-view">
-  <div class="ln-controls">
+  <div class="ln-age-tabs">
     <button class="ln-age-btn active" data-age="lapsi" onclick="lnSetAge('lapsi',this)">🐣 Alle 12-vuotiaat</button>
     <button class="ln-age-btn" data-age="nuori" onclick="lnSetAge('nuori',this)">🌱 12–17-vuotiaat</button>
   </div>
   <div class="ln-theme-grid" id="ln-theme-grid"></div>
 </div>
 
-<!-- Teema-detail -->
+<!-- Detail view -->
 <div id="ln-detail-view" style="display:none">
-  <div style="padding:0.75rem 1.5rem 0">
-    <button class="ln-back" onclick="lnShowThemes()">← Takaisin teemoihin</button>
+  <div class="ln-detail-header">
+    <button class="ln-back" onclick="lnShowThemes()">← Kaikki teemat</button>
+    <div class="ln-detail-title" id="ln-detail-title"></div>
+    <span class="ln-detail-badge" id="ln-detail-badge"></span>
   </div>
-  <div id="ln-detail-content" class="ln-detail active"></div>
+  <div class="ln-detail-body" id="ln-detail-content"></div>
 </div>
 
 <!-- Harjoite-modaali -->
@@ -2830,14 +2785,13 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
   <div class="ln-modal-box">
     <div id="ln-modal-content"></div>
     <button onclick="document.getElementById('ln-modal').classList.remove('open')"
-      style="width:100%;margin-top:1rem;padding:0.6rem;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--dim);cursor:pointer;font-family:var(--font-b)">
+      style="width:100%;margin-top:1.25rem;padding:0.65rem;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--dim);cursor:pointer;font-family:var(--font-b);font-size:0.85rem">
       Sulje
     </button>
   </div>
 </div>
 
 </div>
-
 
 <div id="page-elamanjana" class="page">
 <div style="padding:1.5rem 1.5rem 0">
@@ -5607,9 +5561,10 @@ function lnRenderThemes() {
   grid.innerHTML = LN_THEMES.map(t => `
     <div class="ln-theme-card" style="background:${t.colorBg};border-color:${t.colorBd};color:${t.color}"
       onclick="lnShowTheme('${t.id}')">
-      <div class="ln-theme-icon">${t.icon}</div>
+      <span class="ln-theme-icon">${t.icon}</span>
       <div class="ln-theme-label" style="color:${t.color}">${t.label}</div>
       <div class="ln-theme-desc" style="color:${t.color}">${t.desc}</div>
+      <span class="ln-theme-arrow">→</span>
     </div>`).join('');
 }
 
@@ -5617,7 +5572,6 @@ function lnSetAge(age, btn) {
   lnCurrentAge = age;
   document.querySelectorAll('.ln-age-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  // If detail is open, re-render it
   const detail = document.getElementById('ln-detail-view');
   if (detail.style.display !== 'none') {
     const id = detail.dataset.theme;
@@ -5639,59 +5593,88 @@ function lnShowTheme(id) {
   detailView.dataset.theme = id;
 
   const age = lnCurrentAge;
-  const ageLabel = age === 'lapsi' ? 'Alle 12-vuotiaat' : '12–17-vuotiaat';
+  const ageLabel = age === 'lapsi' ? '🐣 Alle 12-vuotiaat' : '🌱 12–17-vuotiaat';
   const harjoitteet = theme.harjoitteet[age] || [];
-  const TYPE_LABELS = { cbt: 'Kognitiivinen · CBT', keho: 'Kehollinen', luova: 'Luova menetelmä' };
+  const TYPE_LABELS = { cbt:'Kognitiivinen · CBT', keho:'Kehollinen', luova:'Luova menetelmä' };
 
-  const protokollaHTML = theme.protokolla.map(p => `
-    <div class="ln-protocol-step">
-      <div class="ln-step-header">
-        <div class="ln-step-num">${p.vaihe}</div>
-        <div class="ln-step-title">${p.nimi}</div>
-        <div class="ln-step-sessions">Istunnot ${p.istunnot}</div>
-      </div>
-      <div class="ln-step-desc">${p.kuvaus}</div>
-      <div class="ln-method-tags">
-        ${p.menetelmat.map(m => `<span class="ln-method-tag">${m}</span>`).join('')}
-      </div>
-    </div>`).join('');
+  // Header
+  const titleEl = document.getElementById('ln-detail-title');
+  const badgeEl = document.getElementById('ln-detail-badge');
+  if (titleEl) titleEl.innerHTML = `<span style="margin-right:0.5rem">${theme.icon}</span>${theme.label}`;
+  if (badgeEl) {
+    badgeEl.textContent = ageLabel;
+    badgeEl.style.background = theme.colorBg;
+    badgeEl.style.color = theme.color;
+    badgeEl.style.border = `1px solid ${theme.colorBd}`;
+  }
 
-  const harjoitteetHTML = harjoitteet.map((h, i) => `
-    <div class="ln-ex-card ln-ex-${h.tyyppi}" onclick="lnOpenEx('${id}','${age}',${i})">
-      <div class="ln-ex-type">${TYPE_LABELS[h.tyyppi] || h.tyyppi}</div>
-      <div class="ln-ex-name">${h.nimi}</div>
-      <div class="ln-ex-desc">${h.kuvaus.substring(0,100)}${h.kuvaus.length>100?'…':''}</div>
-      <div class="ln-ex-meta">
-        <span>⏱ ${h.aika}</span>
-        ${h.valineet !== 'Ei tarvita' ? `<span>🎒 ${h.valineet}</span>` : ''}
+  // Protokolla
+  const protokollaHTML = `
+    <div>
+      <div class="ln-section-label">Hoitoprotokolla</div>
+      <div class="ln-protocol-timeline">
+        ${theme.protokolla.map(p => `
+          <div class="ln-protocol-step">
+            <div class="ln-step-left">
+              <div class="ln-step-num" style="background:${theme.color}">${p.vaihe}</div>
+              <div class="ln-step-line"></div>
+            </div>
+            <div class="ln-step-right">
+              <div class="ln-step-header-row">
+                <div class="ln-step-title">${p.nimi}</div>
+                <div class="ln-step-sessions">ist. ${p.istunnot}</div>
+              </div>
+              <div class="ln-step-desc">${p.kuvaus}</div>
+              <div class="ln-method-tags">
+                ${p.menetelmat.map(m => `<span class="ln-method-tag">${m}</span>`).join('')}
+              </div>
+            </div>
+          </div>`).join('')}
       </div>
-    </div>`).join('');
+    </div>`;
 
-  const arviointiHTML = theme.arviointi.map(a =>
-    `<div class="ln-arviointi-item"><span>•</span><span>${a}</span></div>`
-  ).join('');
+  // Harjoitteet
+  const harjoitteetHTML = `
+    <div>
+      <div class="ln-section-label">Harjoitteet</div>
+      <div class="ln-ex-grid">
+        ${harjoitteet.map((h, i) => `
+          <div class="ln-ex-card ln-ex-${h.tyyppi}" onclick="lnOpenEx('${id}','${age}',${i})">
+            <div class="ln-ex-header">
+              <div class="ln-ex-type">${TYPE_LABELS[h.tyyppi]||h.tyyppi}</div>
+              <div class="ln-ex-aika">⏱ ${h.aika}</div>
+            </div>
+            <div class="ln-ex-name">${h.nimi}</div>
+            <div class="ln-ex-desc">${h.kuvaus.substring(0,90)}${h.kuvaus.length>90?'…':''}</div>
+            ${h.valineet !== 'Ei tarvita' ? `<div class="ln-ex-valineet">🎒 ${h.valineet}</div>` : ''}
+          </div>`).join('')}
+      </div>
+    </div>`;
+
+  // Arviointi + psykoed
+  const arviointiHTML = `
+    <div>
+      <div class="ln-section-label">Psykoedukaatio</div>
+      <div class="ln-psychoed-box">${theme.psykoed[age]}</div>
+      <div class="ln-section-label" style="margin-top:1.25rem">Arviointi</div>
+      <div class="ln-arviointi-grid">
+        ${theme.arviointi.map(a => `
+          <div class="ln-arviointi-item">
+            <div class="ln-arviointi-dot" style="background:${theme.color}"></div>
+            <span>${a}</span>
+          </div>`).join('')}
+      </div>
+    </div>`;
 
   document.getElementById('ln-detail-content').innerHTML = `
-    <div style="display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0 0.25rem">
-      <div style="font-size:2rem">${theme.icon}</div>
-      <div>
-        <div style="font-size:1.1rem;font-weight:800;color:${theme.color}">${theme.label}</div>
-        <div style="font-size:0.72rem;color:var(--dim)">${ageLabel}</div>
-      </div>
+    <div class="ln-detail-cols">
+      ${arviointiHTML}
+      ${protokollaHTML}
     </div>
+    ${harjoitteetHTML}`;
 
-    <div class="ln-section-title">Psykoedukaatio — ${ageLabel}</div>
-    <div class="ln-psychoed-box">${theme.psykoed[age]}</div>
-
-    <div class="ln-section-title">Arviointi</div>
-    <div class="ln-arviointi-list">${arviointiHTML}</div>
-
-    <div class="ln-section-title">Hoitoprotokolla</div>
-    <div class="ln-protocol-steps">${protokollaHTML}</div>
-
-    <div class="ln-section-title">Harjoitteet — ${ageLabel}</div>
-    <div class="ln-ex-grid">${harjoitteetHTML}</div>
-  `;
+  // Scroll top
+  document.getElementById('ln-detail-view').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function lnOpenEx(themeId, age, idx) {
@@ -5699,18 +5682,20 @@ function lnOpenEx(themeId, age, idx) {
   if (!theme) return;
   const h = theme.harjoitteet[age]?.[idx];
   if (!h) return;
-  const TYPE_LABELS = { cbt: 'Kognitiivinen · CBT', keho: 'Kehollinen', luova: 'Luova menetelmä' };
-  const TYPE_COLORS = { cbt: 'var(--blue)', keho: 'var(--teal)', luova: 'var(--gold)' };
+  const TYPE_LABELS = { cbt:'Kognitiivinen · CBT', keho:'Kehollinen', luova:'Luova menetelmä' };
+  const TYPE_COLORS = { cbt:'var(--blue)', keho:'var(--teal)', luova:'var(--gold)' };
   document.getElementById('ln-modal-content').innerHTML = `
-    <div style="font-size:0.62rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:${TYPE_COLORS[h.tyyppi]};margin-bottom:0.3rem">${TYPE_LABELS[h.tyyppi]}</div>
-    <div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:0.75rem">${h.nimi}</div>
-    <div style="font-size:0.85rem;color:var(--text2);line-height:1.65;margin-bottom:1rem">${h.kuvaus}</div>
-    ${h.valineet !== 'Ei tarvita' ? `<div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem;font-size:0.78rem;color:var(--dim)"><span>🎒</span><strong>Tarvitaan:</strong> ${h.valineet}</div>` : ''}
-    <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.78rem;color:var(--dim)"><span>⏱</span><strong>Aika:</strong> ${h.aika}</div>`;
+    <div class="ln-modal-type" style="color:${TYPE_COLORS[h.tyyppi]}">${TYPE_LABELS[h.tyyppi]||h.tyyppi}</div>
+    <div class="ln-modal-name">${h.nimi}</div>
+    <div class="ln-modal-desc">${h.kuvaus}</div>
+    <div class="ln-modal-meta">
+      <div class="ln-modal-meta-row"><strong>⏱ Aika</strong><span>${h.aika}</span></div>
+      ${h.valineet !== 'Ei tarvita' ? `<div class="ln-modal-meta-row"><strong>🎒 Tarvitset</strong><span>${h.valineet}</span></div>` : ''}
+      <div class="ln-modal-meta-row"><strong>📌 Teema</strong><span>${theme.icon} ${theme.label}</span></div>
+      <div class="ln-modal-meta-row"><strong>👥 Ikäryhmä</strong><span>${age === 'lapsi' ? 'Alle 12 v' : '12–17 v'}</span></div>
+    </div>`;
   document.getElementById('ln-modal').classList.add('open');
 }
-
-
 </script>
 </body>
 </html>
