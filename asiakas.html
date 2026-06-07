@@ -1839,13 +1839,13 @@ body.kids-mode .site-footer { display:none; }
   <div class="nav-tabs" id="nav-tabs">
     <button class="nav-tab active" onclick="showPanel('koti',this)">🏠 Koti</button>
     <button class="nav-tab adult-only" onclick="showPanel('harjoitteet',this)">🧘 Harjoitteet</button>
+    <button class="nav-tab adult-only" onclick="showPanel('tietoa',this)">📚 Tietoa</button>
     <button class="nav-tab adult-only" onclick="showPanel('paivakirja',this)">📓 Päiväkirja</button>
     <button class="nav-tab adult-only" onclick="showPanel('kriisi',this)" style="color:var(--red);font-weight:800">🆘</button>
     <button class="nav-tab adult-only" id="nav-more-btn" onclick="toggleNavMore(this)">☰ Lisää</button>
   </div>
   <!-- Lisää-valikko -->
   <div id="nav-more-menu" style="display:none;position:fixed;bottom:56px;right:0;left:0;z-index:300;background:var(--bg);border-top:1px solid var(--sand3);padding:0.6rem 1rem;display:none;flex-wrap:wrap;gap:0.4rem;justify-content:center">
-    <button class="nav-more-item adult-only" onclick="showPanel('tietoa',null);closeNavMore()">📚 Tietoa</button>
     <button class="nav-more-item adult-only" onclick="showPanel('kehokartta',null);closeNavMore()">🫀 Kehokartta</button>
     <button class="nav-more-item adult-only" onclick="showPanel('ajatukset',null);closeNavMore()">💭 Ajatukset</button>
     <button class="nav-more-item adult-only" onclick="showPanel('elamanjana',null);closeNavMore()">📅 Elämänjana</button>
@@ -2362,7 +2362,8 @@ body.kids-mode .site-footer { display:none; }
     <button class="info-tab" onclick="switchInfoTab('hengitys',this)">🌬️ Hengitys</button>
     <button class="info-tab" onclick="switchInfoTab('ans',this)">⚡ ANS</button>
     <button class="info-tab" onclick="switchInfoTab('kiintymys',this)">🤝 Kiintymys</button>
-    <button class="info-tab" onclick="switchInfoTab('kipu',this)">🧠 Kivun neurotiede</button>
+    <button class="info-tab" onclick="switchInfoTab('kehotietoisuus',this)">🫀 Kehotietoisuus</button>
+    <button class="info-tab" onclick="switchInfoTab('pne',this)">🧠 Kivun neurotiede</button>
   </div>
 
   <div id="info-content"></div>
@@ -7819,6 +7820,28 @@ const INFO_TOPICS = {
         content:`<p>Hae apua välittömästi jos kipuun liittyy: alaraajojen puutuminen tai voimattomuus, virtsarakon tai suolen hallinnan ongelmat, yöllinen kipu joka herättää nukkumasta, selittämätön painonlasku, kuume tai yleinen sairaus.</p>
         <p>Hae apua moniammatillisesta kivunklinikasta tai kipuun erikoistuneelta fysioterapeutilta jos kipu on kestänyt yli 3 kuukautta, kipu rajoittaa merkittävästi arkea, pelko liikkumisesta on suuri, aiemmat hoidot eivät ole auttaneet.</p>` }
     ]
+  },
+
+  kehotietoisuus: {
+    icon:'🫀', title:'Kehotietoisuus — kuuntele kehoasi',
+    lead:'Kehotietoisuus on kyky huomata kehon tuntemuksia ilman, että arvioit tai yrität muuttaa niitä. Se on taito jota voi oppia — ja joka muuttaa suhdettasi stressiin, tunteisiin ja kipuun.',
+    blocks:[
+      { icon:'🧭', title:'Mitä kehotietoisuus on?',
+        content:`<p>Kehotietoisuus (englanniksi <em>interoception</em>) tarkoittaa kykyä aistia kehon sisäisiä tiloja — sykettä, hengitystä, jännitystä, lämpöä, kylmyyttä, painetta.</p><p>Tutkimukset osoittavat, että heikko kehotietoisuus liittyy ahdistukseen, masennukseen ja krooniseen kipuun. Hyvä kehotietoisuus taas on yhteydessä parempaan tunnesäätelyyn, stressinsietokykyyn ja hyvinvointiin.</p>`,
+        selfHelp: ['Pysähdy kolme kertaa päivässä: missä tunnet jännitystä juuri nyt?', 'Skannaa keho ylhäältä alas — ei arvostelua, pelkkä havaitseminen', 'Huomaa hengityksesi: onko se pinnallista vai syvää?'] },
+      { icon:'🧠', title:'Keho ja mieli — kaksisuuntainen yhteys',
+        content:`<p>Aivot ja keho ovat jatkuvassa vuoropuhelussa. Kehon tuntemusten havaitseminen aktivoi insulakorteksin — aivoalueen joka osallistuu tunnesäätelyyn, empatian kokemiseen ja päätöksentekoon.</p><p>Kun opit tunnistamaan kehon signaaleja ajoissa, pystyt reagoimaan stressiin ennen kuin se ylikuormittaa sinua. Keho kertoo usein ennen mieltä.</p>`,
+        selfHelp: ['Kun tunnet jonkin tunteen, nimeä missä kohtaa kehoa se tuntuu', 'Ennen tärkeää päätöstä: miltä vaihtoehto tuntuu kehossa?', 'Jännitys rinnassa = keho viestii jostain tärkeästä'] },
+      { icon:'🌊', title:'Trauma ja kehon muisti',
+        content:`<p>Traumaattiset kokemukset tallentuvat kehoon — ei vain mieleen. Ylikuormittavat kokemukset saattavat jäädä "jumiin" kehoon jännityksenä, tunnottomuutena tai yliaktiivisuutena.</p><p>Kehotietoisuusharjoitteet auttavat vapauttamaan näitä jäätyneitä reaktioita turvallisesti ja asteittain. Tärkeää: anna itsellesi lupa edetä omaan tahtiisi.</p>`,
+        selfHelp: ['Aloita pienestä — 2 minuutin kehoskannaus riittää', 'Jos jokin tuntemus on ylivoimainen, siirrä huomio jalkateriin tai käsiin', 'Tutki kehoa uteliaisuudella, ei vaatimuksilla'] },
+      { icon:'💪', title:'Miten kehität kehotietoisuutta?',
+        content:`<p>Kehotietoisuus kehittyy harjoittelemalla — aivan kuten mikä tahansa muukin taito. Tärkeintä on säännöllisyys, ei intensiteetti.</p><p>Parhaat harjoitukset: kehoskannaus, hidas hengitys huomion kanssa, jooga, tai yksinkertaisesti pysähtyminen päivän aikana ja kysyminen: <em>"Miltä kehossani tuntuu juuri nyt?"</em></p>`,
+        selfHelp: ['Kehoskannaus aamulla ennen puhelimen katsomista', 'Syödessä: maista ruoka — tunnustele makua, lämpöä, tekstuuria', 'Kävellessä: tunne jalkapohjat maata vasten', 'Illalla: missä kohtaa kehoa päivä näkyy?'] },
+      { icon:'🔗', title:'Yhteys harjoitteisiin',
+        content:`<p>Kaikki tämän sovelluksen harjoitteet kehittävät kehotietoisuutta jollakin tavalla. Erityisen hyviä: kehoskannaus, hidas hengitys, ravistelu ja vapina, somaattiset harjoitteet.</p><p>Aloita niistä — palaa tähän osioon kun olet kokeillut muutamaa.</p>`,
+        selfHelp: ['Kehoskannaus-harjoite: Harjoitteet-osiossa', 'Ravistelu ja vapina: purkaa kehoon jäänyttä jännitystä', 'Turvapaikka kehossa: vie huomio turvalliseen paikkaan kehossa'] }
+    ]
   }
 }
 
@@ -7860,6 +7883,29 @@ function renderInfoContent(id) {
       <div><div class="info-hero-title">${topic.title}</div><div class="info-hero-lead">${topic.lead}</div></div>
     </div>
     <div class="info-blocks">${blocksHTML}</div>
+    ${(()=>{
+      const INFO_EX_RECS = {
+        stressi:['fysiologinen','neliohengitys','maadoitus','perhos'],
+        kipu:['kehoskannaus','fysiologinen','maadoitus','turvapaikka-kehossa'],
+        ahdistus:['fysiologinen','neliohengitys','maadoitus','perhos'],
+        trauma:['turvapaikka-kehossa','perhos','bilateral','ravistelu'],
+        uni:['fysiologinen','jann-vapautus','kehoskannaus','ylikierroksilta-lepoon'],
+        adhd:['bilateral','maadoitus','fysiologinen','perhos'],
+        longcovid:['fysiologinen','kehoskannaus','turvapaikka-kehossa','rajat-ja-kannateltavuus'],
+        hengitys:['fysiologinen','neliohengitys','478-hengitys'],
+        ans:['fysiologinen','hyraile','turvapaikka-kehossa','ylikierroksilta-lepoon'],
+        kiintymys:['turvapaikka-kehossa','perhos','bilateral'],
+        kehotietoisuus:['kehoskannaus','ravistelu','turvapaikka-kehossa','sisainen-aani'],
+        pne:['maadoitus','kehoskannaus','fysiologinen','turvapaikka-kehossa'],
+      };
+      const recs = INFO_EX_RECS[id]||[];
+      const btns = recs.map(rid=>{
+        const ex=EXERCISES.find(e=>e.id===rid)||(GUIDED_PROGRAMS[rid]?{name:GUIDED_PROGRAMS[rid].name,id:rid}:null);
+        if(!ex) return '';
+        return `<button onclick="showPanel('harjoitteet',null);setTimeout(()=>openModal('${rid}'),300)" style="padding:0.3rem 0.75rem;border-radius:16px;border:1px solid var(--green-bd);background:transparent;color:var(--green);font-size:0.75rem;cursor:pointer;font-family:var(--font-m)">${ex.name}</button>`;
+      }).filter(Boolean).join('');
+      return btns?`<div style="margin-top:1rem;padding:0.85rem 1rem;background:var(--green-bg);border:1px solid var(--green-bd);border-radius:var(--r)"><div style="font-size:0.68rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--green);margin-bottom:0.6rem">🧘 Kokeile näitä harjoitteita</div><div style="display:flex;flex-wrap:wrap;gap:0.4rem">${btns}</div></div>`:'';
+    })()}
   </div>`;
 }
 
