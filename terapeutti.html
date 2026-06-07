@@ -3673,7 +3673,7 @@ function closeSidebar() {
       lbl.textContent = `Suositellut harjoitteet${stateStr}`;
     }
     grid.innerHTML = recs.map(r => `
-      <div class="kd-rec-card ${r.cat}" onclick="showPage('harjoitteet',null);setTimeout(()=>openExModal('${r.id}'),300)">
+      <div class="kd-rec-card ${r.cat}" onclick="openTExModal('${r.id}')">
         <div class="kd-rec-emoji">${r.emoji}</div>
         <div class="kd-rec-name">${r.name}</div>
         <div class="kd-rec-dur">${r.dur}</div>
@@ -4576,6 +4576,19 @@ function renderNotes() {
       ${methodTags ? `<div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-top:0.3rem">${methodTags}</div>` : ''}
       ${n.homework ? `<div style="font-size:0.75rem;color:var(--teal);margin-top:0.4rem">📋 ${n.homework}</div>` : ''}
       ${n.next ? `<div style="font-size:0.72rem;color:var(--dim);margin-top:0.2rem;font-style:italic">Seuraava: ${n.next}</div>` : ''}
+      ${(() => {
+        if (!n.client) return '';
+        const prefixes = ['gad7','phq9','pcl5'];
+        const names = {gad7:'GAD-7',phq9:'PHQ-9',pcl5:'PCL-5'};
+        const tags = prefixes.map(p => {
+          const h = JSON.parse(localStorage.getItem(`ass_history_${p}`)||'[]')
+            .filter(e => !e.client || e.client === n.client);
+          if (!h.length) return '';
+          const last = h[h.length-1];
+          return `<span style="font-size:0.65rem;padding:0.15rem 0.45rem;border-radius:4px;background:var(--gold-bg);border:1px solid var(--gold-bd);color:var(--gold);font-family:var(--font-m)">${names[p]} ${last.score}</span>`;
+        }).filter(Boolean).join('');
+        return tags ? `<div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-top:0.4rem">${tags}</div>` : '';
+      })()}
     </div>`;
   }).join('');
 }
