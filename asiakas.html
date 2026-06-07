@@ -405,6 +405,8 @@ body {
   gap: 1rem;
 }
 
+.hidden { display: none !important; }
+.ex-card.dimmed { opacity: 0.25; filter: grayscale(0.5); pointer-events: none; }
 .ex-card {
   background: #fff;
   border: 1.5px solid var(--sand3);
@@ -5322,23 +5324,29 @@ function renderExGrid() {
 }
 function filterEx(cat, btn) {
   const favs = loadFavs();
-  document.querySelectorAll('#ex-grid .ex-card').forEach(c => {
-    let hide = false;
+
+  document.querySelectorAll('#ex-grid .ex-card').forEach(card => {
+    let show = true;
+
     if (cat === 'fav') {
-      // Etsi harjoitteen id data-cat-attribuutista ei riitä — hae id kortista
-      const favBtn = c.querySelector('.fav-btn');
-      const exId = favBtn ? favBtn.getAttribute('onclick').match(/toggleFav\('([^']+)'/)?.[1] : null;
-      hide = !exId || !favs.has(exId);
+      const favBtn = card.querySelector('.fav-btn');
+      const exId = favBtn ? (favBtn.getAttribute('onclick').match(/toggleFav\('([^']+)'/) || [])[1] : null;
+      show = !!(exId && favs.has(exId));
     } else if (cat !== 'all') {
-      hide = c.dataset.cat !== cat;
+      const cardCat = card.getAttribute('data-cat') || card.dataset.cat || '';
+      show = cardCat === cat;
     }
-    c.classList.toggle('hidden', hide);
+
+    card.classList.toggle('hidden', !show);
   });
+
+  // Päivitä aktiivinen nappi
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  // Jos suosikit-filtteri ja ei suosikkeja — näytä vihje
-  const noFavMsg = document.getElementById('no-fav-msg');
-  if (noFavMsg) noFavMsg.style.display = (cat === 'fav' && favs.size === 0) ? 'block' : 'none';
+
+  // Nollaa hakukenttä
+  const search = document.getElementById('ex-search');
+  if (search) search.value = '';
 }
 
 // ══════════════════════════════════
