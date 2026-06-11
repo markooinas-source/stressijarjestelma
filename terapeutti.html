@@ -5320,313 +5320,675 @@ document.addEventListener('DOMContentLoaded', () => {
 // LASTEN & NUORTEN PSYKOTERAPIA — PROTOKOLLAPANKKI
 // ══════════════════════════════════════════════════════════════
 
+// ══════════════════════════════════════════════════════════════
+// LASTEN & NUORTEN PSYKOTERAPIA — TÄYDELLINEN PROTOKOLLAPANKKI
+// Versio 2.0 — Kattava kliininen käsikirja
+// ══════════════════════════════════════════════════════════════
+
 const LN_THEMES = [
-  {
-    id: 'masennus',
-    icon: '🌧',
-    label: 'Masennus',
-    color: '#4a6fa5',
-    colorBg: '#eef2f8',
-    colorBd: '#c0d0e8',
-    ages: ['lapsi', 'nuori'],
-    desc: 'Mielialan lasku, anhedonia, väsymys, toivottomuus',
-    psykoed: {
-      lapsi: 'Joskus tuntuu kuin sisällä olisi harmaa pilvi. Ei jaksa tehdä kivoja asioita, kaikki tuntuu raskaalta. Se ei tarkoita että olet huono tai rikki — aivosi ovat väsyneet ja tarvitsevat apua.',
-      nuori: 'Masennus on aivojen kemiallinen ja toiminnallinen tila — ei luonteenheikkous. Serotoniini ja dopamiini, jotka säätelevät mielialaa ja motivaatiota, eivät toimi normaalisti. Se on hoidettavissa oleva tila.'
-    },
-    arviointi: [
-      'Mieliala viimeisen 2 viikon aikana (0-10)',
-      'Anhedonia — löytyykö asioita joista nauttii?',
-      'Uni: nukahtaminen, herääminen, unen laatu',
-      'Ruokahalu ja energia',
-      'Koulusuoriutuminen ja sosiaalinen vetäytyminen',
-      'Itsetuhoiset ajatukset — suora kysyminen',
-      'Lapsi: leikki-into, kiukku, somaattiset oireet',
-      'Nuori: päihteet, some-käyttö, itsensä vahingoittaminen'
-    ],
-    protokolla: [
-      { vaihe: 1, nimi: 'Turvallisuus ja allianssi', kuvaus: 'Rakenna turvallinen suhde. Kartoita vahvuudet ja voimavarat. Psykoedukaatio ikätasoisesti. Älä aloita suoraan ongelmista.', istunnot: '1-2', menetelmat: ['voimavarakartta', 'vahvuuskortti', 'psykoed-masennus'] },
-      { vaihe: 2, nimi: 'Aktivointi ja rytmi', kuvaus: 'Behavioraalinen aktivointi — pienet positiiviset teot päivittäin. Uni-valve -rytmin säätely. Liikunta ja keho mukaan.', istunnot: '3-5', menetelmat: ['aktivointisuunnitelma', 'mielialakalenteri', 'kehollinen-aktivointi'] },
-      { vaihe: 3, nimi: 'Ajatustyö', kuvaus: 'Tunnistaa negatiiviset automaattiajatukset. Ei pelkkä kognitiivinen uudelleenrakentaminen — myös kehollinen kokemus.', istunnot: '6-9', menetelmat: ['ajatusansat-lapsi', 'kolumnitekniikka', 'keho-ajatus-yhteys'] },
-      { vaihe: 4, nimi: 'Identiteetti ja tulevaisuus', kuvaus: 'Minäkuvan vahvistaminen. Tulevaisuuden toivo. Relapsienehkäisy — tunnistaa varoitusmerkit ajoissa.', istunnot: '10-14', menetelmat: ['vahvuuspuu', 'tulevaisuuskirje', 'selviytymissuunnitelma'] }
-    ],
-    harjoitteet: {
-      lapsi: [
-        { nimi: 'Mielialalämpömittari', tyyppi: 'luova', kuvaus: 'Piirrä tai väritä lämpömittari joka kuvaa mielialaa. Käytä värejä — mikä väri on tämä päivä? Tee joka istunnon alussa.', valineet: 'Paperi, värikynät', aika: '5 min' },
-        { nimi: 'Iloisuuspostilaatikko', tyyppi: 'luova', kuvaus: 'Pikkuasiat jotka tekevät hymyn — lapsi piirtää tai kirjoittaa lappuihin. Kootaan rasiaan. Avataan kun on vaikea päivä.', valineet: 'Pieni rasia, laput, kynät', aika: '10 min' },
-        { nimi: 'Energiapankki', tyyppi: 'cbt', kuvaus: 'Mikä lataa, mikä tyhjentää? Lapsi piirtää kaksi ämpäriä. Lajitellaan yhdessä asioita kumpaankin. Miten lisätä lataavia?', valineet: 'Paperi, kynät', aika: '15 min' },
-        { nimi: 'Kolme hyvää asiaa', tyyppi: 'cbt', kuvaus: 'Joka ilta: kolme pientä hyvää asiaa päivästä. Ei tarvitse olla suuria. Kirjataan vihkoon. Aktivoi huomion positiiviseen.', valineet: 'Vihko', aika: '5 min / päivä' },
-        { nimi: 'Liikuntaseikkailu', tyyppi: 'keho', kuvaus: 'Valitaan yhdessä yksi kehollinen juttu viikoksi — hyppiminen, pyöräily, tanssi. Lapsi päättää. Pienet konkreettiset tavoitteet.', valineet: 'Ei tarvita', aika: '10 min + kotitehtävä' }
-      ],
-      nuori: [
-        { nimi: 'Mielialakalenteri', tyyppi: 'cbt', kuvaus: 'Päivittäinen mielialan kirjaus (0-10) + yksi huomio: mitä tein, kenen kanssa olin, miten nukuin. Paljastaa yhteydet ajan myötä.', valineet: 'Vihko tai puhelin', aika: '3 min / päivä' },
-        { nimi: 'Aktivointilista', tyyppi: 'cbt', kuvaus: 'Lista asioista jotka aiemmin tuottivat iloa. Järjestetään helpoimmasta vaikeimpaan. Aloitetaan helpoimmasta — ei motivaatio ensin, teko ensin.', valineet: 'Paperi', aika: '20 min' },
-        { nimi: 'Ajatusansakaavio', tyyppi: 'cbt', kuvaus: 'Tilanne → automaattiajatus → tunne → käytös. Opitaan tunnistamaan ansat: katastrofointi, luetaan mieliä, yliyleistäminen. Haastetaan todisteilla.', valineet: 'Työlomake', aika: '30 min' },
-        { nimi: 'Kehon aktivointi', tyyppi: 'keho', kuvaus: 'Masennus asuu kehossa — liikeköyhyys ylläpitää sitä. 10 min päivässä: kävely, venyttely, tanssi omassa huoneessa. Ei suoritus — liike.', valineet: 'Ei tarvita', aika: '10 min / päivä' },
-        { nimi: 'Kirje tulevaisuuden itselle', tyyppi: 'luova', kuvaus: 'Kirjoita kirje itsellesi 2 vuoden päähän. Mitä toivot? Mitä haluat sanoa? Tallennetaan ja luetaan myöhemmin.', valineet: 'Paperi, kirjekuori', aika: '20 min' }
-      ]
-    }
+
+// ════════════════════════════════════════
+// 1. MASENNUS
+// ════════════════════════════════════════
+{
+  id: 'masennus', icon: '🌧', label: 'Masennus',
+  color: '#4a6fa5', colorBg: '#eef2f8', colorBd: '#c0d0e8',
+  ages: ['lapsi','nuori'],
+  desc: 'Mielialan lasku, anhedonia, väsymys, toivottomuus',
+
+  psykoed: {
+    lapsi: 'Joskus tuntuu kuin sisällä olisi harmaa pilvi joka tekee kaiken raskaaksi. Et jaksa tehdä kivoja asioita, kaikki tuntuu turhalta. Se ei tarkoita että olet huono tai rikki — aivosi ovat väsyneet ja tarvitsevat apua. Yhdessä voimme auttaa pilveä hälvenemään.',
+    nuori: 'Masennus on aivojen kemiallinen ja toiminnallinen tila — ei luonteenheikkous eikä laiskuus. Serotoniini, dopamiini ja noradrenaliini, jotka säätelevät mielialaa, motivaatiota ja energiaa, eivät toimi normaalisti. Se on hoidettavissa oleva tila — yhtä hoidettavissa kuin murtuma tai infektio.'
   },
-  {
-    id: 'ahdistus',
-    icon: '🌀',
-    label: 'Ahdistus',
-    color: '#7a5a9a',
-    colorBg: '#f4f0f8',
-    colorBd: '#d0c0e8',
-    ages: ['lapsi', 'nuori'],
-    desc: 'Huolestuneisuus, pelko, somaattiset oireet, välttäminen',
-    psykoed: {
-      lapsi: 'Ahdistus on kuin hermoston hälytys. Joskus se menee päälle vaikka vaaraa ei ole — kuten palovaroitin joka soi ilman savua. Voimme oppia rauhoittamaan hälytyksen yhdessä.',
-      nuori: 'Ahdistus on evoluution tuote — se suojeli esi-isiämme vaaroilta. Ongelma on kun hermosto tulkitsee arkiasiat vaarallisiksi. Amygdala yliaktivoituu, ja etuaivokuori ei pysty hillitsemään sitä. Harjoittelemme tätä jarrutusta yhdessä.'
-    },
-    arviointi: [
-      'Milloin ahdistus alkoi — laukaiseva tapahtuma?',
-      'Missä tilanteissa esiintyy — spesifi vai yleistynyt?',
-      'Somaattiset oireet: vatsa, sydän, hengitys, huimaus',
-      'Välttämiskäyttäytyminen — mitä vältellään?',
-      'Turvallisuushakuinen käyttäytyminen',
-      'Lapsi: vanhemmista kiinnipitäminen, koulupoissaolot',
-      'Nuori: some-vertailu, suoriutumispaineet, nukkuminen'
-    ],
-    protokolla: [
-      { vaihe: 1, nimi: 'Psykoedukaatio ja normalisointi', kuvaus: 'Ahdistuksen mekanismin selitys ikätasoisesti. Ahdistuskäyrä — se nousee ja laskee aina. Normalisoidaan kokemus.', istunnot: '1-2', menetelmat: ['ahdistus-psychoed', 'ahdistuskayra', 'hermosto-selitys'] },
-      { vaihe: 2, nimi: 'Rauhoittumistaidot', kuvaus: 'Hengitysharjoitteet. Progressiivinen lihasrentoutus. Maadoittaminen. Nämä ensin — ennen altistusta.', istunnot: '3-4', menetelmat: ['fysiologinen-huokaus', 'pmr-lapsi', 'maadoitus-54321'] },
-      { vaihe: 3, nimi: 'Kognitiivinen työ', kuvaus: 'Huoliajatukset ja niiden haastaminen. Todennäköisyysarviot. "Entä jos" -ajattelun katkaiseminen. Realistiset arviot.', istunnot: '5-7', menetelmat: ['huolipuu', 'todennakoisyystyokalu', 'entajos-kaavio'] },
-      { vaihe: 4, nimi: 'Asteittainen altistus', kuvaus: 'Pelkohierarkia — helpoimmasta vaikeimpaan. Astutaan pois mukavuusalueelta turvallisesti. Ei pakottamista — yhteinen päätös.', istunnot: '8-14', menetelmat: ['pelkohierarkia', 'altistussuunnitelma', 'selviytymisvahvistus'] }
-    ],
-    harjoitteet: {
+
+  arviointi: {
+    kysymykset: {
       lapsi: [
-        { nimi: 'Huolilaatikko', tyyppi: 'cbt', kuvaus: 'Huolet kirjoitetaan tai piirretään lapuille ja laitetaan rasiaan. "Huolet odottavat rasiassa — sinun ei tarvitse kantaa niitä nyt." Avataan sovitusti.', valineet: 'Rasia, laput', aika: '10 min' },
-        { nimi: 'Rohkeusmittari', tyyppi: 'cbt', kuvaus: 'Listataan pelottavia asioita 1-10 skaalalla. Valitaan pienin 2-3. Tehdään yhdessä ensin — sitten yksin. Juhlitaan onnistumisia.', valineet: 'Paperi', aika: '20 min' },
-        { nimi: 'Lohikäärmeen hengitys', tyyppi: 'keho', kuvaus: 'Syvä sisäänhengitys vatsaan — täytetään pallot. Pitkä uloshengitys suun kautta kuin lohikäärme puhuu tulta. Hauskuus laukaisee jännitystä.', valineet: 'Ei tarvita', aika: '5 min' },
-        { nimi: 'Rohkeusleima', tyyppi: 'luova', kuvaus: 'Joka kerta kun lapsi kohtaa pelottavan tilanteen, ansaitsee rohkeusleiman. Kootaan rohkeuspassiin tai kartalle. Näkyväksi tehty kasvu motivoi.', valineet: 'Passi/kartta, leimasimet', aika: 'Jatkuva' },
-        { nimi: 'Turvahenkilö-harjoitus', tyyppi: 'keho', kuvaus: 'Kuka on turvallinen henkilö? Miltä tuntuu kun hän on lähellä? Lapsi piirtää henkilön ja kehoaan. Turvallinen kokemus kehoon.', valineet: 'Paperi, värikynät', aika: '15 min' }
+        'Miltä sinusta tuntuu tällä hetkellä — jos mieliala olisi väri, mikä se olisi?',
+        'Onko jokin juttu, josta olet aiemmin pitänyt, mutta se ei enää tunnu kivalta?',
+        'Miten nukut? Onko vaikea nukahtaa tai heräiletko yöllä?',
+        'Miltä aamu tuntuu kun herää — onko vaikea nousta?',
+        'Onko koulussa tai kavereiden kanssa jokin muuttunut?',
+        'Onko joskus tullut ajatuksia, että haluaisi vahingoittaa itseään tai ettei halua olla olemassa? (suora kysyminen)',
+        'Kenelle kerrot kun on paha olo?',
+        'Milloin viimeksi nauroi oikeasti?'
       ],
       nuori: [
-        { nimi: 'Huoliajat', tyyppi: 'cbt', kuvaus: '15 min päivässä sovitulle "huoliajalle". Muina aikoina: "tämä odottaa huoliaikaan." Rajaa huolestuneisuutta ajallisesti ja estää sen leviämisen.', valineet: 'Kalenteri tai puhelin', aika: '15 min / päivä' },
-        { nimi: 'Pelkohierarkia', tyyppi: 'cbt', kuvaus: 'Listataan kaikki tilanteet joita vältetään. Arvioidaan 0-10. Järjestetään. Aloitetaan kohdasta 3-4. Jokainen askel kirjataan ja vahvistetaan.', valineet: 'Työlomake', aika: '30 min' },
-        { nimi: 'Somaattiset ankkurit', tyyppi: 'keho', kuvaus: 'Ahdistuksen kehollinen sijainti — missä se tuntuu? Kädet rinnalle tai mahalle. Hidas hengitys. Opitaan olemaan kehollisen tuntemuksen kanssa ilman paniikkia.', valineet: 'Ei tarvita', aika: '15 min' },
-        { nimi: 'Altistuspäiväkirja', tyyppi: 'cbt', kuvaus: 'Kirjataan jokainen altistustilanne: tilanne, ahdistus ennen (0-10), aikana, jälkeen. Ahdistus laskee aina — tämä näkyy datassa.', valineet: 'Vihko tai lomake', aika: '5 min / kerta' },
-        { nimi: 'Kehon rauhoittaminen', tyyppi: 'keho', kuvaus: 'PMR lyhytversio: jännitä-rentouta lihakset järjestyksessä jalkapohjista niskaan. Opitaan tunnistamaan jännitys ennen kuin se kasvaa.', valineet: 'Hiljainen tila', aika: '10 min' }
+        'Kuvaile mielialaasi viimeisen kahden viikon ajalta asteikolla 0–10.',
+        'Mitä asioita olet aiemmin nauttinut, jotka nyt tuntuvat tyhjältä tai merkityksettömiltä?',
+        'Miten unitottumuksesi ovat muuttuneet — nukahtaminen, herääminen, kokonaisaika?',
+        'Miten ruokahalu ja paino ovat muuttuneet?',
+        'Miten opiskeleminen ja keskittyminen sujuu?',
+        'Onko sinulla ajatuksia, että elämä ei ole sen arvoista tai haluaisit vahingoittaa itseäsi? Kuinka usein? Onko suunnitelmaa?',
+        'Käytätkö alkoholia, päihteitä tai muita keinoja saadaksesi helpotusta?',
+        'Kauanko tämä on kestänyt? Onko aiemmin ollut vastaavaa?',
+        'Mitä sinulle tärkeät ihmiset ovat huomanneet?'
       ]
-    }
+    },
+    havainnointi: [
+      'Psykomotorinen hidastuminen tai agitaatio',
+      'Kehon asento: kumartunut, sulkeutunut, vähäinen silmäkontakti',
+      'Puhenopeus ja -volyymi: hidas, monotoninen, hiljainen',
+      'Kasvonilmeet: vähentyneet, surulliset, tyhjät',
+      'Vaatetus ja hygienia — onko laiminlyöntiä?',
+      'Ikätasoinen vs. taantunut käytös',
+      'Lapsi: leikki-into, kiukku, somaattiset valitukset (vatsakipu, päänsärky)',
+      'Nuori: sosiaalinen vetäytyminen, some-käyttö, itsensä vahingoittamisen merkit'
+    ],
+    lomakkeet: [
+      { nimi: 'CDI-2 (Children\'s Depression Inventory)', kayttö: '7–17 v, standardoitu, 28 osiota', pisteet: 'T-pisteet ≥65 kliinisesti merkittävä' },
+      { nimi: 'PHQ-A (Adolescent)', kayttö: '12–17 v, 9 osiota', pisteet: '≥10 kohtalainen, ≥15 vakava' },
+      { nimi: 'RADS-2 (Reynolds)', kayttö: '11–20 v, laaja normiaineisto' },
+      { nimi: 'Mielialakalenteri', kayttö: 'Päivittäinen seuranta, 0–10, kotitehtävä' },
+      { nimi: 'Columbia Suicide Scale (C-SSRS)', kayttö: 'Aina kun epäillään itsemurha-ajatuksia' }
+    ]
   },
-  {
-    id: 'sosiaalinen',
-    icon: '👥',
-    label: 'Sosiaalinen pelko',
-    color: '#5a8a5a',
-    colorBg: '#f0f7f0',
-    colorBd: '#b8d8b8',
-    ages: ['lapsi', 'nuori'],
-    desc: 'Arviointienpelko, häpeä, vetäytyminen, esiintymispelko',
-    psykoed: {
-      lapsi: 'Joskus muiden ihmisten seurassa tulee se tunne — "mitä jos he ajattelevat minusta pahaa?" Tämä tunne haluaa suojella sinua, mutta se liioittelee. Voimme harjoitella olemaan ihmisten joukossa turvallisesti.',
-      nuori: 'Sosiaalinen ahdistus syntyy kun aivot yliarvioivat sosiaalisen uhkan. Evolutiivisesti ryhmästä hylkääminen oli hengenvaarallista — siksi reagoimme niin voimakkaasti. Nyt turvallisuus ei riipu muiden hyväksynnästä, mutta aivot eivät tiedä sitä vielä.'
-    },
-    arviointi: [
-      'Mitkä sosiaaliset tilanteet pelottavat eniten?',
-      'Fyysiset oireet: punastuminen, vapina, äänen katkeaminen',
-      'Ennakointi ja jälkianalyysi — kuinka paljon aikaa?',
-      'Kouluun/ryhmiin osallistuminen',
-      'Ystävyyssuhteet — onko yhtään läheistä?',
-      'Some: vertailuahdistus, esityspaineeet',
-      'Välttäminen: mitä jätetään tekemättä?'
-    ],
-    protokolla: [
-      { vaihe: 1, nimi: 'Allianssi ja normalisointi', kuvaus: 'Erityisen tärkeää — nämä nuoret ovat usein peloissaan myös terapiatilanteessa. Ei paine kertoa. Anna aikaa. Validoi kokemus täysin.', istunnot: '1-3', menetelmat: ['ei-painostava-alku', 'normalisointityokalu', 'psykoed-sosiaalinen'] },
-      { vaihe: 2, nimi: 'Sisäinen kriitikko', kuvaus: 'Tunnistetaan "mitä muut ajattelevat" -ajatukset. Haastetaan realistisesti. Opitaan erottamaan fakta arvauksesta.', istunnot: '4-6', menetelmat: ['ajatusluenta', 'todisteet-ajatuksille', 'realistinen-arvio'] },
-      { vaihe: 3, nimi: 'Sosiaalisten taitojen harjoittelu', kuvaus: 'Roolipelit istunnossa. Mitä sanoa? Miten aloittaa? Silmäkontakti, kehonkieli. Pienet tehtävät arjessa.', istunnot: '7-10', menetelmat: ['roolipeli', 'keskustelualoitteet', 'keho-viestinta'] },
-      { vaihe: 4, nimi: 'Altistus sosiaalisiin tilanteisiin', kuvaus: 'Hierarkia sosiaalisista tilanteista. Asteittainen altistus. Turvallisuushakuisen käyttäytymisen vähentäminen.', istunnot: '11-16', menetelmat: ['sosiaalinen-hierarkia', 'turvallisuuskaytos-analyysi', 'onnistumiskalenteri'] }
-    ],
-    harjoitteet: {
-      lapsi: [
-        { nimi: 'Rohkea teko päivässä', tyyppi: 'cbt', kuvaus: 'Yksi pieni sosiaalinen teko joka päivä: tervehdi opettajaa, sano yksi lause kaverille. Kirjataan. Ei vaadi onnistumista — riittää että yritti.', valineet: 'Vihko', aika: '2 min / päivä' },
-        { nimi: 'Tuttavuuspelit', tyyppi: 'luova', kuvaus: 'Pelataan istunnossa pelejä joissa harjoitellaan sosiaalisia taitoja — vuorottelu, häviäminen, yhteistyö. Peli madaltaa kynnystä harjoitella.', valineet: 'Lautapelit, korttipelit', aika: '20-30 min' },
-        { nimi: 'Minun hyvät puoleni', tyyppi: 'luova', kuvaus: 'Piirretään oma hahmo. Kirjoitetaan tai piirretään ympärille: mitä hyviä asioita minussa on? Vanhempi/opettaja voi lisätä. Vahvistaa itsetuntoa.', valineet: 'Iso paperi, kynät', aika: '20 min' },
-        { nimi: 'Juttusäännöt', tyyppi: 'cbt', kuvaus: 'Opitaan yhdessä: miten aloitan jutun? Mitä kysyn? Mitä teen jos en keksi sanottavaa? Harjoitellaan ensin terapeutين kanssa, sitten arjessa.', valineet: 'Ei tarvita', aika: '15 min' }
+
+  protokolla: [
+    {
+      vaihe: 1, nimi: 'Turvallisuus, allianssi ja psykoedukaatio',
+      tavoite: 'Rakenna turvallinen terapeuttinen suhde. Kartoita turvallisuus. Normalisoi kokemus. Psykoedukaatio masennuksesta.',
+      istunnot: '1–3',
+      istuntorakenne: {
+        alku: 'Check-in: mieliala 0–10, yksi hyvä asia ja yksi haastava asia viikolta. CDI-2 tai PHQ-A ensimmäisellä kerralla.',
+        keski: 'Ensimmäinen istunto: tarina ilman diagnoosia — kerro minulle sinusta, ei vain ongelmista. Vahvuuksien kartoitus. Toinen istunto: psykoedukaatio ikätasoisesti — aivot, kemia, miksi tuntuu näin. Kolmas istunto: tavoitteen asettaminen yhdessä.',
+        loppu: 'Yhteenveto: mitä tänään opimme. Kotitehtävän antaminen. Turvallisuussuunnitelman aloittaminen jos tarpeen.'
+      },
+      kysymykset: [
+        'Mitä toivoisit tältä terapialta — mitä haluaisit olevan toisin 3 kuukauden päästä?',
+        'Kuka elämässäsi tietää, että sinulla on vaikea aika? Onko se ok?',
+        'Milloin viimeksi tuntunut hiukan paremmalta? Mitä silloin tapahtui?',
+        'Mikä on yksi asia jota olet hyvä tekemään, vaikka se ei nyt ehkä tunnu kivalta?',
+        'Jos paras kaverisi olisi tässä tilanteessa — mitä sanoisit hänelle?'
       ],
-      nuori: [
-        { nimi: 'Ajatustenlukeminen-haaste', tyyppi: 'cbt', kuvaus: 'Merkitään tilanteet joissa olettaa tietävänsä mitä muut ajattelevat. Kerätään todisteita: mitä oikeasti tapahtui? Yleensä ei niin pahaa kuin luuli.', valineet: 'Päiväkirja tai lomake', aika: '10 min / päivä' },
-        { nimi: 'Roolipeli epämukavissa tilanteissa', tyyppi: 'cbt', kuvaus: 'Harjoitellaan istunnossa: ryhmässä puhuminen, erimielisyys, virheen myöntäminen. Terapeutti pelaa ensin "huonointa skenaariota" — osoitetaan että selviää siitäkin.', valineet: 'Ei tarvita', aika: '20-30 min' },
-        { nimi: 'Turvallisuuskäyttäytymisen kartoitus', tyyppi: 'cbt', kuvaus: 'Mitä teet vähentääksesi ahdistusta sosiaalisissa tilanteissa? (Puhelimen tuijottaminen, hiljaa pysyminen, valmisteltu juttu...) Vähennetään asteittain.', valineet: 'Työlomake', aika: '20 min' },
-        { nimi: 'Sosiaalinen aktivaatio', tyyppi: 'keho', kuvaus: 'Ennen sosiaalista tilannetta: 2 min laaja kehonasento (power pose), hidas hengitys, muistutus: "En tarvitse kaikkien hyväksyntää." Kehollinen valmistautuminen.', valineet: 'Ei tarvita', aika: '5 min' }
-      ]
-    }
-  },
-  {
-    id: 'ocd',
-    icon: '🔄',
-    label: 'OCD',
-    color: '#9a6a3a',
-    colorBg: '#f8f3ee',
-    colorBd: '#e0c8a8',
-    ages: ['lapsi', 'nuori'],
-    desc: 'Pakkoajatukset, pakkotoiminnot, rituaalit, epävarmuudensietokyky',
-    psykoed: {
-      lapsi: 'OCD on kuin hermostossa olisi häiritsevä vieras, joka sanoo "tee tämä, muuten tapahtuu jotain pahaa." Vieras valehtelee — mutta tuntuu silti tosi pelottavalta. Voimme oppia jättämään vieraan huomiotta yhdessä.',
-      nuori: 'OCD:ssä aivot jäävät "jumiin" tiettyihin ajatuksiin ja pakottavat toistamaan käyttäytymistä lievittääkseen ahdistusta. Pakkolaulu väliaikaisesti, mutta vahvistaa OCD:tä pitkällä aikavälillä. ERP — altistuminen ilman pakkoa — on tehokkain hoito.'
-    },
-    arviointi: [
-      'Obsessiot: sisältö, intensiteetti, häiritsevyys',
-      'Kompulsiot: tyyppi, kesto, vaikutus päivittäiseen elämään',
-      'Y-BOCS Jr. (lasten OCD-seula)',
-      'Välttämiskäyttäytyminen ja reassurance-hakeminen',
-      'Triggerit — mikä laukaisee?',
-      'Vaikutus kouluun, uneen, perhe-elämään',
-      'Onko muita ahdistushäiriöitä?'
-    ],
-    protokolla: [
-      { vaihe: 1, nimi: 'Externalisation ja psykoedukaatio', kuvaus: 'Nimetään OCD erilliseksi — "Häiritsijä", "Mörri", "OCD-Vieras". Lapsi/nuori oppii: tämä ei ole minä, tämä on OCD. Vähentää häpeää.', istunnot: '1-3', menetelmat: ['ocd-nimeaminen', 'psykoed-ocd', 'ocd-kartoitus'] },
-      { vaihe: 2, nimi: 'ERP — valmistavat harjoitteet', kuvaus: 'Hierarkia lievimmistä vaikeimpiin tilanteisiin. Selitetään ERP-periaate: ahdistus nousee mutta laskee aina. Harjoitellaan rauhoittumista ensin.', istunnot: '4-5', menetelmat: ['erp-hierarkia', 'ahdistuskayra-demo', 'rauhoittumistaidot'] },
-      { vaihe: 3, nimi: 'ERP — asteittainen altistus', kuvaus: 'Altistutaan laukaiseviin tilanteisiin ilman kompulsiota. Aloitetaan helpoimmasta. Terapeutti mukana ensin, sitten yksin. Kotitehtävät välttämättömiä.', istunnot: '6-14', menetelmat: ['erp-istunto', 'kompulsion-viivastaminen', 'erp-kotitehtava'] },
-      { vaihe: 4, nimi: 'Relapsienehkäisy', kuvaus: 'OCD:n voitti — se voi palata. Tunnistetaan varoitusmerkit. Suunnitelma: mitä teen jos OCD voimistuu? Normalisoidaan taantumat.', istunnot: '15-18', menetelmat: ['relapsienehkaysy', 'varoitusmerkit', 'selviytymissuunnitelma'] }
-    ],
-    harjoitteet: {
-      lapsi: [
-        { nimi: 'OCD-häiritsijän piirtäminen', tyyppi: 'luova', kuvaus: 'Lapsi piirtää OCD:n hahmona — miltä se näyttää? Nimeää sen. Antaa sille ulkoisen muodon. Helpottaa externalisation-työtä ja tuo pelkoon kontrollin tunnetta.', valineet: 'Paperi, värikynät', aika: '15 min' },
-        { nimi: 'Vastaamatta jättäminen', tyyppi: 'cbt', kuvaus: 'Harjoitellaan: OCD sanoo "tee tämä" — me odotamme 1 min ennen kuin vastataan. Sitten 2 min, sitten 5 min. Kompulsion viivästäminen on altistus.', valineet: 'Ajastin', aika: '10 min + jatkuva' },
-        { nimi: 'Sankaritehtävä', tyyppi: 'luova', kuvaus: 'Lapsi on sankari joka taistelee Häiritsijää vastaan. Jokainen ERP-tehtävä on sankariteko. Kerätään sankaripisteitä. Narratiivi voimauttaa.', valineet: 'Sankarikartta tai vihko', aika: 'Jatkuva' },
-        { nimi: 'Hyväksymisharjoitus', tyyppi: 'keho', kuvaus: '"Mitä jos en tee ritualua ja paha tapahtuu?" — Istutaan epävarmuuden kanssa. Hengitetään. Huomataan: epävarmuus on epämiellyttävä mutta sietäminen on opittavissa.', valineet: 'Ei tarvita', aika: '10 min' }
+      tehtavat: [
+        { nimi: 'Mielialakalenteri', ohje: 'Kirjaa mieliala 0–10 joka ilta. Lisää yksi sana mikä kuvaa päivää.', tavoite: 'Tietoisuus mielialan vaihteluista, terapeutti näkee patternit' },
+        { nimi: 'Vahvuuskortti', ohje: 'Piirrä tai kirjoita 5 asiaa joissa olet hyvä tai joista olet ylpeä. Ei tarvitse olla suuria.', tavoite: 'Vahvuusperustainen lähtökohta, vastapaine negatiiviselle minäkuvalle' },
+        { nimi: 'Turvallisuussuunnitelma', ohje: 'Jos tulee vaikeita ajatuksia: 1) Kenen voin soittaa? 2) Mihin voin mennä? 3) Mikä auttaa odottamaan?', tavoite: 'Turvallisuus ensin aina' }
       ],
-      nuori: [
-        { nimi: 'ERP-hierarkia itse', tyyppi: 'cbt', kuvaus: 'Nuori rakentaa oman pelkohierarkian 0-10. Aloittaa kohdasta 3-4. Kirjaa ahdistuksen ennen/aikana/jälkeen. Data osoittaa ahdistuksen laskevan.', valineet: 'Lomake tai vihko', aika: '30 min + kotitehtävä' },
-        { nimi: 'Kompulsion viivästäminen', tyyppi: 'cbt', kuvaus: 'Kun kompulsion tarve tulee: odota 5 min, hengitä, tee jotain muuta. Lisätään asteittain. Ei tavoite "ei koskaan" vaan "myöhemmin" — madaltaa kynnystä.', valineet: 'Ajastin', aika: 'Jatkuva' },
-        { nimi: 'Epävarmuuden sietoharjoitus', tyyppi: 'keho', kuvaus: 'Harjoitellaan istumaan epävarmuuden kanssa: "ehkä tapahtuu paha, ehkä ei." Kehollisesti: huomataan ahdistus kehossa, hengitetään sen kanssa, odotetaan sen laskemista.', valineet: 'Ei tarvita', aika: '15 min' },
-        { nimi: 'Defusion-harjoitus', tyyppi: 'keho', kuvaus: '"Minulla on ajatus että..." — etäisyyden ottaminen obsessiiviseen ajatukseen. Ajatus ei ole totuus, ei käsky. Harjoitellaan sanallistamaan ajatukset ulkopuolelta.', valineet: 'Ei tarvita', aika: '10 min' }
-      ]
-    }
-  },
-  {
-    id: 'fobiat',
-    icon: '😨',
-    label: 'Fobiat',
-    color: '#8a5a5a',
-    colorBg: '#f8f0f0',
-    colorBd: '#e0b8b8',
-    ages: ['lapsi', 'nuori'],
-    desc: 'Spesifit pelot: eläimet, pistokset, korkeus, oksentaminen, pimeys',
-    psykoed: {
-      lapsi: 'Pelko on aivosi tapa suojella sinua. Joskus aivot yliarvioivat vaaran — ne reagoivat hämähäkkiin tai pimeään kuin se olisi oikea vaara. Voimme opettaa aivoille, että tilanne on turvallinen.',
-      nuori: 'Spesifi fobia on konditionoitu pelkoreaktio — jossain vaiheessa jokin tilanne on opettanut aivoille "tämä on vaarallinen." Aivot oppivat sen nopeasti mutta onneksi myös poisoppiminen on mahdollista. Altistuminen on tehokkain keino.'
+      kotitehtava: 'Mielialakalenteri päivittäin. Yksi pieni asia joka tuottaa mielihyvää — vaikka ei tunnu siltä.',
+      siirtymakriteerit: 'Turvallinen allianssi. Turvallisuus kartoitettu. Asiakas ymmärtää masennuksen neurobiologian ikätasoisesti. Tavoitteet asetettu.'
     },
-    arviointi: [
-      'Pelon kohde täsmällisesti — mikä laukaisee?',
-      'Reaktioiden intensiteetti: 0-10',
-      'Välttämiskäyttäytyminen — mitä jätetään tekemättä?',
-      'Vaikutus arkeen: koulu, harrastukset, perhe',
-      'Pelkoon liittyvät uskomukset: "mitä tapahtuu jos..."',
-      'Aiemmat traumaattiset kokemukset pelon kohteen kanssa',
-      'Lapsi: univaikeudet, kiinnipitäminen'
-    ],
-    protokolla: [
-      { vaihe: 1, nimi: 'Psykoedukaatio ja pelkohierarkia', kuvaus: 'Selitetään pelon mekanismi ikätasoisesti. Rakennetaan pelkohierarkia yhdessä — 8-10 porrasta lievimmästä voimakkaimpaan.', istunnot: '1-2', menetelmat: ['pelkoselitys', 'pelkohierarkia-rakennus', 'rauhoittumistaidot'] },
-      { vaihe: 2, nimi: 'Rauhoittumistaidot', kuvaus: 'Opitaan hengitys ja maadoittaminen ennen altistusta. Nämä ovat coping-keinot — ei välttämistä, vaan sietokyky kasvaa niiden avulla.', istunnot: '3', menetelmat: ['hengitys-ahdistukseen', 'maadoitus', 'turvapaikka-mielikuva'] },
-      { vaihe: 3, nimi: 'Asteittainen altistus', kuvaus: 'Aloitetaan hierarkian alimmalta portaalta. Ollaan siinä kunnes ahdistus laskee vähintään puoleen. Edetään vasta sitten ylöspäin. Ei pakottamista.', istunnot: '4-10', menetelmat: ['in-vivo-altistus', 'mielikuva-altistus', 'altistuspaivakirja'] },
-      { vaihe: 4, nimi: 'Yleistäminen', kuvaus: 'Harjoitellaan uusissa ympäristöissä ja tilanteissa. Varmistetaan ettei pelko yleisty. Relapsienehkäisy.', istunnot: '11-13', menetelmat: ['yleistamisharjoitteet', 'selviytymissuunnitelma'] }
-    ],
-    harjoitteet: {
-      lapsi: [
-        { nimi: 'Pelkolämpömittari', tyyppi: 'cbt', kuvaus: 'Kuvitettu asteikko 0-10 pelolle. Käytetään joka altistusharjoitteen yhteydessä. Lapsi näkee konkreettisesti kuinka pelko laskee — tämä motivoi.', valineet: 'Kuvitettu lomake', aika: '5 min' },
-        { nimi: 'Kuvaaltistus', tyyppi: 'cbt', kuvaus: 'Aloitetaan kuvista pelon kohteesta. Katsotaan ensin kaukaa, sitten lähempää, sitten pidempään. Ensimmäinen porras hierarkiassa.', valineet: 'Kuvat tai kirja', aika: '10-20 min' },
-        { nimi: 'Rohkeuspeitto tai -lelu', tyyppi: 'luova', kuvaus: 'Lapsi valitsee esineen joka edustaa rohkeutta. Mukana altistustilanteissa. Symbolinen turva joka ei ole välttämistä — pikemminkin muistutus omasta rohkeudesta.', valineet: 'Lapsen valitsema esine', aika: 'Jatkuva' },
-        { nimi: 'Supersankaritarina', tyyppi: 'luova', kuvaus: 'Kirjoitetaan tai piirretään tarina jossa lapsi on sankari joka voittaa pelon. Ei realistinen vaan maaginen — symbolinen voitto. Käydään läpi jokainen altistusaskel tarinan muodossa.', valineet: 'Paperi, kynät', aika: '20 min' }
+    {
+      vaihe: 2, nimi: 'Behavioraalinen aktivointi ja arkirytmi',
+      tavoite: 'Lisää positiivisia toimintoja päivittäin. Säätele uni-valve-rytmi. Kehollinen aktivointi mukaan.',
+      istunnot: '4–7',
+      istuntorakenne: {
+        alku: 'Mielialakalenteri läpi yhdessä — mikä korreloi mielialaan? Onko patterneita? Kotitehtävien tarkistus.',
+        keski: 'Behavioraalinen aktivointi: aktivaatiokaavio — mitä teet päivässä? Mikä lataa, mikä tyhjentää? Graded activation — pienet konkreettiset askeleet. Uni-hygienia ja rytmi. Liikunta masennuslääkkeenä.',
+        loppu: 'Seuraavan viikon aktivointisuunnitelma yhdessä. Ei liikaa — yksi tai kaksi lisäystä.'
+      },
+      kysymykset: [
+        'Katso viime viikon kalenteriasi — milloin mieliala oli paras? Mitä silloin teit?',
+        'Jos energia olisi 10/10, mitä tekisit? Voisitko tehdä 10% siitä nyt?',
+        'Mikä auttaa sinua nousemaan aamulla? Onko jokin rutiini joka toimii?',
+        'Milloin viimeksi liikuit niin että se tuntui kehossa? Miltä se tuntui jälkeenpäin?',
+        'Jos lisäisimme yhden asian viikkoon joka ei maksa mitään — mikä se voisi olla?'
       ],
-      nuori: [
-        { nimi: 'Pelkohierarkia ja altistuspäiväkirja', tyyppi: 'cbt', kuvaus: 'Nuori rakentaa oman hierarkian 0-10. Altistuu järjestyksessä. Kirjaa: tilanne, ahdistus ennen (0-10), korkein kohta, lopussa. Data motivoi jatkamaan.', valineet: 'Vihko tai lomake', aika: '30 min + kotitehtävät' },
-        { nimi: 'Uskomusten haastaminen', tyyppi: 'cbt', kuvaus: '"Mitä uskot tapahtuvan?" → "Mikä on realistinen todennäköisyys?" → "Mitä oikeasti on tapahtunut aiemmin?" Faktatieto pelon kohteesta voi auttaa.', valineet: 'Työlomake', aika: '20 min' },
-        { nimi: 'Kehon rauhoittaminen altistuksessa', tyyppi: 'keho', kuvaus: 'Altistuksen aikana: hengitä ulos pitkään, tunne jalkapohjat maassa, laske 5 asiaa ympäristössä. Pysyt tilanteessa kehon kanssa — ei pakeneminen.', valineet: 'Ei tarvita', aika: 'Altistuksen yhteydessä' }
-      ]
-    }
-  },
-  {
-    id: 'trauma',
-    icon: '🌊',
-    label: 'Trauma (lapset)',
-    color: '#3a6a8a',
-    colorBg: '#eef4f8',
-    colorBd: '#b8d0e0',
-    ages: ['lapsi', 'nuori'],
-    desc: 'PTSD, komplisoitunut trauma, turvattomuus, dissosiatiiviset oireet',
-    psykoed: {
-      lapsi: 'Joskus tapahtuu jotain niin pelottavaa, että aivot tallentavat sen erityisellä tavalla. Sen vuoksi se voi tulla mieleen, tuntua kehossa tai pelottaa myöhemminkin. Aivosi yrittivät suojella sinua. Tehdään se turvalliseksi yhdessä.',
-      nuori: 'Traumaattisessa tapahtumassa aivot eivät pysty käsittelemään kokemusta normaalisti — se tallentuu fragmentteina kehoon ja muistiin. Siksi triggerit voivat viedä takaisin menneeseen. Terapian tavoite ei ole unohtaa vaan integroida — kokemuksesta tulee osa tarinaasi, ei sen määrittelijä.'
+      tehtavat: [
+        { nimi: 'Aktivointisuunnitelma', ohje: 'Valitaan yhdessä 1–2 aktiviteettia viikoksi. Lapsi päättää. Kirjataan milloin ja miten. Ei iso juttu — 10 minuuttia riittää.', tavoite: 'Behavioraalinen aktivointi katkaisee passiivisuuden kierteen' },
+        { nimi: 'Energiapankki-kaavio', ohje: 'Piirretään kaksi ämpäriä: lataa / tyhjentää. Lapsi/nuori täyttää asioita. Tarkastellaan yhdessä.', tavoite: 'Tietoisuus siitä mikä auttaa ja mikä kuluttaa' },
+        { nimi: 'Kolme hyvää asiaa', ohje: 'Joka ilta: kirjaa kolme pientä hyvää asiaa päivästä. Ei tarvitse olla suuria. Miksi ne tapahtuivat?', tavoite: 'Aktivoi huomion siirtyminen positiiviseen — ei kieltämistä vaan tasapainottamista' }
+      ],
+      kotitehtava: 'Aktivointisuunnitelma toteutettuna. Kolme hyvää asiaa -päiväkirja. Mielialakalenteri jatkuu.',
+      siirtymakriteerit: 'Asiakas tekee ainakin yhden aktiviteetin viikossa. Tunnistaa mitä lataa. Arkirytmi alkanut selkeytyä.'
     },
-    arviointi: [
-      'Traumahistoria — huolellisesti, ei pakottaen',
-      'PTSD-oireet: uudelleenkokeminen, välttäminen, ylivireisyys',
-      'Dissosiatiiviset oireet: depersonalisaatio, derealisation',
-      'Turvallisuus nyt — onko trauma aktiivinen?',
-      'Tukiverkosto ja kiintymyssuhteet',
-      'CPSS (Children PTSD Symptom Scale)',
-      'Toimintakyky: koulu, uni, sosiaalisuus'
-    ],
-    protokolla: [
-      { vaihe: 1, nimi: 'Turvallisuus ja stabilisaatio', kuvaus: 'Ei traumakäsittelyä ennen stabilisaatiota. Rakennetaan turvallisuuden kokemus, säätelyresurssit, tukiverkosto. Tärkeintä vaihe.', istunnot: '1-6', menetelmat: ['turvapaikka-kehossa', 'resurssien-rakennus', 'sietokyvyn-laajennus'] },
-      { vaihe: 2, nimi: 'Trauma-psykoedukaatio', kuvaus: 'Normalisoidaan oireet. Selitetään ikätasoisesti miten trauma vaikuttaa aivoihin ja kehoon. Häpeää vähennetään.', istunnot: '7-9', menetelmat: ['trauma-psykoed', 'oireiden-normalisointi', 'selviytymiskirjanpito'] },
-      { vaihe: 3, nimi: 'Traumakäsittely', kuvaus: 'Vain riittävän stabilisaation jälkeen. TF-CBT, EMDR, kehotyö. Terapeutin koulutus ratkaisee menetelmän.', istunnot: '10-20', menetelmat: ['traumanarratiivi', 'emdr-protokolla', 'kehopohjainen-kasittely'] },
-      { vaihe: 4, nimi: 'Integraatio ja tulevaisuus', kuvaus: 'Trauma on osa tarinaa — ei tarinan loppu. Tulevaisuusorientaatio. Minäkuvan vahvistaminen selviytyjänä, ei uhrina.', istunnot: '21-25', menetelmat: ['voimaantumisnarratiivi', 'tulevaisuustaulu', 'identiteetti-trauma'] }
-    ],
-    harjoitteet: {
-      lapsi: [
-        { nimi: 'Turvapaikka-mielikuva', tyyppi: 'keho', kuvaus: 'Lapsi kuvittelee turvallisen paikan — oikean tai kuvitteellisen. Mitä näet, kuulet, tunnet kehossa? Piirretään ja nimetään. Käytetään kun tuntuu pelottavalta.', valineet: 'Paperi, värikynät', aika: '20 min' },
-        { nimi: 'Tunteiden maalattu keho', tyyppi: 'luova', kuvaus: 'Hahmopohja lapsen ääriviivoilla. Värit eri tunteille. Missä tuntuu pelko? Suru? Viha? Kehollinen tietoisuus ilman sanoja — erityisen hyvä jos verbalisointi vaikeaa.', valineet: 'Hahmopohja, värit', aika: '20 min' },
-        { nimi: 'Voima-eläin', tyyppi: 'luova', kuvaus: 'Mikä eläin on vahva ja turvallinen? Lapsi piirtää tai valitsee. Eläin auttaa vaikeissa hetkissä — "mitä voima-eläimeni tekisi nyt?" Resurssiankkuri.', valineet: 'Paperi, värikynät tai lelu', aika: '15 min' },
-        { nimi: 'Maadoittaminen triggeröityessä', tyyppi: 'keho', kuvaus: '5-4-3-2-1: 5 näköä, 4 kosketusta, 3 ääntä, 2 hajua, 1 maku. Palauttaa nykyhetkeen. Opitaan istunnossa, harjoitellaan kotona.', valineet: 'Ei tarvita', aika: '10 min' }
+    {
+      vaihe: 3, nimi: 'Kognitiivinen työ — ajatukset ja tunteet',
+      tavoite: 'Tunnistaa automaattiset negatiiviset ajatukset. Haastaa ne todisteilla. Kehollinen kokemus mukaan.',
+      istunnot: '8–12',
+      istuntorakenne: {
+        alku: 'Mielialakalenteri. Yksi tilanne viikolta jossa mieliala laski — käytetään se materiaalina.',
+        keski: 'ABC-malli: Tilanne → Ajatus → Tunne → Käytös. Ajatusansat: katastrofointi, luetaan mieliä, yliyleistäminen, pitäisi-ajattelu. Todistetyöskentely: mitä todisteita on ajatuksen puolesta/vastaan? Vaihtoehtoinen tasapainoinen ajatus. Kehollinen dimensio: missä kehossa tunne tuntuu?',
+        loppu: 'ABC-kaavion täyttö yhdessä. Kotitehtävän kertaaminen. Mitä asiakas vie mukanaan tästä istunnosta?'
+      },
+      kysymykset: [
+        'Kun mieliala laski — mitä juuri silloin ajattelit? Mikä oli se ensimmäinen ajatus?',
+        'Onko tämä ajatus fakta vai tulkinta?',
+        'Mitä todisteita on sen puolesta? Mitä todisteita vastaan?',
+        'Jos paras kaverisi ajattelisi noin itsestään — mitä sanoisit hänelle?',
+        'Mitä kehossasi tapahtui kun ajattelit noin? Missä se tuntui?',
+        'Mikä olisi realistisempi tapa ajatella tästä tilanteesta?',
+        'Lapsi: Jos tämä ajatus olisi hirviö — miltä se näyttää? Mitä se sanoo sinulle? Onko se aina oikeassa?'
       ],
-      nuori: [
-        { nimi: 'Turvallinen paikka kehossa', tyyppi: 'keho', kuvaus: 'Missä kehossa tuntuu turvallisimmalta? Kädet rinnalle tai mahalle. Hidas hengitys. Rakennetaan somaattinen resurssi joka on aina mukana.', valineet: 'Hiljainen tila', aika: '15 min' },
-        { nimi: 'Aikaviiva', tyyppi: 'cbt', kuvaus: 'Trauma oli menneisyydessä. Nyt on turvallista. Rakennetaan konkreettinen aikaviiva: mitä tapahtui ennen, mitä nyt on erilaista. Nykyhetken turvallisuuden todistaminen.', valineet: 'Iso paperi', aika: '20 min' },
-        { nimi: 'Selviytymisresurssit', tyyppi: 'cbt', kuvaus: 'Mitä olet käynyt läpi ja selviytynyt? Lista konkreettisesti. Ei triviaalisoida — jokainen selviytyminen on todellinen. Rakentaa kompetenssin kokemusta.', valineet: 'Vihko', aika: '20 min' },
-        { nimi: 'Hermostonsäätely triggerissä', tyyppi: 'keho', kuvaus: 'Opitaan tunnistamaan triggeröityminen kehossa (kiristys, sydämen syke, dissosiaatio). Protokolla: pysähdy → maadoitu → hengitä → nimeä tunne. Ei pakeneminen — säätely.', valineet: 'Ei tarvita', aika: '20 min + harjoittelu' }
-      ]
-    }
-  },
-  {
-    id: 'itsetunto',
-    icon: '💪',
-    label: 'Itsetunto & minäkuva',
-    color: '#5a8a3a',
-    colorBg: '#f0f8ee',
-    colorBd: '#b8d8a8',
-    ages: ['lapsi', 'nuori'],
-    desc: 'Heikko itsetunto, häpeä, perfektionismi, minäkuvan häiriöt',
-    psykoed: {
-      lapsi: 'Kaikilla on hyviä puolia — myös sinulla, vaikka et ehkä aina näe niitä. Itsetunto on kuin lihas: se kasvaa harjoittelemalla. Voimme harjoitella yhdessä.',
-      nuori: 'Itsetunto ei ole pysyvä ominaisuus vaan opittava taito. Heikko itsetunto usein syntyy toistuvista kokemuksista jotka ovat opettaneet "en ole riittävä." Voimme haastaa nämä uskomukset ja rakentaa realistisempaa minäkuvaa.'
+      tehtavat: [
+        { nimi: 'Ajatuspäiväkirja (ABC)', ohje: 'Tilanne → Automaattiajatus → Tunne (0–10) → Kehon tunne → Vaihtoehtoinen ajatus → Tunne sen jälkeen. Yksi tilanne päivässä.', tavoite: 'Kognitiivinen uudelleenrakentaminen systemaattisesti' },
+        { nimi: 'Ajatusansakortti', ohje: 'Kortilla lueteltu 8 yleistä ajatusansaa. Asiakas merkkaa kun tunnistaa itsellään.', tavoite: 'Metakognitio — ajattelun ajattelu' },
+        { nimi: 'Lapsi: Ajatushirviön piirtäminen', ohje: 'Piirrä se ääni päässäsi joka sanoo ikäviä asioita. Nimeä se. Mitä se sanoo? Onko se aina oikeassa?', tavoite: 'Externalisaatio — ajatus ei ole minä' }
+      ],
+      kotitehtava: 'Ajatuspäiväkirja: yksi ABC-kaavio päivässä. Ajatusansat: kirjaa kun huomaat niitä.',
+      siirtymakriteerit: 'Asiakas tunnistaa automaattiset ajatukset. Pystyy haastamaan niitä todisteilla. Alkaa erottaa ajatuksen faktasta.'
     },
-    arviointi: [
-      'Miten kuvailisit itseäsi? — ensimmäiset sanat',
-      'Missä olet hyvä? — onko vaikea nimetä?',
-      'Itsekritiikki: kuinka ankara? Missä tilanteissa?',
-      'Perfektionismi: virheen sietäminen',
-      'Vertailu muihin: kuinka usein? Some?',
-      'Häpeäkokemukset: nöyryytys, arvostelu',
-      'Kehonkuva erityisesti nuorilla'
-    ],
-    protokolla: [
-      { vaihe: 1, nimi: 'Vahvuuksien kartoitus', kuvaus: 'Ei aloiteta ongelmista — aloitetaan vahvuuksista. Mitä osaat? Mistä olet ylpeä? Vanhempi, opettaja, ystävä mukaan vahvistamaan.', istunnot: '1-3', menetelmat: ['vahvuuskartta', 'voimavarakortit', 'positiivinen-palaute'] },
-      { vaihe: 2, nimi: 'Itsekritiikki ja häpeä', kuvaus: 'Tunnistetaan sisäinen kriitikko. Haastetaan: onko se totta? Harjoitellaan itsemyötätuntoa — kohtelisuutta itseä kohtaan kuten ystävälle.', istunnot: '4-7', menetelmat: ['sisainen-kriitikko', 'itsemyotatunto', 'virheen-kasittely'] },
-      { vaihe: 3, nimi: 'Uskomusten muutos', kuvaus: 'Ydinuskomukset itsestä: "olen huono, en kelpaa, olen erilainen." Todisteiden etsiminen vastaan ja puolesta. Vaihtoehtoinen tasapainoinen uskomus.', istunnot: '8-11', menetelmat: ['ydinuskomus-tyokalu', 'todistelistaus', 'tasapainoinen-uskomus'] },
-      { vaihe: 4, nimi: 'Identiteetti ja arvot', kuvaus: 'Kuka olen riippumatta suorituksistani? Arvot ja merkitys. Identiteetti ei rakennu ulkopuoliselle hyväksynnälle.', istunnot: '12-15', menetelmat: ['arvokartta', 'identiteetti-harjoitus', 'riittavyys-affirmaatiot'] }
-    ],
-    harjoitteet: {
-      lapsi: [
-        { nimi: 'Vahvuuspuu', tyyppi: 'luova', kuvaus: 'Piirretään iso puu. Juuret = mistä tulen (perhe, historia). Runko = kuka olen. Oksat = mitä osaan. Lehdet = mistä olen ylpeä. Tehdään yhdessä vanhemman kanssa.', valineet: 'Iso paperi, värit', aika: '30 min' },
-        { nimi: 'Positiivisuuspankki', tyyppi: 'cbt', kuvaus: 'Keräämme hyvää palautetta, kivoja muistoja, onnistumisia lapuille rasiaan. Luetaan kun on huono päivä. Vastapaine negatiiviselle sisäiselle kriitikille.', valineet: 'Rasia, laput', aika: 'Jatkuva' },
-        { nimi: 'Ystäväkirje itselle', tyyppi: 'luova', kuvaus: 'Kirjoita kirje parhaalle ystävällesi — miten kuvailisit häntä? Sitten kirjoita sama kirje itsellesi. Paljastaa eron itselle ja muille annettavan myötätunnon välillä.', valineet: 'Paperi, kynä', aika: '20 min' },
-        { nimi: 'Ihana minä -kollaasi', tyyppi: 'luova', kuvaus: 'Lehdistä tai piirtämällä: asiat joista pidän itsessäni, mitä harrasta, mitä haaveilen. Ei suoritusten listaus — olemisen arvostaminen.', valineet: 'Lehtiä, sakset, liima, pahvi', aika: '30 min' }
+    {
+      vaihe: 4, nimi: 'Minäkuva, identiteetti ja tulevaisuus',
+      tavoite: 'Vahvistaa positiivista minäkuvaa. Rakentaa tulevaisuuden toivoa. Relapsienehkäisy.',
+      istunnot: '13–18',
+      istuntorakenne: {
+        alku: 'Edistymisen tarkastelu: missä oltiin alussa, missä nyt? Mielialakalenteri yhteenveto.',
+        keski: 'Minäkuvatyö: kuka olet masennuksen ulkopuolella? Arvot: mikä on sinulle tärkeää? Identiteetti suorituksien vs. olemisen kautta. Vahvuuspuu. Tulevaisuuskirje. Relapsienehkäisy: varoitusmerkit, toimintasuunnitelma.',
+        loppu: 'Päätösistunnossa: mitä opit? Mitä kannat mukanasi? Milloin voidaan tulla takaisin?'
+      },
+      kysymykset: [
+        'Missä olet kasvanut tämän terapian aikana — mitä osaat nyt mitä et osannut alussa?',
+        'Kuka olet kun masennus ei ole paikalla? Kuvaile itseäsi.',
+        'Mitkä kolme asiaa ovat sinulle tärkeimpiä elämässä?',
+        'Mitä haluaisit tehdä tai olla viiden vuoden päästä?',
+        'Millaiset merkit kertovat sinulle, että alkaa mennä huonommin? Mitä teet silloin?',
+        'Kenelle voit soittaa jos tulee vaikea aika? Onko he tietoisia tästä?'
       ],
-      nuori: [
-        { nimi: 'Sisäisen kritiikin ääni', tyyppi: 'cbt', kuvaus: 'Kirjoita mitä sisäinen kriitikko sanoo. Sitten: sanoisitkö tämän ystävällesi? Miksi et? Harjoitellaan puhua itselle kuten ystävälle.', valineet: 'Vihko', aika: '20 min' },
-        { nimi: 'Arvokompassi', tyyppi: 'cbt', kuvaus: 'Mitkä ovat sinulle tärkeimmät arvot? (Rehellisyys, luovuus, ystävyys...) Rakentaako nykyinen elämäsi niiden varaan? Identiteetti arvoista, ei suorituksista.', valineet: 'Työlomake', aika: '30 min' },
-        { nimi: 'Itsemyötätunto-harjoitus', tyyppi: 'keho', kuvaus: 'Virhe tai vaikea tilanne → kädet sydämelle → "tämä on vaikeaa, olen ihminen, teen virheitä" → hengitä. Kehollinen itsemyötätunto vastaa häpeään.', valineet: 'Ei tarvita', aika: '10 min' },
-        { nimi: 'Vahvuuspäiväkirja', tyyppi: 'cbt', kuvaus: 'Joka ilta: yksi asia jossa onnistuin tai josta olin ylpeä. Ei tarvitse olla suuri. Harjoittaa huomion kiinnittämistä vahvuuksiin — vastavaikutus kriittiselle sisäiselle äänelle.', valineet: 'Vihko', aika: '5 min / päivä' }
-      ]
+      tehtavat: [
+        { nimi: 'Vahvuuspuu', ohje: 'Juuret = mistä tulen, kuka minua tukee. Runko = kuka olen, arvoni. Oksat = mitä osaan. Lehdet = mistä olen ylpeä. Hedelmät = mitä haluan tulevaisuudessa.', tavoite: 'Kokonaisvaltainen positiivinen identiteetti' },
+        { nimi: 'Kirje tulevaisuuden itselle', ohje: 'Kirjoita kirje itsellesi kaksi vuotta eteenpäin. Mitä toivot? Mitä haluat muistaa tästä ajasta? Suljetaan kirjekuoreen.', tavoite: 'Tulevaisuusorientaatio, toivo' },
+        { nimi: 'Relapsienehkäisysuunnitelma', ohje: 'Yhteinen lista: 1) Varoitusmerkit joita huomata. 2) Mitä teen heti. 3) Kenen puoleen käännyn. 4) Milloin palaan terapiaan.', tavoite: 'Autonomia ja varautuminen' }
+      ],
+      kotitehtava: 'Vahvuuspuu valmiiksi. Kirje tulevaisuudelle. Relapsienehkäisysuunnitelma kotiin.',
+      siirtymakriteerit: 'Mieliala tasaantunut. Asiakas käyttää opittuja taitoja itsenäisesti. Tulevaisuuden toivo tunnistettavissa. Turvallisuusverkko rakennettu.'
     }
+  ],
+
+  harjoitteet: {
+    lapsi: [
+      { nimi: 'Mielialalämpömittari', tyyppi: 'cbt', kuvaus: 'Piirrä tai väritä termometri joka kuvaa mielialaa 0–10. Käytä värejä — sininen=surullinen, harmaa=väsynyt, keltainen=ok, aurinko=hyvä. Täytetään joka istunnon alussa ja kotona päivittäin.', valineet: 'Paperi, värikynät', aika: '5 min' },
+      { nimi: 'Iloisuuspostilaatikko', tyyppi: 'luova', kuvaus: 'Pikkuasiat jotka tekevät pienen hymyn — kirjoitetaan tai piirretään lapuille. Kootaan kauniiseen rasiaan. Avataan kun on vaikea päivä. Lapsi koristaa rasian itse.', valineet: 'Rasia, laput, värit', aika: '15 min + jatkuva' },
+      { nimi: 'Energiapankki', tyyppi: 'cbt', kuvaus: 'Kaksi ämpäriä: "Lataa" ja "Tyhjentää". Lapsi piirtää ja lajittelee asioita. Miten lisätä latavia asioita? Tehdään yhdessä ja säilytetään huoneessa muistuttamassa.', valineet: 'Paperi, värit', aika: '20 min' },
+      { nimi: 'Seikkailu-aktivointi', tyyppi: 'keho', kuvaus: 'Valitaan yhdessä yksi kehollinen aktiviteetti viikoksi — hyppiminen, pyöräily, tanssi, uinti. Lapsi valitsee. Piirretään "seikkailukartta" johon merkitään onnistumiset. Juhlitaan pieniä voittoja.', valineet: 'Seikkailukartta-paperi', aika: '10 min + kotitehtävä' },
+      { nimi: 'Ystäväkirje itselle', tyyppi: 'luova', kuvaus: 'Kirjoita kirje parhaalle ystävällesi joka on surullinen. Mitä sanoisit? Sitten kirjoita sama kirje itsellesi. Ääneen lukeminen terapeutille — voi olla voimakas kokemus.', valineet: 'Paperi, kynä', aika: '20 min' }
+    ],
+    nuori: [
+      { nimi: 'Mieliala- ja aktiviteettikaavio', tyyppi: 'cbt', kuvaus: 'Kaksi viivaa samassa kaaviossa: mieliala (0–10) ja aktiviteetit (mitä teit). Piirretään viikon ajalta. Paljastaa korrelaatiot — mitä tehdessä mieliala kohosi?', valineet: 'Vihko tai sovellus', aika: '5 min/päivä + analyysi istunnossa' },
+      { nimi: 'ABC-ajatuspäiväkirja', tyyppi: 'cbt', kuvaus: 'Tilanne → Automaattiajatus → Tunne (0–10) → Kehon tunne → Vaihtoehtoinen ajatus → Tunne muutoksen jälkeen. Tavoite on haastaa ajatuksia, ei kieltää tunteita.', valineet: 'Lomake tai vihko', aika: '10 min/päivä' },
+      { nimi: 'Behavioraalinen aktivointi', tyyppi: 'keho', kuvaus: 'Motivaatio ei tule ennen tekemistä — tekeminen tuo motivaation. Lista kaikista aktiviteeteistä jotka aiemmin tuottivat iloa. Järjestetään helpoimmasta. Aloitetaan pienimmästä — ei 100% suoritus.', valineet: 'Aktivointilomake', aika: '30 min' },
+      { nimi: 'Itsemyötätuntoharjoitus', tyyppi: 'keho', kuvaus: 'Vaikea hetki: kädet sydämelle, tunnista tunne nimeltä, muistuta itseäsi "tämä on vaikeaa, olen ihminen, teen virheitä", hengitä. Vastustaa häpeää joka usein ylläpitää masennusta.', valineet: 'Ei tarvita', aika: '5–10 min' },
+      { nimi: 'Arvokompassi', tyyppi: 'cbt', kuvaus: 'Mitkä 5 asiaa ovat sinulle tärkeimpiä? Ei suorituksia — arvoja: ystävyys, luovuus, rehellisyys, seikkailu... Elääkö nykyinen elämä näiden mukaan? Rakentaa identiteettiä masennuksen ohi.', valineet: 'Arvokorttipakka tai lomake', aika: '30 min' }
+    ]
   }
-];
+},
+
+// ════════════════════════════════════════
+// 2. AHDISTUS
+// ════════════════════════════════════════
+{
+  id: 'ahdistus', icon: '🌀', label: 'Ahdistus',
+  color: '#7a5a9a', colorBg: '#f4f0f8', colorBd: '#d0c0e8',
+  ages: ['lapsi','nuori'],
+  desc: 'Huolestuneisuus, pelko, somaattiset oireet, välttäminen',
+
+  psykoed: {
+    lapsi: 'Ahdistus on kuin hälytyssireenin joka menee päälle kun aivojen turvakamera luulee näkevänsä vaaran. Joskus se menee päälle vaikka vaaraa ei ole — kuin palovaroitin joka soi ilman savua. Sinun aivosi haluavat suojella sinua, mutta ne liioittelevat. Voimme yhdessä opettaa hälyttimen sammuttamaan ajoissa.',
+    nuori: 'Ahdistus on evoluution tulos — se suojeli esi-isiämme vaaroilta. Amygdala, aivojen "hälytyskeskus", ylireagoi tilanteisiin joita tulkitsee uhkana. Etuaivokuori, joka voisi rauhoittaa sen, ei saa yhteyttä. Fyysinen reaktio on sama kuin oikeassa vaarassa: sydän lyö, hengitys kiihtyy, lihakset jännittyvät. Harjoittelu opettaa aivoja erottamaan todellisen vaaran kuvitellusta.'
+  },
+
+  arviointi: {
+    kysymykset: {
+      lapsi: [
+        'Mikä sinua pelottaa eniten tällä hetkellä?',
+        'Miltä kehossasi tuntuu kun pelottaa — missä se tuntuu?',
+        'Onko jokin juttu jonka olet lopettanut tekemästä koska se pelottaa?',
+        'Mitä teet kun alkaa pelottaa — mitä se auttaa?',
+        'Unessako pelottaa? Onko painajaisia?',
+        'Menetkö kouluun joka päivä — onko se joskus vaikeaa?',
+        'Haluatko että vanhempi on aina lähellä? Onko se joskus hankalaa?'
+      ],
+      nuori: [
+        'Kuvaile ahdistusta — missä tilanteissa se tulee? Milloin se on pahimmillaan?',
+        'Mitä fyysisiä oireita sinulla on? (vatsa, sydän, hengitys, huimaus, vapina)',
+        'Mitä tilanteita vältät ahdistuksen takia?',
+        'Kuinka paljon aikaa käytät huolestumiseen päivässä — ennakointi ja jälkianalyysi?',
+        'Mitä turvallisuushakuista käyttäytymistä sinulla on? (reassurance, rituaalit, puhelimen käyttö)',
+        'Miten ahdistus vaikuttaa kouluun, kavereihin, harrastuksiin?',
+        'Onko sinulla ahdistuskohtauksia — paniikkikohtauksia? Kuvaile.'
+      ]
+    },
+    havainnointi: [
+      'Lihastonus: jännittyneisyys, kireä asento, olkapäät korvissa',
+      'Hengityspattern: pinnallinen ylärintahengitys, nopea',
+      'Puhe: nopea, katkonainen, paljon kysymyksiä',
+      'Silmäkontakti: vilkkuvat silmät, ylivalpas ympäristölle',
+      'Reassurance-hakeminen istunnon aikana',
+      'Lapsi: kiinnipitäminen, itkuisuus, taantuminen',
+      'Nuori: pelko arvioiduksi tulemisesta, täydellisyydentavoittelu'
+    ],
+    lomakkeet: [
+      { nimi: 'SCARED (Screen for Child Anxiety Related Disorders)', kayttö: '8–18 v, 41 osiota, yleistynyt/sep/somaattinen/sosiaalinen/paniikki', pisteet: '≥25 kliinisesti merkittävä' },
+      { nimi: 'GAD-7 (Adolescent)', kayttö: '12+ v, yleistynyt ahdistus', pisteet: '≥10 kohtalainen' },
+      { nimi: 'MASC-2', kayttö: '8–19 v, kattava ahdistuskartoitus', pisteet: 'T-pisteet ≥65' },
+      { nimi: 'Huolipäiväkirja', kayttö: 'Päivittäinen, kuinka kauan huolestui, mistä', pisteet: 'Laadullinen analyysi' },
+      { nimi: 'Ahdistushierarkia 0–10', kayttö: 'Altistusjärjestyksen rakentaminen', pisteet: 'SUDS-asteikko' }
+    ]
+  },
+
+  protokolla: [
+    {
+      vaihe: 1, nimi: 'Normalisointi ja psykoedukaatio',
+      tavoite: 'Ahdistuksen mekanismin ymmärtäminen. Ahdistuskäyrän esittely. Normalisointi.',
+      istunnot: '1–2',
+      istuntorakenne: {
+        alku: 'SCARED tai GAD-7. Check-in: "Millä tasolla ahdistus on tällä hetkellä 0–10?"',
+        keski: 'Ahdistuksen mekanismi ikätasoisesti. Ahdistuskäyrä: se nousee MUTTA LASKEE AINA — avainlause. Kehon oireiden normalisoiminen: sydän, hengitys, vatsaoireet. Fight-flight-freeze selitys. Lapsi: piirretään "ahdistusmonster" tai hälytyssireeni.',
+        loppu: 'Asiakas selittää omin sanoin mitä oppi. Kysymyksiä. Kotitehtävän antaminen.'
+      },
+      kysymykset: [
+        'Kun ajattelet pelottavaa tilannetta — mitä kehossasi tapahtuu? Mennään läpi järjestyksessä.',
+        'Mitä tapahtuu jos et vältä pelottavaa tilannetta — mitä uskot tapahtuvan?',
+        'Oletko koskaan kohdannut jotain pelottavaa ja selvinnyt siitä? Kerro.',
+        'Mikä on pahin mitä voisi tapahtua? Mikä on realistisin arvio?'
+      ],
+      tehtavat: [
+        { nimi: 'Ahdistuspäiväkirja', ohje: 'Kirjaa: tilanne, ahdistus 0–10, kehon oireet, mitä teit. Ei arvostelua — pelkkä havainnointi.', tavoite: 'Tietoisuus ahdistuksen patternista' },
+        { nimi: 'Kehon oirekartta', ohje: 'Ihmisääriviivapiirros — merkitään eri väreillä missä ahdistus tuntuu kehossa.', tavoite: 'Somaattinen tietoisuus' }
+      ],
+      kotitehtava: 'Ahdistuspäiväkirja viikon ajan. Huomaa: laskiko ahdistus aina lopulta itsekseen?',
+      siirtymakriteerit: 'Asiakas ymmärtää ahdistuksen mekanismin. Tietää että se laskee aina. Ei enää luule olevansa vaarassa kun kehossa tapahtuu fyysisiä oireita.'
+    },
+    {
+      vaihe: 2, nimi: 'Rauhoittumistaidot',
+      tavoite: 'Oppia konkreettisia keinoja ahdistuksen säätelyyn ennen altistusta.',
+      istunnot: '3–5',
+      istuntorakenne: {
+        alku: 'Ahdistuspäiväkirja läpi. Mikä tilanne oli vaikein? Käytetään materiaalina.',
+        keski: 'Hengitysharjoitteet — fysiologinen huokaus, neliöhengitys. Progressiivinen lihasrentoutus lyhytversio. 5-4-3-2-1 maadoittaminen. Turvapaikka-mielikuva. Harjoitellaan ISTUNNOSSA — ei vain selitetä. Lapsi: lohikäärmeen hengitys, ilmapallovatsahengitys.',
+        loppu: 'Mikä tuntui toimivimmalta? Kotitehtävä: harjoitellaan kun ei ole ahdistunut — ennen kuin tarvitaan.'
+      },
+      kysymykset: [
+        'Harjoittelimme hengitystä — miltä tuntui kehossasi? Huomasitko muutoksen?',
+        'Milloin voisit harjoitella tätä kotona? Millä kellonlyömällä?',
+        'Jos ahdistus tulee yllättäen — mikä näistä on helpointa muistaa?',
+        'Onko sinulla jo jokin keino jota käytät? Toimiiko se?'
+      ],
+      tehtavat: [
+        { nimi: 'Hengitysharjoittelu', ohje: 'Harjoittele valittua hengitystekniikkaa 5 min päivässä — kun ei ahdistu. Kuin lihaskuntoharjoittelu.', tavoite: 'Automatisointi — taito käyttöön stressissä' },
+        { nimi: 'Rauhoittumiskortti', ohje: 'Pieni kortti lompakkoon: 1) Fysiologinen huokaus, 2) 5-4-3-2-1, 3) Turvapaikka. Lapsen piirtämä.', tavoite: 'Muistutus akuutissa ahdistuksessa' }
+      ],
+      kotitehtava: 'Hengitysharjoittelu päivittäin 5 min. Rauhoittumiskortti valmiiksi.',
+      siirtymakriteerit: 'Asiakas osaa vähintään kaksi rauhoittumistekniikkaa. Pystyy laskemaan ahdistuksen 3 pistettä jollakin tekniikalla.'
+    },
+    {
+      vaihe: 3, nimi: 'Kognitiivinen työ — huoliajatukset',
+      tavoite: 'Tunnistaa ja haastaa ahdistuksen ylläpitävät ajatukset.',
+      istunnot: '6–8',
+      istuntorakenne: {
+        alku: 'Check-in. Viime viikon ahdistavin tilanne — käytetään ABC-mallissa.',
+        keski: 'Huoliajatukset: "mitä jos..." -ajattelu. Todennäköisyysarvio: kuinka todennäköinen katastrofi on? Pahin/realistisin/paras skenaario. Ajatukset vs. faktat. Aika-rajattu huoliaika: 15 min/päivä viralliselle huolestumiselle. Epävarmuuden sietäminen.',
+        loppu: 'Harjoiteltu haastaminen. Kotitehtävä.'
+      },
+      kysymykset: [
+        'Mitä ajattelet tapahtuvan jos menet sinne pelottavaan tilanteeseen?',
+        'Kuinka monta kertaa sadasta tämä tapahtuu oikeasti?',
+        'Jos tapahtuisi — selviytyisitkö siitä? Miten?',
+        'Mitä sanot itsellesi kun alat huolestua? Auttaako se?',
+        'Mikä on ero "voisin huolestua tästä" ja "minun täytyy ratkaista tämä nyt"?'
+      ],
+      tehtavat: [
+        { nimi: 'Huolipuu', ohje: 'Puu jonka oksat ovat huolia. Lajittelu: "voin vaikuttaa" vs. "ei minun vallassani". Mihin kannattaa keskittyä?', tavoite: 'Huolien realistisuuden arviointi' },
+        { nimi: 'Huoliaika-harjoitus', ohje: '15 min päivässä sovitulle huolille. Muina aikoina: "tämä asia menee huoliaikaan." Kirjataan ylös mutta ei prosessoida vielä.', tavoite: 'Huolestumisen aikatauluttaminen vähentää sen leviämistä' }
+      ],
+      kotitehtava: 'Huoliaika 15 min päivässä. ABC-kaavio yhdestä ahdistavasta tilanteesta.',
+      siirtymakriteerit: 'Asiakas pystyy haastamaan huoliajatuksia. Erottaa todellisen vaaran kuvitellusta. Valmis altistukseen.'
+    },
+    {
+      vaihe: 4, nimi: 'Asteittainen altistus',
+      tavoite: 'Kohdata pelättyjä tilanteita asteittain. Katkaise välttämiskäyttäytyminen.',
+      istunnot: '9–16',
+      istuntorakenne: {
+        alku: 'Altistuspäiväkirja läpi. Viime viikon altistukset — ahdistus ennen/jälkeen. Juhlitaan onnistumiset.',
+        keski: 'Pelkohierarkia käydään läpi — missä mennään? Seuraavan portaan altistusharjoitus istunnossa (in vivo tai mielikuvassa). SUDS (Subjective Units of Distress Scale) 0–10 seuranta. Odotetaan kunnes SUDS laskee vähintään puoleen. Ei pakenemista.',
+        loppu: 'Kotitehtäväaltistus seuraavalle viikolle sovitaan yhdessä — lapsi/nuori valitsee tason.'
+      },
+      kysymykset: [
+        'Katsotaan hierarkiaa — missä kohdassa olemme? Miltä se tuntuu nyt?',
+        'Harjoitellaan tätä tilannetta yhdessä — minä olen siinä kanssasi. Milloin ahdistus alkaa laskea?',
+        'Mitä huomasit — laskiko ahdistus? Kauanko kesti?',
+        'Mitä opit tästä? Mitä seuraava askel voisi olla?',
+        'Mikä olisi sopiva kotitehtäväaltistus ensi viikolle?'
+      ],
+      tehtavat: [
+        { nimi: 'Pelkohierarkia', ohje: '8–10 tilannetta järjestyksessä helpoimmasta vaikeimpaan (0–10). Aloitetaan kohdasta 3–4. Ei kohdasta 10.', tavoite: 'Systemaattinen desensitisaatio' },
+        { nimi: 'Altistuspäiväkirja', ohje: 'Tilanne, SUDS ennen, SUDS korkein, SUDS lopussa, mitä opin. Joka altistuksen jälkeen.', tavoite: 'Data näyttää edistymisen — motivoi jatkamaan' },
+        { nimi: 'Rohkeuspisteet', ohje: 'Lapsi ansaitsee pisteen jokaisesta altistuksesta — ei tuloksesta, yrityksestä. Kerätään rohkeusmittariin.', tavoite: 'Motivointi ja vahvistaminen' }
+      ],
+      kotitehtava: 'Yksi altistusharjoitus seuraavalle viikolle. Päiväkirja täytettynä.',
+      siirtymakriteerit: 'Asiakas on päässyt hierarkian ylimmälle portaalle. Ahdistus laskee alle 3/10 tilanteissa jotka olivat aiemmin 8–9.'
+    }
+  ],
+
+  harjoitteet: {
+    lapsi: [
+      { nimi: 'Huolilaatikko', tyyppi: 'cbt', kuvaus: 'Huolet kirjoitetaan tai piirretään lapuille ja laitetaan koristeltuun rasiaan. "Huolesi odottavat rasiassa — sinun ei tarvitse kantaa niitä nyt." Avataan vain sovitussa "huoliajassa".', valineet: 'Rasia, laput, kynät', aika: '15 min + jatkuva' },
+      { nimi: 'Rohkeuskartta', tyyppi: 'cbt', kuvaus: 'Kartta johon merkitään "pelottavat alueet" (1–10) ja valloitetut alueet. Joka altistus värittää uuden alueen. Visuaalinen edistyminen motivoi erityisesti lapsia.', valineet: 'Iso paperi, värit', aika: '15 min + jatkuva' },
+      { nimi: 'Lohikäärmeen hengitys', tyyppi: 'keho', kuvaus: 'Syvä sisäänhengitys — täytetään pallot. Pitkä uloshengitys kuin lohikäärme hönkäisee tulta (suun kautta hitaasti). Hauskuus ja leikki laukaisevat jännitystä. Lapsi voi "puhaltaa sammukkeet" tai "lentää siivillä".', valineet: 'Ei tarvita', aika: '5 min' },
+      { nimi: 'Turvallisuushenkilö-piirros', tyyppi: 'luova', kuvaus: 'Kuka on elämässäsi turvallisin henkilö? Lapsi piirtää henkilön. Mitä hän sanoisi nyt? Piirros voi tulla mukaan vaikeisiin tilanteisiin. Rakentaa mentaalista kiintymysresurssia.', valineet: 'Paperi, värikynät', aika: '20 min' },
+      { nimi: '5-4-3-2-1 maadoitus', tyyppi: 'keho', kuvaus: '5 asiaa näet, 4 kosketat, 3 kuulet, 2 haistat, 1 maistat. Palauttaa nykyhetkeen. Opitaan istunnossa pelinä — kuka löytää ensin? Sitten kotona itsenäisesti.', valineet: 'Ei tarvita', aika: '5 min' }
+    ],
+    nuori: [
+      { nimi: 'Huoliaika-harjoitus', tyyppi: 'cbt', kuvaus: '15 minuuttia päivässä virallista huolestumisaikaa. Muina aikoina: "tämä odottaa huoliaikaan." Kirjataan huoli ylös mutta ei prosessoida ennen huoliaikaa. Rajaa ahdistuksen leviämistä koko päivälle.', valineet: 'Vihko tai puhelinmuistio', aika: '15 min / päivä' },
+      { nimi: 'Altistuspäiväkirja', tyyppi: 'cbt', kuvaus: 'Tilanne → SUDS ennen (0–10) → SUDS korkein → SUDS lopussa → Mitä opin. Data osoittaa edistymisen. Ajan myötä asiakas näkee itse: ahdistus LASKEE AINA lopulta.', valineet: 'Lomake tai vihko', aika: '5 min per altistus' },
+      { nimi: 'Somaattiset ankkurit', tyyppi: 'keho', kuvaus: 'Missä ahdistus tuntuu kehossa? Kädet sinne. Hengitä hitaasti. Tunnustele: onko tila parempi kuin hetki sitten? Opitaan OLEMAAN fyysisen tuntemuksen kanssa ilman paniikkia — ahdistus ei ole vaarallinen.', valineet: 'Ei tarvita', aika: '10–15 min' },
+      { nimi: 'Todennäköisyyskaavio', tyyppi: 'cbt', kuvaus: 'Ajattelen X tapahtuvan → arvioidaan todennäköisyys 0–100% → katsotaan mitä oikeasti tapahtui (seuranta) → päivitetään arvio. Konkretisoituu ajan myötä: aivot yliarvioivat vaaran systemaattisesti.', valineet: 'Kaavio tai taulukko', aika: '20 min' },
+      { nimi: 'Progressiivinen lihasrentoutus', tyyppi: 'keho', kuvaus: 'Jännitä-rentouta lihasryhmät järjestyksessä jalkapohjista päälaelle. Tunnista jännitys ennen kuin se kasvaa ahdistukseksi. 10 min versio ennen nukkumista tai vaikeaa tilannetta.', valineet: 'Hiljainen tila', aika: '10–15 min' }
+    ]
+  }
+},
+
+// ════════════════════════════════════════
+// 3. SOSIAALINEN PELKO
+// ════════════════════════════════════════
+{
+  id: 'sosiaalinen', icon: '👥', label: 'Sosiaalinen pelko',
+  color: '#5a8a5a', colorBg: '#f0f7f0', colorBd: '#b8d8b8',
+  ages: ['lapsi','nuori'],
+  desc: 'Arviointienpelko, häpeä, vetäytyminen, esiintymispelko',
+  psykoed: {
+    lapsi: 'Joskus muiden ihmisten seurassa tulee se tunne että kaikki katsovat ja ajattelevat pahaa. Tämä tunne haluaa suojella sinua, mutta se liioittelee. Voimme yhdessä opettaa sinulle keinoja olla ihmisten joukossa ilman että se tuntuu niin pelottavalta.',
+    nuori: 'Sosiaalinen ahdistus syntyy kun aivot yliarvioivat sosiaalisen uhkan ja aliarvioivat omat selviytymiskyvyt. Evolutiivisesti ryhmästä hylkääminen oli hengenvaarallista. Nyt turvallisuus ei riipu kaikkien hyväksynnästä — mutta vanha järjestelmä ei tiedä sitä. Käymme läpi miten opettaa se uudelleen.'
+  },
+  arviointi: {
+    kysymykset: {
+      lapsi: ['Mitkä tilanteet tuntuvat pelottavilta kun muita ihmisiä on paikalla?', 'Mitä pelkäät tapahtuvan kun olet muiden joukossa?', 'Jätätkö joskus menemättä johonkin koska pelottaa?', 'Onko koulussa joku kaveri jonka seurassa tuntuu turvalliselta?', 'Mitä muut sanovat tai ajattelevat sinusta — luuletko?'],
+      nuori: ['Missä sosiaalisissa tilanteissa ahdistus on pahimmillaan?', 'Kuinka paljon aikaa käytät etukäteen miettien mitä sanot tai miten käyttäydyt?', 'Teetkö jälkianalyysia — käytkö tilanteet läpi sen jälkeen?', 'Mitä turvallisuushakuista käyttäytymistä sinulla on? (puhelin, hiljaa pysyminen, valmistellut jutut)', 'Miten some vaikuttaa? Vertailuahdistus?']
+    },
+    havainnointi: ['Punasteleminen tai pelko punastumisesta', 'Äänen vapina tai pelko siitä', 'Kehon jäykkyys sosiaalisissa tilanteissa', 'Katsekontaktin välttäminen', 'Lyhyet vastaukset, vaikeus laajentaa', 'Reassurance-hakeminen terapeutilta istunnossa'],
+    lomakkeet: [
+      { nimi: 'SPAI-C (Social Phobia and Anxiety Inventory for Children)', kayttö: '8–17 v', pisteet: '≥18 kliinisesti merkittävä' },
+      { nimi: 'LSAS-CA (Liebowitz)', kayttö: '7–18 v, pelko + välttäminen erikseen', pisteet: '' },
+      { nimi: 'Sosiaalinen hierarkia 0–10', kayttö: 'Altistusjärjestys', pisteet: 'SUDS' }
+    ]
+  },
+  protokolla: [
+    { vaihe: 1, nimi: 'Allianssi ja normalisointi', tavoite: 'Erityisen tärkeää — asiakas voi olla peloissaan myös terapiatilanteessa.', istunnot: '1–3',
+      istuntorakenne: { alku: 'Ei painosteta. Anna aikaa. SPAI-C.', keski: 'Normaalisointi: kaikki kokevat sosiaalista jännitystä. Evoluutioselitys. Häpeä-tunteen käsittely.', loppu: 'Turvallinen tavoite — ei "pidättävä kaikista" vaan "pystyisin..."' },
+      kysymykset: ['Onko ok jos emme tänään puhu kaikesta — vain siitä mistä haluat?', 'Mitä toivoisit olevan toisin — ei kaikkien mielipide vaan yksi konkreettinen asia?', 'Milloin viimeksi sosiaalinen tilanne meni hyvin? Mitä silloin oli erilaista?'],
+      tehtavat: [{ nimi: 'Sosiaalinen päiväkirja', ohje: 'Kirjaa päivittäin yksi sosiaalinen tilanne: mitä tapahtui, ahdistus 0–10, mitä ajattelit, miten meni.', tavoite: 'Tietoisuus patternista' }],
+      kotitehtava: 'Sosiaalinen päiväkirja viikon ajan.', siirtymakriteerit: 'Allianssi rakennettu. Asiakas tulee istuntoihin.' },
+    { vaihe: 2, nimi: 'Sisäinen kriitikko ja ajatustyö', tavoite: 'Tunnistaa ja haastaa sosiaalisen ahdistuksen ylläpitävät uskomukset.', istunnot: '4–7',
+      istuntorakenne: { alku: 'Sosiaalinen päiväkirja läpi.', keski: 'Ajatustenlukeminen: "tiedän mitä muut ajattelevat." Ennakointi ja jälkianalyysi. Todistetyöskentely: oikeasti tapahtuneet sosiaaliset katastrofit vs. odotetut.', loppu: 'Vaihtoehtoinen tasapainoinen ajatus.' },
+      kysymykset: ['Mitä luulet muiden ajattelevan sinusta juuri nyt?', 'Mistä tiedät sen — onko se fakta vai arvaus?', 'Kuinka monta kertaa sadasta katastrofi tapahtuu oikeasti?', 'Mitä sanoisit ystävällesi jos hän ajattelisi näin?'],
+      tehtavat: [{ nimi: 'Ajatustenluenta-haaste', ohje: 'Merkitään tilanteet joissa olettaa tietävänsä mitä muut ajattelevat. Kerätään todisteita: mitä oikeasti tapahtui? Yleensä ei niin pahaa.', tavoite: 'Ajatustenluenta on ahdistuksen keskeinen ylläpitäjä' }],
+      kotitehtava: 'ABC-kaavio sosiaalisesta tilanteesta. Ajatustenluenta-haaste.', siirtymakriteerit: 'Tunnistaa ajatustenluennan. Pystyy haastamaan arviointipelkoa.' },
+    { vaihe: 3, nimi: 'Sosiaalisten taitojen harjoittelu', tavoite: 'Harjoitella sosiaalisia tilanteita istunnossa ennen altistusta.', istunnot: '8–11',
+      istuntorakenne: { alku: 'Check-in. Mikä sosiaalinen tilanne on seuraava haaste?', keski: 'Roolipelit: terapeutti esittää toista henkilöä. Aloittaminen, jatkaminen, lopettaminen. Virheiden tekeminen tarkoituksella — ei kaadu. Kehonkieli ja silmäkontakti.', loppu: 'Kotitehtäväaltistus sovitaan.' },
+      kysymykset: ['Harjoitellaan — minä olen X, sinä aloitat jutun. Miltä tuntui?', 'Mikä oli vaikeinta? Tehdään se uudelleen.', 'Huomasitko jotain hyvää siinä miten teit sen?'],
+      tehtavat: [{ nimi: 'Rohkea teko päivässä', ohje: 'Yksi pieni sosiaalinen teko joka päivä: tervehdi, kysy kysymys, kommentoi. Ei vaadi onnistumista — yrittäminen riittää.', tavoite: 'Graded exposure arjessa' }],
+      kotitehtava: 'Rohkea teko päivässä. Sosiaalinen päiväkirja.', siirtymakriteerit: 'Osaa aloittaa ja jatkaa yksinkertaisen keskustelun. Valmis altistukseen.' },
+    { vaihe: 4, nimi: 'Asteittainen sosiaalinen altistus', tavoite: 'Kohdata pelättyjä sosiaalisia tilanteita hierarkkisesti.', istunnot: '12–18',
+      istuntorakenne: { alku: 'Altistuspäiväkirja läpi. Juhlitaan onnistumiset.', keski: 'Turvallisuushakuisen käyttäytymisen vähentäminen. Altistus sovitusti. SUDS-seuranta. In vivo mahdollisuuksien mukaan.', loppu: 'Seuraava askel sovitaan.' },
+      kysymykset: ['Mitä turvakäyttäytymistä käytit viime viikolla? Mitä tapahtuisi jos et käyttäisi sitä?', 'Kokeillaanko tänään ilman...? Mitä huomasit?'],
+      tehtavat: [{ nimi: 'Turvallisuuskäyttäytymisen kartoitus', ohje: 'Lista: mitä teen vähentääkseni ahdistusta sosiaalisessa tilanteessa? Vähennetään yhtä asiaa kerrallaan.', tavoite: 'Turvallisuuskäyttäytyminen ylläpitää ahdistusta' }],
+      kotitehtava: 'Altistus ilman turvallisuuskäyttäytymistä. Päiväkirja.', siirtymakriteerit: 'Selviää sosiaalisista tilanteista ilman merkittävää ahdistusta tai välttämistä.' }
+  ],
+  harjoitteet: {
+    lapsi: [
+      { nimi: 'Rohkeuspassi', tyyppi: 'cbt', kuvaus: 'Passi johon ansaitaan leimoja rohkeista sosiaalisista teoista. Ei tarvitse onnistua — täytyy yrittää. Kerätään pisteitä palkintoja varten.', valineet: 'Passivihko, leimasin tai tarrat', aika: 'Jatkuva' },
+      { nimi: 'Juttelupeli', tyyppi: 'luova', kuvaus: 'Pelataan pelejä joissa harjoitellaan sosiaalisia taitoja — vuorottelu, häviäminen, yhteistyö. Peli madaltaa kynnystä. Käytetään istunnossa ensin.', valineet: 'Lautapelit, korttipelit', aika: '20–30 min' },
+      { nimi: 'Minun hyvät puoleni -plakati', tyyppi: 'luova', kuvaus: 'Iso paperi: piirretään oma hahmo, kirjoitetaan ympärille vahvuuksia ja hyviä asioita. Vanhempi tai opettaja voi lisätä. Laitetaan näkyvälle paikalle.', valineet: 'Iso paperi, värit', aika: '30 min' },
+      { nimi: 'Sosiaalinen seikkailu', tyyppi: 'cbt', kuvaus: 'Viikottainen "seikkailu": yksi sosiaalinen tehtävä joka tuntuu hieman haastavalta. Lapsi valitsee. Piirretään seikkailukarttaan. Pienet voitot rakentavat luottamusta.', valineet: 'Seikkailukarttapaperi', aika: 'Viikottainen' }
+    ],
+    nuori: [
+      { nimi: 'Roolipeli vaikeissa tilanteissa', tyyppi: 'cbt', kuvaus: 'Terapeutti esittää "pahinta tapausta" — keskeyttää, kritisoi, on tylsistynyt. Osoitetaan yhdessä: selviin siitä. Poistaa kauhuskenaarion voiman.', valineet: 'Ei tarvita', aika: '20–30 min' },
+      { nimi: 'Kehon valmistautuminen', tyyppi: 'keho', kuvaus: 'Ennen sosiaalista tilannetta: 2 min avoin kehonasento (hartiat taakse, pää ylös), hidas hengitys, muistutus: "En tarvitse kaikkien hyväksyntää." Fysiologinen valmistautuminen.', valineet: 'Ei tarvita', aika: '5 min' },
+      { nimi: 'Turvallisuuskäyttäytymiskartoitus', tyyppi: 'cbt', kuvaus: 'Lista: mitä teet vähentääksesi ahdistusta sosiaalisissa tilanteissa? (Puhelin, hiljaa pysyminen, poistuminen, valmistellut jutut...) Vähennetään asteittain yhtä kerrallaan.', valineet: 'Työlomake', aika: '20 min' },
+      { nimi: 'Sosiaalinen aktivaatiosuunnitelma', tyyppi: 'cbt', kuvaus: 'Hierarkia sosiaalisista tilanteista 0–10. Aloitetaan 3:sta. Kotitehtäväaltistus viikottain. Päiväkirja: SUDS ennen/jälkeen. Asiakas näkee datan: menee paremmin kuin pelkäsin.', valineet: 'Hierarkialomake + päiväkirja', aika: '30 min + viikottainen' }
+    ]
+  }
+},
+
+// ════════════════════════════════════════
+// 4. OCD
+// ════════════════════════════════════════
+{
+  id: 'ocd', icon: '🔄', label: 'OCD',
+  color: '#9a6a3a', colorBg: '#f8f3ee', colorBd: '#e0c8a8',
+  ages: ['lapsi','nuori'],
+  desc: 'Pakkoajatukset, pakkotoiminnot, rituaalit, epävarmuudensietokyky',
+  psykoed: {
+    lapsi: 'OCD on kuin aivoissa olisi häiritsevä vieras — "Häiritsijä" — joka sanoo: "tee tämä, muuten tapahtuu jotain pahaa." Häiritsijä valehtelee, mutta tuntuu silti tosi pelottavalta. Sinä et ole Häiritsijä — se on erillinen asia. Voimme oppia jättämään Häiritsijän huomiotta yhdessä.',
+    nuori: 'OCD:ssa aivot jäävät "jumiin" tiettyihin ajatuksiin ja pakkotoimintoihin. Kompulsio lievittää ahdistuksen hetkeksi — mutta pitkäaikaisesti se vahvistaa OCD:tä. Aivot oppivat: "tuo rituaali pitää minut turvassa." ERP — altistuminen ilman pakkoa — on tehokkain hoito. Se on epämukavaa mutta toimii.'
+  },
+  arviointi: {
+    kysymykset: {
+      lapsi: ['Onko sinulla ajatuksia jotka tulevat uudestaan ja uudestaan vaikka yrität estää?', 'Teetkö jotain toimintoa useita kertoja ennen kuin tuntuu oikealta?', 'Jos et tee sitä — mitä pelkäät tapahtuvan?', 'Kauanko rituaalit vievät päivässä?', 'Tietävätkö vanhempasi näistä?'],
+      nuori: ['Kuvaile obsessiot: mitä ajatuksia, kuvia tai impulsseja — kuinka usein, kuinka ahdistavina?', 'Kuvaile kompulsiot: mitä teet, kauanko kestää, väheneekö ahdistus?', 'Kuinka monta tuntia päivässä OCD vie?', 'Mitä vältät OCD:n takia?', 'Haetko vakuuttelua muilta? Onko perhe mukana rituaaleissa?', 'Onko pelkoja harmaista ajatuksista — pelkäätkö olevasi paha ihminen koska sinulla on niitä?']
+    },
+    havainnointi: ['Ritualistiset toiminnot havaittavissa (laskeminen, järjestely, tarkistus)', 'Reassurance-hakeminen terapeutilta', 'Häpeä ja salaaminen', 'Kuvitellun saastumisen pelko: ei kätele, ei kosketa', 'Symmetria- tai "juuri oikein" -tarve'],
+    lomakkeet: [
+      { nimi: 'CY-BOCS (Children\'s Yale-Brown Obsessive Compulsive Scale)', kayttö: 'Kultastandardi lapset/nuoret, haastattelu', pisteet: '0–40, ≥16 kohtalainen' },
+      { nimi: 'OCI-CV (Child Version)', kayttö: 'Itsearvio 7–17 v', pisteet: '≥28 kliinisesti merkittävä' },
+      { nimi: 'OCD-hierarkia', kayttö: 'ERP-järjestys', pisteet: 'SUDS 0–10' }
+    ]
+  },
+  protokolla: [
+    { vaihe: 1, nimi: 'Externalisaatio ja psykoedukaatio', tavoite: 'Nimetä OCD erilliseksi. Vähentää häpeää. Rakentaa motivaatio ERP:hen.', istunnot: '1–3',
+      istuntorakenne: { alku: 'CY-BOCS. "Kerro minulle yhdestä OCD-tilanteesta tällä viikolla."', keski: 'Externalisaatio: OCD saa nimen ja muodon. "Tämä ei ole sinä — tämä on OCD." Kierre: obsessio → ahdistus → kompulsio → väliaikainen helpotus → OCD vahvistuu. Selitetään miksi kompulsio pitkällä aikavälillä pahentaa.', loppu: 'Motivointi: "ERP on epämukavaa mutta se toimii. Oletko valmis?"' },
+      kysymykset: ['Jos OCD olisi hahmo — miltä se näyttäisi? Mitä se sanoo?', 'Mitä haluat tehdä elämässäsi jota OCD estää?', 'Onko OCD lupaukset pitäneet — onko rituaalit auttaneet pysyvästi?', 'Mitä tapahtuisi jos et tekisi rituaalia?'],
+      tehtavat: [{ nimi: 'OCD-hahmon piirtäminen', ohje: 'Lapsi piirtää OCD:n hahmona. Antaa sille nimen. Kirjoittaa mitä se sanoo. Muistuttaa: "tämä on erillinen minusta."', tavoite: 'Externalisaatio vähentää häpeää ja rakentaa etäisyyttä' }],
+      kotitehtava: 'OCD-hahmo valmiiksi. OCD-päiväkirja: merkitään obsessiot ja kompulsiot ilman muutosta — vain havainnointi.', siirtymakriteerit: 'Asiakas erottaa OCD-ajatukset omista ajatuksistaan. Motivoitunut ERP:hen.' },
+    { vaihe: 2, nimi: 'ERP — valmistautuminen', tavoite: 'Rakentaa ERP-hierarkia. Opettaa ERP-periaate. Harjoitella rauhoittumistaitoja.', istunnot: '4–5',
+      istuntorakenne: { alku: 'OCD-päiväkirja läpi. Mitä obsessioita esiintyi?', keski: 'ERP-hierarkia yhdessä: 8–10 tilannetta SUDS 0–100. Ei aloiteta ylhäältä. Selitetään: ahdistus nousee, mutta laskee AINA — ERP todistaa tämän keholla. Rauhoittumistaidot: hengitys, maadoitus.', loppu: 'Ensimmäinen ERP-tehtävä valitaan yhdessä — SUDS 20–30.' },
+      kysymykset: ['Katsotaan hierarkiaa — mikä tuntuu helpoimmin tehtävältä?', 'Mitä ennustat tapahtuvan jos et tee rituaalia? Mitä luulet oikeasti tapahtuvan?', 'Voimmeko kokeilla yhdessä tässä istunnossa?'],
+      tehtavat: [{ nimi: 'ERP-hierarkia', ohje: 'Tilanteet SUDS-järjestyksessä. Ensin 20–30 tason tilanteet. Rituaalien vastustaminen — aloitetaan viivästämisellä.', tavoite: 'Systemaattinen ERP-järjestys' }],
+      kotitehtava: 'Ensimmäinen ERP-kotitehtävä: SUDS 20–30 tason tilanne, ei rituaalia. Kirjataan SUDS ennen/korkein/lopussa.', siirtymakriteerit: 'Hierarkia rakennettu. Asiakas ymmärtää ERP-periaatteen.' },
+    { vaihe: 3, nimi: 'ERP — asteittainen altistus', tavoite: 'Läpi hierarkian turvallisesti, SUDS nousee ja laskee.', istunnot: '6–16',
+      istuntorakenne: { alku: 'ERP-päiväkirja läpi. Juhlitaan yritykset.', keski: 'Istunnossa ERP: altistutaan laukaisevaan tilanteeseen ilman kompulsiota. SUDS-seuranta 10 min välein. Odotetaan kunnes SUDS puoliintuu. Terapeutti mallintaa rauhallista odottamista.', loppu: 'Seuraavan viikon kotitehtäväERP sovitaan.' },
+      kysymykset: ['SUDS on nyt... mitä kehossasi tapahtuu? Odotetaan.', 'Mitä OCD sanoo juuri nyt? Voidaan kuunnella mutta ei totella.', 'SUDS laski — mitä huomasit? Mitä tämä tarkoittaa?', 'Mikä oli vaikeinta? Tehdäänkö se uudelleen?'],
+      tehtavat: [{ nimi: 'ERP-päiväkirja', ohje: 'Tilanne, SUDS ennen, SUDS korkein, SUDS 20 min jälkeen, rituaali vai ei, mitä opin. Joka ERP-istunto.', tavoite: 'Datasta näkyy: ahdistus laskee aina, rituaalista voi pidättäytyä' }],
+      kotitehtava: 'ERP-kotitehtävä päivittäin. SUDS laski? Rituaalin kesto lyheni?', siirtymakriteerit: 'Päässyt hierarkian ylimmälle tasolle. SUDS alle 20 tilanteissa jotka olivat aiemmin 70–80.' },
+    { vaihe: 4, nimi: 'Relapsienehkäisy', tavoite: 'OCD voi palata — rakennetaan suunnitelma.', istunnot: '17–20',
+      istuntorakenne: { alku: 'Edistymisen tarkastelu. Missä oltiin, missä nyt.', keski: 'OCD-taantuman normalisointi: ei tarkoita epäonnistumista. Varoitusmerkit. Suunnitelma paluuseen. Riittävän hyvä vs. täydellisyys.', loppu: 'Itsenäisyyden vahvistaminen.' },
+      kysymykset: ['Missä olet kasvanut eniten?', 'Mitkä asiat ovat parhaiten muistissa kun OCD yrittää palata?', 'Milloin on aika palata terapiaan?'],
+      tehtavat: [{ nimi: 'Relapsienehkäisykirje', ohje: 'Kirje tulevaisuuden itselle: mitä tiedät nyt OCD:stä, mitä tehdä jos palaa, miksi ERP toimii.', tavoite: 'Tieto kantaa eteenpäin' }],
+      kotitehtava: 'Relapsienehkäisykirje valmiiksi.', siirtymakriteerit: 'OCD ei merkittävästi haittaa arkielämää. Osaa soveltaa ERP:tä itsenäisesti.' }
+  ],
+  harjoitteet: {
+    lapsi: [
+      { nimi: 'Häiritsijän piirtäminen', tyyppi: 'luova', kuvaus: 'Lapsi piirtää OCD:n hahmona — miltä se näyttää, mitä se sanoo? Nimeää sen. Antaa sille ulkoisen muodon. Helpottaa externalisointia ja tuo kontrollin tunnetta.', valineet: 'Paperi, värikynät', aika: '15 min' },
+      { nimi: 'Vastaamatta jättäminen', tyyppi: 'cbt', kuvaus: 'Häiritsijä sanoo "tee tämä" — me odotamme 1 min ennen kuin vastataan. Sitten 2 min, sitten 5 min. Kompulsion viivästäminen on altistus. Käytetään ajastinta.', valineet: 'Ajastin', aika: '10 min + jatkuva' },
+      { nimi: 'Sankaritehtäväkartta', tyyppi: 'luova', kuvaus: 'Lapsi on sankari joka taistelee Häiritsijää vastaan. ERP-tehtävät ovat sankaritoimia. Karttaan merkitään voitetut taistelut. Narratiivi voimauttaa.', valineet: 'Sankarikartpaperi, tarrat', aika: 'Jatkuva' },
+      { nimi: 'Epävarmuuden sietoharjoitus', tyyppi: 'keho', kuvaus: '"Mitä jos en tee rituaalia?" — Istutaan epävarmuuden kanssa. Hengitetään. Huomataan: epävarmuus on epämiellyttävä mutta sietäminen on opittavissa. SUDS seurataan.', valineet: 'Ajastin', aika: '10–20 min' }
+    ],
+    nuori: [
+      { nimi: 'ERP-hierarkia ja -päiväkirja', tyyppi: 'cbt', kuvaus: 'Hierarkia SUDS 0–100. Aloitetaan 20–30:sta. Päiväkirja: tilanne, SUDS ennen/korkein/lopussa, rituaali vai ei, mitä opin. Data motivoi jatkamaan.', valineet: 'Lomake tai vihko', aika: '30 min + päivittäinen' },
+      { nimi: 'Kompulsion viivästäminen', tyyppi: 'cbt', kuvaus: 'Kun kompulsion tarve tulee: odota 5 min, hengitä, tee jotain muuta. Lisätään asteittain: 10, 20, 30 min. Ei tavoite "ei koskaan" vaan "myöhemmin" — madaltaa kynnystä.', valineet: 'Ajastin', aika: 'Jatkuva' },
+      { nimi: 'Defusion-harjoitus', tyyppi: 'keho', kuvaus: '"Minulla on ajatus että..." — etäisyyden ottaminen obsessiiviseen ajatukseen. Ajatus ei ole totuus, ei käsky, ei minä. Harjoitellaan nimeämään ajatukset ulkoapäin.', valineet: 'Ei tarvita', aika: '10 min' },
+      { nimi: 'Epävarmuuden sietämisen tikkarit', tyyppi: 'cbt', kuvaus: 'Askeltaen: siedä 10% enemmän epävarmuutta. Mitä juuri nyt? Tuleeko katastrofi? Kerätään dataa siitä, mitä oikeasti tapahtuu.', valineet: 'Vihko', aika: '15 min + jatkuva' }
+    ]
+  }
+},
+
+// ════════════════════════════════════════
+// 5. FOBIAT
+// ════════════════════════════════════════
+{
+  id: 'fobiat', icon: '😨', label: 'Fobiat',
+  color: '#8a5a5a', colorBg: '#f8f0f0', colorBd: '#e0b8b8',
+  ages: ['lapsi','nuori'],
+  desc: 'Spesifit pelot: eläimet, pistokset, korkeus, oksentaminen, pimeys',
+  psykoed: {
+    lapsi: 'Pelko on aivosi tapa suojella sinua. Joskus aivot yliarvioivat vaaran — ne reagoivat hämähäkkiin tai pimeään kuin se olisi oikea vaara. Sinun aivosi haluavat suojella sinua, mutta ne liioittelevat. Voimme opettaa aivoille, että tilanne on turvallinen.',
+    nuori: 'Spesifi fobia on konditionoitu pelkoreaktio. Amygdala on oppinut yhdistämään tietyn ärsykkeen vaaraan. Altistuminen ilman vahvistusta on ainoa tapa "opettaa" amygdalalle uudelleen. Aivot ovat muovautuvia — oppiminen onnistuu missä iässä tahansa.'
+  },
+  arviointi: {
+    kysymykset: {
+      lapsi: ['Mikä sinua pelottaa eniten?', 'Mitä tapahtuu kehossasi kun kohtaat sen?', 'Mitä jätät tekemättä koska se pelottaa?', 'Oletko koskaan kohdannut sen ja selvinnyt?'],
+      nuori: ['Kuvaile pelkosi täsmällisesti — mikä tarkalleen laukaisee?', 'SUDS 0–10 eri tilanteissa pelon kohteen kanssa?', 'Mitä uskot tapahtuvan jos kohtaat sen?', 'Mitä vältät sen takia?', 'Miten pitkään fobia on ollut?']
+    },
+    havainnointi: ['Pakovaste tai jähmettyminen', 'Fysiologinen reaktio jo mainitsemisesta', 'Avoidance behavior kertomuksessa'],
+    lomakkeet: [
+      { nimi: 'FSSC-R (Fear Survey Schedule for Children)', kayttö: '7–18 v, 80 pelon kohteen lista', pisteet: '' },
+      { nimi: 'Pelon SUDS-hierarkia', kayttö: 'Altistusjärjestys', pisteet: '0–100' }
+    ]
+  },
+  protokolla: [
+    { vaihe: 1, nimi: 'Pelon mekanismi ja hierarkia', tavoite: 'Psykoedukaatio. Hierarkia. Rauhoittumistaidot.', istunnot: '1–2',
+      istuntorakenne: { alku: 'FSSC-R. Mitä pelkäät — täsmällinen kartoitus.', keski: 'Pelon kehäsilmukka. Hierarkian rakentaminen. Hengitys ja maadoitus.', loppu: 'Motivointi altistukseen.' },
+      kysymykset: ['Mitä tapahtuu kehossasi kun ajattelet X:ää?', 'Mitä uskot tapahtuvan jos olet huoneessa hämähäkin kanssa?', 'Oletko koskaan selvinnyt jostain pelottavasta?'],
+      tehtavat: [{ nimi: 'Pelkohierarkia', ohje: '8–10 tilannetta SUDS 0–100. Helpoimmasta vaikeimpaan.', tavoite: 'Altistusjärjestys' }],
+      kotitehtava: 'Hierarkia valmiiksi. Hengitysharjoittelu 5 min päivässä.', siirtymakriteerit: 'Hierarkia valmis. Osaa rauhoittumistekniikan.' },
+    { vaihe: 2, nimi: 'Asteittainen altistus', tavoite: 'Hierarkian läpikäyminen systemaattisesti.', istunnot: '3–10',
+      istuntorakenne: { alku: 'Altistuspäiväkirja. SUDS tällä hetkellä.', keski: 'In vivo tai mielikuva-altistus. Odotetaan SUDS:n puoliintumista. Terapeutti rinnalla.', loppu: 'Kotitehtävä seuraavalle askeleelle.' },
+      kysymykset: ['SUDS on... mitä kehossasi? Odotetaan.', 'Laskiko? Huomasitko?', 'Mitä tämä tarkoittaa pelolle?'],
+      tehtavat: [{ nimi: 'Altistuspäiväkirja', ohje: 'SUDS ennen/korkein/lopussa. Mitä opin.', tavoite: 'Data motivoi' }],
+      kotitehtava: 'Hierarkian seuraava askel kotona.', siirtymakriteerit: 'Hierarkian ylin askel saavutettu.' },
+    { vaihe: 3, nimi: 'Yleistäminen', tavoite: 'Harjoitellaan uusissa tilanteissa.', istunnot: '11–13',
+      istuntorakenne: { alku: 'Yleistämisharjoitusten suunnittelu.', keski: 'Uudet tilanteet, uudet ympäristöt.', loppu: 'Relapsienehkäisy.' },
+      kysymykset: ['Mitä muita tilanteita voisi nyt kokeilla?', 'Mitä tekisit jos pelko yrittää palata?'],
+      tehtavat: [{ nimi: 'Selviytymissuunnitelma', ohje: 'Mitä teen kun pelko yrittää palata.', tavoite: 'Itsenäisyys' }],
+      kotitehtava: 'Selviytymissuunnitelma valmiiksi.', siirtymakriteerit: 'Selviää laukaisevista tilanteista ilman merkittävää haittaa.' }
+  ],
+  harjoitteet: {
+    lapsi: [
+      { nimi: 'Pelkolämpömittari', tyyppi: 'cbt', kuvaus: 'Kuvitettu 0–10 asteikko. Käytetään joka altistuksen yhteydessä. Lapsi näkee konkreettisesti kuinka pelko laskee — tämä motivoi jatkamaan.', valineet: 'Kuvitettu lomake', aika: '5 min' },
+      { nimi: 'Kuvaaltistus', tyyppi: 'cbt', kuvaus: 'Aloitetaan kuvista pelon kohteesta. Ensin kaukaa, sitten lähempää, sitten pidempään. Hierarkian ensimmäiset askeleet.', valineet: 'Kuvat, kirja tai internet', aika: '10–20 min' },
+      { nimi: 'Supersankaritarina', tyyppi: 'luova', kuvaus: 'Kirjoitetaan tai piirretään tarina jossa lapsi on sankari joka voittaa pelon. Maaginen — ei realistinen. Symbolinen voitto rakentaa luottamusta.', valineet: 'Paperi, kynät', aika: '20 min' }
+    ],
+    nuori: [
+      { nimi: 'Uskomusten haastaminen', tyyppi: 'cbt', kuvaus: '"Mitä uskot tapahtuvan?" → "Mikä on realistinen todennäköisyys?" → "Mitä oikeasti on tapahtunut aiemmin?" Faktatieto pelon kohteesta voi auttaa.', valineet: 'Työlomake', aika: '20 min' },
+      { nimi: 'Altistuspäiväkirja', tyyppi: 'cbt', kuvaus: 'SUDS ennen/korkein/lopussa. Data näyttää edistymisen visuaalisesti. Motivoi jatkamaan.', valineet: 'Vihko tai lomake', aika: '5 min / altistus' },
+      { nimi: 'Kehon rauhoittaminen altistuksessa', tyyppi: 'keho', kuvaus: 'Altistuksen aikana: hengitä ulos pitkään, tunne jalkapohjat maassa, laske 5 asiaa ympäristöstä. Pysyt tilanteessa kehon kanssa.', valineet: 'Ei tarvita', aika: 'Altistuksen yhteydessä' }
+    ]
+  }
+},
+
+// ════════════════════════════════════════
+// 6. TRAUMA
+// ════════════════════════════════════════
+{
+  id: 'trauma', icon: '🌊', label: 'Trauma',
+  color: '#3a6a8a', colorBg: '#eef4f8', colorBd: '#b8d0e0',
+  ages: ['lapsi','nuori'],
+  desc: 'PTSD, komplisoitunut trauma, turvattomuus, dissosiatiiviset oireet',
+  psykoed: {
+    lapsi: 'Joskus tapahtuu jotain niin pelottavaa tai ahdistavaa, että aivot tallentavat sen erityisellä tavalla. Sen vuoksi se voi tulla mieleen, tuntua kehossa tai pelottaa myöhemminkin. Aivosi yrittivät suojella sinua. Se ei ole sinun vikasi. Teemme sen yhdessä turvalliseksi.',
+    nuori: 'Traumaattisessa kokemuksessa aivot eivät pysty käsittelemään tapahtumaa normaalisti — hippokampus ei pysty "leimaamaan" sitä menneisyyteen. Siksi triggerit voivat viedä kehon takaisin menneeseen hetken — keho ei tiedä, että vaara on ohi. Terapian tavoite ei ole unohtaa vaan integroida — kokemus tulee osaksi tarinaasi, ei sen määrittelijäksi.'
+  },
+  arviointi: {
+    kysymykset: {
+      lapsi: ['Onko joskus tapahtunut jotain niin pelottavaa että siitä on vaikea puhua?', 'Tuleeko joskus kuvia tai muistoja siitä mieleen vaikka et haluaisi?', 'Onko jokin paikka tai juttu joka saa kehon pelästymään?', 'Miten nukut? Onko painajaisia?', 'Tuntuuko joskus turvalliselta? Kenen kanssa?', 'Onko nyt turvallista kotona?'],
+      nuori: ['Onko sinulle tapahtunut jotain traumaattista — oletko valmis kertomaan siitä lyhyesti?', 'PTSD-oireet: uudelleenkokeminen (flashbackit, painajaiset), välttäminen, ylivalppauden tila?', 'Dissosiaatio: tunnetko joskus itsesi olevan poissa, epätodellisena tai kehon ulkopuolella?', 'Mistä asioista, paikoista tai tilanteista tulee voimakas reaktio?', 'Onko sinulla turvallinen henkilö tällä hetkellä?', 'Onko kotitilanne turvallinen nyt?']
+    },
+    havainnointi: ['Ylivalppauden merkit: katse oveen, säpsähtäminen', 'Dissosiatiiviset merkit: tyhjä katse, poissaolo, vastausten viive', 'Kehon jähmettyminen tietyistä aiheista puhuttaessa', 'Emotionaalinen labiilisuus tai latistuminen', 'Häpeä ja itseä syyttäminen'],
+    lomakkeet: [
+      { nimi: 'CPSS-5 (Child PTSD Symptom Scale for DSM-5)', kayttö: '8–18 v, 24 osiota', pisteet: '≥31 todennäköinen PTSD' },
+      { nimi: 'CPTS-RI (Childhood PTSD Reaction Index)', kayttö: '6–17 v', pisteet: '' },
+      { nimi: 'UCLA PTSD Reaction Index', kayttö: 'Laaja käyttö, lapsi + vanhempi versiot', pisteet: '' },
+      { nimi: 'DES-C (Dissociative Experiences Scale - Child)', kayttö: 'Jos dissosiaatiota epäillään', pisteet: '' }
+    ]
+  },
+  protokolla: [
+    { vaihe: 1, nimi: 'Turvallisuus ja stabilisaatio', tavoite: 'EI traumakäsittelyä ennen stabilisaatiota. Turvallisuus. Resurssit. Säätelytaidot.', istunnot: '1–8',
+      istuntorakenne: { alku: 'Turvallisuuden kartoitus: onko turvallista nyt? CPSS-5.', keski: 'Turvaverkosto. Säätelyn taidot (hengitys, maadoitus, turvapaikka). Toleranssi-ikkunan rakentaminen. Resurssointi: mitä kehossa tuntuu turvalliselta?', loppu: 'Turvallisuussuunnitelma kotiin.' },
+      kysymykset: ['Onko sinulla jokin paikka tai henkilö joka tuntuu turvalliselta?', 'Kun alat tuntea sen tutun vaikeuden — mitä tapahtuu kehossasi?', 'Onko jotain, mikä auttaa sinua tuntemaan itsesi takaisin nykyhetkeen?', 'Mitä tarvitsisit, jotta tähän olisi turvallista tulla?'],
+      tehtavat: [
+        { nimi: 'Turvapaikka-harjoite', ohje: 'Kuvitellaan turvallinen paikka: näkö, kuulo, tunto, haju. Nimetään. Kehon tunne turvapaikassa kirjataan. Harjoitellaan päivittäin.', tavoite: 'Resurssointi — sisäinen ankkuri' },
+        { nimi: 'Toleranssi-ikkunatyöskentely', ohje: 'Piirretään "ikkuna": optimaalinen tila, hyper, hypo. Asiakas oppii tunnistamaan oman tilansa. Harjoitellaan säätelyn keinoja jokaiseen.', tavoite: 'Tietoisuus omasta vireystilasta ja sen säätely' }
+      ],
+      kotitehtava: 'Turvapaikka-harjoite päivittäin 5 min. Turvallisuussuunnitelma kotiin.', siirtymakriteerit: 'Asiakas kykenee säätelemään vireystilaansa. Ei aktiivista kriisiä. Turvallinen tukiverkko.' },
+    { vaihe: 2, nimi: 'Psykoedukaatio traumasta', tavoite: 'Normalisoida oireet. Ymmärtää trauman vaikutus aivoihin ja kehoon. Vähentää häpeää.', istunnot: '9–12',
+      istuntorakenne: { alku: 'Check-in vireystila. Resurssiankkuri.', keski: 'Trauma-psykoedukaatio ikätasoisesti. Hippokampus ja amygdala. "Kehon muisti." Triggeri-reaktioiden normalisointi. "Se ei ole sinun vikasi."', loppu: 'Mitä asiakas vie mukanaan? Kysymykset.' },
+      kysymykset: ['Mitä ajattelit kun kerrot mitä kehossasi tapahtuu noissa tilanteissa?', 'Onko joku joskus sanonut sinulle, että reagoit liioitellusti?', 'Mitä ajattelit tästä selityksestä — onko se looginen?', 'Mikä tuntuu helpottavalta?'],
+      tehtavat: [{ nimi: 'Selviytymisresurssit-lista', ohje: 'Mitä olet kokenut elämässäsi ja selvinnyt? Lista konkreettisista selviytymistilanteista. Kompetenssipohja.', tavoite: 'Rakentaa kokemus selviytymisestä' }],
+      kotitehtava: 'Selviytymisresurssit-lista. Turvapaikka-harjoite jatkuu.', siirtymakriteerit: 'Asiakas ymmärtää oireidensa neurobiologisen perustan. Häpeä vähentynyt merkittävästi.' },
+    { vaihe: 3, nimi: 'Traumakäsittely', tavoite: 'Traumamuiston integrointi. Vain stabilisaation jälkeen. Menetelmä riippuu koulutuksesta.', istunnot: '13–22',
+      istuntorakenne: { alku: 'Resurssointi ja vireystila. Valmius traumatyöhön?', keski: 'TF-CBT: traumanarratiivi asteittain. EMDR: muiston prosessointi bilateraalistimulaatiolla. SE: kehopohjainen integraatio. Titrattu — ei koko tarinaa kerralla.', loppu: 'Aina päätytään resurssiin ja nykyhetkeen. Integraatiokysymykset.' },
+      kysymykset: ['Mitä huomaat kehossasi nyt kun ajattelet tätä?', 'Missä toleranssi-ikkunassa olet — pysytään ikkunassa.', 'Mitä nyt tarvitset ennen kuin jatketaan?', 'Olemme nyt nykyhetkessä — näet... kuulet... tunnet jalkapohjat lattiassa.'],
+      tehtavat: [{ nimi: 'Kehollinen turva-ankkuri', ohje: 'Missä kehossa tuntuu turvallisimmalta? Harjoitellaan palaamaan siihen nopeasti. Hengitys + kädet siihen kohtaan.', tavoite: 'Somaattinen resurssi traumakäsittelyn tueksi' }],
+      kotitehtava: 'Kevyt integraatiotyö: mitä huomasit tällä viikolla kehossasi? Turvapaikka jatkuu.', siirtymakriteerit: 'Traumamuistot integroituneet — eivät enää aktivoi voimakasta kehoreaktiota.' },
+    { vaihe: 4, nimi: 'Integraatio ja selviytyjäidentiteetti', tavoite: 'Trauma on osa tarinaa — ei tarinan loppu. Minäkuva selviytyjänä.', istunnot: '23–28',
+      istuntorakenne: { alku: 'Kokonaisedistymisen katsaus.', keski: 'Identiteettityö: kuka olen traumahistoriasta huolimatta? Arvot ja tulevaisuus. Selviytyjä — ei uhri. Anteeksianto-työ itselle (ei tekijälle ellei asiakas halua).', loppu: 'Päätösjuhla: mitä opit, mikä muuttui, mitä viet mukanaan.' },
+      kysymykset: ['Millä tavalla olet vahvempi tai viisaampi tämän kokemuksen myötä?', 'Mitä sanoisit lapselle/nuorelle joka on käymässä läpi samaa?', 'Kuka olet traumasi jälkeen — miten kuvailisit itseäsi?'],
+      tehtavat: [{ nimi: 'Selviytyjän kirje', ohje: 'Kirje itselle: mitä olet kokenut ja selvinnyt. Mitä oppinut. Mitä toivot tulevaisuudelta.', tavoite: 'Narratiivinen integraatio' }],
+      kotitehtava: 'Selviytyjän kirje valmiiksi.', siirtymakriteerit: 'Traumamuistot eivät merkittävästi haittaa arkea. Asiakas tunnistaa itsensä selviytyjäksi.' }
+  ],
+  harjoitteet: {
+    lapsi: [
+      { nimi: 'Turvapaikka-mielikuva', tyyppi: 'keho', kuvaus: 'Lapsi kuvittelee turvallisen paikan — oikean tai kuvitteellisen. Kaikki aistit mukaan. Piirretään ja nimetään. Kehon tunne turvapaikkassa tunnistetaan. Käytetään kun tuntuu pelottavalta.', valineet: 'Paperi, värikynät', aika: '20 min' },
+      { nimi: 'Keho-tunnekartta', tyyppi: 'luova', kuvaus: 'Hahmopohja lapsen ääriviivoilla. Värit eri tunteille. Missä tuntuu pelko? Suru? Viha? Turvallisuus? Kehollinen tietoisuus ilman sanoja.', valineet: 'Hahmopohja, värit', aika: '20 min' },
+      { nimi: 'Voima-eläin', tyyppi: 'luova', kuvaus: 'Mikä eläin on vahva ja turvallinen? Lapsi piirtää tai valitsee lelun. Eläin on mukana vaikeissa hetkissä. "Mitä voima-eläimeni tekisi nyt?"', valineet: 'Paperi tai lelu', aika: '15 min' },
+      { nimi: '5-4-3-2-1 maadoitus', tyyppi: 'keho', kuvaus: '5 asiaa näet, 4 kosketat, 3 kuulet, 2 haistat, 1 maistat. Palauttaa nykyhetkeen. Opitaan ensin turvallisessa tilanteessa — sitten käytetään triggeröityessä.', valineet: 'Ei tarvita', aika: '5–10 min' }
+    ],
+    nuori: [
+      { nimi: 'Kehoankku ri', tyyppi: 'keho', kuvaus: 'Missä kehossasi tuntuu turvallisimmalta juuri nyt? Kädet sinne. Hidas hengitys. Rakennetaan somaattinen resurssi joka on aina mukana — ei ulkoinen väline.', valineet: 'Hiljainen tila', aika: '15 min' },
+      { nimi: 'Aikaviiva-harjoitus', tyyppi: 'cbt', kuvaus: 'Trauma oli menneisyydessä. Nyt on turvallisempaa. Rakennetaan konkreettinen aikaviiva: mitä tapahtui ennen, mitä on nyt erilaista. Nykyhetken turvallisuuden todistaminen.', valineet: 'Iso paperi tai piirtäminen', aika: '20 min' },
+      { nimi: 'Hermostonsäätely triggerissä', tyyppi: 'keho', kuvaus: 'Opitaan tunnistamaan triggeröityminen kehossa (kiristys, syke, dissosiaatio). Protokolla: STOP → maadoitu (jalkapohjat) → hengitä ulos → nimeä tunne. Ei pakeneminen — säätely.', valineet: 'Ei tarvita', aika: '20 min' },
+      { nimi: 'Selviytymisresurssit-lista', tyyppi: 'cbt', kuvaus: 'Mitä olet kokenut ja selvinnyt? Konkreettinen lista. Ei triviaalisoida — jokainen selviytyminen on todellinen. Rakentaa kompetenssin kokemusta.', valineet: 'Vihko', aika: '20 min' }
+    ]
+  }
+},
+
+// ════════════════════════════════════════
+// 7. ITSETUNTO & MINÄKUVA
+// ════════════════════════════════════════
+{
+  id: 'itsetunto', icon: '💪', label: 'Itsetunto & minäkuva',
+  color: '#5a8a3a', colorBg: '#f0f8ee', colorBd: '#b8d8a8',
+  ages: ['lapsi','nuori'],
+  desc: 'Heikko itsetunto, häpeä, perfektionismi, minäkuvan häiriöt',
+  psykoed: {
+    lapsi: 'Itsetunto on kuin lihas — se kasvaa harjoittelemalla. Kaikilla on hyviä puolia, myös sinulla, vaikka et ehkä aina näe niitä. Voimme harjoitella yhdessä huomaamaan niitä.',
+    nuori: 'Itsetunto ei ole pysyvä ominaisuus — se on opittava taito. Usein heikko itsetunto syntyy toistuvista kokemuksista jotka ovat opettaneet "en ole riittävä." Nämä uskomukset voidaan haastaa ja muuttaa. Identiteetti rakentuu paremmin arvoista kuin suorituksista tai muiden mielipiteistä.'
+  },
+  arviointi: {
+    kysymykset: {
+      lapsi: ['Jos kuvailisit itseäsi kolmella sanalla — mitkä ne olisivat?', 'Missä asioissa olet hyvä? Onko vaikea nimetä?', 'Mitä sanot itsellesi kun teet virheen?', 'Onko sinulla ystäviä? Miltä sinusta tuntuu kavereiden joukossa?', 'Tuleeko sinulle joskus tunne, että olet erilainen kuin muut?'],
+      nuori: ['Miten kuvailisit itseäsi — ensimmäiset sanat jotka tulevat mieleen?', 'Kuinka ankara olet itsellesi virheiden kohdalla?', 'Vertaatko itseäsi muihin — kuinka usein? Somessa?', 'Mikä on sinulle riittävä suoritus — onko koskaan tarpeeksi hyvä?', 'Onko häpeäkokemuksia — tilanteita jolloin on tuntunut nöyryytettyltä tai arvottomalta?', 'Rakentaako identiteettisi suoritusten vai olemisen varaan?']
+    },
+    havainnointi: ['Itseä vähättelevä puhe istunnossa', 'Positiivisen palautteen torjuminen', 'Perfektionismi näkyy istunnossa', 'Vertailu muihin', 'Häpeä kehon reaktiona: punastuminen, katseen lasku, vetäytyminen'],
+    lomakkeet: [
+      { nimi: 'Rosenbergin itsetuntomittari', kayttö: '12+ v, 10 osiota, nopea', pisteet: '≤15 alhainen itsetunto' },
+      { nimi: 'SPPC (Self-Perception Profile for Children)', kayttö: '8–12 v, Harter', pisteet: 'Profiili eri alueilla' },
+      { nimi: 'Sisäisen kritiikin päiväkirja', kayttö: 'Laadullinen, mitä sanot itsellesi', pisteet: '' }
+    ]
+  },
+  protokolla: [
+    { vaihe: 1, nimi: 'Vahvuuksien kartoitus', tavoite: 'Aloitetaan vahvuuksista — ei ongelmista. Rakenna positiivinen perusta.', istunnot: '1–3',
+      istuntorakenne: { alku: 'Rosenberg/SPPC. "Kerro minulle jostakin asiasta joka meni hyvin."', keski: 'Vahvuuksien etsiminen systemaattisesti: mitä osaat, mistä olet ylpeä, mitä muut arvostavat sinussa. Vanhemman panos. Ei vähättelyä — "se on pieni asia" torjutaan.', loppu: 'Vahvuuspuu aloitetaan.' },
+      kysymykset: ['Jos paras kaverisi kuvailisi sinua — mitä hän sanoisi?', 'Kerro tilanteesta jolloin onnistuit — mitä se vaati sinulta?', 'Mitä teet hyvin vaikka et ehkä ajattele sitä taitona?', 'Jos opettajasi/valmentajasi kuvailisi sinut positiivisesti — mitä hän sanoisi?'],
+      tehtavat: [
+        { nimi: 'Vahvuuskartoitus', ohje: 'Kolme listaa: 1) Mitä osaan, 2) Mistä olen ylpeä, 3) Mitä muut arvostavat minussa. Vanhempi täyttää oman listansa.', tavoite: 'Vahvuusperustainen lähtökohta' },
+        { nimi: 'Positiivisuuspankki', ohje: 'Rasia johon kerätään positiivista palautetta, onnistumisia, kivoja muistoja. Luetaan kun on huono päivä.', tavoite: 'Vastapaine negatiiviselle sisäiselle kriitikille' }
+      ],
+      kotitehtava: 'Vahvuuskartoitus valmiiksi. Positiivisuuspankki aloitetaan.', siirtymakriteerit: 'Asiakas pystyy nimeämään vähintään 5 vahvuuttaan. Ei torju kaikkia.' },
+    { vaihe: 2, nimi: 'Sisäinen kriitikko ja häpeä', tavoite: 'Tunnistaa sisäinen kriitikko. Harjoitella itsemyötätuntoa.', istunnot: '4–7',
+      istuntorakenne: { alku: 'Sisäinen kriitikko -päiväkirja läpi.', keski: 'Sisäinen kriitikko: missä tilanteissa esiintyy, mitä sanoo, mistä on opittu? Ei kriitikko = ei minä. Itsemyötätunto: miten kohtelisit ystävää? Virheen sietäminen — virheiden normalisoiminen.', loppu: 'Itsemyötätunto-harjoitus yhdessä.' },
+      kysymykset: ['Mitä sanot itsellesi kun teet virheen — ääneen?', 'Sanoisitko saman parhaalle kaverillesi? Miksi et?', 'Mitä kriittinen ääni yrittää suojata sinua — onko se toiminut?', 'Miltä tuntuisi kohdella itseäsi kuin ystävää?'],
+      tehtavat: [
+        { nimi: 'Sisäinen kriitikko -päiväkirja', ohje: 'Merkitään: tilanne, mitä kriitikko sanoi, tunne, mitä sanoisin ystävälle samassa tilanteessa.', tavoite: 'Tietoisuus kriittisestä puheesta' },
+        { nimi: 'Ystäväkirje itselle', ohje: 'Kirjoita kirje itsellesi kuin parhaalle ystävälle. Mikä olisi tärkein asia sanoa?', tavoite: 'Itsemyötätunto konkreettisesti' }
+      ],
+      kotitehtava: 'Kriitikko-päiväkirja. Ystäväkirje valmiiksi.', siirtymakriteerit: 'Tunnistaa sisäisen kritiikin. Pystyy vastaamaan sille itsemyötätunnolla.' },
+    { vaihe: 3, nimi: 'Ydinuskomusten muutos', tavoite: 'Haastaa "en ole riittävä" -uskomukset systemaattisesti.', istunnot: '8–12',
+      istuntorakenne: { alku: 'Sisäinen kriitikko -päiväkirja. Mikä ydinuskomus on tällä hetkellä?', keski: 'Ydinuskomuksen tunnistaminen: "En ole riittävä / rakastettava / hyväksyttävä." Todistetyöskentely: todisteita puolesta ja vastaan. Tasapainoinen vaihtoehtoinen uskomus. Käyttäytymiskokeet.', loppu: 'Uusi uskomus muotoillaan yhdessä.' },
+      kysymykset: ['Jos tiivistäisit negatiivisen käsityksen itsestäsi yhteen lauseeseen — mikä se olisi?', 'Milloin opit tämän ensimmäisen kerran?', 'Mitä todisteita on tätä uskomusta VASTAAN?', 'Jos tasapainoisempi versio olisi: "Minulla on arvoa vaikka teen virheitä" — miltä se tuntuu kehossa?'],
+      tehtavat: [
+        { nimi: 'Todistusaineiston keruu', ohje: 'Viikon ajan: kerää todisteita uutta tasapainoisempaa uskomusta tukemasta. Pienikin riittää.', tavoite: 'Uskomuksen muutos vaatii toistuvaa todistetyöskentelyä' },
+        { nimi: 'Käyttäytymiskokeilu', ohje: 'Toimi kuin uusi uskomus olisi totta. Mitä tekisit? Mitä tapahtuu? Kirjataan.', tavoite: 'Uskomuksen testaaminen käytännössä' }
+      ],
+      kotitehtava: 'Todistusaineiston keruu päivittäin. Käyttäytymiskokeilu viikon aikana.', siirtymakriteerit: 'Ydinuskomus muuttunut joustavammaksi. Tasapainoisempi minäkuva.' },
+    { vaihe: 4, nimi: 'Identiteetti ja arvot', tavoite: 'Rakentaa identiteetti arvojen varaan, ei suoritusten tai muiden mielipiteiden.', istunnot: '13–17',
+      istuntorakenne: { alku: 'Edistymisen tarkastelu. Missä kasvoi eniten?', keski: 'Arvokartoitus: mikä on minulle oikeasti tärkeää? Identiteetti arvoista. Elämä suorituksen vs. yhteyden varassa. Riittävyys — olen riittävä jo nyt.', loppu: 'Päätösjuhla. Vahvuuspuu valmiiksi.' },
+      kysymykset: ['Mitkä viisi asiaa ovat sinulle tärkeimpiä elämässä?', 'Elääkö arki näiden arvojen mukaan?', 'Kuka olet muiden mielipiteistä riippumatta?', 'Mitä haluaisit sanoa itsetunnosta nuoremmalle versiolle itsestäsi?'],
+      tehtavat: [
+        { nimi: 'Vahvuuspuu', ohje: 'Juuret=historia, runko=arvot, oksat=taidot, lehdet=saavutukset, hedelmät=tulevaisuuden toiveet. Kokonaisvaltainen minäkuva.', tavoite: 'Identiteetin vahvistaminen' },
+        { nimi: 'Arvokompassi', ohje: 'Viisi tärkeintä arvoa. Miten nykyinen elämä toteuttaa niitä? Suunnitelma arvojen mukaiseen elämään.', tavoite: 'Identiteetti arvojen varaan' }
+      ],
+      kotitehtava: 'Vahvuuspuu valmiiksi. Arvokompassi.', siirtymakriteerit: 'Tasapainoisempi ja vakaampi minäkuva. Identiteetti ei rakennu pelkästään suoritusten tai muiden hyväksynnän varaan.' }
+  ],
+  harjoitteet: {
+    lapsi: [
+      { nimi: 'Vahvuuspuu', tyyppi: 'luova', kuvaus: 'Piirretään iso puu. Juuret = mistä tulen ja kuka tukee minua. Runko = kuka olen, arvot. Oksat = mitä osaan. Lehdet = mistä olen ylpeä. Tehdään yhdessä vanhemman kanssa.', valineet: 'Iso paperi, värit', aika: '30 min' },
+      { nimi: 'Positiivisuuspankki', tyyppi: 'cbt', kuvaus: 'Rasia johon lapsi kerää positiivista palautetta, onnistumisia, hyviä muistoja lapuille. Luetaan kun on huono päivä. Lapsi koristaa rasian itse.', valineet: 'Rasia, laput', aika: 'Jatkuva' },
+      { nimi: 'Virheiden kierrätys', tyyppi: 'luova', kuvaus: 'Virhe kirjoitetaan paperille. Paperista taitetaan origami tai leikataan jotain uutta. Virheestä tulee jotain uutta — symboli kasvusta.', valineet: 'Paperi', aika: '15 min' },
+      { nimi: 'Ihana minä -kollaasi', tyyppi: 'luova', kuvaus: 'Lehdistä tai piirtämällä: asiat joista pidän itsessäni, mitä harrastan, mitä haaveilen. Ei suoritusten listaus — olemisen arvostaminen.', valineet: 'Lehtiä, sakset, liima, pahvi', aika: '30 min' }
+    ],
+    nuori: [
+      { nimi: 'Sisäisen kritiikin ääni kirjallisena', tyyppi: 'cbt', kuvaus: 'Kirjoita mitä sisäinen kriitikko sanoo tyypillisessä tilanteessa. Sitten: sanoisitkö tämän ystävällesi? Kirjoita ystävällinen vastaus itsellesi. Harjoitellaan toistuvasti.', valineet: 'Vihko', aika: '20 min' },
+      { nimi: 'Arvokompassi', tyyppi: 'cbt', kuvaus: 'Mitkä viisi arvoa ovat tärkeimpiä? Rakentaako nykyinen elämä niiden varaan? Identiteetti arvoista — ei suorituksista tai muiden hyväksynnästä.', valineet: 'Työlomake tai vihko', aika: '30 min' },
+      { nimi: 'Itsemyötätunto-kehopohja', tyyppi: 'keho', kuvaus: 'Vaikea hetki tai virhe: kädet sydämelle, tunnista tunne ("tämä on vaikeaa"), muistuta "olen ihminen, kaikki tekevät virheitä", hengitä. Vastaa häpeään kehollisella lämmöllä.', valineet: 'Ei tarvita', aika: '5–10 min' },
+      { nimi: 'Vahvuuspäiväkirja', tyyppi: 'cbt', kuvaus: 'Joka ilta: yksi asia jossa onnistuin tai josta olen ylpeä. Ei tarvitse olla suuri. Harjoittaa huomion kiinnittämistä vahvuuksiin. Vastavaikutus kriittiselle äänelle.', valineet: 'Vihko', aika: '5 min / ilta' }
+    ]
+  }
+}
+
+]; // LN_THEMES end
+
 
 
 
@@ -5682,19 +6044,53 @@ function lnShowTheme(id) {
 
   const age = lnCurrentAge;
   const ageLabel = age === 'lapsi' ? '🐣 Alle 12-vuotiaat' : '🌱 12–17-vuotiaat';
-  const harjoitteet = theme.harjoitteet[age] || [];
-  const TYPE_LABELS = { cbt:'Kognitiivinen · CBT', keho:'Kehollinen', luova:'Luova menetelmä' };
+  const TYPE_LABELS = { cbt:'CBT', keho:'Kehollinen', luova:'Luova' };
 
-  // Header
   const titleEl = document.getElementById('ln-detail-title');
   const badgeEl = document.getElementById('ln-detail-badge');
   if (titleEl) titleEl.innerHTML = `<span style="margin-right:0.5rem">${theme.icon}</span>${theme.label}`;
   if (badgeEl) {
     badgeEl.textContent = ageLabel;
-    badgeEl.style.background = theme.colorBg;
-    badgeEl.style.color = theme.color;
-    badgeEl.style.border = `1px solid ${theme.colorBd}`;
+    badgeEl.style.cssText = `background:${theme.colorBg};color:${theme.color};border:1px solid ${theme.colorBd}`;
   }
+
+  // Psykoedukaatio
+  const psykoedHTML = `
+    <div>
+      <div class="ln-section-label">Psykoedukaatio</div>
+      <div class="ln-psychoed-box">${theme.psykoed[age]}</div>
+    </div>`;
+
+  // Arviointi
+  const arv = theme.arviointi;
+  const arvHTML = `
+    <div style="margin-top:1rem">
+      <div class="ln-section-label">Arviointi</div>
+      <div style="margin-bottom:0.75rem">
+        <div style="font-size:0.65rem;font-weight:700;color:var(--dim);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.08em">Kysymykset</div>
+        <div class="ln-arviointi-grid">
+          ${(arv.kysymykset[age]||[]).map(q => `
+            <div class="ln-arviointi-item">
+              <div class="ln-arviointi-dot" style="background:${theme.color}"></div>
+              <span>${q}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+      ${arv.havainnointi?.length ? `
+      <div style="margin-bottom:0.75rem">
+        <div style="font-size:0.65rem;font-weight:700;color:var(--dim);margin-bottom:0.35rem;text-transform:uppercase;letter-spacing:0.08em">Havainnointi</div>
+        ${arv.havainnointi.map(h => `<div style="font-size:0.75rem;color:var(--text2);padding:0.28rem 0.55rem;background:var(--surface);border-radius:5px;border:1px solid var(--border);margin-bottom:0.25rem">👁 ${h}</div>`).join('')}
+      </div>` : ''}
+      ${arv.lomakkeet?.length ? `
+      <div>
+        <div style="font-size:0.65rem;font-weight:700;color:var(--dim);margin-bottom:0.35rem;text-transform:uppercase;letter-spacing:0.08em">Lomakkeet</div>
+        ${arv.lomakkeet.map(l => `
+          <div style="padding:0.38rem 0.6rem;background:var(--surface);border-radius:6px;border:1px solid var(--border);margin-bottom:0.25rem">
+            <div style="font-size:0.76rem;font-weight:700;color:var(--text)">${l.nimi}</div>
+            <div style="font-size:0.68rem;color:var(--dim)">${l.kayttö}${l.pisteet ? ' · ' + l.pisteet : ''}</div>
+          </div>`).join('')}
+      </div>` : ''}
+    </div>`;
 
   // Protokolla
   const protokollaHTML = `
@@ -5712,9 +6108,45 @@ function lnShowTheme(id) {
                 <div class="ln-step-title">${p.nimi}</div>
                 <div class="ln-step-sessions">ist. ${p.istunnot}</div>
               </div>
-              <div class="ln-step-desc">${p.kuvaus}</div>
-              <div class="ln-method-tags">
-                ${p.menetelmat.map(m => `<span class="ln-method-tag">${m}</span>`).join('')}
+              <div class="ln-step-desc">${p.tavoite}</div>
+              ${p.istuntorakenne ? `
+              <div style="margin:0.5rem 0;padding:0.55rem 0.7rem;background:var(--bg);border-radius:8px;border:1px solid var(--border)">
+                <div style="font-size:0.58rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem">Istuntorakenne</div>
+                ${p.istuntorakenne.alku ? `<div style="font-size:0.73rem;margin-bottom:0.25rem"><span style="font-weight:700;color:var(--teal)">Alku: </span><span style="color:var(--text2)">${p.istuntorakenne.alku}</span></div>` : ''}
+                ${p.istuntorakenne.keski ? `<div style="font-size:0.73rem;margin-bottom:0.25rem"><span style="font-weight:700;color:${theme.color}">Keski: </span><span style="color:var(--text2)">${p.istuntorakenne.keski}</span></div>` : ''}
+                ${p.istuntorakenne.loppu ? `<div style="font-size:0.73rem"><span style="font-weight:700;color:var(--dim)">Loppu: </span><span style="color:var(--text2)">${p.istuntorakenne.loppu}</span></div>` : ''}
+              </div>` : ''}
+              ${p.kysymykset?.length ? `
+              <details style="margin:0.4rem 0">
+                <summary style="font-size:0.7rem;font-weight:700;color:var(--teal);cursor:pointer;user-select:none">💬 Terapeutin kysymykset (${p.kysymykset.length} kpl)</summary>
+                <div style="margin-top:0.35rem;display:flex;flex-direction:column;gap:0.22rem">
+                  ${p.kysymykset.map(q => `<div style="font-size:0.74rem;color:var(--text2);padding:0.3rem 0.55rem;background:var(--surface);border-radius:5px;border-left:2px solid var(--teal);font-style:italic">${q}</div>`).join('')}
+                </div>
+              </details>` : ''}
+              ${p.tehtavat?.length ? `
+              <details style="margin:0.4rem 0">
+                <summary style="font-size:0.7rem;font-weight:700;color:${theme.color};cursor:pointer;user-select:none">📋 Tehtävät (${p.tehtavat.length} kpl)</summary>
+                <div style="margin-top:0.35rem;display:flex;flex-direction:column;gap:0.3rem">
+                  ${p.tehtavat.map(t => `
+                    <div style="padding:0.45rem 0.65rem;background:var(--surface);border-radius:7px;border:1px solid var(--border)">
+                      <div style="font-size:0.77rem;font-weight:700;color:var(--text);margin-bottom:0.18rem">${t.nimi}</div>
+                      <div style="font-size:0.72rem;color:var(--text2);margin-bottom:0.18rem">${t.ohje}</div>
+                      <div style="font-size:0.66rem;color:var(--dim);font-style:italic">→ ${t.tavoite}</div>
+                    </div>`).join('')}
+                </div>
+              </details>` : ''}
+              ${p.kotitehtava ? `
+              <div style="margin-top:0.35rem;padding:0.35rem 0.6rem;background:var(--teal-bg);border-radius:6px;border:1px solid var(--teal-bd)">
+                <span style="font-size:0.62rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--teal)">📖 Kotitehtävä: </span>
+                <span style="font-size:0.72rem;color:var(--text2)">${p.kotitehtava}</span>
+              </div>` : ''}
+              ${p.siirtymakriteerit ? `
+              <div style="margin-top:0.3rem;padding:0.35rem 0.6rem;background:var(--gold-bg);border-radius:6px;border:1px solid var(--gold-bd)">
+                <span style="font-size:0.62rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold)">✓ Siirtymäkriteerit: </span>
+                <span style="font-size:0.72rem;color:var(--text2)">${p.siirtymakriteerit}</span>
+              </div>` : ''}
+              <div class="ln-method-tags" style="margin-top:0.35rem">
+                ${(p.menetelmat||[]).map(m => `<span class="ln-method-tag">${m}</span>`).join('')}
               </div>
             </div>
           </div>`).join('')}
@@ -5722,9 +6154,10 @@ function lnShowTheme(id) {
     </div>`;
 
   // Harjoitteet
+  const harjoitteet = theme.harjoitteet[age] || [];
   const harjoitteetHTML = `
     <div>
-      <div class="ln-section-label">Harjoitteet</div>
+      <div class="ln-section-label">Harjoitteet — ${age === 'lapsi' ? 'alle 12 v' : '12–17 v'}</div>
       <div class="ln-ex-grid">
         ${harjoitteet.map((h, i) => `
           <div class="ln-ex-card ln-ex-${h.tyyppi}" onclick="lnOpenEx('${id}','${age}',${i})">
@@ -5734,36 +6167,18 @@ function lnShowTheme(id) {
             </div>
             <div class="ln-ex-name">${h.nimi}</div>
             <div class="ln-ex-desc">${h.kuvaus.substring(0,90)}${h.kuvaus.length>90?'…':''}</div>
-            ${h.valineet !== 'Ei tarvita' ? `<div class="ln-ex-valineet">🎒 ${h.valineet}</div>` : ''}
-          </div>`).join('')}
-      </div>
-    </div>`;
-
-  // Arviointi + psykoed
-  const arviointiHTML = `
-    <div>
-      <div class="ln-section-label">Psykoedukaatio</div>
-      <div class="ln-psychoed-box">${theme.psykoed[age]}</div>
-      <div class="ln-section-label" style="margin-top:1.25rem">Arviointi</div>
-      <div class="ln-arviointi-grid">
-        ${theme.arviointi.map(a => `
-          <div class="ln-arviointi-item">
-            <div class="ln-arviointi-dot" style="background:${theme.color}"></div>
-            <span>${a}</span>
+            ${h.valineet && h.valineet !== 'Ei tarvita' ? `<div class="ln-ex-valineet">🎒 ${h.valineet}</div>` : ''}
           </div>`).join('')}
       </div>
     </div>`;
 
   document.getElementById('ln-detail-content').innerHTML = `
     <div class="ln-detail-cols">
-      ${arviointiHTML}
-      <div>
-        ${protokollaHTML}
-        <div style="margin-top:1.25rem">${harjoitteetHTML}</div>
-      </div>
-    </div>`;
+      <div>${psykoedHTML}${arvHTML}</div>
+      <div>${protokollaHTML}</div>
+    </div>
+    <div style="margin-top:1.25rem">${harjoitteetHTML}</div>`;
 
-  // Scroll top
   document.getElementById('ln-detail-view').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
