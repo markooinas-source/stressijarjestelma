@@ -1,0 +1,2884 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kojelauta — Terapeutin työkalu</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+  <style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --bg:       #0c0f14;
+  --bg2:      #131720;
+  --bg3:      #1a2030;
+  --surface:  #212840;
+  --border:   #2a3450;
+  --border2:  #364060;
+  --muted:    #4a5878;
+  --dim:      #6a7898;
+  --mid:      #9aaac8;
+  --text:     #c8d8f0;
+  --bright:   #e8f0fc;
+
+  --gold:     #c8a050;
+  --gold-bg:  #1a1608;
+  --gold-bd:  #302808;
+
+  --teal:     #3a9880;
+  --teal-bg:  #081a18;
+  --teal-bd:  #0f3028;
+
+  --rose:     #c05060;
+  --rose-bg:  #1a0810;
+  --rose-bd:  #301018;
+
+  --blue:     #4878c8;
+  --blue-bg:  #080e1e;
+  --blue-bd:  #101830;
+
+  --amber:    #c88030;
+  --amber-bg: #180e04;
+  --amber-bd: #281808;
+
+  --font-d: 'Playfair Display', Georgia, serif;
+  --font-b: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-m: 'IBM Plex Mono', monospace;
+
+  --sidebar: 220px;
+  --r: 8px;
+  --r2: 14px;
+}
+
+/* ── VAALEA TEEMA ── */
+body.light {
+  --bg:       #f4f6fa;
+  --bg2:      #ffffff;
+  --bg3:      #eaecf4;
+  --surface:  #e0e4f0;
+  --border:   #c8cedc;
+  --border2:  #b0b8cc;
+  --muted:    #8890a8;
+  --dim:      #6070a0;
+  --mid:      #3a4878;
+  --text:     #1a2040;
+  --bright:   #0a1030;
+
+  --gold:     #9a7020;
+  --gold-bg:  #fdf8ec;
+  --gold-bd:  #e8d8a0;
+
+  --teal:     #2a7860;
+  --teal-bg:  #eaf6f2;
+  --teal-bd:  #a0d8c8;
+
+  --rose:     #a03050;
+  --rose-bg:  #faeaee;
+  --rose-bd:  #e0a0b0;
+
+  --blue:     #2858b0;
+  --blue-bg:  #eaeffa;
+  --blue-bd:  #a0b8e0;
+
+  --amber:    #a06020;
+  --amber-bg: #fdf2e8;
+  --amber-bd: #e8c090;
+
+  color-scheme: light;
+}
+
+body.light .sidebar {
+  background: #ffffff;
+  border-right: 1px solid var(--border);
+}
+body.light .top-bar {
+  background: rgba(244,246,250,0.96);
+  border-bottom: 1px solid var(--border);
+}
+body.light .nav-item:hover { background: var(--bg3); }
+body.light .nav-item.active { background: var(--teal-bg); border-color: var(--teal); }
+body.light .dash-card { background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+body.light .page { background: var(--bg); }
+body.light .info-box { background: var(--gold-bg); border-color: var(--gold-bd); }
+body.light .field-input,
+body.light .field-textarea,
+body.light .field-select {
+  background: #fff;
+  border-color: var(--border);
+  color: var(--text);
+}
+body.light .note-entry { background: #fff; border-color: var(--border); }
+body.light .ass-panel { background: transparent; }
+body.light .q-item { background: #fff; border-color: var(--border); }
+body.light .q-opt { background: var(--bg3); border-color: var(--border); color: var(--text); }
+body.light .q-opt.selected { background: var(--teal-bg); border-color: var(--teal); color: var(--teal); }
+body.light .method-check { color: var(--text); }
+body.light .hamburger { background: #fff; border-color: var(--border); }
+body.light .hamburger span { background: var(--text); }
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family: var(--font-b);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+}
+
+/* subtle dot grid */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: radial-gradient(circle, rgba(72,120,200,0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events:none; z-index:0;
+}
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+.sidebar {
+  width: var(--sidebar);
+  height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top:0; left:0;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+  padding-bottom: 1rem;
+}
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+
+.sidebar-logo {
+  padding: 1.5rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.logo-name {
+  font-family: var(--font-d);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--bright);
+  margin-bottom: 0.2rem;
+}
+.logo-title {
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.t-ex-filter {
+  font-size: 0.72rem; font-weight: 600; padding: 0.3rem 0.75rem;
+  border-radius: 16px; border: 1px solid var(--border);
+  background: transparent; color: var(--dim); cursor: pointer; transition: all 0.15s;
+  font-family: var(--font-m);
+}
+.t-ex-filter.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+.t-ex-filter:hover:not(.active) { border-color: var(--teal); color: var(--teal); }
+.t-ex-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.9rem 1rem; cursor: pointer;
+  transition: all 0.15s; position: relative; overflow: hidden;
+}
+.t-ex-card:hover { border-color: var(--teal-bd); transform: translateY(-1px); }
+.t-ex-card.hidden { display: none; }
+.t-ex-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2.5px;
+}
+.t-ex-cat-breath::before  { background: var(--blue); }
+.t-ex-cat-vagus::before   { background: var(--teal); }
+.t-ex-cat-somatic::before { background: var(--amber); }
+.t-ex-cat-grounding::before { background: var(--gold); }
+.t-ex-cat-bilateral::before { background: var(--rose); }
+.t-ex-cat-cognitive::before { background: var(--mid); }
+
+  padding: 1rem 0.75rem 0.5rem;
+}
+/* ── COLLAPSIBLE NAV GROUPS ── */
+details.nav-group {
+  margin-bottom: 0.25rem;
+}
+details.nav-group summary.nav-group-title {
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.55rem 1rem 0.55rem 1.1rem;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--radius);
+  transition: color 0.18s, background 0.18s;
+}
+details.nav-group summary.nav-group-title::-webkit-details-marker { display: none; }
+details.nav-group summary.nav-group-title::after {
+  content: '▸';
+  font-size: 0.6rem;
+  opacity: 0.5;
+  transition: transform 0.2s;
+}
+details.nav-group[open] summary.nav-group-title::after {
+  transform: rotate(90deg);
+  opacity: 0.8;
+}
+details.nav-group[open] summary.nav-group-title {
+  color: var(--text);
+}
+details.nav-group summary.nav-group-title:hover {
+  color: var(--text);
+  background: var(--bg3);
+}
+
+.nav-group-label {
+  font-family: var(--font-m);
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.18s;
+  color: var(--dim);
+  font-size: 0.82rem;
+  font-weight: 400;
+  border: 1px solid transparent;
+  margin-bottom: 2px;
+  user-select: none;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active {
+  background: var(--bg3);
+  border-color: var(--border);
+  color: var(--bright);
+  font-weight: 500;
+}
+.nav-item.active .nav-dot { background: var(--gold); }
+
+.nav-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.sidebar-footer {
+  flex-shrink: 0;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+.main {
+  margin-left: var(--sidebar);
+  flex: 1;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.page { display:none; animation: fadeIn 0.25s ease; }
+.page.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:none} }
+
+.page-content {
+  max-width: 1100px;
+  padding: 2.5rem 2rem 5rem;
+}
+
+/* ═══════════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════════ */
+.page-eyebrow {
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.page-title {
+  font-family: var(--font-d);
+  font-size: clamp(1.6rem,3vw,2.4rem);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--bright);
+  line-height: 1.15;
+  margin-bottom: 0.4rem;
+}
+.page-lead {
+  font-size: 0.95rem;
+  color: var(--dim);
+  max-width: 640px;
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+
+h3.section-h {
+  font-family: var(--font-d);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+/* ═══════════════════════════════════════════
+   CARDS & SURFACES
+═══════════════════════════════════════════ */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.card-sm {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.info-box {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--mid);
+  margin-bottom: 1.5rem;
+}
+.info-box strong { color: var(--gold); font-family: var(--font-d); font-style: italic; }
+
+.warn-box {
+  background: var(--rose-bg);
+  border: 1px solid var(--rose-bd);
+  border-left: 3px solid var(--rose);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  color: #e08090;
+  margin-top: 0.75rem;
+}
+
+.clinical-note {
+  background: var(--teal-bg);
+  border-left: 3px solid var(--teal);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--dim);
+  margin-top: 0.75rem;
+}
+
+/* ═══════════════════════════════════════════
+   TAGS
+═══════════════════════════════════════════ */
+.tags { display:flex; flex-wrap:wrap; gap:0.35rem; margin-top:0.75rem; }
+.tag {
+  font-family: var(--font-m);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.5rem;
+  border-radius: 3px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--muted);
+}
+
+/* ═══════════════════════════════════════════
+   ACCORDION
+═══════════════════════════════════════════ */
+.acc-item {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.acc-trigger {
+  width:100%; display:flex; justify-content:space-between; align-items:center;
+  padding: 0.9rem 1.1rem;
+  background: var(--bg2); border:none; cursor:pointer;
+  text-align:left; gap:1rem; transition:background 0.18s;
+}
+.acc-trigger:hover { background: var(--bg3); }
+.acc-item.open .acc-trigger { background: var(--bg3); }
+.acc-title { font-family: var(--font-d); font-size:0.95rem; font-style:italic; color:var(--bright); }
+.acc-sub { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-top:0.15rem; }
+.acc-chev { color:var(--muted); font-size:0.65rem; transition:transform 0.28s; font-family:var(--font-m); }
+.acc-item.open .acc-chev { transform:rotate(90deg); color:var(--gold); }
+.acc-body { max-height:0; overflow:hidden; transition:max-height 0.38s cubic-bezier(0.4,0,0.2,1); }
+.acc-item.open .acc-body { max-height:1200px; }
+.acc-content { padding:1.1rem 1.25rem; border-top:1px solid var(--border); font-size:0.9rem; line-height:1.75; color:var(--mid); }
+.acc-content p+p { margin-top:0.65rem; }
+
+/* ═══════════════════════════════════════════
+   GRID LAYOUTS
+═══════════════════════════════════════════ */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+
+@media(max-width:900px) {
+  .two-col { grid-template-columns:1fr; }
+  .three-col { grid-template-columns:1fr 1fr; }
+}
+
+/* ═══════════════════════════════════════════
+   MOBIILI — hamburger + drawer
+═══════════════════════════════════════════ */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 0.75rem; left: 0.75rem;
+  z-index: 300;
+  width: 40px; height: 40px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0;
+}
+.hamburger span {
+  display: block;
+  width: 18px; height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 199;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.sidebar-overlay.visible {
+  display: block;
+  opacity: 1;
+}
+
+@media(max-width: 768px) {
+  .hamburger { display: flex; }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    z-index: 200;
+    width: 260px;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding-top: 56px;
+  }
+
+  .page-content {
+    padding: 1rem;
+  }
+
+  .page-title { font-size: 1.4rem; }
+
+  /* Kojelauta mobiililla */
+  .dash-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .dash-card { padding: 0.85rem; }
+
+  /* Lomakkeet mobiililla */
+  .two-col, .three-col,
+  div[style*="grid-template-columns: 1fr 1fr"],
+  div[style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Modaalit mobiililla */
+  .modal-content {
+    width: 95vw !important;
+    max-height: 85vh !important;
+    margin: 1rem auto !important;
+  }
+
+  /* RX-kortit */
+  .rx-layout { grid-template-columns: 1fr !important; }
+
+  /* Muistiinpanot */
+  .notes-layout { grid-template-columns: 1fr !important; }
+}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD (Page 1)
+═══════════════════════════════════════════ */
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.dash-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.dash-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+}
+.dash-card.c-gold::before  { background:var(--gold); }
+.dash-card.c-teal::before  { background:var(--teal); }
+.dash-card.c-blue::before  { background:var(--blue); }
+.dash-card.c-rose::before  { background:var(--rose); }
+.dash-card.c-amber::before { background:var(--amber); }
+.dash-card:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+
+.dash-icon { font-size:1.4rem; margin-bottom:0.6rem; }
+.dash-title { font-family:var(--font-d); font-size:0.95rem; font-style:italic; color:var(--bright); margin-bottom:0.3rem; }
+.dash-desc { font-size:0.78rem; color:var(--dim); line-height:1.5; }
+
+.reminder-list { display:flex; flex-direction:column; gap:0.5rem; }
+.reminder-item {
+  display:flex; align-items:flex-start; gap:0.75rem;
+  padding:0.75rem 1rem;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  font-size:0.85rem;
+  color:var(--mid);
+  line-height:1.55;
+}
+.reminder-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.r-gold { background:var(--gold); }
+.r-teal { background:var(--teal); }
+.r-rose { background:var(--rose); }
+.r-blue { background:var(--blue); }
+
+/* ═══════════════════════════════════════════
+   POLYVAGAL LADDER
+═══════════════════════════════════════════ */
+.pv-ladder { display:flex; flex-direction:column; gap:3px; margin-bottom:2rem; }
+.pv-rung { border-radius:var(--r); border:1px solid; overflow:hidden; }
+.pv-rung.ventral { background:var(--teal-bg); border-color:var(--teal-bd); }
+.pv-rung.sym     { background:var(--rose-bg);  border-color:var(--rose-bd); }
+.pv-rung.dorsal  { background:var(--blue-bg);  border-color:var(--blue-bd); }
+.pv-trigger {
+  width:100%; display:flex; align-items:flex-start; justify-content:space-between;
+  padding:1rem 1.25rem; background:none; border:none; cursor:pointer; gap:1rem;
+}
+.pv-name { font-family:var(--font-d); font-size:1rem; font-style:italic; }
+.ventral .pv-name { color:var(--teal); }
+.sym .pv-name     { color:var(--rose); }
+.dorsal .pv-name  { color:var(--blue); }
+.pv-nerve { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-top:0.2rem; }
+.pv-kws { display:flex; flex-wrap:wrap; gap:0.3rem; margin-top:0.5rem; }
+.pv-kw { font-family:var(--font-m); font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.15rem 0.4rem; border-radius:3px; }
+.ventral .pv-kw { background:rgba(58,152,128,0.15); color:var(--teal); }
+.sym .pv-kw     { background:rgba(192,80,96,0.15);  color:var(--rose); }
+.dorsal .pv-kw  { background:rgba(72,120,200,0.15); color:var(--blue); }
+.pv-body { max-height:0; overflow:hidden; transition:max-height 0.38s; }
+.pv-rung.open .pv-body { max-height:500px; }
+.pv-detail { padding:0 1.25rem 1.25rem; border-top:1px solid var(--border); padding-top:1rem; font-size:0.88rem; line-height:1.75; color:var(--mid); }
+.pv-detail p+p { margin-top:0.6rem; }
+
+/* ═══════════════════════════════════════════
+   WINDOW OF TOLERANCE
+═══════════════════════════════════════════ */
+.wot-container { border-radius:var(--r2); overflow:hidden; border:1px solid var(--border); margin-bottom:2rem; }
+.wot-zone { padding:1.1rem 1.5rem; cursor:pointer; transition:filter 0.2s; border-bottom:1px solid var(--border); }
+.wot-zone:last-child { border-bottom:none; }
+.wot-zone:hover { filter:brightness(1.1); }
+.wot-zone.hyper   { background:rgba(192,80,96,0.08); }
+.wot-zone.optimal { background:rgba(58,152,128,0.08); }
+.wot-zone.hypo    { background:rgba(72,120,200,0.08); }
+.wot-label { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; margin-bottom:0.25rem; }
+.hyper .wot-label   { color:var(--rose); }
+.optimal .wot-label { color:var(--teal); }
+.hypo .wot-label    { color:var(--blue); }
+.wot-title { font-family:var(--font-d); font-size:1rem; font-style:italic; color:var(--bright); }
+.wot-syms { font-size:0.78rem; color:var(--muted); margin-top:0.3rem; }
+.wot-body { max-height:0; overflow:hidden; transition:max-height 0.38s; }
+.wot-zone.open .wot-body { max-height:400px; }
+.wot-detail { padding-top:0.9rem; font-size:0.88rem; line-height:1.75; color:var(--mid); }
+.int-list { list-style:none; margin-top:0.6rem; }
+.int-list li { padding:0.35rem 0 0.35rem 1.3rem; position:relative; border-bottom:1px solid var(--border); font-size:0.85rem; color:var(--mid); }
+.int-list li:last-child { border-bottom:none; }
+.int-list li::before { content:'→'; position:absolute; left:0; font-family:var(--font-m); color:var(--gold); font-size:0.7rem; }
+
+/* ═══════════════════════════════════════════
+   ASSESSMENTS
+═══════════════════════════════════════════ */
+.assessment-tabs {
+  display:flex; gap:0; border-bottom:1px solid var(--border);
+  margin-bottom:1.5rem; overflow-x:auto; scrollbar-width:none;
+}
+.assessment-tabs::-webkit-scrollbar { display:none; }
+.ass-tab {
+  font-family:var(--font-m); font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase;
+  padding:0.75rem 1.1rem; border:none; background:none;
+  color:var(--muted); cursor:pointer;
+  border-bottom:2px solid transparent; transition:all 0.2s;
+  white-space:nowrap; flex-shrink:0;
+}
+.ass-tab:hover { color:var(--text); }
+.ass-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+
+.ass-panel { display:none; }
+.ass-panel.active { display:block; }
+
+.q-item {
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:1rem 1.25rem;
+  margin-bottom:0.5rem;
+}
+.q-text { font-size:0.9rem; color:var(--text); margin-bottom:0.75rem; line-height:1.6; }
+.q-scale {
+  display:flex; gap:0.35rem; flex-wrap:wrap;
+}
+.q-opt {
+  font-family:var(--font-m); font-size:0.6rem; letter-spacing:0.06em;
+  padding:0.35rem 0.7rem; border-radius:var(--r);
+  border:1px solid var(--border2); background:var(--bg3);
+  color:var(--dim); cursor:pointer; transition:all 0.18s;
+}
+.q-opt:hover { border-color:var(--gold); color:var(--text); }
+.q-opt.selected { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+
+.score-display {
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-radius:var(--r2);
+  padding:1.25rem 1.5rem;
+  margin-top:1.25rem;
+  display:flex; align-items:center; gap:1.5rem;
+}
+.score-num {
+  font-family:var(--font-d);
+  font-size:2.5rem;
+  font-style:italic;
+  color:var(--bright);
+  line-height:1;
+}
+.score-label { font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem; }
+.score-interp { font-size:0.9rem; color:var(--mid); }
+.score-bar-wrap { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.score-bar-fill { height:100%; border-radius:3px; transition:width 0.5s, background 0.5s; background:var(--teal); }
+
+.btn-reset {
+  font-family:var(--font-m); font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase;
+  padding:0.45rem 1rem; border-radius:var(--r);
+  border:1px solid var(--border2); background:none;
+  color:var(--dim); cursor:pointer; transition:all 0.18s;
+}
+.btn-reset:hover { color:var(--text); border-color:var(--text); }
+
+.pv-obs-grid {
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.75rem;
+  margin-bottom:1.5rem;
+}
+@media(max-width:800px) { .pv-obs-grid { grid-template-columns:1fr; } }
+
+.obs-card {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r2); padding:1.1rem; cursor:pointer; transition:all 0.2s;
+}
+.obs-card:hover { border-color:var(--border2); }
+.obs-card.selected-ventral { background:var(--teal-bg); border-color:var(--teal); }
+.obs-card.selected-sym     { background:var(--rose-bg); border-color:var(--rose); }
+.obs-card.selected-dorsal  { background:var(--blue-bg); border-color:var(--blue); }
+
+.obs-state { font-family:var(--font-m); font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:0.5rem; }
+.obs-state.v { color:var(--teal); }
+.obs-state.s { color:var(--rose); }
+.obs-state.d { color:var(--blue); }
+.obs-name { font-family:var(--font-d); font-size:0.95rem; font-style:italic; color:var(--bright); margin-bottom:0.35rem; }
+.obs-signs { font-size:0.78rem; color:var(--dim); line-height:1.55; }
+
+.obs-result {
+  background:var(--bg3); border:1px solid var(--border2);
+  border-radius:var(--r2); padding:1.25rem;
+  margin-top:1rem; min-height:80px;
+}
+
+/* ═══════════════════════════════════════════
+   EXERCISES (therapist view)
+═══════════════════════════════════════════ */
+.ex-filter-bar { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1.25rem; }
+.ex-filter {
+  font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase;
+  padding:0.3rem 0.75rem; border-radius:3px;
+  border:1px solid var(--border2); background:none;
+  color:var(--muted); cursor:pointer; transition:all 0.18s;
+}
+.ex-filter:hover { color:var(--text); border-color:var(--dim); }
+.ex-filter.active { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+
+.ex-grid-t { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:1rem; }
+.ex-card-t {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r2); padding:1.25rem;
+  cursor:pointer; transition:all 0.22s;
+  display:flex; flex-direction:column; gap:0.4rem;
+  position:relative; overflow:hidden;
+}
+.ex-card-t::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.ex-card-t.breath::before  { background:var(--teal); }
+.ex-card-t.vagus::before   { background:var(--blue); }
+.ex-card-t.somatic::before { background:var(--rose); }
+.ex-card-t.grounding::before { background:var(--amber); }
+.ex-card-t.cognitive::before { background:var(--gold); }
+.ex-card-t.bilateral::before { background:#508060; }
+.ex-card-t.hidden { display:none; }
+.ex-card-t:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+.ex-cat-t { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; }
+.breath .ex-cat-t    { color:var(--teal); }
+.vagus .ex-cat-t     { color:var(--blue); }
+.somatic .ex-cat-t   { color:var(--rose); }
+.grounding .ex-cat-t { color:var(--amber); }
+.cognitive .ex-cat-t { color:var(--gold); }
+.bilateral .ex-cat-t { color:#508060; }
+.ex-name-t { font-family:var(--font-d); font-size:1rem; font-style:italic; color:var(--bright); line-height:1.3; }
+.ex-desc-t { font-size:0.82rem; color:var(--dim); line-height:1.55; flex:1; }
+.ex-meta-t { display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:0.4rem; }
+.ex-meta-item { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.05em; color:var(--muted); }
+.ex-flag {
+  font-family:var(--font-m); font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase;
+  padding:0.12rem 0.4rem; border-radius:2px;
+  background:var(--rose-bg); border:1px solid var(--rose-bd); color:var(--rose);
+}
+
+/* ═══════════════════════════════════════════
+   PSYCHOED
+═══════════════════════════════════════════ */
+.psychoed-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; }
+.psychoed-card {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r2); overflow:hidden;
+  cursor:pointer; transition:all 0.22s;
+}
+.psychoed-card:hover { border-color:var(--border2); transform:translateY(-2px); }
+.psychoed-head { padding:1.1rem; border-bottom:1px solid var(--border); }
+.psychoed-icon { font-size:1.4rem; margin-bottom:0.4rem; }
+.psychoed-topic { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem; }
+.psychoed-name { font-family:var(--font-d); font-size:1rem; font-style:italic; color:var(--bright); }
+.psychoed-body { padding:0.85rem 1.1rem; font-size:0.82rem; color:var(--dim); line-height:1.55; }
+
+/* ═══════════════════════════════════════════
+   PRESCRIPTION (Harjoitteiden määräys)
+═══════════════════════════════════════════ */
+.rx-layout { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+@media(max-width:900px) { .rx-layout { grid-template-columns:1fr; } }
+
+.rx-list { display:flex; flex-direction:column; gap:0.4rem; }
+.rx-item {
+  display:flex; align-items:center; gap:0.75rem;
+  padding:0.75rem 1rem;
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r); cursor:pointer; transition:all 0.18s;
+}
+.rx-item:hover { border-color:var(--border2); }
+.rx-item.selected { background:var(--gold-bg); border-color:var(--gold); }
+.rx-check {
+  width:16px; height:16px; border-radius:3px;
+  border:1.5px solid var(--border2); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.6rem; color:var(--gold); transition:all 0.18s;
+}
+.rx-item.selected .rx-check { background:var(--gold-bg); border-color:var(--gold); }
+.rx-name { font-size:0.88rem; color:var(--text); }
+.rx-cat { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:0.1rem; }
+
+.rx-output {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r2); padding:1.5rem;
+  position:sticky; top:2rem;
+}
+.rx-output-title { font-family:var(--font-d); font-size:1.05rem; font-style:italic; color:var(--bright); margin-bottom:1rem; }
+.rx-preview {
+  background:var(--bg3); border:1px solid var(--border);
+  border-radius:var(--r); padding:1rem;
+  font-size:0.85rem; line-height:1.7; color:var(--mid);
+  min-height:120px; margin-bottom:1rem;
+  font-family:var(--font-m);
+  white-space:pre-wrap;
+}
+.rx-btn {
+  width:100%; padding:0.7rem;
+  background:var(--gold); color:var(--bg);
+  border:none; border-radius:var(--r);
+  font-family:var(--font-b); font-size:0.82rem; font-weight:600;
+  cursor:pointer; transition:all 0.18s;
+  margin-bottom:0.4rem;
+}
+.rx-btn:hover { filter:brightness(1.12); }
+.rx-btn.secondary {
+  background:none; border:1px solid var(--border2);
+  color:var(--dim);
+}
+.rx-btn.secondary:hover { border-color:var(--dim); color:var(--text); }
+
+/* ═══════════════════════════════════════════
+   NOTES
+═══════════════════════════════════════════ */
+.notes-layout { display:grid; grid-template-columns:1.2fr 1fr; gap:1.5rem; }
+@media(max-width:900px) { .notes-layout { grid-template-columns:1fr; } }
+
+.field-label { font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:0.35rem; }
+.field-input, .field-textarea, .field-select {
+  width:100%; background:var(--bg3); border:1px solid var(--border2);
+  border-radius:var(--r); padding:0.6rem 0.85rem;
+  font-family:var(--font-b); font-size:0.88rem; color:var(--text);
+  outline:none; transition:border-color 0.18s; resize:none; appearance:none;
+}
+.field-input:focus, .field-textarea:focus, .field-select:focus { border-color:var(--gold); }
+.field-textarea { min-height:75px; line-height:1.6; }
+.field-row { margin-bottom:0.85rem; }
+
+.score-range {
+  width:100%; appearance:none; height:4px;
+  border-radius:2px; background:var(--border2);
+  outline:none; cursor:pointer;
+}
+.score-range::-webkit-slider-thumb {
+  appearance:none; width:16px; height:16px;
+  border-radius:50%; background:var(--gold);
+  cursor:pointer; border:2px solid var(--bg);
+}
+.range-row { display:flex; align-items:center; gap:0.75rem; }
+.range-val { font-family:var(--font-m); font-size:0.85rem; color:var(--gold); min-width:1.5rem; text-align:center; }
+
+.btn-save {
+  font-family:var(--font-m); font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase;
+  padding:0.6rem 1.4rem; border-radius:var(--r);
+  border:none; background:var(--gold); color:var(--bg);
+  cursor:pointer; transition:all 0.18s; font-weight:500;
+}
+.btn-save:hover { filter:brightness(1.12); }
+
+.note-entries { display:flex; flex-direction:column; gap:0.6rem; max-height:600px; overflow-y:auto; }
+.note-entry {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r); padding:1rem;
+}
+.note-entry:hover { border-color:var(--border2); }
+.note-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem; gap:0.5rem; }
+.note-date { font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.06em; color:var(--muted); }
+.note-state-badge { font-family:var(--font-m); font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.12rem 0.4rem; border-radius:2px; }
+.badge-ventral { background:var(--teal-bg); color:var(--teal); border:1px solid var(--teal-bd); }
+.badge-sym     { background:var(--rose-bg);  color:var(--rose);  border:1px solid var(--rose-bd); }
+.badge-dorsal  { background:var(--blue-bg);  color:var(--blue);  border:1px solid var(--blue-bd); }
+.note-text { font-size:0.85rem; color:var(--dim); line-height:1.6; }
+.note-scores { display:flex; gap:1rem; margin-top:0.4rem; font-family:var(--font-m); font-size:0.58rem; color:var(--muted); }
+.note-del { background:none; border:none; cursor:pointer; color:var(--muted); font-size:0.7rem; padding:2px; transition:color 0.18s; flex-shrink:0; }
+.note-del:hover { color:var(--rose); }
+.empty-state { text-align:center; padding:2rem; color:var(--muted); font-style:italic; font-family:var(--font-d); font-size:0.95rem; }
+
+/* ═══════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════ */
+.modal-bg {
+  display:none; position:fixed; inset:0; z-index:500;
+  background:rgba(8,12,20,0.8); backdrop-filter:blur(6px);
+  align-items:flex-end; justify-content:center;
+}
+.modal-bg.open { display:flex; }
+.modal-sheet {
+  background:var(--bg2); border:1px solid var(--border2);
+  border-radius:18px 18px 0 0;
+  padding:0; width:100%; max-width:680px; max-height:88vh;
+  overflow-y:auto; animation:sheetUp 0.3s cubic-bezier(0.32,0,0,1);
+  scrollbar-width:thin; scrollbar-color:var(--border2) transparent;
+}
+@keyframes sheetUp { from{transform:translateY(100%)} to{transform:none} }
+.modal-handle-row { display:flex; justify-content:center; padding:0.75rem; position:sticky; top:0; background:var(--bg2); border-bottom:1px solid var(--border); z-index:10; }
+.modal-handle { width:36px; height:4px; background:var(--border2); border-radius:2px; }
+.modal-body { padding:1.5rem 1.75rem 2.5rem; }
+.modal-eyebrow { font-family:var(--font-m); font-size:0.56rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-bottom:0.35rem; }
+.modal-title { font-family:var(--font-d); font-size:1.65rem; font-style:italic; color:var(--bright); margin-bottom:0.3rem; line-height:1.2; }
+.modal-desc { font-size:0.9rem; color:var(--dim); margin-bottom:1.5rem; }
+.step-ol { list-style:none; counter-reset:steps; }
+.step-ol li { counter-increment:steps; padding:0.8rem 0 0.8rem 2.75rem; position:relative; border-bottom:1px solid var(--border); font-size:0.9rem; line-height:1.65; color:var(--mid); }
+.step-ol li:last-child { border-bottom:none; }
+.step-ol li::before { content:counter(steps); position:absolute; left:0; top:0.8rem; width:1.7rem; height:1.7rem; background:var(--bg3); border:1px solid var(--border2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-m); font-size:0.62rem; color:var(--gold); }
+
+.method-check {
+  display:flex; align-items:center; gap:0.5rem;
+  font-size:0.82rem; color:var(--mid); cursor:pointer;
+  padding:0.25rem 0;
+}
+.method-check input[type=checkbox] {
+  accent-color:var(--gold); width:14px; height:14px; flex-shrink:0;
+}
+
+.wot-chip, .goal-chip {
+  font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.1em;
+  text-transform:uppercase; padding:0.3rem 0.7rem; border-radius:var(--r);
+  border:1px solid var(--border2); background:none; color:var(--muted);
+  cursor:pointer; transition:all 0.18s;
+}
+.wot-chip:hover, .goal-chip:hover { color:var(--text); border-color:var(--dim); }
+.wot-chip.active-hyper  { background:var(--rose-bg);  border-color:var(--rose);  color:var(--rose); }
+.wot-chip.active-optimal { background:var(--teal-bg); border-color:var(--teal); color:var(--teal); }
+.wot-chip.active-hypo   { background:var(--blue-bg);  border-color:var(--blue);  color:var(--blue); }
+.wot-chip.active-fluctuating { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+.goal-chip.active-yes  { background:var(--teal-bg); border-color:var(--teal); color:var(--teal); }
+.goal-chip.active-partial { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+.goal-chip.active-no   { background:var(--rose-bg); border-color:var(--rose); color:var(--rose); }
+
+.note-methods { display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.35rem; }
+.note-method-tag { font-family:var(--font-m); font-size:0.5rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.1rem 0.35rem; border-radius:2px; background:var(--bg3); border:1px solid var(--border2); color:var(--muted); }
+
+.note-safety { background:var(--rose-bg); border:1px solid var(--rose-bd); border-radius:var(--r); padding:0.4rem 0.6rem; font-size:0.78rem; color:var(--rose); margin-top:0.35rem; }
+.note-homework { font-family:var(--font-m); font-size:0.62rem; color:var(--gold); margin-top:0.3rem; }
+
+/* scrollbar */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+/* divider */
+.divider { height:1px; background:var(--border); margin:2rem 0; }
+
+/* ── BREADCRUMB & PAGE-ROLE ── */
+.breadcrumb {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+.breadcrumb span {
+  cursor: pointer;
+  color: var(--teal);
+  transition: opacity 0.15s;
+}
+.breadcrumb span:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+.breadcrumb strong {
+  color: var(--text);
+  font-weight: 500;
+}
+.page-role {
+  font-size: 0.82rem;
+  color: var(--dim);
+  font-style: italic;
+  margin-bottom: 1.25rem;
+  margin-top: 0;
+}
+
+/* ── MOBILE BOTTOM BAR ── */
+.mobile-bottom-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  justify-content: space-around;
+  align-items: center;
+  padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+  z-index: 1000;
+}
+@media (max-width: 768px) {
+  .mobile-bottom-bar { display: flex; }
+  .main { padding-bottom: 60px; }
+}
+.mobile-bottom-bar a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 1.35rem;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+.mobile-bottom-bar a:hover,
+.mobile-bottom-bar a.active {
+  background: var(--bg3);
+}
+.mobile-bottom-bar a span.bar-label {
+  font-family: var(--font-m);
+  font-size: 0.48rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.mobile-bottom-bar a.active span.bar-label {
+  color: var(--teal);
+}
+</style>
+</head>
+<body>
+
+
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Avaa valikko">
+  <span></span><span></span><span></span>
+</button>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div class="logo-name">Marko Oinas</div>
+      <button id="theme-toggle" onclick="toggleTheme()"
+        style="background:none;border:none;cursor:pointer;font-size:1rem;padding:0.2rem;border-radius:6px;opacity:0.7;transition:opacity 0.2s"
+        title="Vaihda teema">🌙</button>
+    </div>
+    <div class="logo-title">Kliininen työkalu · v1.0</div>
+  </div>
+
+  <div class="sidebar-nav">
+
+  <!-- Istunto — aina auki -->
+  <details class="nav-group" open>
+    <summary class="nav-group-title">Istunto</summary>
+    <div class="nav-item active" onclick="showPage('kojelauta',this)">
+      <span class="nav-dot"></span>Kojelauta
+    </div>
+    <div class="nav-item" onclick="showPage('muistiinpanot',this)">
+      <span class="nav-dot"></span>Muistiinpanot
+    </div>
+    <div class="nav-item" onclick="showPage('lapset-nuoret',this)">
+      <span class="nav-dot"></span>Lapset &amp; nuoret
+    </div>
+    <div class="nav-item" onclick="showPage('elamanjana',this)">
+      <span class="nav-dot"></span>Elämänjana
+    </div>
+  </details>
+
+  <!-- Arvioinnit & Seuranta -->
+  <details class="nav-group" open>
+    <summary class="nav-group-title">Arvioinnit &amp; Seuranta</summary>
+    <div class="nav-item" onclick="showPage('arvioinnit',this)">
+      <span class="nav-dot"></span>Arvioinnit
+    </div>
+    <div class="nav-item" onclick="showPage('edistyminen',this)">
+      <span class="nav-dot"></span>Edistymisseuranta
+    </div>
+    <div class="nav-item" onclick="showPage('psqi',this)">
+      <span class="nav-dot"></span>PSQI (uni)
+    </div>
+  </details>
+
+  <!-- Hoito -->
+  <details class="nav-group" open>
+    <summary class="nav-group-title">Hoito</summary>
+    <div class="nav-item" onclick="showPage('harjoitteet',this)">
+      <span class="nav-dot"></span>Harjoitteet
+    </div>
+    <div class="nav-item" onclick="showPage('hoitosuunnitelma',this)">
+      <span class="nav-dot"></span>Hoitosuunnitelma
+    </div>
+    <div class="nav-item" onclick="showPage('akupunktio',this)">
+      <span class="nav-dot"></span>Akupunktio
+    </div>
+    <div class="nav-item" onclick="showPage('maarays',this)">
+      <span class="nav-dot"></span>Harj. määräys
+    </div>
+  </details>
+
+  <!-- Tietopankki — suljettu oletuksena -->
+  <details class="nav-group" id="nav-theory-details">
+    <summary class="nav-group-title">Tietopankki</summary>
+    <div class="nav-item" onclick="showPage('aivokerrokset',this)">
+      <span class="nav-dot"></span>Aivokerrokset
+    </div>
+    <div class="nav-item" onclick="showPage('polyvagaali',this)">
+      <span class="nav-dot"></span>Polyvagaali
+    </div>
+    <div class="nav-item" onclick="showPage('toleranssi',this)">
+      <span class="nav-dot"></span>Toleranssi-ikkuna
+    </div>
+    <div class="nav-item" onclick="showPage('kipu',this)">
+      <span class="nav-dot"></span>Kipu &amp; hermosto
+    </div>
+    <div class="nav-item" onclick="showPage('trauma',this)">
+      <span class="nav-dot"></span>Trauma &amp; keho
+    </div>
+    <div class="nav-item" onclick="showPage('ans',this)">
+      <span class="nav-dot"></span>ANS käytännössä
+    </div>
+    <div class="nav-item" onclick="showPage('hrv',this)">
+      <span class="nav-dot"></span>HRV &amp; vagushermo
+    </div>
+    <div class="nav-item" onclick="showPage('kehomuisti',this)">
+      <span class="nav-dot"></span>Kehon muisti
+    </div>
+    <div class="nav-item" onclick="showPage('psykoed',this)">
+      <span class="nav-dot"></span>Psykoedukaatio
+    </div>
+  </details>
+
+  </div><!-- /sidebar-nav -->
+
+  <div class="sidebar-footer">
+    Vain terapeutin käyttöön<br>Ei potilastietoja
+  </div>
+</aside>
+
+<main class="main">
+<div id="page-kojelauta" class="page active">
+
+<style>
+/* ── KOJELAUTA UUDISTUS ─────────────────────────── */
+.kd-wrap { padding: 1.25rem 1.5rem 3rem; max-width: 900px; }
+
+/* Header */
+.kd-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem;
+}
+.kd-header-left h1 {
+  font-family: var(--font-d); font-size: 1.5rem; font-style: italic;
+  color: var(--bright); margin: 0 0 0.2rem;
+}
+.kd-date { font-size: 0.75rem; color: var(--dim); font-family: var(--font-m); }
+.kd-new-btn {
+  padding: 0.55rem 1.2rem; background: var(--teal); color: #fff;
+  border: none; border-radius: 8px; font-size: 0.85rem; font-weight: 700;
+  cursor: pointer; white-space: nowrap; transition: opacity 0.15s;
+}
+.kd-new-btn:hover { opacity: 0.85; }
+
+/* Section label */
+.kd-section-label {
+  font-family: var(--font-m); font-size: 0.65rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--dim); margin: 0 0 0.65rem;
+}
+
+/* Istunto-kortti */
+.kd-session-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.kd-session-top {
+  display: flex; align-items: center; gap: 0.75rem;
+  flex-wrap: wrap; margin-bottom: 1rem;
+}
+.kd-client-input {
+  flex: 1; min-width: 140px; padding: 0.45rem 0.75rem;
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: 8px; font-size: 0.9rem; color: var(--text);
+  font-family: var(--font-b); outline: none;
+}
+.kd-client-input:focus { border-color: var(--teal); }
+.kd-session-num {
+  font-family: var(--font-m); font-size: 0.75rem; color: var(--dim);
+  white-space: nowrap;
+}
+
+/* Tila-grid */
+.kd-state-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0.75rem; margin-bottom: 1rem;
+}
+@media (min-width: 600px) { .kd-state-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+.kd-state-block { background: var(--bg); border-radius: 10px; padding: 0.75rem; }
+.kd-state-lbl { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--dim); margin-bottom: 0.5rem; }
+
+/* Vireystila napit */
+.kd-arousal-btns { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+.kd-arousal-btn {
+  padding: 0.28rem 0.6rem; border-radius: 6px; border: 1px solid var(--border);
+  background: transparent; font-size: 0.72rem; color: var(--mid);
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.kd-arousal-btn.active-panic  { background: var(--rose-bg);  border-color: var(--rose);  color: var(--rose); }
+.kd-arousal-btn.active-high   { background: var(--amber-bg); border-color: var(--amber); color: var(--amber); }
+.kd-arousal-btn.active-ok     { background: var(--teal-bg);  border-color: var(--teal);  color: var(--teal); }
+.kd-arousal-btn.active-low    { background: var(--blue-bg);  border-color: var(--blue);  color: var(--blue); }
+
+/* Toleranssi */
+.kd-tol-btns { display: flex; flex-direction: column; gap: 0.25rem; }
+.kd-tol-btn {
+  padding: 0.28rem 0.6rem; border-radius: 6px; border: 1px solid var(--border);
+  background: transparent; font-size: 0.72rem; color: var(--mid);
+  cursor: pointer; transition: all 0.15s; text-align: left;
+}
+.kd-tol-btn.active-hyper { background: var(--rose-bg);  border-color: var(--rose);  color: var(--rose); }
+.kd-tol-btn.active-ok    { background: var(--teal-bg);  border-color: var(--teal);  color: var(--teal); }
+.kd-tol-btn.active-hypo  { background: var(--blue-bg);  border-color: var(--blue);  color: var(--blue); }
+
+/* Turvallisuus-slider */
+.kd-safety-row { display: flex; align-items: center; gap: 0.6rem; }
+.kd-safety-slider {
+  flex: 1; -webkit-appearance: none; height: 4px;
+  border-radius: 2px; outline: none; cursor: pointer;
+  background: linear-gradient(to right, var(--rose) 0%, var(--amber) 50%, var(--teal) 100%);
+}
+.kd-safety-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px;
+  border-radius: 50%; background: var(--bright); border: 2px solid var(--teal);
+  cursor: pointer;
+}
+.kd-safety-val {
+  font-family: var(--font-m); font-size: 0.85rem;
+  color: var(--bright); min-width: 28px; text-align: right;
+}
+
+/* Nopea muistiinpano */
+.kd-quick-note {
+  width: 100%; padding: 0.55rem 0.75rem;
+  background: var(--bg); border: 1.5px solid var(--border);
+  border-radius: 8px; font-size: 0.83rem; color: var(--text);
+  font-family: var(--font-b); outline: none; resize: none;
+  line-height: 1.5; box-sizing: border-box;
+}
+.kd-quick-note:focus { border-color: var(--teal); }
+
+/* Harjoite-suositukset */
+.kd-rec-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
+  gap: 0.6rem; margin-bottom: 1.5rem;
+}
+.kd-rec-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.85rem; cursor: pointer;
+  transition: all 0.15s; position: relative; overflow: hidden;
+}
+.kd-rec-card:hover { border-color: var(--teal-bd); transform: translateY(-1px); }
+.kd-rec-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+}
+.kd-rec-card.r-calm::before  { background: var(--teal); }
+.kd-rec-card.r-ground::before { background: var(--gold); }
+.kd-rec-card.r-breath::before { background: var(--blue); }
+.kd-rec-card.r-body::before   { background: var(--amber); }
+.kd-rec-emoji { font-size: 1.3rem; margin-bottom: 0.4rem; }
+.kd-rec-name  { font-size: 0.8rem; font-weight: 700; color: var(--text); margin-bottom: 0.2rem; }
+.kd-rec-dur   { font-size: 0.68rem; color: var(--dim); font-family: var(--font-m); }
+
+/* Viime istunto -palkki */
+.kd-prev-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.9rem 1.1rem; margin-bottom: 1.5rem;
+  display: flex; gap: 1rem; align-items: flex-start; flex-wrap: wrap;
+}
+.kd-prev-col { flex: 1; min-width: 140px; }
+.kd-prev-lbl { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--dim); margin-bottom: 0.35rem; }
+.kd-prev-val { font-size: 0.82rem; color: var(--text); line-height: 1.5; }
+
+/* Pikanapit muille sivuille */
+.kd-nav-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
+  gap: 0.5rem;
+}
+.kd-nav-btn {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.65rem 0.85rem; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px;
+  cursor: pointer; transition: all 0.15s; text-align: left;
+}
+.kd-nav-btn:hover { border-color: var(--border2); background: var(--bg2); }
+.kd-nav-icon { font-size: 1rem; }
+.kd-nav-lbl  { font-size: 0.78rem; color: var(--text); font-weight: 600; }
+
+/* Vaalea teema overridet */
+body.light .kd-client-input,
+body.light .kd-quick-note,
+body.light .kd-state-block { background: #fff; }
+body.light .kd-session-card,
+body.light .kd-prev-card,
+body.light .kd-rec-card,
+body.light .kd-nav-btn { background: #fff; border-color: #d8d4d0; }
+body.light .kd-rec-card:hover,
+body.light .kd-nav-btn:hover { background: #f4f0ec; }
+body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border-color: var(--teal); }
+</style>
+
+<div class="kd-wrap">
+<div class="breadcrumb"><strong>Kojelauta</strong></div>
+<p class="page-role">Istunnon yleiskatsaus ja nopeat toiminnot</p>
+
+
+  <!-- Header -->
+  <div class="kd-header">
+    <div class="kd-header-left">
+      <h1>Istunto</h1>
+      <div class="kd-date" id="kd-date-display"></div>
+    </div>
+    <button class="kd-new-btn" onclick="kdNewSession()">＋ Uusi istunto</button>
+  </div>
+
+  <!-- Asiakkaan tila tänään -->
+  <div class="kd-section-label">Asiakkaan tila tänään</div>
+  <div class="kd-session-card">
+    <div class="kd-session-top">
+      <input id="kd-client" type="text" class="kd-client-input"
+        placeholder="Asiakkaan nimi tai koodi" oninput="kdSave()">
+      <div class="kd-session-num" id="kd-session-num">Istunto #—</div>
+    </div>
+
+    <div class="kd-state-grid">
+      <!-- Vireystila -->
+      <div class="kd-state-block">
+        <div class="kd-state-lbl">Vireystila</div>
+        <div class="kd-arousal-btns">
+          <button class="kd-arousal-btn" data-val="panic"
+            onclick="kdSetArousal('panic',this)">🔴 Paniikki</button>
+          <button class="kd-arousal-btn" data-val="high"
+            onclick="kdSetArousal('high',this)">🟡 Korkea</button>
+          <button class="kd-arousal-btn" data-val="ok"
+            onclick="kdSetArousal('ok',this)">🟢 Optimaal.</button>
+          <button class="kd-arousal-btn" data-val="low"
+            onclick="kdSetArousal('low',this)">🔵 Matala</button>
+        </div>
+      </div>
+
+      <!-- Toleranssi-ikkuna -->
+      <div class="kd-state-block">
+        <div class="kd-state-lbl">Toleranssi-ikkuna</div>
+        <div class="kd-tol-btns">
+          <button class="kd-tol-btn" data-val="hyper"
+            onclick="kdSetTol('hyper',this)">▲ Ylivireys</button>
+          <button class="kd-tol-btn" data-val="ok"
+            onclick="kdSetTol('ok',this)">● Sietoikkuna</button>
+          <button class="kd-tol-btn" data-val="hypo"
+            onclick="kdSetTol('hypo',this)">▼ Alivireys</button>
+        </div>
+      </div>
+
+      <!-- Turvallisuuden tunne -->
+      <div class="kd-state-block">
+        <div class="kd-state-lbl">Turvallisuuden tunne</div>
+        <div class="kd-safety-row">
+          <input type="range" class="kd-safety-slider" id="kd-safety"
+            min="0" max="10" value="5" oninput="kdUpdateSafety(this.value)">
+          <div class="kd-safety-val" id="kd-safety-val">5</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:var(--dim);margin-top:0.3rem">
+          <span>Epäturva</span><span>Turvallinen</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nopea muistiinpano -->
+    <div class="kd-state-lbl" style="margin-bottom:0.4rem">Istunnon huomio / fokus</div>
+    <textarea id="kd-quick-note" class="kd-quick-note" rows="2"
+      placeholder="Asiakkaan tulotilanne, tämän istunnon fokus..." oninput="kdSave()"></textarea>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:0.65rem">
+      <button onclick="kdSaveToNotes()" style="font-size:0.75rem;padding:0.3rem 0.85rem;background:var(--teal);color:#fff;border:none;border-radius:7px;cursor:pointer;font-weight:600">
+        Tallenna → Muistiinpanot
+      </button>
+    </div>
+  </div>
+
+  <!-- Suositellut harjoitteet tilakohtaisesti -->
+  <div class="kd-section-label" id="kd-rec-label">Suositellut harjoitteet</div>
+  <div class="kd-rec-grid" id="kd-rec-grid"></div>
+
+  <!-- Edellinen istunto -->
+  <div class="kd-section-label">Edellinen istunto</div>
+  <div class="kd-prev-card" id="kd-prev-card">
+    <div class="kd-prev-col">
+      <div class="kd-prev-lbl">Päivämäärä</div>
+      <div class="kd-prev-val" id="kd-prev-date">—</div>
+    </div>
+    <div class="kd-prev-col">
+      <div class="kd-prev-lbl">Kotitehtävä</div>
+      <div class="kd-prev-val" id="kd-prev-hw">—</div>
+    </div>
+    <div class="kd-prev-col">
+      <div class="kd-prev-lbl">Seuraava tavoite</div>
+      <div class="kd-prev-val" id="kd-prev-goal">—</div>
+    </div>
+    <div style="flex-basis:100%">
+      <div class="kd-prev-lbl">Muistiinpano</div>
+      <div class="kd-prev-val" id="kd-prev-note">—</div>
+    </div>
+  </div>
+
+  <!-- Nopea pääsy -->
+  <div class="kd-section-label">Kliiniset työkalut</div>
+  <div class="kd-nav-grid">
+    <div class="kd-nav-btn" onclick="showPage('arvioinnit',null)">
+      <span class="kd-nav-icon">📊</span><span class="kd-nav-lbl">Arvioinnit</span>
+    </div>
+    <div class="kd-nav-btn" onclick="showPage('toleranssi',null)">
+      <span class="kd-nav-icon">🪟</span><span class="kd-nav-lbl">Toleranssi-ikkuna</span>
+    </div>
+    <div class="kd-nav-btn" onclick="showPage('polyvagaali',null)">
+      <span class="kd-nav-icon">🧠</span><span class="kd-nav-lbl">Polyvagaali</span>
+    </div>
+    <div class="kd-nav-btn" onclick="showPage('trauma',null)">
+      <span class="kd-nav-icon">🫀</span><span class="kd-nav-lbl">Trauma & keho</span>
+    </div>
+    <div class="kd-nav-btn" onclick="showPage('kipu',null)">
+      <span class="kd-nav-icon">⚡</span><span class="kd-nav-lbl">Kipu & PNE</span>
+    </div>
+    <div class="kd-nav-btn" onclick="showPage('elamanjana',null)">
+      <span class="kd-nav-icon">📅</span><span class="kd-nav-lbl">Elämänjana</span>
+    </div>
+    <div class="kd-nav-btn" onclick="showPage('muistiinpanot',null)">
+      <span class="kd-nav-icon">📝</span><span class="kd-nav-lbl">Muistiinpanot</span>
+    </div>
+    <div class="kd-nav-btn" onclick="showPage('hoitosuunnitelma',null)">
+      <span class="kd-nav-icon">🗺</span><span class="kd-nav-lbl">Hoitosuunnitelma</span>
+    </div>
+    <div class="kd-nav-btn" onclick="showPage('harjoitteet',null)">
+      <span class="kd-nav-icon">🧘</span><span class="kd-nav-lbl">Harjoitteet</span>
+    </div>
+    <div class="kd-nav-btn" onclick="showPage('akupunktio',null)">
+      <span class="kd-nav-icon">🪡</span><span class="kd-nav-lbl">Akupunktio</span>
+    </div>
+  </div>
+
+</div>
+<div id="page-muistiinpanot" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('kojelauta',null)">Istunto</span> › <strong>Muistiinpanot</strong></div>
+<p class="page-role">Kliiniset muistiinpanot ja havainnointi</p>
+
+  <div class="page-eyebrow">Istuntokohtainen seuranta</div>
+  <h1 class="page-title">Muistiinpanot</h1>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+
+    <!-- ── VASEN: PIKAMERKINTÄ ── -->
+    <div>
+      <div style="font-family:var(--font-m);font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Uusi istunto</div>
+
+      <div class="card" style="margin-bottom:0.75rem">
+        <!-- Asiakas + istunto -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.75rem">
+          <div>
+            <label class="field-label">Asiakaskoodi</label>
+            <input type="text" class="field-input" id="n-client" placeholder="A01..." list="client-datalist">
+            <datalist id="client-datalist"></datalist>
+          </div>
+          <div>
+            <label class="field-label">Istunto nro</label>
+            <input type="number" class="field-input" id="n-session" placeholder="1, 2, 3..." min="1">
+          </div>
+        </div>
+
+        <!-- Sietoikkuna -->
+        <div style="margin-bottom:0.75rem">
+          <label class="field-label">Sietoikkuna</label>
+          <div style="display:flex;gap:0.35rem;flex-wrap:wrap;margin-top:0.3rem">
+            <button class="wot-chip" id="wot-hyper"      onclick="selectWOT('hyper',this)">↑ Ylivireys</button>
+            <button class="wot-chip" id="wot-optimal"    onclick="selectWOT('optimal',this)">✓ Sietoikkuna</button>
+            <button class="wot-chip" id="wot-hypo"       onclick="selectWOT('hypo',this)">↓ Alivireys</button>
+            <button class="wot-chip" id="wot-fluctuating" onclick="selectWOT('fluctuating',this)">⇅ Vaihteleva</button>
+          </div>
+        </div>
+
+        <!-- Vireystila alku/loppu -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.75rem">
+          <div>
+            <label class="field-label">Vireystila alussa</label>
+            <div class="range-row"><input type="range" class="score-range" id="n-start" min="0" max="10" value="5" oninput="document.getElementById('n-start-val').textContent=this.value"><span class="range-val" id="n-start-val">5</span></div>
+          </div>
+          <div>
+            <label class="field-label">Vireystila lopussa</label>
+            <div class="range-row"><input type="range" class="score-range" id="n-end" min="0" max="10" value="5" oninput="document.getElementById('n-end-val').textContent=this.value"><span class="range-val" id="n-end-val">5</span></div>
+          </div>
+        </div>
+
+        <!-- Fokus -->
+        <div style="margin-bottom:0.75rem">
+          <label class="field-label">Istunnon fokus / muistiinpano</label>
+          <textarea class="field-input" id="n-note" rows="3" placeholder="Mitä käsiteltiin, miten asiakas voi, keskeinen havainto..." style="resize:vertical"></textarea>
+        </div>
+
+        <!-- Kotitehtävä + seuraava -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.75rem">
+          <div>
+            <label class="field-label">Kotitehtävä</label>
+            <input type="text" class="field-input" id="n-homework" placeholder="Harjoite tai tehtävä...">
+          </div>
+          <div>
+            <label class="field-label">Seuraava istunto</label>
+            <input type="text" class="field-input" id="n-next" placeholder="Aihe tai tavoite...">
+          </div>
+        </div>
+
+        <!-- Lisää kenttiä toggle -->
+        <button onclick="toggleExtraFields()" id="extra-fields-btn"
+          style="font-size:0.75rem;color:var(--dim);background:transparent;border:none;cursor:pointer;padding:0;margin-bottom:0.75rem;font-family:var(--font-m)">
+          ▸ Lisää kenttiä (interventiot, turvallisuus, TCM)
+        </button>
+
+        <!-- Lisäkentät — piilotettu oletuksena -->
+        <div id="extra-fields" style="display:none">
+          <div style="border-top:1px solid var(--border);padding-top:0.75rem;margin-bottom:0.75rem">
+            <label class="field-label">Polyvagaalinen tila</label>
+            <select class="field-select" id="n-state">
+              <option value="ventral">Ventraalivagaali — Yhteys ja turva</option>
+              <option value="sym">Sympaattinen — Mobilisaatio</option>
+              <option value="dorsal">Dorsaalivagaali — Romahdus</option>
+              <option value="mixed-vs">Vaihteleva ventral/sym</option>
+              <option value="mixed-sd">Vaihteleva sym/dorsal</option>
+            </select>
+          </div>
+
+          <div style="margin-bottom:0.75rem">
+            <label class="field-label">Interventiot</label>
+            <textarea class="field-input" id="n-interventions" rows="2" placeholder="Käytetyt menetelmät ja harjoitteet..." style="resize:vertical"></textarea>
+          </div>
+
+          <div style="margin-bottom:0.75rem">
+            <label class="field-label">Turvallisuushuomio</label>
+            <textarea class="field-input" id="n-safety" rows="2" placeholder="Riskiarvio, suojatekijät..." style="resize:vertical"></textarea>
+          </div>
+
+          <div style="margin-bottom:0.75rem">
+            <label class="field-label">Käytetyt menetelmät</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.25rem;margin-top:0.25rem" id="methods-grid">
+              <label class="method-check"><input type="checkbox" value="breathing"> Hengitysharjoitteet</label>
+              <label class="method-check"><input type="checkbox" value="somatic"> Somaattiset</label>
+              <label class="method-check"><input type="checkbox" value="grounding"> Ankkurointi</label>
+              <label class="method-check"><input type="checkbox" value="bilateral"> Bilateraalinen</label>
+              <label class="method-check"><input type="checkbox" value="imagery"> Mielikuvatyö</label>
+              <label class="method-check"><input type="checkbox" value="cognitive"> Kognitiivinen</label>
+              <label class="method-check"><input type="checkbox" value="psychoedu"> Psykoedukaatio</label>
+              <label class="method-check"><input type="checkbox" value="acupuncture"> Akupunktio</label>
+            </div>
+          </div>
+
+          <!-- TCM-osio -->
+          <div id="tcm-section" style="display:none;border:1px solid var(--border);border-radius:8px;padding:0.75rem;margin-bottom:0.75rem">
+            <div style="font-family:var(--font-m);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem">TCM-kirjaus</div>
+            <div style="margin-bottom:0.5rem">
+              <label class="field-label">Pisteet</label>
+              <input type="text" class="field-input" id="n-acu-points" placeholder="LV3, GB34, HT7...">
+            </div>
+            <div style="margin-bottom:0.5rem">
+              <label class="field-label">Protokolla</label>
+              <select class="field-select" id="n-acu-protocol">
+                <option value="">— Valitse —</option>
+                <option value="stress">Stressin säätely</option>
+                <option value="sleep">Uni ja palautuminen</option>
+                <option value="pain">Kipuprotokolla</option>
+                <option value="trauma">Trauma-protokolla</option>
+                <option value="custom">Oma protokolla</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label">Hoitovaste</label>
+              <textarea class="field-input" id="n-acu-notes" rows="2" style="resize:vertical" placeholder="Asiakkaan kokemus, De Qi, muutokset..."></textarea>
+            </div>
+          </div>
+
+          <div style="margin-bottom:0.75rem">
+            <label class="field-label">Tavoite / tulos</label>
+            <input type="text" class="field-input" id="n-goal" placeholder="Istunnon tavoite ja miten meni...">
+          </div>
+        </div>
+
+        <button onclick="saveNote()" class="btn-primary" style="width:100%">
+          Tallenna istunto
+        </button>
+      </div>
+    </div>
+
+    <!-- ── OIKEA: HISTORIA ── -->
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem">
+        <div style="font-family:var(--font-m);font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)">Istuntohistoria</div>
+        <select id="note-filter-client" onchange="renderNotes()" style="font-size:0.75rem;padding:0.25rem 0.5rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);cursor:pointer">
+          <option value="">Kaikki asiakkaat</option>
+        </select>
+      </div>
+
+      <div id="notes-list" style="display:flex;flex-direction:column;gap:0.6rem;max-height:70vh;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ── HARJOITTEET ──────────────────────────── -->
+</main>
+
+<nav class="mobile-bottom-bar" id="mobile-bottom-bar">
+  <a onclick="showPage('kojelauta',null)" id="mbb-kojelauta">
+    <span>🏠</span><span class="bar-label">Koti</span>
+  </a>
+  <a onclick="showPage('muistiinpanot',null)" id="mbb-muistiinpanot">
+    <span>📝</span><span class="bar-label">Muistiinpanot</span>
+  </a>
+  <a onclick="showPage('harjoitteet',null)" id="mbb-harjoitteet">
+    <span>🧘</span><span class="bar-label">Harjoitteet</span>
+  </a>
+  <a onclick="showPage('arvioinnit',null)" id="mbb-arvioinnit">
+    <span>📊</span><span class="bar-label">Arvioinnit</span>
+  </a>
+  <a onclick="showPage('hoitosuunnitelma',null)" id="mbb-hoitosuunnitelma">
+    <span>📋</span><span class="bar-label">Hoito</span>
+  </a>
+</nav>
+
+<script>
+function showPage(id, el) {
+  if (window.innerWidth <= 768) closeSidebar();
+  if (el) { var d = el.closest('details.nav-group'); if (d && !d.open) d.open = true; }
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  var t = document.getElementById('page-' + id);
+  if (t) { t.classList.add('active'); } else {
+    var map = {'arvioinnit':'arvioinnit.html','edistyminen':'arvioinnit.html','harjoitteet':'harjoitteet.html','lapset-nuoret':'harjoitteet.html','hoitosuunnitelma':'hoitosuunnitelma.html','akupunktio':'hoitosuunnitelma.html','maarays':'hoitosuunnitelma.html','psykoed':'hoitosuunnitelma.html','aivokerrokset':'tietopankki.html','polyvagaali':'tietopankki.html','toleranssi':'tietopankki.html','kipu':'tietopankki.html','trauma':'tietopankki.html','ans':'tietopankki.html','hrv':'tietopankki.html','kehomuisti':'tietopankki.html','elamanjana':'elamanjana.html'};
+    if (map[id]) window.location.href = map[id] + '#' + id;
+    return;
+  }
+  ['kojelauta','muistiinpanot','harjoitteet','arvioinnit','hoitosuunnitelma'].forEach(function(pid) {
+    var btn = document.getElementById('mbb-' + pid);
+    if (btn) btn.classList.toggle('active', pid === id);
+  });
+  if (id === 'kojelauta' && typeof updateDashboardStats === 'function') updateDashboardStats();
+  if (id === 'muistiinpanot' && typeof renderNotes === 'function') renderNotes();
+}
+// NAVIGATION
+// ═══════════════════════════════════════════
+// ══════════════════════════════════════════════
+// TEEMA — tumma / vaalea
+// ══════════════════════════════════════════════
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  localStorage.setItem('t_theme', isLight ? 'light' : 'dark');
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = isLight ? '☀️' : '🌙';
+}
+
+(function initTheme() {
+  const saved = localStorage.getItem('t_theme');
+  const preferLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  if (saved === 'light' || (!saved && preferLight)) {
+    document.body.classList.add('light');
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = '☀️';
+  }
+})();
+
+// ══════════════════════════════════════════════
+// MOBIILI — sidebar toggle
+// ══════════════════════════════════════════════
+function toggleSidebar() {
+  const sidebar  = document.getElementById('sidebar');
+  const overlay  = document.getElementById('sidebar-overlay');
+  const hamburger = document.getElementById('hamburger');
+  const isOpen   = sidebar.classList.contains('open');
+  if (isOpen) {
+    closeSidebar();
+  } else {
+    sidebar.classList.add('open');
+    overlay.classList.add('visible');
+    hamburger.classList.add('open');
+  }
+}
+
+function closeSidebar() {
+  const sidebar   = document.getElementById('sidebar');
+  const overlay   = document.getElementById('sidebar-overlay');
+  const hamburger = document.getElementById('hamburger');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('visible');
+  hamburger.classList.remove('open');
+}
+
+// ── Touch-elesteet sivupalkin avaamiseen/sulkemiseen ──
+(function() {
+  var tx = 0;
+  document.addEventListener('touchstart', function(e) {
+    tx = e.touches[0].clientX;
+  }, { passive: true });
+  document.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - tx;
+    if (dx < -60) closeSidebar();           // Pyyhkäisy vasemmalle → sulkee
+    if (dx > 60 && tx < 30) toggleSidebar(); // Pyyhkäisy oikealle reunasta → avaa
+  }, { passive: true });
+})();
+
+// ══════════════════════════════════════════════════
+</script>
+
+<script>
+// TOGGLES
+// ═══════════════════════════════════════════
+function toggleAcc(el) {
+  const isOpen = el.classList.contains('open');
+  el.parentElement.querySelectorAll('.acc-item').forEach(a => a.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+function togglePV(el) {
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.pv-rung').forEach(r => r.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+function toggleWOT(el) {
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.wot-zone').forEach(z => z.classList.remove('open'));
+  if (!isOpen) el.classList.add('open');
+}
+
+// ═══════════════════════════════════════════
+// KOJELAUTA
+// ══════════════════════════════════════════════════
+(function() {
+  const KD_KEY = 'kd_session';
+  const AROUSAL_LABELS = { panic:'🔴 Paniikki', high:'🟡 Korkea', ok:'🟢 Optimaalinen', low:'🔵 Matala' };
+  const TOL_LABELS = { hyper:'▲ Ylivireys', ok:'● Sietoikkuna', hypo:'▼ Alivireys' };
+
+  // Tilakohtaiset harjoitesuositukset
+  const RECS = {
+    panic: [
+      { emoji:'💨', name:'Fysiologinen huokaus', dur:'2 min', cat:'r-breath', id:'fysiologinen' },
+      { emoji:'🌊', name:'5-4-3-2-1 maadoitus', dur:'5 min', cat:'r-ground', id:'maadoitus' },
+      { emoji:'🤲', name:'Fysiologinen tärinä', dur:'5 min', cat:'r-body',  id:'tayrina' },
+    ],
+    high: [
+      { emoji:'🌬', name:'Pidennetty uloshengitys', dur:'5 min', cat:'r-breath', id:'pidennetty-uloshengitys' },
+      { emoji:'🦋', name:'Bilateraalinen stimulaatio', dur:'5 min', cat:'r-calm', id:'bilateral' },
+      { emoji:'🤲', name:'Ylikierroksilta lepoon', dur:'15–45 min', cat:'r-body', id:'ylikierroksilta-lepoon' },
+    ],
+    ok: [
+      { emoji:'🧘', name:'Kehon skannaus', dur:'10 min', cat:'r-body', id:'keho-skannaus' },
+      { emoji:'🌿', name:'Turvapaikka kehossa', dur:'15 min', cat:'r-calm', id:'turvapaikka-kehossa' },
+      { emoji:'🔵', name:'Diafragmahengitys', dur:'5 min', cat:'r-breath', id:'diafragma' },
+    ],
+    low: [
+      { emoji:'⚡', name:'Aktivoiva liike', dur:'5 min', cat:'r-body', id:'aktivoiva-liike' },
+      { emoji:'🦋', name:'Bilateraalinen stimulaatio', dur:'5 min', cat:'r-calm', id:'bilateral' },
+      { emoji:'🐝', name:'Mehiläishuminaharjoitus', dur:'5 min', cat:'r-breath', id:'vagus-humina' },
+    ],
+    default: [
+      { emoji:'🌬', name:'Fysiologinen huokaus', dur:'2 min', cat:'r-breath', id:'fysiologinen' },
+      { emoji:'🧘', name:'Kehon skannaus', dur:'10 min', cat:'r-body', id:'keho-skannaus' },
+      { emoji:'🌿', name:'Turvapaikka kehossa', dur:'15 min', cat:'r-calm', id:'turvapaikka-kehossa' },
+      { emoji:'🌊', name:'5-4-3-2-1 maadoitus', dur:'5 min', cat:'r-ground', id:'maadoitus' },
+    ]
+  };
+
+  let state = { client:'', arousal:null, tol:null, safety:5, note:'', sessionCount:1 };
+
+  function load() {
+    try { const s = JSON.parse(localStorage.getItem(KD_KEY)); if (s) state = {...state, ...s}; } catch(e){}
+  }
+
+  function save() {
+    localStorage.setItem(KD_KEY, JSON.stringify(state));
+  }
+
+  function renderDate() {
+    const el = document.getElementById('kd-date-display');
+    if (!el) return;
+    const now = new Date();
+    el.textContent = now.toLocaleDateString('fi-FI', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  }
+
+  function renderState() {
+    // Client
+    const ci = document.getElementById('kd-client');
+    if (ci) ci.value = state.client || '';
+    // Session count
+    const sn = document.getElementById('kd-session-num');
+    if (sn) sn.textContent = `Istunto #${state.sessionCount || 1}`;
+    // Arousal
+    document.querySelectorAll('.kd-arousal-btn').forEach(b => {
+      b.className = 'kd-arousal-btn' + (b.dataset.val === state.arousal ? ` active-${state.arousal}` : '');
+    });
+    // Toleranssi
+    document.querySelectorAll('.kd-tol-btn').forEach(b => {
+      b.className = 'kd-tol-btn' + (b.dataset.val === state.tol ? ` active-${state.tol}` : '');
+    });
+    // Safety
+    const sl = document.getElementById('kd-safety');
+    const sv = document.getElementById('kd-safety-val');
+    if (sl) sl.value = state.safety ?? 5;
+    if (sv) sv.textContent = state.safety ?? 5;
+    // Note
+    const qn = document.getElementById('kd-quick-note');
+    if (qn) qn.value = state.note || '';
+    // Recs
+    renderRecs();
+    // Prev session
+    renderPrev();
+  }
+
+  function renderRecs() {
+    const grid = document.getElementById('kd-rec-grid');
+    const lbl  = document.getElementById('kd-rec-label');
+    if (!grid) return;
+    const key  = state.arousal || 'default';
+    const recs = RECS[key] || RECS.default;
+    if (lbl) {
+      const stateStr = state.arousal ? ` — ${AROUSAL_LABELS[state.arousal]}` : '';
+      lbl.textContent = `Suositellut harjoitteet${stateStr}`;
+    }
+    grid.innerHTML = recs.map(r => `
+      <div class="kd-rec-card ${r.cat}" onclick="openTExModal('${r.id}')">
+        <div class="kd-rec-emoji">${r.emoji}</div>
+        <div class="kd-rec-name">${r.name}</div>
+        <div class="kd-rec-dur">${r.dur}</div>
+      </div>`).join('');
+  }
+
+  function renderPrev() {
+    try {
+      const notes = JSON.parse(localStorage.getItem('t_notes') || '[]');
+      if (!notes.length) return;
+      const prev = [...notes].sort((a,b) => new Date(b.date)-new Date(a.date))[0];
+      const el = id => document.getElementById(id);
+      if (el('kd-prev-date')) el('kd-prev-date').textContent = prev.date ? new Date(prev.date).toLocaleDateString('fi-FI') : '—';
+      if (el('kd-prev-hw'))   el('kd-prev-hw').textContent   = prev.homework || '—';
+      if (el('kd-prev-goal')) el('kd-prev-goal').textContent = prev.nextGoal || '—';
+      if (el('kd-prev-note')) el('kd-prev-note').textContent = (prev.notes||'').slice(0,120) + ((prev.notes||'').length>120?'…':'');
+    } catch(e){}
+  }
+
+  window.kdSetArousal = function(val, btn) {
+    state.arousal = state.arousal === val ? null : val;
+    save(); renderState();
+  };
+  window.kdSetTol = function(val, btn) {
+    state.tol = state.tol === val ? null : val;
+    save(); renderState();
+  };
+  window.kdUpdateSafety = function(v) {
+    state.safety = parseInt(v);
+    const sv = document.getElementById('kd-safety-val');
+    if (sv) sv.textContent = v;
+    save();
+  };
+  window.kdSave = function() {
+    state.client = document.getElementById('kd-client')?.value || '';
+    state.note   = document.getElementById('kd-quick-note')?.value || '';
+    save();
+  };
+  window.kdNewSession = function() {
+    if (!confirm('Aloitetaanko uusi istunto? Tämänhetkinen tila nollataan.')) return;
+    state.sessionCount = (state.sessionCount || 1) + 1;
+    state.arousal = null; state.tol = null; state.safety = 5; state.note = '';
+    save(); renderState();
+  };
+  window.kdSaveToNotes = function() {
+    showPage('muistiinpanot', null);
+    setTimeout(() => {
+      const noteEl = document.getElementById('new-note-text') || document.querySelector('textarea[placeholder*="istunto"]');
+      if (noteEl && state.note) noteEl.value = state.note;
+    }, 400);
+  };
+
+  function init() {
+    load(); renderDate(); renderState();
+    const obs = new MutationObserver(() => {
+      const p = document.getElementById('page-kojelauta');
+      if (p && p.classList.contains('active')) { renderDate(); renderState(); }
+    });
+    const p = document.getElementById('page-kojelauta');
+    if (p) obs.observe(p, { attributes:true, attributeFilter:['class'] });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else setTimeout(init, 100);
+})();
+
+function renderTExGrid() {
+  const grid = document.getElementById('t-ex-grid');
+  if (!grid || grid.dataset.built) return;
+  grid.dataset.built = '1';
+  const CAT_COLORS = {
+    breath:'var(--blue)', vagus:'var(--teal)', somatic:'var(--amber)',
+    grounding:'var(--gold)', bilateral:'var(--rose)', cognitive:'var(--mid)'
+  };
+  const STATE_LABELS = { hyper:'↑ Ylivireys', ok:'● Sietoikkuna', hypo:'↓ Alivireys', panic:'⚡ Paniikki' };
+  grid.innerHTML = EXERCISES_T.map(ex => {
+    const color = CAT_COLORS[ex.cat] || 'var(--teal)';
+    const states = (ex.forState||[]).map(s =>
+      `<span style="font-size:0.62rem;padding:0.1rem 0.4rem;border-radius:3px;background:var(--surface);border:1px solid var(--border);color:var(--dim);font-family:var(--font-m)">${STATE_LABELS[s]||s}</span>`
+    ).join('');
+    const contra = ex.contraindications?.length
+      ? `<div style="font-size:0.7rem;color:var(--rose);margin-top:0.4rem">⚠ ${ex.contraindications.join(' · ')}</div>` : '';
+    return `<div class="t-ex-card t-ex-cat-${ex.cat}"
+      data-cat="${ex.cat}"
+      data-state="${(ex.forState||[]).join(',')}"
+      data-name="${ex.name.toLowerCase()}"
+      onclick="openTExModal('${ex.id}')">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.4rem">
+        <div>
+          <div style="font-size:0.6rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:${color};margin-bottom:0.25rem">${ex.catLabel||ex.cat}</div>
+          <div style="font-size:0.88rem;font-weight:700;color:var(--text);line-height:1.25">${ex.name}</div>
+        </div>
+        <div style="font-size:0.68rem;color:var(--dim);font-family:var(--font-m);white-space:nowrap;flex-shrink:0">${ex.dur}</div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--text2);line-height:1.5;margin-bottom:0.5rem">${ex.desc}</div>
+      <div style="display:flex;gap:0.25rem;flex-wrap:wrap">${states}</div>
+      ${contra}
+    </div>`;
+  }).join('');
+}
+
+function filterTEx(filter, btn) {
+  if (btn) {
+    document.querySelectorAll('.t-ex-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const search = document.getElementById('t-ex-search')?.value.toLowerCase() || '';
+  const activeFilter = btn ? filter : document.querySelector('.t-ex-filter.active')?.dataset.filter || 'all';
+  const stateFilters = ['hyper','ok','hypo','panic'];
+
+  document.querySelectorAll('#t-ex-grid .t-ex-card').forEach(card => {
+    const cat   = card.dataset.cat || '';
+    const state = card.dataset.state || '';
+    const name  = card.dataset.name || '';
+    let show = true;
+    if (search && !name.includes(search)) show = false;
+    if (show && activeFilter !== 'all') {
+      if (stateFilters.includes(activeFilter)) {
+        show = state.includes(activeFilter);
+      } else {
+        show = cat === activeFilter;
+      }
+    }
+    card.classList.toggle('hidden', !show);
+  });
+}
+
+function openTExModal(id) {
+  const ex = EXERCISES_T.find(e => e.id === id);
+  if (!ex) return;
+  const STATE_LABELS = { hyper:'↑ Ylivireys', ok:'● Sietoikkuna', hypo:'↓ Alivireys', panic:'⚡ Paniikki' };
+  const CAT_COLORS = { breath:'var(--blue)', vagus:'var(--teal)', somatic:'var(--amber)', grounding:'var(--gold)', bilateral:'var(--rose)', cognitive:'var(--mid)' };
+  const color = CAT_COLORS[ex.cat] || 'var(--teal)';
+  const stepsHTML = (ex.steps||[]).map(s => `<li style="margin-bottom:0.4rem;line-height:1.5">${s}</li>`).join('');
+  const contraHTML = ex.contraindications?.length
+    ? `<div style="background:var(--rose-bg);border:1px solid var(--rose-bd);border-radius:8px;padding:0.6rem 0.85rem;margin-bottom:0.75rem">
+        <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--rose);margin-bottom:0.3rem">⚠ Kontraindikaatiot</div>
+        <div style="font-size:0.78rem;color:var(--rose)">${ex.contraindications.join(', ')}</div>
+      </div>` : '';
+  const pvHTML = ex.polyvagal
+    ? `<div style="background:var(--teal-bg);border:1px solid var(--teal-bd);border-radius:8px;padding:0.6rem 0.85rem;margin-bottom:0.75rem">
+        <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal);margin-bottom:0.3rem">Polyvagaalinen viitekehys</div>
+        <div style="font-size:0.78rem;color:var(--text2)">${ex.polyvagal}</div>
+      </div>` : '';
+  const states = (ex.forState||[]).map(s =>
+    `<span style="font-size:0.7rem;padding:0.2rem 0.6rem;border-radius:10px;background:var(--surface);border:1px solid var(--border);color:var(--dim)">${STATE_LABELS[s]||s}</span>`
+  ).join(' ');
+
+  const body = document.getElementById('modal-body');
+  if (!body) return;
+  body.innerHTML = `
+    <div style="padding:1.25rem">
+      <div style="font-size:0.62rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:${color};margin-bottom:0.3rem">${ex.catLabel||ex.cat}</div>
+      <div style="font-size:1.2rem;font-weight:800;color:var(--text);margin-bottom:0.3rem">${ex.name}</div>
+      <div style="font-size:0.75rem;font-family:var(--font-m);color:var(--dim);margin-bottom:0.85rem">${ex.dur}</div>
+      <div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-bottom:0.9rem">${states}</div>
+      ${contraHTML}${pvHTML}
+      <div style="font-size:0.85rem;color:var(--text2);line-height:1.6;margin-bottom:1rem">${ex.desc}</div>
+      ${stepsHTML ? `<div style="font-size:0.65rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);margin-bottom:0.5rem">Ohjaus vaiheittain</div>
+        <ol style="padding-left:1.2rem;font-size:0.82rem;color:var(--text);line-height:1.6">${stepsHTML}</ol>` : ''}
+    </div>`;
+  document.getElementById('modal-bg').classList.add('open');
+}
+
+function toggleNavSection(id) {
+  const el = document.getElementById(id);
+  const arrow = document.getElementById(id + '-arrow');
+  if (!el) return;
+  const open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  if (arrow) arrow.textContent = open ? '▸' : '▾';
+}
+
+function showPage(id, el) {
+  // Sulje sidebar mobiililla sivua vaihdettaessa
+  if (window.innerWidth <= 768) closeSidebar();
+
+  // Avaa se details-ryhmä automaattisesti jossa navigoitu sivu on
+  if (el) {
+    var details = el.closest('details.nav-group');
+    if (details && !details.open) details.open = true;
+  }
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+
+  // Päivitä mobile bottom bar aktiivinen tila
+  var mbbIds = ['kojelauta','muistiinpanot','harjoitteet','arvioinnit','hoitosuunnitelma'];
+  mbbIds.forEach(function(pid) {
+    var btn = document.getElementById('mbb-'+pid);
+    if (btn) btn.classList.toggle('active', pid === id);
+  });
+  if (id === 'harjoitteet') renderTExGrid();
+  if (id === 'lapset-nuoret') lnInit();
+  if (id === 'psykoed') renderPsychoedT();
+  if (id === 'edistyminen') { initProgressClient(); renderProgressCharts(); }
+  if (id === 'arvioinnit') updateAssClientList();
+  if (id === 'hoitosuunnitelma') initPlanClientList();
+  if (id === 'muistiinpanot') {
+    const kdState = JSON.parse(localStorage.getItem('kd_session')||'{}');
+    const nClient = document.getElementById('n-client');
+    if (nClient && kdState.client && !nClient.value) nClient.value = kdState.client;
+    updateClientFilter();
+    renderNotes();
+  }
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else {
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.textContent.trim().toLowerCase().includes(id.substring(0,5))) n.classList.add('active');
+    });
+  }
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════════════
+// NOTES
+// ═══════════════════════════════════════════
+let currentWOT = '';
+let currentGoal = '';
+
+// TCM-osion näyttö/piilotus akupunktio-checkboxin mukaan
+let currentNtype = '';
+document.addEventListener('DOMContentLoaded', () => {
+  const methodsGrid = document.getElementById('methods-grid');
+  if (methodsGrid) {
+    methodsGrid.addEventListener('change', e => {
+      if (e.target.value === 'acupuncture') {
+        const tcm = document.getElementById('tcm-section');
+        if (tcm) tcm.style.display = e.target.checked ? 'block' : 'none';
+      }
+    });
+  }
+});
+
+function selectNtype(val, btn) {
+  currentNtype = val;
+  document.querySelectorAll('[id^="ntype-"]').forEach(b => b.className = 'wot-chip');
+  if (btn) btn.className = 'wot-chip active';
+}
+
+function selectWOT(val, btn) {
+  currentWOT = val;
+  document.querySelectorAll('.wot-chip').forEach(b => b.className = 'wot-chip');
+  btn.classList.add(`active-${val}`);
+}
+
+function selectGoal(val, btn) {
+  currentGoal = val;
+  document.querySelectorAll('.goal-chip').forEach(b => b.className = 'goal-chip');
+  btn.classList.add(`active-${val}`);
+}
+
+function loadNotes() {
+  try { return JSON.parse(localStorage.getItem('terapeutti_notes')||'[]'); } catch { return []; }
+}
+function saveNotes(notes) { localStorage.setItem('terapeutti_notes', JSON.stringify(notes)); }
+
+function saveNote() {
+  const state        = document.getElementById('n-state').value;
+  const client       = document.getElementById('n-client').value.trim();
+  const session      = document.getElementById('n-session').value;
+  const start        = document.getElementById('n-start').value;
+  const end          = document.getElementById('n-end').value;
+  const note         = document.getElementById('n-note').value.trim();
+  const interventions= document.getElementById('n-interventions').value.trim();
+  const safety       = document.getElementById('n-safety').value.trim();
+  const goal         = document.getElementById('n-goal').value.trim();
+  const next         = document.getElementById('n-next').value.trim();
+  const homework     = document.getElementById('n-homework').value.trim();
+
+  if (!note && !interventions) return;
+
+  // Collect methods
+  const methods = [...document.querySelectorAll('#methods-grid input:checked')].map(i => i.value);
+
+  // Collect TCM data if acupuncture selected
+  let tcmData = null;
+  if (methods.includes('acupuncture')) {
+    const zangfu = [...document.querySelectorAll('#zangfu-grid input:checked')].map(i => i.value);
+    tcmData = {
+      zangfu,
+      points:    (document.getElementById('n-acu-points')?.value || '').trim(),
+      protocol:  document.getElementById('n-acu-protocol')?.value || '',
+      ntype:     currentNtype,
+      time:      document.getElementById('n-acu-time')?.value || '',
+      response:  document.getElementById('n-acu-response')?.value || '',
+      notes:     (document.getElementById('n-acu-notes')?.value || '').trim(),
+    };
+  }
+
+  const notes = loadNotes();
+  notes.push({
+    date: new Date().toLocaleString('fi-FI'),
+    client, session: parseInt(session) || '',
+    state, wot: currentWOT,
+    start, end,
+    methods, note, interventions,
+    safety, goal, goalResult: currentGoal,
+    next, homework,
+    tcm: tcmData,
+  });
+  saveNotes(notes);
+
+  // Reset form
+  ['n-note','n-interventions','n-safety','n-goal','n-next','n-homework',
+   'n-acu-points','n-acu-notes','n-acu-time'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.querySelectorAll('#methods-grid input').forEach(i => i.checked = false);
+  document.querySelectorAll('#zangfu-grid input').forEach(i => i.checked = false);
+  document.querySelectorAll('.wot-chip').forEach(b => b.className = 'wot-chip');
+  document.querySelectorAll('.goal-chip').forEach(b => b.className = 'goal-chip');
+  const proto = document.getElementById('n-acu-protocol');
+  if (proto) proto.value = '';
+  const resp = document.getElementById('n-acu-response');
+  if (resp) resp.value = '';
+  const tcmSec = document.getElementById('tcm-section');
+  if (tcmSec) tcmSec.style.display = 'none';
+  currentWOT = ''; currentGoal = ''; currentNtype = '';
+  renderNotes();
+  updateClientFilter();
+}
+
+function updateClientFilter() {
+  const notes = loadNotes();
+  const clients = [...new Set(notes.map(n => n.client).filter(Boolean))].sort();
+  const sel = document.getElementById('note-filter-client');
+  if (!sel) return;
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Kaikki asiakkaat</option>' +
+    clients.map(c => `<option value="${c}" ${c===current?'selected':''}>${c}</option>`).join('');
+}
+
+const STATE_LABELS = { ventral:'Ventraalivagaali', sym:'Sympaattinen', dorsal:'Dorsaalivagaali', 'mixed-vs':'Ventral/Sym vaihteleva', 'mixed-sd':'Sym/Dorsal vaihteleva' };
+const STATE_BADGES = { ventral:'badge-ventral', sym:'badge-sym', dorsal:'badge-dorsal', 'mixed-vs':'badge-ventral', 'mixed-sd':'badge-sym' };
+const WOT_LABELS   = { hyper:'↑ Hyper', optimal:'✓ Optimal', hypo:'↓ Hypo', fluctuating:'⇅ Vaihteleva' };
+const WOT_COLORS   = { hyper:'var(--rose)', optimal:'var(--teal)', hypo:'var(--blue)', fluctuating:'var(--gold)' };
+const GOAL_LABELS  = { yes:'✓ Kyllä', partial:'~ Osittain', no:'✗ Ei' };
+const GOAL_COLORS  = { yes:'var(--teal)', partial:'var(--gold)', no:'var(--rose)' };
+const METHOD_NAMES = {
+  breathing:'Hengitys', somatic:'Somaattinen', grounding:'Ankkurointi',
+  bilateral:'Bilateraalinen', imagery:'Mielikuva', psychoed:'Psykoedukaatio',
+  titration:'Titraatio', resourcing:'Resurssointi', narrative:'Narratiivi',
+  cognitive:'Kognitiivinen', acupuncture:'Akupunktio', bodywork:'Manuaalinen'
+};
+
+function toggleExtraFields() {
+  const el = document.getElementById('extra-fields');
+  const btn = document.getElementById('extra-fields-btn');
+  if (!el) return;
+  const open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? '▸ Lisää kenttiä (interventiot, turvallisuus, TCM)' : '▾ Piilota lisäkentät';
+}
+
+function renderNotes() {
+  const container = document.getElementById('notes-list') || document.getElementById('note-entries');
+  if (!container) return;
+  const filterC = document.getElementById('note-filter-client')?.value || '';
+  let notes = loadNotes();
+  if (filterC) notes = notes.filter(n => n.client === filterC);
+  if (!notes.length) {
+    container.innerHTML = '<div style="font-size:0.82rem;color:var(--dim);font-style:italic;padding:1rem 0">Ei istuntomerkintöjä vielä.</div>';
+    return;
+  }
+  container.innerHTML = notes.slice().reverse().map((n, ri) => {
+    const idx = notes.length - 1 - ri;
+    const delta = parseInt(n.end||5) - parseInt(n.start||5);
+    const deltaColor = delta < 0 ? 'var(--teal)' : delta > 0 ? 'var(--rose)' : 'var(--muted)';
+    const deltaStr = delta !== 0 ? `<span style="color:${deltaColor};font-weight:700">${delta>0?'↑':'↓'}${Math.abs(delta)}</span>` : '';
+    const wotLabel = {hyper:'↑ Ylivireys', optimal:'● Sietoikkuna', hypo:'↓ Alivireys', fluctuating:'⇅ Vaihteleva'}[n.wot] || '';
+    const methodTags = (n.methods||[]).slice(0,4).map(m =>
+      `<span style="font-family:var(--font-m);font-size:0.55rem;padding:0.1rem 0.4rem;border-radius:3px;background:var(--surface);border:1px solid var(--border);color:var(--dim)">${METHOD_NAMES[m]||m}</span>`
+    ).join('');
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.85rem 1rem;position:relative">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;margin-bottom:0.4rem">
+        <div>
+          <div style="font-size:0.78rem;font-weight:700;color:var(--text)">${n.client||'—'}${n.session ? ` · Istunto ${n.session}` : ''}</div>
+          <div style="font-size:0.68rem;color:var(--dim);font-family:var(--font-m);margin-top:1px">${n.date}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.4rem;flex-shrink:0">
+          <div style="font-size:0.75rem;font-family:var(--font-m);color:var(--mid)">${n.start||'?'}/10 → ${n.end||'?'}/10 ${deltaStr}</div>
+          <button onclick="printNote(${idx})" style="font-size:0.62rem;padding:0.18rem 0.45rem;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--dim);cursor:pointer">PDF</button>
+          <button onclick="deleteNote(${idx})" style="font-size:0.7rem;padding:0.18rem 0.45rem;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--rose);cursor:pointer">✕</button>
+        </div>
+      </div>
+      ${wotLabel ? `<div style="font-size:0.7rem;color:var(--dim);margin-bottom:0.3rem">${wotLabel}</div>` : ''}
+      ${n.note ? `<div style="font-size:0.8rem;color:var(--text2);line-height:1.5;margin-bottom:0.4rem">${n.note.substring(0,150)}${n.note.length>150?'…':''}</div>` : ''}
+      ${methodTags ? `<div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-top:0.3rem">${methodTags}</div>` : ''}
+      ${n.homework ? `<div style="font-size:0.75rem;color:var(--teal);margin-top:0.4rem">📋 ${n.homework}</div>` : ''}
+      ${n.next ? `<div style="font-size:0.72rem;color:var(--dim);margin-top:0.2rem;font-style:italic">Seuraava: ${n.next}</div>` : ''}
+      ${(() => {
+        if (!n.client) return '';
+        const prefixes = ['gad7','phq9','pcl5'];
+        const names = {gad7:'GAD-7',phq9:'PHQ-9',pcl5:'PCL-5'};
+        const tags = prefixes.map(p => {
+          const h = JSON.parse(localStorage.getItem(`ass_history_${p}`)||'[]')
+            .filter(e => !e.client || e.client === n.client);
+          if (!h.length) return '';
+          const last = h[h.length-1];
+          return `<span style="font-size:0.65rem;padding:0.15rem 0.45rem;border-radius:4px;background:var(--gold-bg);border:1px solid var(--gold-bd);color:var(--gold);font-family:var(--font-m)">${names[p]} ${last.score}</span>`;
+        }).filter(Boolean).join('');
+        return tags ? `<div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-top:0.4rem">${tags}</div>` : '';
+      })()}
+    </div>`;
+  }).join('');
+}
+function deleteNote(idx) {
+  const notes = loadNotes();
+  notes.splice(idx,1);
+  saveNotes(notes);
+  renderNotes();
+  updateClientFilter();
+  updateDashboardStats();
+}
+
+function printNote(idx) {
+  const notes = loadNotes();
+  const n = notes[idx];
+  if (!n) return;
+
+  const STATE_LABELS_P = { ventral:'Ventraalinen — turvallinen', sympathetic:'Sympaattinen — mobilisoitunut', dorsal:'Dorsaalinen — jähmettynyt', mixed:'Sekoittunut tila' };
+  const methodNames = { somatic:'Somaattinen', breathing:'Hengitysharjoitteet', cognitive:'Kognitiivinen', trauma:'Traumatyö', movement:'Liike/kehollinen', relaxation:'Rentoutus', psychoed:'Psykoedukaatio', acupuncture:'Akupunktio', bodywork:'Manuaalinen/kehollinen' };
+
+  const tcmSection = n.tcm ? `
+    <div class="section">
+      <div class="section-title">Akupunktio — TCM-kirjaus</div>
+      ${n.tcm.zangfu?.length ? `<p><strong>Pattern:</strong> ${n.tcm.zangfu.join(', ')}</p>` : ''}
+      ${n.tcm.points ? `<p><strong>Pisteet:</strong> ${n.tcm.points}</p>` : ''}
+      ${n.tcm.protocol ? `<p><strong>Protokolla:</strong> ${n.tcm.protocol}</p>` : ''}
+      ${n.tcm.ntype ? `<p><strong>Neulotustapa:</strong> ${n.tcm.ntype}</p>` : ''}
+      ${n.tcm.time ? `<p><strong>Aika:</strong> ${n.tcm.time} min</p>` : ''}
+      ${n.tcm.response ? `<p><strong>Vaste:</strong> ${n.tcm.response}</p>` : ''}
+      ${n.tcm.notes ? `<p><strong>TCM-huomiot:</strong> ${n.tcm.notes}</p>` : ''}
+    </div>` : '';
+
+  const html = `<!DOCTYPE html>
+<html lang="fi"><head><meta charset="UTF-8">
+<title>Istuntotiivistelmä${n.client ? ' — '+n.client : ''}</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Georgia, serif; max-width: 680px; margin: 2rem auto; color: #1a1208; font-size: 13px; line-height: 1.7; }
+  .header { border-bottom: 2px solid #2a6a3a; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .clinic { font-size: 0.75rem; color: #8a7e68; }
+  h1 { font-size: 1.3rem; color: #1a1208; margin-bottom: 0.2rem; }
+  .meta { font-size: 0.8rem; color: #6a5e48; margin-top: 0.5rem; }
+  .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-family: monospace; background: #e8f2ec; color: #2a6a3a; margin-right: 0.25rem; }
+  .section { margin-bottom: 1.25rem; }
+  .section-title { font-family: monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: #8a7e68; margin-bottom: 0.4rem; border-bottom: 1px solid #ddd8d0; padding-bottom: 0.2rem; }
+  .scores { display: flex; gap: 2rem; background: #f5f0e8; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1.25rem; }
+  .score-item { text-align: center; }
+  .score-num { font-size: 1.6rem; font-weight: 800; color: #2a6a3a; }
+  .score-lbl { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: #8a7e68; }
+  .score-change { font-size: 0.8rem; font-weight: 700; }
+  .improvement { color: #2a6a3a; }
+  .worsening { color: #b84040; }
+  p { margin-bottom: 0.5rem; }
+  .safety { background: #faeaea; border-left: 3px solid #b84040; padding: 0.5rem 0.75rem; margin-bottom: 0.75rem; font-size: 0.82rem; }
+  .homework { background: #e8f2ec; border-left: 3px solid #2a6a3a; padding: 0.5rem 0.75rem; margin-top: 0.75rem; }
+  .footer { margin-top: 2rem; padding-top: 0.75rem; border-top: 1px solid #ddd8d0; font-size: 0.68rem; color: #b0a490; display: flex; justify-content: space-between; }
+  @media print { body { margin: 1cm; } @page { margin: 1.5cm; } }
+</style></head><body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>Istuntotiivistelmä</h1>
+      <div class="meta">
+        ${n.date}${n.client ? ` &nbsp;·&nbsp; <strong>${n.client}</strong>` : ''}${n.session ? ` &nbsp;·&nbsp; Istunto ${n.session}` : ''}
+      </div>
+    </div>
+    <div class="clinic" style="text-align:right">
+      <strong>Marko Oinas</strong><br>
+      Psykofyysinen fysioterapeutti<br>
+      Turun Fysiokulma
+    </div>
+  </div>
+  <div style="margin-top:0.75rem">
+    <span class="badge">${STATE_LABELS_P[n.state] || n.state || '—'}</span>
+    ${n.wot ? `<span class="badge">${n.wot}</span>` : ''}
+    ${n.goalResult ? `<span class="badge">Tavoite: ${n.goalResult}</span>` : ''}
+    ${(n.methods||[]).map(m => `<span class="badge">${methodNames[m]||m}</span>`).join('')}
+  </div>
+</div>
+
+<div class="scores">
+  <div class="score-item">
+    <div class="score-num">${n.start||'—'}</div>
+    <div class="score-lbl">Alku</div>
+  </div>
+  <div class="score-item">
+    <div class="score-num">${n.end||'—'}</div>
+    <div class="score-lbl">Loppu</div>
+  </div>
+  <div class="score-item" style="flex:1;text-align:left;display:flex;align-items:center">
+    ${(n.start && n.end) ? `<div>
+      <div class="score-change ${parseInt(n.end) < parseInt(n.start) ? 'improvement' : parseInt(n.end) > parseInt(n.start) ? 'worsening' : ''}">
+        ${parseInt(n.end) < parseInt(n.start) ? '↓ Parannus ' + (parseInt(n.start)-parseInt(n.end)) + ' yks.' :
+          parseInt(n.end) > parseInt(n.start) ? '↑ Nousi ' + (parseInt(n.end)-parseInt(n.start)) + ' yks.' : '= Ei muutosta'}
+      </div>
+      <div style="font-size:0.7rem;color:#8a7e68;margin-top:0.1rem">vireystila ennen → jälkeen</div>
+    </div>` : ''}
+  </div>
+</div>
+
+${n.safety ? `<div class="safety">⚠ <strong>Turvallisuus:</strong> ${n.safety}</div>` : ''}
+
+${n.note ? `<div class="section">
+  <div class="section-title">Istuntomuistiinpanot</div>
+  <p>${n.note.replace(/\n/g,'<br>')}</p>
+</div>` : ''}
+
+${n.interventions ? `<div class="section">
+  <div class="section-title">Käytetyt menetelmät / interventiot</div>
+  <p>${n.interventions}</p>
+</div>` : ''}
+
+${tcmSection}
+
+${(n.goal || n.goalResult) ? `<div class="section">
+  <div class="section-title">Tavoitteet</div>
+  ${n.goal ? `<p><strong>Tavoite:</strong> ${n.goal}</p>` : ''}
+  ${n.goalResult ? `<p><strong>Tulos:</strong> ${n.goalResult}</p>` : ''}
+</div>` : ''}
+
+${n.next ? `<div class="section">
+  <div class="section-title">Seuraava istunto</div>
+  <p>${n.next}</p>
+</div>` : ''}
+
+${n.homework ? `<div class="homework">📋 <strong>Kotitehtävä:</strong> ${n.homework}</div>` : ''}
+
+<div class="footer">
+  <span>Tulostettu: ${new Date().toLocaleString('fi-FI')}</span>
+  <span>Luottamuksellinen — vain ammattikäyttöön</span>
+</div>
+</body></html>`;
+
+  const w = window.open('', '_blank');
+  if (w) { w.document.write(html); w.document.close(); setTimeout(() => w.print(), 400); }
+}
+
+// ═══════════════════════════════════════════
+// MUISTIINPANOJEN VIENTI
+// ═══════════════════════════════════════════
+function exportNotes() {
+  const notes = loadNotes();
+  if (!notes.length) return;
+  const json = JSON.stringify(notes, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url;
+  a.download=`muistiinpanot_${new Date().toISOString().split('T')[0]}.json`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function exportNotesTxt() {
+  const notes = loadNotes();
+  if (!notes.length) return;
+  const txt = notes.map(n=>`
+=== ${n.date} | ${n.client||'—'} | Istunto ${n.session||'—'} ===
+Tila: ${STATE_LABELS[n.state]||n.state} | WOT: ${n.wot||'—'} | Vireystila: ${n.start}/10 → ${n.end}/10
+Menetelmät: ${(n.methods||[]).join(', ')||'—'}
+Havainnot: ${n.note||'—'}
+Interventiot: ${n.interventions||'—'}
+Turvallisuus: ${n.safety||'—'}
+Tavoite: ${n.goal||'—'} (${GOAL_LABELS[n.goalResult]||'—'})
+Seuraava: ${n.next||'—'}
+Kotitehtävät: ${n.homework||'—'}
+`.trim()).join('\n\n');
+  const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url;
+  a.download=`muistiinpanot_${new Date().toISOString().split('T')[0]}.txt`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+
+function closeBg(e) {
+  if (e.target===document.getElementById('modal-bg')) closeModal();
+}
+function closeModal() {
+  document.getElementById('modal-bg').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// ═══════════════════════════════════════════
+// DASHBOARD STATS
+// ═══════════════════════════════════════════
+function updateDashboardStats() {
+  const notes = loadNotes();
+  const el = document.getElementById('dash-stats');
+  if (!el || !notes.length) return;
+  const clients = new Set(notes.map(n=>n.client).filter(Boolean)).size;
+  const latest = notes[notes.length-1];
+  const avgImprovement = notes.filter(n=>parseInt(n.end)>parseInt(n.start)).length;
+  el.innerHTML = `
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap;font-family:var(--font-m);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-top:0.75rem">
+      <span>📝 <strong style="color:var(--text)">${notes.length}</strong> kirjausta</span>
+      <span>👤 <strong style="color:var(--text)">${clients}</strong> asiakasta</span>
+      <span>📈 <strong style="color:var(--teal)">${avgImprovement}</strong> istuntoa → parannus</span>
+      ${latest ? `<span style="color:var(--dim)">Viimeisin: ${latest.date.split(' ')[0]}${latest.client?' · '+latest.client:''}</span>` : ''}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  buildQuestionnaire(GAD7_Q, GAD7_OPTS, 'gad7', 21);
+  buildQuestionnaire(PHQ9_Q, GAD7_OPTS, 'phq9', 27);
+  buildQuestionnaire(PCL5_Q, PCL5_OPTS, 'pcl5', 80);
+  buildPSQI();
+  buildDASSQuestionnaire();
+  buildPVObs();
+  buildWOTObs();
+  // renderExercisesT replaced by renderTExGrid (called on showPage)
+  renderPsychoedT();
+  renderRxList();
+  renderNotes();
+  updateClientFilter();
+  updateDashboardStats();
+  initProgressClient();
+  renderPlanList();
+  updateAssClientList();
+  initPlanClientList();
+  ['gad7','phq9','pcl5','psqi','dass21'].forEach(p => renderAssHistory(p));
+});
+
+// LN DATA
+// ══════════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', function() {
+  var saved = localStorage.getItem('t_theme');
+  if (saved === 'light') { document.body.classList.add('light'); var btn = document.getElementById('theme-toggle'); if(btn) btn.textContent='☀️'; }
+  if (typeof renderNotes === 'function') renderNotes();
+  if (typeof updateDashboardStats === 'function') updateDashboardStats();
+  if (typeof updateClientFilter === 'function') updateClientFilter();
+});
+</script>
+
+<!-- AUTONOMINEN KEHITYSAGENTTI -->
+<style>
+#agent-pulse{position:fixed;bottom:1.25rem;right:1.25rem;z-index:9000;display:flex;align-items:center;gap:0.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:0.4rem 0.85rem 0.4rem 0.6rem;font-family:var(--font-m);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all 0.2s;user-select:none}
+#agent-pulse:hover{border-color:var(--border2);color:var(--text)}
+#agent-pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background 0.3s}
+#agent-pulse-dot.thinking{background:var(--gold);animation:agent-blink 1s ease-in-out infinite}
+#agent-pulse-dot.ready{background:var(--teal);animation:agent-blink 2s ease-in-out infinite}
+@keyframes agent-blink{0%,100%{opacity:1}50%{opacity:0.35}}
+#agent-badge{display:none;background:var(--teal);color:#fff;font-family:var(--font-m);font-size:0.5rem;font-weight:700;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;flex-shrink:0;margin-left:2px}
+#agent-badge.visible{display:flex}
+#agent-panel{position:fixed;bottom:0;right:0;width:min(480px,100vw);max-height:88vh;background:var(--bg2);border-top:1px solid var(--border2);border-left:1px solid var(--border2);border-radius:16px 0 0 0;z-index:8999;display:flex;flex-direction:column;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0,0,1);overflow:hidden}
+#agent-panel.open{transform:translateY(0)}
+.agent-panel-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem 0.85rem;border-bottom:1px solid var(--border);flex-shrink:0;gap:0.75rem}
+.agent-panel-title{font-family:var(--font-d);font-size:1rem;font-style:italic;color:var(--bright)}
+.agent-panel-meta{font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:0.15rem}
+.agent-close-btn{background:none;border:1px solid var(--border2);border-radius:6px;width:28px;height:28px;color:var(--dim);cursor:pointer;font-size:0.75rem;flex-shrink:0;transition:all 0.18s;display:flex;align-items:center;justify-content:center}
+.agent-close-btn:hover{color:var(--text);border-color:var(--dim)}
+.agent-panel-body{flex:1;overflow-y:auto;padding:1.1rem 1.25rem;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+.agent-suggestion{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;margin-bottom:0.75rem;transition:border-color 0.2s}
+.agent-suggestion:hover{border-color:var(--border2)}
+.agent-suggestion.approved{border-color:var(--teal);background:var(--teal-bg)}
+.agent-sug-cat{font-family:var(--font-m);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.4rem}
+.cat-ux{color:var(--blue)}.cat-sisalto{color:var(--gold)}.cat-kliininen{color:var(--teal)}.cat-rakenne{color:var(--rose)}.cat-tieto{color:var(--amber)}
+.agent-sug-title{font-family:var(--font-d);font-size:0.95rem;font-style:italic;color:var(--bright);margin-bottom:0.35rem;line-height:1.3}
+.agent-sug-desc{font-size:0.82rem;color:var(--dim);line-height:1.6;margin-bottom:0.75rem}
+.agent-sug-preview{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.85rem;font-size:0.78rem;font-family:var(--font-m);color:var(--mid);line-height:1.6;white-space:pre-wrap;margin-bottom:0.75rem;max-height:160px;overflow-y:auto}
+.agent-sug-actions{display:flex;gap:0.5rem}
+.agent-btn-approve{flex:1;padding:0.45rem;background:var(--teal);color:#fff;border:none;border-radius:6px;font-family:var(--font-m);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-weight:500}
+.agent-btn-approve:hover{opacity:0.85}
+.agent-btn-reject,.agent-btn-copy{padding:0.45rem 0.85rem;background:none;border:1px solid var(--border2);border-radius:6px;font-family:var(--font-m);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);cursor:pointer}
+.agent-btn-reject:hover{border-color:var(--rose-bd);color:var(--rose)}
+.agent-btn-copy:hover{border-color:var(--gold-bd);color:var(--gold)}
+.agent-empty{text-align:center;padding:2.5rem 1rem}
+.agent-empty-icon{font-size:1.8rem;margin-bottom:0.75rem;opacity:0.5}
+.agent-empty-text{font-family:var(--font-d);font-size:0.9rem;font-style:italic;color:var(--dim)}
+.agent-empty-sub{font-size:0.78rem;color:var(--muted);margin-top:0.4rem;line-height:1.6}
+.agent-panel-footer{padding:0.85rem 1.25rem;border-top:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:0.75rem}
+.agent-footer-info{font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);line-height:1.5}
+.agent-manual-btn{padding:0.45rem 1rem;background:none;border:1px solid var(--border2);border-radius:6px;font-family:var(--font-m);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.agent-manual-btn:hover{border-color:var(--gold-bd);color:var(--gold)}
+#agent-timer-bar{height:2px;background:var(--border);border-radius:1px;overflow:hidden;margin-top:4px}
+#agent-timer-fill{height:100%;background:var(--gold);border-radius:1px;width:0%;transition:width 1s linear}
+</style>
+
+<div id="agent-pulse" onclick="agentTogglePanel()" title="Kehitysagentti">
+  <div id="agent-pulse-dot"></div>
+  <span id="agent-pulse-label">Agentti</span>
+  <div id="agent-badge"></div>
+</div>
+
+<div id="agent-panel">
+  <div class="agent-panel-header">
+    <div>
+      <div class="agent-panel-title">Kehitysagentti</div>
+      <div class="agent-panel-meta" id="agent-status-text">Odottaa...</div>
+      <div id="agent-timer-bar"><div id="agent-timer-fill"></div></div>
+    </div>
+    <button class="agent-close-btn" onclick="agentTogglePanel()">&#x2715;</button>
+  </div>
+  <div class="agent-panel-body" id="agent-panel-body">
+    <div class="agent-empty">
+      <div class="agent-empty-icon">&#x25CE;</div>
+      <div class="agent-empty-text">Agentti analysoi ty&ouml;kaluasi</div>
+      <div class="agent-empty-sub">Her&auml;&auml; automaattisesti 90 s kuluttua.<br>Voit k&auml;ynnist&auml;&auml; my&ouml;s manuaalisesti.</div>
+    </div>
+  </div>
+  <div class="agent-panel-footer">
+    <div class="agent-footer-info" id="agent-cycle-info">Seuraava: &mdash;<br>Hyv&auml;ksytty: 0</div>
+    <button class="agent-manual-btn" onclick="agentRunNow()">Analysoi nyt</button>
+  </div>
+</div>
+
+<script>
+var AGENT = {
+  INTERVALS: { quick: 600000, deep: 1800000 },
+  CYCLES: [
+    { type: 'quick', label: 'UX & k\u00e4ytett\u00e4vyys',
+      prompt: 'Analysoi t\u00e4m\u00e4 kliininen terapeuttity\u00f6kalu ja ehdota 2\u20133 parannusta UX:n ja k\u00e4ytett\u00e4vyyden n\u00e4k\u00f6kulmasta. Fokusoi: navigaation selkeys, toimintojen l\u00f6ydett\u00e4vyys, mobiilipuutteet, visuaalinen hierarkia.' },
+    { type: 'quick', label: 'Kliininen sis\u00e4lt\u00f6',
+      prompt: 'Analysoi t\u00e4m\u00e4 kliininen terapeuttity\u00f6kalu ja ehdota 2\u20133 parannusta kliiniseen sis\u00e4lt\u00f6\u00f6n. Mieti: puuttuvatko t\u00e4rke\u00e4t psykoedukaatioaiheet, harjoitteet, arviointity\u00f6kalut tai protokollat?' },
+    { type: 'deep',  label: 'Uusi ominaisuus',
+      prompt: 'Ehdota 1 merkitt\u00e4v\u00e4\u00e4 uutta ominaisuutta t\u00e4h\u00e4n kliiniseen terapeuttity\u00f6kaluun. Ominaisuuden tulee olla toteutettavissa HTML/JS-tiedostoon.' },
+    { type: 'quick', label: 'Rakenne & koodi',
+      prompt: 'Analysoi t\u00e4m\u00e4 ty\u00f6kalu rakenteen n\u00e4k\u00f6kulmasta. Ehdota 2\u20133 parannusta: toistuvat rakenteet, saavutettavuuspuutteet, CSS-refaktorointi.' },
+    { type: 'deep',  label: 'Traumainformoitu',
+      prompt: 'Analysoi t\u00e4m\u00e4 psykofyysinen ty\u00f6kalu traumainformoidun hoidon n\u00e4k\u00f6kulmasta. Ehdota 1\u20132 parannusta jotka parantaisivat ty\u00f6kalua trauman, ANS-s\u00e4\u00e4telyn tai kehollisen kohtaamisen kannalta.' }
+  ],
+  state: { panelOpen: false, running: false, approvedCount: 0, suggestions: [], nextRunAt: null, cycleCount: 0 },
+
+  saveState: function() {
+    try {
+      localStorage.setItem('agent_suggestions', JSON.stringify(this.state.suggestions));
+      localStorage.setItem('agent_approvedCount', this.state.approvedCount);
+      localStorage.setItem('agent_cycleCount', this.state.cycleCount);
+    } catch(e) {}
+  },
+
+  loadState: function() {
+    try {
+      var sugs = localStorage.getItem('agent_suggestions');
+      if (sugs) this.state.suggestions = JSON.parse(sugs);
+      var ac = localStorage.getItem('agent_approvedCount');
+      if (ac) this.state.approvedCount = parseInt(ac, 10);
+      var cc = localStorage.getItem('agent_cycleCount');
+      if (cc) this.state.cycleCount = parseInt(cc, 10);
+    } catch(e) {}
+  },
+
+  init: function() {
+    this.loadState();
+    if (this.state.suggestions.length > 0) {
+      this.renderSuggestions();
+      this.setPulse('ready');
+      var pending = this.state.suggestions.filter(function(s){ return !s.approved && !s.rejected; }).length;
+      this.updateStatusText(pending + ' ehdotusta muistissa');
+    }
+    this.updateCycleInfo();
+    this.state.nextRunAt = Date.now() + 90000;
+    this._timer = setTimeout(function() { AGENT.run(); }, 90000);
+    this.startTimerBar(90000);
+    if (this.state.suggestions.length === 0) this.updateStatusText('Her\u00e4\u00e4 90 sekunnin kuluttua...');
+  },
+
+  startTimerBar: function(ms) {
+    clearInterval(this._barTimer);
+    var start = Date.now();
+    this._barTimer = setInterval(function() {
+      var pct = Math.min(100, (Date.now() - start) / ms * 100);
+      var el = document.getElementById('agent-timer-fill');
+      if (el) el.style.width = pct + '%';
+      if (pct >= 100) clearInterval(AGENT._barTimer);
+    }, 1000);
+  },
+
+  updateStatusText: function(t) {
+    var el = document.getElementById('agent-status-text');
+    if (el) el.textContent = t;
+  },
+
+  updateCycleInfo: function() {
+    var el = document.getElementById('agent-cycle-info');
+    if (!el) return;
+    var rem = this.state.nextRunAt ? Math.max(0, this.state.nextRunAt - Date.now()) : 0;
+    el.innerHTML = 'Seuraava: ' + (rem > 0 ? Math.ceil(rem / 60000) + ' min' : 'Pian') + '<br>Hyv\u00e4ksytty: ' + this.state.approvedCount;
+  },
+
+  setPulse: function(mode) {
+    var dot = document.getElementById('agent-pulse-dot');
+    var lbl = document.getElementById('agent-pulse-label');
+    var badge = document.getElementById('agent-badge');
+    if (!dot) return;
+    dot.className = mode === 'thinking' ? 'thinking' : mode === 'ready' ? 'ready' : '';
+    if (lbl) lbl.textContent = mode === 'thinking' ? 'Analysoi...' : mode === 'ready' ? 'Ehdotuksia' : 'Agentti';
+    if (badge) {
+      var n = this.state.suggestions.filter(function(s) { return !s.approved && !s.rejected; }).length;
+      if (mode === 'ready' && n > 0) { badge.textContent = n; badge.classList.add('visible'); }
+      else badge.classList.remove('visible');
+    }
+  },
+
+  buildPrompt: function(cycle, context) {
+    var lines = [
+      'Olet asiantuntija psykofyysisten terapeuttity\u00f6kalujen kehitt\u00e4misess\u00e4.',
+      '',
+      'Analysoit HTML-pohjaista kliinist\u00e4 ty\u00f6kalua: Terapeutin Kliininen Ty\u00f6kalu (Marko Oinas)',
+      '',
+      'Ty\u00f6kalu sis\u00e4lt\u00e4\u00e4 sivut: ' + context.pages.join(', '),
+      'Navigaatio: ' + context.navItems.join(', '),
+      'K\u00e4ytt\u00e4j\u00e4: psykofyysinen fysioterapeutti + kognitiivinen psykoterapeutti (lapset/nuoret, akupunktio, trauma, ANS, kipu)',
+      'Aiemmin hyv\u00e4ksyttyj\u00e4 parannuksia: ' + context.approvedCount,
+      '',
+      cycle.prompt,
+      '',
+      'Vastaa T\u00c4SM\u00c4LLEEN t\u00e4ss\u00e4 JSON-muodossa \u2014 ei muuta teksti\u00e4:',
+      '[',
+      '  {',
+      '    "kategoria": "ux",',
+      '    "otsikko": "Lyhyt otsikko",',
+      '    "kuvaus": "Selitys 2\u20133 lausetta.",',
+      '    "prioriteetti": "t\u00e4rke\u00e4",',
+      '    "toteutus": "Konkreettinen toteutus HTML/JS-esimerkkein\u00e4."',
+      '  }',
+      ']',
+      'kategoria = ux | sis\u00e4lt\u00f6 | kliininen | rakenne | tieto',
+      'prioriteetti = kriittinen | t\u00e4rke\u00e4 | hy\u00f6dyllinen',
+      'Anna ' + (cycle.type === 'deep' ? '1\u20132' : '2\u20133') + ' ehdotusta.'
+    ];
+    return lines.join('\n');
+  },
+
+  run: function() {
+    if (this.state.running) return;
+    this.state.running = true;
+    this.state.cycleCount++;
+    var cycle = this.CYCLES[(this.state.cycleCount - 1) % this.CYCLES.length];
+    var context = this.gatherContext();
+    this.state.running = false;
+    this.setPulse('thinking');
+    this.updateStatusText('Valmistelee: ' + cycle.label + '...');
+    var prompt = this.buildPrompt(cycle, context);
+    this.showInstructions(cycle.label, prompt);
+    var ms = cycle.type === 'deep' ? this.INTERVALS.deep : this.INTERVALS.quick;
+    clearTimeout(this._timer);
+    this._timer = setTimeout(function() { AGENT.run(); }, ms);
+    this.state.nextRunAt = Date.now() + ms;
+    this.startTimerBar(ms);
+  },
+
+  gatherContext: function() {
+    var pages = Array.from(document.querySelectorAll('[id^="page-"]')).map(function(e) { return e.id.replace('page-', ''); });
+    var seen = {};
+    Array.from(document.querySelectorAll('.nav-item')).forEach(function(e) { seen[e.textContent.trim()] = 1; });
+    return { pages: pages, navItems: Object.keys(seen), approvedCount: this.state.approvedCount };
+  },
+
+  showInstructions: function(label, prompt) {
+    var body = document.getElementById('agent-panel-body');
+    if (!body) return;
+    var safe = prompt.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    var h = '<div id="agent-instr-box" style="background:var(--teal-bg);border:1px solid var(--teal-bd);border-radius:10px;padding:1.1rem;margin-bottom:0.75rem;">'
+      + '<div style="font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal);margin-bottom:0.75rem;">\u25cf ' + label + '</div>'
+      + '<div style="font-size:0.82rem;color:var(--bright);font-weight:500;margin-bottom:0.35rem;">1 \u2014 Avaa Claude</div>'
+      + '<button onclick="window.open(\'https://claude.ai/new\',\'_blank\')" style="width:100%;padding:0.55rem;background:var(--bg2);color:var(--text);border:1px solid var(--border2);border-radius:8px;font-size:0.85rem;cursor:pointer;margin-bottom:0.9rem;text-align:left;">\ud83d\udd17 Avaa Claude uuteen v\u00e4lilehteen</button>'
+      + '<div style="font-size:0.82rem;color:var(--bright);font-weight:500;margin-bottom:0.35rem;">2 \u2014 Kopioi prompt</div>'
+      + '<div style="position:relative;margin-bottom:0.9rem;">'
+      + '<textarea id="agent-prompt-box" readonly style="width:100%;height:80px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:0.55rem 2.5rem 0.55rem 0.7rem;font-size:0.72rem;font-family:var(--font-m);color:var(--mid);resize:none;line-height:1.5;">' + safe + '</textarea>'
+      + '<button onclick="AGENT.copyPrompt()" id="agent-copy-btn" style="position:absolute;top:6px;right:6px;background:var(--surface);border:1px solid var(--border2);border-radius:5px;padding:3px 8px;font-size:0.65rem;font-family:var(--font-m);color:var(--dim);cursor:pointer;">kopioi</button>'
+      + '</div>'
+      + '<div style="font-size:0.82rem;color:var(--bright);font-weight:500;margin-bottom:0.35rem;">3 \u2014 Liit\u00e4 Clauden vastaus t\u00e4h\u00e4n</div>'
+      + '<textarea id="agent-response-box" placeholder="Liit\u00e4 t\u00e4h\u00e4n Clauden vastaus (Ctrl+V)..." oninput="AGENT.onResponseInput(this)" style="width:100%;height:80px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:0.55rem 0.7rem;font-size:0.78rem;font-family:var(--font-m);color:var(--text);resize:none;line-height:1.5;margin-bottom:0.55rem;"></textarea>'
+      + '<button id="agent-submit-btn" onclick="AGENT.parseFromTextarea()" disabled style="width:100%;padding:0.6rem;background:var(--muted);color:var(--bg);border:none;border-radius:8px;font-family:var(--font-m);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;cursor:not-allowed;font-weight:500;transition:all 0.2s;">\u2713 N\u00e4yt\u00e4 ehdotukset</button>'
+      + '</div>';
+    body.innerHTML = h + body.innerHTML;
+    if (!this.state.panelOpen) this.togglePanel();
+    this.setPulse('ready');
+    this.updateStatusText('Valmis: ' + label);
+  },
+
+  copyPrompt: function() {
+    var box = document.getElementById('agent-prompt-box');
+    if (!box) return;
+    box.select();
+    try { document.execCommand('copy'); } catch(e) { if (navigator.clipboard) navigator.clipboard.writeText(box.value); }
+    var btn = document.getElementById('agent-copy-btn');
+    if (btn) { btn.textContent = '\u2713 kopioitu'; setTimeout(function() { btn.textContent = 'kopioi'; }, 2000); }
+  },
+
+  onResponseInput: function(el) {
+    var btn = document.getElementById('agent-submit-btn');
+    if (!btn) return;
+    var ok = el.value.trim().length > 20;
+    btn.disabled = !ok;
+    btn.style.background = ok ? 'var(--teal)' : 'var(--muted)';
+    btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+  },
+
+  parseFromTextarea: function() {
+    var box = document.getElementById('agent-response-box');
+    if (!box) return;
+    var sugs = this.parseResponse(box.value.trim());
+    if (sugs.length === 0) {
+      box.style.borderColor = 'var(--rose)';
+      box.value = '';
+      box.placeholder = 'Ei l\u00f6ytynyt ehdotuksia \u2014 kopioi koko Clauden vastaus ja yrit\u00e4 uudelleen.';
+      return;
+    }
+    var instr = document.getElementById('agent-instr-box');
+    if (instr) instr.remove();
+    this.state.suggestions = sugs.concat(this.state.suggestions).slice(0, 20);
+    this.renderSuggestions();
+    this.updateStatusText(sugs.length + ' uutta ehdotusta');
+    this.saveState();
+  },
+
+  parseResponse: function(text) {
+    try {
+      var clean = text.replace(/```json|```/g, '').trim();
+      var match = clean.match(/\[[\s\S]*\]/);
+      if (!match) return [];
+      var parsed = JSON.parse(match[0]);
+      var now = new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit' });
+      return parsed.map(function(s, i) {
+        return { kategoria: s.kategoria, otsikko: s.otsikko, kuvaus: s.kuvaus, prioriteetti: s.prioriteetti, toteutus: s.toteutus,
+          id: 'sug-' + Date.now() + '-' + i, cycle: 'Claude-analyysi', approved: false, rejected: false, ts: now };
+      });
+    } catch(e) { return []; }
+  },
+
+  renderSuggestions: function() {
+    var body = document.getElementById('agent-panel-body');
+    if (!body) return;
+    var active = this.state.suggestions.filter(function(s) { return !s.rejected; });
+    if (active.length === 0) {
+      body.innerHTML = '<div class="agent-empty"><div class="agent-empty-icon">\u2713</div><div class="agent-empty-text">Kaikki k\u00e4sitelty</div><div class="agent-empty-sub">Seuraava analyysi k\u00e4ynnistyy automaattisesti.</div></div>';
+      return;
+    }
+    var CAT = { ux: 'UX \u00b7 k\u00e4ytett\u00e4vyys', sisalto: 'Sis\u00e4lt\u00f6', kliininen: 'Kliininen', rakenne: 'Rakenne', tieto: 'Tietopankki' };
+    var PRI = { 'kriittinen': 'var(--rose)', 't\u00e4rke\u00e4': 'var(--gold)', 'hy\u00f6dyllinen': 'var(--teal)' };
+    body.innerHTML = active.map(function(s) {
+      var id = s.id;
+      return '<div class="agent-suggestion' + (s.approved ? ' approved' : '') + '" id="' + id + '">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.3rem;">'
+        + '<div class="agent-sug-cat cat-' + (s.kategoria || 'ux') + '">' + (CAT[s.kategoria] || s.kategoria) + '</div>'
+        + '<span style="font-family:var(--font-m);font-size:0.5rem;color:' + (PRI[s.prioriteetti] || 'var(--dim)') + '">' + ((s.prioriteetti || '').toUpperCase()) + '</span>'
+        + '</div>'
+        + '<div class="agent-sug-title">' + (s.otsikko || '') + '</div>'
+        + '<div class="agent-sug-desc">' + (s.kuvaus || '') + '</div>'
+        + '<div class="agent-sug-preview">' + (s.toteutus || '') + '</div>'
+        + (s.approved
+          ? '<div style="font-family:var(--font-m);font-size:0.58rem;color:var(--teal);">\u2713 HYV\u00c4KSYTTY \u2014 toteutus kopioitu</div>'
+          : '<div class="agent-sug-actions">'
+            + '<button class="agent-btn-approve" onclick="AGENT.approve(\'' + id + '\')">\u2713 Hyv\u00e4ksy &amp; kopioi</button>'
+            + '<button class="agent-btn-copy" onclick="AGENT.copyToteutus(\'' + id + '\')">Kopioi</button>'
+            + '<button class="agent-btn-reject" onclick="AGENT.reject(\'' + id + '\')">Ohita</button>'
+            + '</div>')
+        + '</div>';
+    }).join('');
+  },
+
+  approve: function(id) {
+    var s = this.state.suggestions.find(function(x) { return x.id === id; });
+    if (!s) return;
+    s.approved = true;
+    this.state.approvedCount++;
+    this.copyToteutus(id);
+    this.renderSuggestions();
+    this.updateCycleInfo();
+    this.saveState();
+  },
+
+  reject: function(id) {
+    var s = this.state.suggestions.find(function(x) { return x.id === id; });
+    if (s) s.rejected = true;
+    this.renderSuggestions();
+    this.saveState();
+  },
+
+  copyToteutus: function(id) {
+    var s = this.state.suggestions.find(function(x) { return x.id === id; });
+    if (s && navigator.clipboard) navigator.clipboard.writeText(s.toteutus).catch(function() {});
+  },
+
+  togglePanel: function() {
+    this.state.panelOpen = !this.state.panelOpen;
+    var panel = document.getElementById('agent-panel');
+    if (panel) panel.classList.toggle('open', this.state.panelOpen);
+    if (this.state.panelOpen) this.updateCycleInfo();
+  }
+};
+
+function agentTogglePanel() { AGENT.togglePanel(); }
+function agentRunNow() { clearTimeout(AGENT._timer); AGENT.run(); }
+window.addEventListener('load', function() { setTimeout(function() { AGENT.init(); }, 2000); });
+setInterval(function() { AGENT.updateCycleInfo(); }, 30000);
+</script>
+
+</body>
+</html>

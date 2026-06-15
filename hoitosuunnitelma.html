@@ -1,0 +1,2290 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hoitosuunnitelma & Akupunktio — Terapeutin työkalu</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+  <style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --bg:       #0c0f14;
+  --bg2:      #131720;
+  --bg3:      #1a2030;
+  --surface:  #212840;
+  --border:   #2a3450;
+  --border2:  #364060;
+  --muted:    #4a5878;
+  --dim:      #6a7898;
+  --mid:      #9aaac8;
+  --text:     #c8d8f0;
+  --bright:   #e8f0fc;
+
+  --gold:     #c8a050;
+  --gold-bg:  #1a1608;
+  --gold-bd:  #302808;
+
+  --teal:     #3a9880;
+  --teal-bg:  #081a18;
+  --teal-bd:  #0f3028;
+
+  --rose:     #c05060;
+  --rose-bg:  #1a0810;
+  --rose-bd:  #301018;
+
+  --blue:     #4878c8;
+  --blue-bg:  #080e1e;
+  --blue-bd:  #101830;
+
+  --amber:    #c88030;
+  --amber-bg: #180e04;
+  --amber-bd: #281808;
+
+  --font-d: 'Playfair Display', Georgia, serif;
+  --font-b: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-m: 'IBM Plex Mono', monospace;
+
+  --sidebar: 220px;
+  --r: 8px;
+  --r2: 14px;
+}
+
+/* ── VAALEA TEEMA ── */
+body.light {
+  --bg:       #f4f6fa;
+  --bg2:      #ffffff;
+  --bg3:      #eaecf4;
+  --surface:  #e0e4f0;
+  --border:   #c8cedc;
+  --border2:  #b0b8cc;
+  --muted:    #8890a8;
+  --dim:      #6070a0;
+  --mid:      #3a4878;
+  --text:     #1a2040;
+  --bright:   #0a1030;
+
+  --gold:     #9a7020;
+  --gold-bg:  #fdf8ec;
+  --gold-bd:  #e8d8a0;
+
+  --teal:     #2a7860;
+  --teal-bg:  #eaf6f2;
+  --teal-bd:  #a0d8c8;
+
+  --rose:     #a03050;
+  --rose-bg:  #faeaee;
+  --rose-bd:  #e0a0b0;
+
+  --blue:     #2858b0;
+  --blue-bg:  #eaeffa;
+  --blue-bd:  #a0b8e0;
+
+  --amber:    #a06020;
+  --amber-bg: #fdf2e8;
+  --amber-bd: #e8c090;
+
+  color-scheme: light;
+}
+
+body.light .sidebar {
+  background: #ffffff;
+  border-right: 1px solid var(--border);
+}
+body.light .top-bar {
+  background: rgba(244,246,250,0.96);
+  border-bottom: 1px solid var(--border);
+}
+body.light .nav-item:hover { background: var(--bg3); }
+body.light .nav-item.active { background: var(--teal-bg); border-color: var(--teal); }
+body.light .dash-card { background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+body.light .page { background: var(--bg); }
+body.light .info-box { background: var(--gold-bg); border-color: var(--gold-bd); }
+body.light .field-input,
+body.light .field-textarea,
+body.light .field-select {
+  background: #fff;
+  border-color: var(--border);
+  color: var(--text);
+}
+body.light .note-entry { background: #fff; border-color: var(--border); }
+body.light .ass-panel { background: transparent; }
+body.light .q-item { background: #fff; border-color: var(--border); }
+body.light .q-opt { background: var(--bg3); border-color: var(--border); color: var(--text); }
+body.light .q-opt.selected { background: var(--teal-bg); border-color: var(--teal); color: var(--teal); }
+body.light .method-check { color: var(--text); }
+body.light .hamburger { background: #fff; border-color: var(--border); }
+body.light .hamburger span { background: var(--text); }
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family: var(--font-b);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+}
+
+/* subtle dot grid */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: radial-gradient(circle, rgba(72,120,200,0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events:none; z-index:0;
+}
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+.sidebar {
+  width: var(--sidebar);
+  height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top:0; left:0;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+  padding-bottom: 1rem;
+}
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+
+.sidebar-logo {
+  padding: 1.5rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.logo-name {
+  font-family: var(--font-d);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--bright);
+  margin-bottom: 0.2rem;
+}
+.logo-title {
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.t-ex-filter {
+  font-size: 0.72rem; font-weight: 600; padding: 0.3rem 0.75rem;
+  border-radius: 16px; border: 1px solid var(--border);
+  background: transparent; color: var(--dim); cursor: pointer; transition: all 0.15s;
+  font-family: var(--font-m);
+}
+.t-ex-filter.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+.t-ex-filter:hover:not(.active) { border-color: var(--teal); color: var(--teal); }
+.t-ex-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.9rem 1rem; cursor: pointer;
+  transition: all 0.15s; position: relative; overflow: hidden;
+}
+.t-ex-card:hover { border-color: var(--teal-bd); transform: translateY(-1px); }
+.t-ex-card.hidden { display: none; }
+.t-ex-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2.5px;
+}
+.t-ex-cat-breath::before  { background: var(--blue); }
+.t-ex-cat-vagus::before   { background: var(--teal); }
+.t-ex-cat-somatic::before { background: var(--amber); }
+.t-ex-cat-grounding::before { background: var(--gold); }
+.t-ex-cat-bilateral::before { background: var(--rose); }
+.t-ex-cat-cognitive::before { background: var(--mid); }
+
+  padding: 1rem 0.75rem 0.5rem;
+}
+/* ── COLLAPSIBLE NAV GROUPS ── */
+details.nav-group {
+  margin-bottom: 0.25rem;
+}
+details.nav-group summary.nav-group-title {
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.55rem 1rem 0.55rem 1.1rem;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--radius);
+  transition: color 0.18s, background 0.18s;
+}
+details.nav-group summary.nav-group-title::-webkit-details-marker { display: none; }
+details.nav-group summary.nav-group-title::after {
+  content: '▸';
+  font-size: 0.6rem;
+  opacity: 0.5;
+  transition: transform 0.2s;
+}
+details.nav-group[open] summary.nav-group-title::after {
+  transform: rotate(90deg);
+  opacity: 0.8;
+}
+details.nav-group[open] summary.nav-group-title {
+  color: var(--text);
+}
+details.nav-group summary.nav-group-title:hover {
+  color: var(--text);
+  background: var(--bg3);
+}
+
+.nav-group-label {
+  font-family: var(--font-m);
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.18s;
+  color: var(--dim);
+  font-size: 0.82rem;
+  font-weight: 400;
+  border: 1px solid transparent;
+  margin-bottom: 2px;
+  user-select: none;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active {
+  background: var(--bg3);
+  border-color: var(--border);
+  color: var(--bright);
+  font-weight: 500;
+}
+.nav-item.active .nav-dot { background: var(--gold); }
+
+.nav-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.sidebar-footer {
+  flex-shrink: 0;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+.main {
+  margin-left: var(--sidebar);
+  flex: 1;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.page { display:none; animation: fadeIn 0.25s ease; }
+.page.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:none} }
+
+.page-content {
+  max-width: 1100px;
+  padding: 2.5rem 2rem 5rem;
+}
+
+/* ═══════════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════════ */
+.page-eyebrow {
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.page-title {
+  font-family: var(--font-d);
+  font-size: clamp(1.6rem,3vw,2.4rem);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--bright);
+  line-height: 1.15;
+  margin-bottom: 0.4rem;
+}
+.page-lead {
+  font-size: 0.95rem;
+  color: var(--dim);
+  max-width: 640px;
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+
+h3.section-h {
+  font-family: var(--font-d);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+/* ═══════════════════════════════════════════
+   CARDS & SURFACES
+═══════════════════════════════════════════ */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.card-sm {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.info-box {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--mid);
+  margin-bottom: 1.5rem;
+}
+.info-box strong { color: var(--gold); font-family: var(--font-d); font-style: italic; }
+
+.warn-box {
+  background: var(--rose-bg);
+  border: 1px solid var(--rose-bd);
+  border-left: 3px solid var(--rose);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  color: #e08090;
+  margin-top: 0.75rem;
+}
+
+.clinical-note {
+  background: var(--teal-bg);
+  border-left: 3px solid var(--teal);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--dim);
+  margin-top: 0.75rem;
+}
+
+/* ═══════════════════════════════════════════
+   TAGS
+═══════════════════════════════════════════ */
+.tags { display:flex; flex-wrap:wrap; gap:0.35rem; margin-top:0.75rem; }
+.tag {
+  font-family: var(--font-m);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.5rem;
+  border-radius: 3px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--muted);
+}
+
+/* ═══════════════════════════════════════════
+   ACCORDION
+═══════════════════════════════════════════ */
+.acc-item {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.acc-trigger {
+  width:100%; display:flex; justify-content:space-between; align-items:center;
+  padding: 0.9rem 1.1rem;
+  background: var(--bg2); border:none; cursor:pointer;
+  text-align:left; gap:1rem; transition:background 0.18s;
+}
+.acc-trigger:hover { background: var(--bg3); }
+.acc-item.open .acc-trigger { background: var(--bg3); }
+.acc-title { font-family: var(--font-d); font-size:0.95rem; font-style:italic; color:var(--bright); }
+.acc-sub { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-top:0.15rem; }
+.acc-chev { color:var(--muted); font-size:0.65rem; transition:transform 0.28s; font-family:var(--font-m); }
+.acc-item.open .acc-chev { transform:rotate(90deg); color:var(--gold); }
+.acc-body { max-height:0; overflow:hidden; transition:max-height 0.38s cubic-bezier(0.4,0,0.2,1); }
+.acc-item.open .acc-body { max-height:1200px; }
+.acc-content { padding:1.1rem 1.25rem; border-top:1px solid var(--border); font-size:0.9rem; line-height:1.75; color:var(--mid); }
+.acc-content p+p { margin-top:0.65rem; }
+
+/* ═══════════════════════════════════════════
+   GRID LAYOUTS
+═══════════════════════════════════════════ */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+
+@media(max-width:900px) {
+  .two-col { grid-template-columns:1fr; }
+  .three-col { grid-template-columns:1fr 1fr; }
+}
+
+/* ═══════════════════════════════════════════
+   MOBIILI — hamburger + drawer
+═══════════════════════════════════════════ */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 0.75rem; left: 0.75rem;
+  z-index: 300;
+  width: 40px; height: 40px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0;
+}
+.hamburger span {
+  display: block;
+  width: 18px; height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 199;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.sidebar-overlay.visible {
+  display: block;
+  opacity: 1;
+}
+
+@media(max-width: 768px) {
+  .hamburger { display: flex; }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    z-index: 200;
+    width: 260px;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding-top: 56px;
+  }
+
+  .page-content {
+    padding: 1rem;
+  }
+
+  .page-title { font-size: 1.4rem; }
+
+  /* Kojelauta mobiililla */
+  .dash-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .dash-card { padding: 0.85rem; }
+
+  /* Lomakkeet mobiililla */
+  .two-col, .three-col,
+  div[style*="grid-template-columns: 1fr 1fr"],
+  div[style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Modaalit mobiililla */
+  .modal-content {
+    width: 95vw !important;
+    max-height: 85vh !important;
+    margin: 1rem auto !important;
+  }
+
+  /* RX-kortit */
+  .rx-layout { grid-template-columns: 1fr !important; }
+
+  /* Muistiinpanot */
+  .notes-layout { grid-template-columns: 1fr !important; }
+}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD (Page 1)
+═══════════════════════════════════════════ */
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.dash-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.dash-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+}
+.dash-card.c-gold::before  { background:var(--gold); }
+.dash-card.c-teal::before  { background:var(--teal); }
+.dash-card.c-blue::before  { background:var(--blue); }
+.dash-card.c-rose::before  { background:var(--rose); }
+.dash-card.c-amber::before { background:var(--amber); }
+.dash-card:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+
+.dash-icon { font-size:1.4rem; margin-bottom:0.6rem; }
+.dash-title { font-family:var(--font-d); font-size:0.95rem; font-style:italic; color:var(--bright); margin-bottom:0.3rem; }
+.dash-desc { font-size:0.78rem; color:var(--dim); line-height:1.5; }
+
+.reminder-list { display:flex; flex-direction:column; gap:0.5rem; }
+.reminder-item {
+  display:flex; align-items:flex-start; gap:0.75rem;
+  padding:0.75rem 1rem;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  font-size:0.85rem;
+  color:var(--mid);
+  line-height:1.55;
+}
+.reminder-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.r-gold { background:var(--gold); }
+.r-teal { background:var(--teal); }
+.r-rose { background:var(--rose); }
+.r-blue { background:var(--blue); }
+
+/* ═══════════════════════════════════════════
+   POLYVAGAL LADDER
+═══════════════════════════════════════════ */
+.pv-ladder { display:flex; flex-direction:column; gap:3px; margin-bottom:2rem; }
+.pv-rung { border-radius:var(--r); border:1px solid; overflow:hidden; }
+.pv-rung.ventral { background:var(--teal-bg); border-color:var(--teal-bd); }
+.pv-rung.sym     { background:var(--rose-bg);  border-color:var(--rose-bd); }
+.pv-rung.dorsal  { background:var(--blue-bg);  border-color:var(--blue-bd); }
+.pv-trigger {
+  width:100%; display:flex; align-items:flex-start; justify-content:space-between;
+  padding:1rem 1.25rem; background:none; border:none; cursor:pointer; gap:1rem;
+}
+.pv-name { font-family:var(--font-d); font-size:1rem; font-style:italic; }
+.ventral .pv-name { color:var(--teal); }
+.sym .pv-name     { color:var(--rose); }
+.dorsal .pv-name  { color:var(--blue); }
+.pv-nerve { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-top:0.2rem; }
+.pv-kws { display:flex; flex-wrap:wrap; gap:0.3rem; margin-top:0.5rem; }
+.pv-kw { font-family:var(--font-m); font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.15rem 0.4rem; border-radius:3px; }
+.ventral .pv-kw { background:rgba(58,152,128,0.15); color:var(--teal); }
+.sym .pv-kw     { background:rgba(192,80,96,0.15);  color:var(--rose); }
+.dorsal .pv-kw  { background:rgba(72,120,200,0.15); color:var(--blue); }
+.pv-body { max-height:0; overflow:hidden; transition:max-height 0.38s; }
+.pv-rung.open .pv-body { max-height:500px; }
+.pv-detail { padding:0 1.25rem 1.25rem; border-top:1px solid var(--border); padding-top:1rem; font-size:0.88rem; line-height:1.75; color:var(--mid); }
+.pv-detail p+p { margin-top:0.6rem; }
+
+/* ═══════════════════════════════════════════
+   WINDOW OF TOLERANCE
+═══════════════════════════════════════════ */
+.wot-container { border-radius:var(--r2); overflow:hidden; border:1px solid var(--border); margin-bottom:2rem; }
+.wot-zone { padding:1.1rem 1.5rem; cursor:pointer; transition:filter 0.2s; border-bottom:1px solid var(--border); }
+.wot-zone:last-child { border-bottom:none; }
+.wot-zone:hover { filter:brightness(1.1); }
+.wot-zone.hyper   { background:rgba(192,80,96,0.08); }
+.wot-zone.optimal { background:rgba(58,152,128,0.08); }
+.wot-zone.hypo    { background:rgba(72,120,200,0.08); }
+.wot-label { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; margin-bottom:0.25rem; }
+.hyper .wot-label   { color:var(--rose); }
+.optimal .wot-label { color:var(--teal); }
+.hypo .wot-label    { color:var(--blue); }
+.wot-title { font-family:var(--font-d); font-size:1rem; font-style:italic; color:var(--bright); }
+.wot-syms { font-size:0.78rem; color:var(--muted); margin-top:0.3rem; }
+.wot-body { max-height:0; overflow:hidden; transition:max-height 0.38s; }
+.wot-zone.open .wot-body { max-height:400px; }
+.wot-detail { padding-top:0.9rem; font-size:0.88rem; line-height:1.75; color:var(--mid); }
+.int-list { list-style:none; margin-top:0.6rem; }
+.int-list li { padding:0.35rem 0 0.35rem 1.3rem; position:relative; border-bottom:1px solid var(--border); font-size:0.85rem; color:var(--mid); }
+.int-list li:last-child { border-bottom:none; }
+.int-list li::before { content:'→'; position:absolute; left:0; font-family:var(--font-m); color:var(--gold); font-size:0.7rem; }
+
+/* ═══════════════════════════════════════════
+   ASSESSMENTS
+═══════════════════════════════════════════ */
+.assessment-tabs {
+  display:flex; gap:0; border-bottom:1px solid var(--border);
+  margin-bottom:1.5rem; overflow-x:auto; scrollbar-width:none;
+}
+.assessment-tabs::-webkit-scrollbar { display:none; }
+.ass-tab {
+  font-family:var(--font-m); font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase;
+  padding:0.75rem 1.1rem; border:none; background:none;
+  color:var(--muted); cursor:pointer;
+  border-bottom:2px solid transparent; transition:all 0.2s;
+  white-space:nowrap; flex-shrink:0;
+}
+.ass-tab:hover { color:var(--text); }
+.ass-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+
+.ass-panel { display:none; }
+.ass-panel.active { display:block; }
+
+.q-item {
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:1rem 1.25rem;
+  margin-bottom:0.5rem;
+}
+.q-text { font-size:0.9rem; color:var(--text); margin-bottom:0.75rem; line-height:1.6; }
+.q-scale {
+  display:flex; gap:0.35rem; flex-wrap:wrap;
+}
+.q-opt {
+  font-family:var(--font-m); font-size:0.6rem; letter-spacing:0.06em;
+  padding:0.35rem 0.7rem; border-radius:var(--r);
+  border:1px solid var(--border2); background:var(--bg3);
+  color:var(--dim); cursor:pointer; transition:all 0.18s;
+}
+.q-opt:hover { border-color:var(--gold); color:var(--text); }
+.q-opt.selected { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+
+.score-display {
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-radius:var(--r2);
+  padding:1.25rem 1.5rem;
+  margin-top:1.25rem;
+  display:flex; align-items:center; gap:1.5rem;
+}
+.score-num {
+  font-family:var(--font-d);
+  font-size:2.5rem;
+  font-style:italic;
+  color:var(--bright);
+  line-height:1;
+}
+.score-label { font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem; }
+.score-interp { font-size:0.9rem; color:var(--mid); }
+.score-bar-wrap { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.score-bar-fill { height:100%; border-radius:3px; transition:width 0.5s, background 0.5s; background:var(--teal); }
+
+.btn-reset {
+  font-family:var(--font-m); font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase;
+  padding:0.45rem 1rem; border-radius:var(--r);
+  border:1px solid var(--border2); background:none;
+  color:var(--dim); cursor:pointer; transition:all 0.18s;
+}
+.btn-reset:hover { color:var(--text); border-color:var(--text); }
+
+.pv-obs-grid {
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.75rem;
+  margin-bottom:1.5rem;
+}
+@media(max-width:800px) { .pv-obs-grid { grid-template-columns:1fr; } }
+
+.obs-card {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r2); padding:1.1rem; cursor:pointer; transition:all 0.2s;
+}
+.obs-card:hover { border-color:var(--border2); }
+.obs-card.selected-ventral { background:var(--teal-bg); border-color:var(--teal); }
+.obs-card.selected-sym     { background:var(--rose-bg); border-color:var(--rose); }
+.obs-card.selected-dorsal  { background:var(--blue-bg); border-color:var(--blue); }
+
+.obs-state { font-family:var(--font-m); font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:0.5rem; }
+.obs-state.v { color:var(--teal); }
+.obs-state.s { color:var(--rose); }
+.obs-state.d { color:var(--blue); }
+.obs-name { font-family:var(--font-d); font-size:0.95rem; font-style:italic; color:var(--bright); margin-bottom:0.35rem; }
+.obs-signs { font-size:0.78rem; color:var(--dim); line-height:1.55; }
+
+.obs-result {
+  background:var(--bg3); border:1px solid var(--border2);
+  border-radius:var(--r2); padding:1.25rem;
+  margin-top:1rem; min-height:80px;
+}
+
+/* ═══════════════════════════════════════════
+   EXERCISES (therapist view)
+═══════════════════════════════════════════ */
+.ex-filter-bar { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1.25rem; }
+.ex-filter {
+  font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase;
+  padding:0.3rem 0.75rem; border-radius:3px;
+  border:1px solid var(--border2); background:none;
+  color:var(--muted); cursor:pointer; transition:all 0.18s;
+}
+.ex-filter:hover { color:var(--text); border-color:var(--dim); }
+.ex-filter.active { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+
+.ex-grid-t { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:1rem; }
+.ex-card-t {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r2); padding:1.25rem;
+  cursor:pointer; transition:all 0.22s;
+  display:flex; flex-direction:column; gap:0.4rem;
+  position:relative; overflow:hidden;
+}
+.ex-card-t::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.ex-card-t.breath::before  { background:var(--teal); }
+.ex-card-t.vagus::before   { background:var(--blue); }
+.ex-card-t.somatic::before { background:var(--rose); }
+.ex-card-t.grounding::before { background:var(--amber); }
+.ex-card-t.cognitive::before { background:var(--gold); }
+.ex-card-t.bilateral::before { background:#508060; }
+.ex-card-t.hidden { display:none; }
+.ex-card-t:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+.ex-cat-t { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; }
+.breath .ex-cat-t    { color:var(--teal); }
+.vagus .ex-cat-t     { color:var(--blue); }
+.somatic .ex-cat-t   { color:var(--rose); }
+.grounding .ex-cat-t { color:var(--amber); }
+.cognitive .ex-cat-t { color:var(--gold); }
+.bilateral .ex-cat-t { color:#508060; }
+.ex-name-t { font-family:var(--font-d); font-size:1rem; font-style:italic; color:var(--bright); line-height:1.3; }
+.ex-desc-t { font-size:0.82rem; color:var(--dim); line-height:1.55; flex:1; }
+.ex-meta-t { display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:0.4rem; }
+.ex-meta-item { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.05em; color:var(--muted); }
+.ex-flag {
+  font-family:var(--font-m); font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase;
+  padding:0.12rem 0.4rem; border-radius:2px;
+  background:var(--rose-bg); border:1px solid var(--rose-bd); color:var(--rose);
+}
+
+/* ═══════════════════════════════════════════
+   PSYCHOED
+═══════════════════════════════════════════ */
+.psychoed-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; }
+.psychoed-card {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r2); overflow:hidden;
+  cursor:pointer; transition:all 0.22s;
+}
+.psychoed-card:hover { border-color:var(--border2); transform:translateY(-2px); }
+.psychoed-head { padding:1.1rem; border-bottom:1px solid var(--border); }
+.psychoed-icon { font-size:1.4rem; margin-bottom:0.4rem; }
+.psychoed-topic { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem; }
+.psychoed-name { font-family:var(--font-d); font-size:1rem; font-style:italic; color:var(--bright); }
+.psychoed-body { padding:0.85rem 1.1rem; font-size:0.82rem; color:var(--dim); line-height:1.55; }
+
+/* ═══════════════════════════════════════════
+   PRESCRIPTION (Harjoitteiden määräys)
+═══════════════════════════════════════════ */
+.rx-layout { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+@media(max-width:900px) { .rx-layout { grid-template-columns:1fr; } }
+
+.rx-list { display:flex; flex-direction:column; gap:0.4rem; }
+.rx-item {
+  display:flex; align-items:center; gap:0.75rem;
+  padding:0.75rem 1rem;
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r); cursor:pointer; transition:all 0.18s;
+}
+.rx-item:hover { border-color:var(--border2); }
+.rx-item.selected { background:var(--gold-bg); border-color:var(--gold); }
+.rx-check {
+  width:16px; height:16px; border-radius:3px;
+  border:1.5px solid var(--border2); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.6rem; color:var(--gold); transition:all 0.18s;
+}
+.rx-item.selected .rx-check { background:var(--gold-bg); border-color:var(--gold); }
+.rx-name { font-size:0.88rem; color:var(--text); }
+.rx-cat { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:0.1rem; }
+
+.rx-output {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r2); padding:1.5rem;
+  position:sticky; top:2rem;
+}
+.rx-output-title { font-family:var(--font-d); font-size:1.05rem; font-style:italic; color:var(--bright); margin-bottom:1rem; }
+.rx-preview {
+  background:var(--bg3); border:1px solid var(--border);
+  border-radius:var(--r); padding:1rem;
+  font-size:0.85rem; line-height:1.7; color:var(--mid);
+  min-height:120px; margin-bottom:1rem;
+  font-family:var(--font-m);
+  white-space:pre-wrap;
+}
+.rx-btn {
+  width:100%; padding:0.7rem;
+  background:var(--gold); color:var(--bg);
+  border:none; border-radius:var(--r);
+  font-family:var(--font-b); font-size:0.82rem; font-weight:600;
+  cursor:pointer; transition:all 0.18s;
+  margin-bottom:0.4rem;
+}
+.rx-btn:hover { filter:brightness(1.12); }
+.rx-btn.secondary {
+  background:none; border:1px solid var(--border2);
+  color:var(--dim);
+}
+.rx-btn.secondary:hover { border-color:var(--dim); color:var(--text); }
+
+/* ═══════════════════════════════════════════
+   NOTES
+═══════════════════════════════════════════ */
+.notes-layout { display:grid; grid-template-columns:1.2fr 1fr; gap:1.5rem; }
+@media(max-width:900px) { .notes-layout { grid-template-columns:1fr; } }
+
+.field-label { font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:0.35rem; }
+.field-input, .field-textarea, .field-select {
+  width:100%; background:var(--bg3); border:1px solid var(--border2);
+  border-radius:var(--r); padding:0.6rem 0.85rem;
+  font-family:var(--font-b); font-size:0.88rem; color:var(--text);
+  outline:none; transition:border-color 0.18s; resize:none; appearance:none;
+}
+.field-input:focus, .field-textarea:focus, .field-select:focus { border-color:var(--gold); }
+.field-textarea { min-height:75px; line-height:1.6; }
+.field-row { margin-bottom:0.85rem; }
+
+.score-range {
+  width:100%; appearance:none; height:4px;
+  border-radius:2px; background:var(--border2);
+  outline:none; cursor:pointer;
+}
+.score-range::-webkit-slider-thumb {
+  appearance:none; width:16px; height:16px;
+  border-radius:50%; background:var(--gold);
+  cursor:pointer; border:2px solid var(--bg);
+}
+.range-row { display:flex; align-items:center; gap:0.75rem; }
+.range-val { font-family:var(--font-m); font-size:0.85rem; color:var(--gold); min-width:1.5rem; text-align:center; }
+
+.btn-save {
+  font-family:var(--font-m); font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase;
+  padding:0.6rem 1.4rem; border-radius:var(--r);
+  border:none; background:var(--gold); color:var(--bg);
+  cursor:pointer; transition:all 0.18s; font-weight:500;
+}
+.btn-save:hover { filter:brightness(1.12); }
+
+.note-entries { display:flex; flex-direction:column; gap:0.6rem; max-height:600px; overflow-y:auto; }
+.note-entry {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r); padding:1rem;
+}
+.note-entry:hover { border-color:var(--border2); }
+.note-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem; gap:0.5rem; }
+.note-date { font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.06em; color:var(--muted); }
+.note-state-badge { font-family:var(--font-m); font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.12rem 0.4rem; border-radius:2px; }
+.badge-ventral { background:var(--teal-bg); color:var(--teal); border:1px solid var(--teal-bd); }
+.badge-sym     { background:var(--rose-bg);  color:var(--rose);  border:1px solid var(--rose-bd); }
+.badge-dorsal  { background:var(--blue-bg);  color:var(--blue);  border:1px solid var(--blue-bd); }
+.note-text { font-size:0.85rem; color:var(--dim); line-height:1.6; }
+.note-scores { display:flex; gap:1rem; margin-top:0.4rem; font-family:var(--font-m); font-size:0.58rem; color:var(--muted); }
+.note-del { background:none; border:none; cursor:pointer; color:var(--muted); font-size:0.7rem; padding:2px; transition:color 0.18s; flex-shrink:0; }
+.note-del:hover { color:var(--rose); }
+.empty-state { text-align:center; padding:2rem; color:var(--muted); font-style:italic; font-family:var(--font-d); font-size:0.95rem; }
+
+/* ═══════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════ */
+.modal-bg {
+  display:none; position:fixed; inset:0; z-index:500;
+  background:rgba(8,12,20,0.8); backdrop-filter:blur(6px);
+  align-items:flex-end; justify-content:center;
+}
+.modal-bg.open { display:flex; }
+.modal-sheet {
+  background:var(--bg2); border:1px solid var(--border2);
+  border-radius:18px 18px 0 0;
+  padding:0; width:100%; max-width:680px; max-height:88vh;
+  overflow-y:auto; animation:sheetUp 0.3s cubic-bezier(0.32,0,0,1);
+  scrollbar-width:thin; scrollbar-color:var(--border2) transparent;
+}
+@keyframes sheetUp { from{transform:translateY(100%)} to{transform:none} }
+.modal-handle-row { display:flex; justify-content:center; padding:0.75rem; position:sticky; top:0; background:var(--bg2); border-bottom:1px solid var(--border); z-index:10; }
+.modal-handle { width:36px; height:4px; background:var(--border2); border-radius:2px; }
+.modal-body { padding:1.5rem 1.75rem 2.5rem; }
+.modal-eyebrow { font-family:var(--font-m); font-size:0.56rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-bottom:0.35rem; }
+.modal-title { font-family:var(--font-d); font-size:1.65rem; font-style:italic; color:var(--bright); margin-bottom:0.3rem; line-height:1.2; }
+.modal-desc { font-size:0.9rem; color:var(--dim); margin-bottom:1.5rem; }
+.step-ol { list-style:none; counter-reset:steps; }
+.step-ol li { counter-increment:steps; padding:0.8rem 0 0.8rem 2.75rem; position:relative; border-bottom:1px solid var(--border); font-size:0.9rem; line-height:1.65; color:var(--mid); }
+.step-ol li:last-child { border-bottom:none; }
+.step-ol li::before { content:counter(steps); position:absolute; left:0; top:0.8rem; width:1.7rem; height:1.7rem; background:var(--bg3); border:1px solid var(--border2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-m); font-size:0.62rem; color:var(--gold); }
+
+.method-check {
+  display:flex; align-items:center; gap:0.5rem;
+  font-size:0.82rem; color:var(--mid); cursor:pointer;
+  padding:0.25rem 0;
+}
+.method-check input[type=checkbox] {
+  accent-color:var(--gold); width:14px; height:14px; flex-shrink:0;
+}
+
+.wot-chip, .goal-chip {
+  font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.1em;
+  text-transform:uppercase; padding:0.3rem 0.7rem; border-radius:var(--r);
+  border:1px solid var(--border2); background:none; color:var(--muted);
+  cursor:pointer; transition:all 0.18s;
+}
+.wot-chip:hover, .goal-chip:hover { color:var(--text); border-color:var(--dim); }
+.wot-chip.active-hyper  { background:var(--rose-bg);  border-color:var(--rose);  color:var(--rose); }
+.wot-chip.active-optimal { background:var(--teal-bg); border-color:var(--teal); color:var(--teal); }
+.wot-chip.active-hypo   { background:var(--blue-bg);  border-color:var(--blue);  color:var(--blue); }
+.wot-chip.active-fluctuating { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+.goal-chip.active-yes  { background:var(--teal-bg); border-color:var(--teal); color:var(--teal); }
+.goal-chip.active-partial { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+.goal-chip.active-no   { background:var(--rose-bg); border-color:var(--rose); color:var(--rose); }
+
+.note-methods { display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.35rem; }
+.note-method-tag { font-family:var(--font-m); font-size:0.5rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.1rem 0.35rem; border-radius:2px; background:var(--bg3); border:1px solid var(--border2); color:var(--muted); }
+
+.note-safety { background:var(--rose-bg); border:1px solid var(--rose-bd); border-radius:var(--r); padding:0.4rem 0.6rem; font-size:0.78rem; color:var(--rose); margin-top:0.35rem; }
+.note-homework { font-family:var(--font-m); font-size:0.62rem; color:var(--gold); margin-top:0.3rem; }
+
+/* scrollbar */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+/* divider */
+.divider { height:1px; background:var(--border); margin:2rem 0; }
+
+/* ── BREADCRUMB & PAGE-ROLE ── */
+.breadcrumb {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+.breadcrumb span {
+  cursor: pointer;
+  color: var(--teal);
+  transition: opacity 0.15s;
+}
+.breadcrumb span:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+.breadcrumb strong {
+  color: var(--text);
+  font-weight: 500;
+}
+.page-role {
+  font-size: 0.82rem;
+  color: var(--dim);
+  font-style: italic;
+  margin-bottom: 1.25rem;
+  margin-top: 0;
+}
+
+/* ── MOBILE BOTTOM BAR ── */
+.mobile-bottom-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  justify-content: space-around;
+  align-items: center;
+  padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+  z-index: 1000;
+}
+@media (max-width: 768px) {
+  .mobile-bottom-bar { display: flex; }
+  .main { padding-bottom: 60px; }
+}
+.mobile-bottom-bar a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 1.35rem;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+.mobile-bottom-bar a:hover,
+.mobile-bottom-bar a.active {
+  background: var(--bg3);
+}
+.mobile-bottom-bar a span.bar-label {
+  font-family: var(--font-m);
+  font-size: 0.48rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.mobile-bottom-bar a.active span.bar-label {
+  color: var(--teal);
+}
+</style>
+</head>
+<body>
+
+
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Avaa valikko">
+  <span></span><span></span><span></span>
+</button>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div class="logo-name">Marko Oinas</div>
+      <button id="theme-toggle" onclick="toggleTheme()"
+        style="background:none;border:none;cursor:pointer;font-size:1rem;padding:0.2rem;border-radius:6px;opacity:0.7;transition:opacity 0.2s"
+        title="Vaihda teema">🌙</button>
+    </div>
+    <div class="logo-title">Kliininen työkalu · v1.0</div>
+  </div>
+
+  <div class="sidebar-nav">
+
+  <!-- Istunto — aina auki -->
+  <details class="nav-group" open>
+    <summary class="nav-group-title">Istunto</summary>
+    <div class="nav-item active" onclick="showPage('kojelauta',this)">
+      <span class="nav-dot"></span>Kojelauta
+    </div>
+    <div class="nav-item" onclick="showPage('muistiinpanot',this)">
+      <span class="nav-dot"></span>Muistiinpanot
+    </div>
+    <div class="nav-item" onclick="showPage('lapset-nuoret',this)">
+      <span class="nav-dot"></span>Lapset &amp; nuoret
+    </div>
+    <div class="nav-item" onclick="showPage('elamanjana',this)">
+      <span class="nav-dot"></span>Elämänjana
+    </div>
+  </details>
+
+  <!-- Arvioinnit & Seuranta -->
+  <details class="nav-group" open>
+    <summary class="nav-group-title">Arvioinnit &amp; Seuranta</summary>
+    <div class="nav-item" onclick="showPage('arvioinnit',this)">
+      <span class="nav-dot"></span>Arvioinnit
+    </div>
+    <div class="nav-item" onclick="showPage('edistyminen',this)">
+      <span class="nav-dot"></span>Edistymisseuranta
+    </div>
+    <div class="nav-item" onclick="showPage('psqi',this)">
+      <span class="nav-dot"></span>PSQI (uni)
+    </div>
+  </details>
+
+  <!-- Hoito -->
+  <details class="nav-group" open>
+    <summary class="nav-group-title">Hoito</summary>
+    <div class="nav-item" onclick="showPage('harjoitteet',this)">
+      <span class="nav-dot"></span>Harjoitteet
+    </div>
+    <div class="nav-item" onclick="showPage('hoitosuunnitelma',this)">
+      <span class="nav-dot"></span>Hoitosuunnitelma
+    </div>
+    <div class="nav-item" onclick="showPage('akupunktio',this)">
+      <span class="nav-dot"></span>Akupunktio
+    </div>
+    <div class="nav-item" onclick="showPage('maarays',this)">
+      <span class="nav-dot"></span>Harj. määräys
+    </div>
+  </details>
+
+  <!-- Tietopankki — suljettu oletuksena -->
+  <details class="nav-group" id="nav-theory-details">
+    <summary class="nav-group-title">Tietopankki</summary>
+    <div class="nav-item" onclick="showPage('aivokerrokset',this)">
+      <span class="nav-dot"></span>Aivokerrokset
+    </div>
+    <div class="nav-item" onclick="showPage('polyvagaali',this)">
+      <span class="nav-dot"></span>Polyvagaali
+    </div>
+    <div class="nav-item" onclick="showPage('toleranssi',this)">
+      <span class="nav-dot"></span>Toleranssi-ikkuna
+    </div>
+    <div class="nav-item" onclick="showPage('kipu',this)">
+      <span class="nav-dot"></span>Kipu &amp; hermosto
+    </div>
+    <div class="nav-item" onclick="showPage('trauma',this)">
+      <span class="nav-dot"></span>Trauma &amp; keho
+    </div>
+    <div class="nav-item" onclick="showPage('ans',this)">
+      <span class="nav-dot"></span>ANS käytännössä
+    </div>
+    <div class="nav-item" onclick="showPage('hrv',this)">
+      <span class="nav-dot"></span>HRV &amp; vagushermo
+    </div>
+    <div class="nav-item" onclick="showPage('kehomuisti',this)">
+      <span class="nav-dot"></span>Kehon muisti
+    </div>
+    <div class="nav-item" onclick="showPage('psykoed',this)">
+      <span class="nav-dot"></span>Psykoedukaatio
+    </div>
+  </details>
+
+  </div><!-- /sidebar-nav -->
+
+  <div class="sidebar-footer">
+    Vain terapeutin käyttöön<br>Ei potilastietoja
+  </div>
+</aside>
+
+<main class="main">
+<div id="page-hoitosuunnitelma" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('hoitosuunnitelma',null)">Hoito</span> › <strong>Hoitosuunnitelma</strong></div>
+<p class="page-role">Yksilöllinen hoitosuunnitelma ja tavoitteet</p>
+
+  <div class="page-eyebrow">Rakenteinen suunnittelu</div>
+  <h1 class="page-title">Hoitosuunnitelma</h1>
+  <p class="page-lead">Asiakaskohtainen hoitosuunnitelma tavoitteineen ja menetelmineen. Tallennetaan paikallisesti.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+    <div>
+      <div class="card" style="margin-bottom:1rem">
+        <div style="font-family:var(--font-m);font-size:0.56rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Perustiedot</div>
+        <div class="field-row"><label class="field-label">Asiakaskoodi</label>
+          <input type="text" class="field-input" id="plan-client" placeholder="sama koodi kuin muistiinpanoissa"
+            list="plan-client-list" oninput="planClientChanged(this.value)">
+          <datalist id="plan-client-list"></datalist></div>
+        <div class="field-row"><label class="field-label">Diagnoosi / pääongelma</label>
+          <input type="text" class="field-input" id="plan-diagnosis" placeholder="Esim. PTSD, krooninen kipu, ahdistus..."></div>
+        <div class="field-row"><label class="field-label">Hoidon aloituspvm</label>
+          <input type="date" class="field-input" id="plan-start"></div>
+        <div class="field-row"><label class="field-label">Arvioitu kesto</label>
+          <input type="text" class="field-input" id="plan-duration" placeholder="Esim. 12 istuntoa, 3 kk..."></div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div style="font-family:var(--font-m);font-size:0.56rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Tavoitteet</div>
+        <div class="field-row"><label class="field-label">Pitkän aikavälin tavoite</label>
+          <textarea class="field-textarea" id="plan-goal-long" placeholder="Mitä asiakas haluaa saavuttaa..." style="min-height:60px"></textarea></div>
+        <div class="field-row"><label class="field-label">Lyhyen aikavälin tavoitteet</label>
+          <textarea class="field-textarea" id="plan-goal-short" placeholder="3 kuukauden tavoitteet..." style="min-height:60px"></textarea></div>
+        <div class="field-row"><label class="field-label">Mittarit / miten arvioidaan</label>
+          <input type="text" class="field-input" id="plan-measure" placeholder="GAD-7, vireystila, toimintakyky..."></div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div style="font-family:var(--font-m);font-size:0.56rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Menetelmät</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.3rem" id="plan-methods-grid">
+          <label class="method-check"><input type="checkbox" value="pne"> Kipuneurotiede (PNE)</label>
+          <label class="method-check"><input type="checkbox" value="se"> Somaattinen kokeminen (SE)</label>
+          <label class="method-check"><input type="checkbox" value="emdr"> EMDR / BLS</label>
+          <label class="method-check"><input type="checkbox" value="cbt"> Kognitiivinen terapia</label>
+          <label class="method-check"><input type="checkbox" value="acup"> Akupunktio</label>
+          <label class="method-check"><input type="checkbox" value="mindful"> Mindfulness / MBSR</label>
+          <label class="method-check"><input type="checkbox" value="hrv"> HRV-harjoittelu</label>
+          <label class="method-check"><input type="checkbox" value="breathwork"> Hengitystyöskentely</label>
+          <label class="method-check"><input type="checkbox" value="bodywork"> Manuaalinen terapia</label>
+          <label class="method-check"><input type="checkbox" value="psykoed"> Psykoedukaatio</label>
+          <label class="method-check"><input type="checkbox" value="movement"> Liiketerapia</label>
+          <label class="method-check"><input type="checkbox" value="narrative"> Narratiivinen työ</label>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div style="font-family:var(--font-m);font-size:0.56rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Erityishuomiot</div>
+        <div class="field-row"><label class="field-label">Kontraindikaatiot / varotoimet</label>
+          <textarea class="field-textarea" id="plan-contraindications" placeholder="Allergia, lääkitys, trauma-historia..." style="min-height:55px"></textarea></div>
+        <div class="field-row"><label class="field-label">Verkosto / konsultaatiotarve</label>
+          <input type="text" class="field-input" id="plan-network" placeholder="Psykiatri, lääkäri, koulukuraattori..."></div>
+        <div class="field-row"><label class="field-label">Muita huomioita</label>
+          <textarea class="field-textarea" id="plan-notes" placeholder="Motivaatio, resurssit, haasteet..." style="min-height:55px"></textarea></div>
+        <button class="btn-save" onclick="savePlan()">Tallenna hoitosuunnitelma</button>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-family:var(--font-m);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Tallennetut suunnitelmat</div>
+      <div id="plan-list"></div>
+
+      <!-- Asiakasdata-yhteenveto -->
+      <div id="plan-client-summary" style="display:none;margin-top:1rem">
+        <div style="font-family:var(--font-m);font-size:0.56rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Asiakasdata</div>
+
+        <!-- Istunnot -->
+        <div class="card" style="margin-bottom:0.75rem;padding:0.75rem 1rem">
+          <div style="font-size:0.7rem;font-weight:700;color:var(--text);margin-bottom:0.5rem">📝 Istuntohistoria</div>
+          <div id="plan-session-summary" style="font-size:0.78rem;color:var(--dim)"></div>
+        </div>
+
+        <!-- Arvioinnit -->
+        <div class="card" style="margin-bottom:0.75rem;padding:0.75rem 1rem">
+          <div style="font-size:0.7rem;font-weight:700;color:var(--text);margin-bottom:0.5rem">📊 Viimeisimmät arvioinnit</div>
+          <div id="plan-ass-summary" style="font-size:0.78rem;color:var(--dim)"></div>
+        </div>
+
+        <!-- Vireystila-trendi -->
+        <div class="card" style="padding:0.75rem 1rem">
+          <div style="font-size:0.7rem;font-weight:700;color:var(--text);margin-bottom:0.5rem">📈 Vireystila istunnoissa</div>
+          <div id="plan-arousal-summary" style="font-size:0.78rem;color:var(--dim)"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── AKUPUNKTIO ─────────────────────────────── -->
+<div id="page-akupunktio" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('hoitosuunnitelma',null)">Hoito</span> › <strong>Akupunktio</strong></div>
+<p class="page-role">Akupunktioprotokollit ja pisteet</p>
+
+  <div class="page-eyebrow">Kiinalainen lääketiede · Psykofyysinen integraatio</div>
+  <h1 class="page-title">Akupunktio psykofyysisessä työssä</h1>
+  <p class="page-lead">ANS-säätely, trauma, kipu ja psykologinen tasapaino kiinalaisen lääketieteen näkökulmasta. Neurotieteellinen perusta kiinalaisen lääketieteen kliiniseen soveltamiseen.</p>
+
+  <div class="info-box"><strong>Integraation ydin:</strong> Akupunktio ja psykofyysinen terapia toimivat samaan suuntaan — molemmat moduloivat ANS:ia, vagushermoa ja HPA-akselia. Yhdistettynä ne täydentävät toisiaan. Terapeuttiset harjoitteet valmistavat hermoston akupunktiolle ja tukevat sen vaikutusta.</div>
+
+  <div id="acu-acc">
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Neurotieteellinen perusta akupunktiolle</div><div class="acc-sub">Miksi akupunktio toimii — länsimaiset mekanismit</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Vagus · Endorfiini · Tulehdus</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Vagushermon aktivointi:</strong> Akupisteet, erityisesti korvan alueella (auricular) ja P6 (neiguan), stimuloivat vagushermoa suoraan. EEG-tutkimuksissa näkyy delta-aaltojen lisääntyminen ja sympaattisen aktiviteetin lasku (Cabioglu ym. 2012).</p>
+        <p><strong style="color:var(--text)">Endogeeniset opioidit:</strong> Akupunktio vapauttaa endorfiineja, enkefalineja ja dynorfiineja. Erityisesti syvä pistäminen (de qi -tunnus) aktivoi enkefalin-vapautuksen. Tämä selittää kipua lievittävän ja mielialaa kohottavan vaikutuksen.</p>
+        <p><strong style="color:var(--text)">HPA-akselin modulaatio:</strong> Akupunktio vähentää kortisolin eritystä ja normalisoi HPA-akselin toimintaa kroonisessa stressissä. ST36 (zusanli) on erityisesti tutkittu tässä yhteydessä (Kavoussi &amp; Ross 2007).</p>
+        <p><strong style="color:var(--text)">Anti-inflammatorinen vaikutus:</strong> Vagus-akupunktio aktivoi kolinergisen anti-inflammatorisen polun (sama kuin Traceyn tutkimukset HRV:stä). Vähentää tulehdussytokiineja, erityisesti TNF-α ja IL-1β.</p>
+        <p><strong style="color:var(--text)">Aivojen neuroplastisuus:</strong> fMRI-tutkimukset osoittavat, että akupunktio muuttaa default mode networkin ja limbisen järjestelmän aktivaatiota. Pitkäaikainen hoito lisää harmaan aineen määrää kipua käsittelevillä alueilla.</p>
+        <div class="tags"><span class="tag">Vagus</span><span class="tag">Endorfiini</span><span class="tag">HPA-akseli</span><span class="tag">Kortisoli</span><span class="tag">Neuroplastisuus</span><span class="tag">fMRI</span></div>
+        <div class="clinical-note">Selitä asiakkaalle: "Akupunktio toimii osittain samalla mekanismilla kuin hengitysharjoitteet — se rauhoittaa hermoston stressireaktiota. Ne täydentävät toisiaan."</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">ANS-säätelyn pisteet</div><div class="acc-sub">Keskeisimmät akupisteet hermostosäätelyyn</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">PC6 · HT7 · ST36 · GV20 · Yintang</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <div style="padding:0.75rem;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)">
+            <div style="font-family:var(--font-m);font-size:0.6rem;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">PC6 — Neiguan</div>
+            <p style="font-size:0.82rem;color:var(--dim);line-height:1.6">3 sormea ranteen yläpuolella, kyynärvarren sisäpuolella. Vagushermon stimulaatio, ahdistuksen ja pahoinvoinnin lievitys, sydämen säätely. Tutkittu laajimmin ahdistuksessa (Samuels ym. 2008).</p>
+          </div>
+          <div style="padding:0.75rem;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)">
+            <div style="font-family:var(--font-m);font-size:0.6rem;color:var(--teal);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">HT7 — Shenmen</div>
+            <p style="font-size:0.82rem;color:var(--dim);line-height:1.6">Ranteen sisäpuolella, pikkusormun puolella. "Mielen portti" — ahdistus, unettomuus, sydämentykytys. Sedatoiva vaikutus. Erityisen hyvä dorsal-vagaali tilassa.</p>
+          </div>
+          <div style="padding:0.75rem;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)">
+            <div style="font-family:var(--font-m);font-size:0.6rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">ST36 — Zusanli</div>
+            <p style="font-size:0.82rem;color:var(--dim);line-height:1.6">4 sormea polvilumpion alla, sääriluun vieressä. Vahvistava, HPA-akselin säätely, kortisolin lasku, immuniteetti. Erityisen hyvä kroonisessa väsymyksessä ja pitkässä stressissä.</p>
+          </div>
+          <div style="padding:0.75rem;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)">
+            <div style="font-family:var(--font-m);font-size:0.6rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">GV20 — Baihui</div>
+            <p style="font-size:0.82rem;color:var(--dim);line-height:1.6">Päälaen lakipisteessä, korvanlehtien välissä. Nostava, selkeyttävä — masennus, väsymys, hypoarousal. Aktivoi prefrontaalista aluetta. Myös ADHD:ssa.</p>
+          </div>
+          <div style="padding:0.75rem;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)">
+            <div style="font-family:var(--font-m);font-size:0.6rem;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">Yintang — EX-HN3</div>
+            <p style="font-size:0.82rem;color:var(--dim);line-height:1.6">Kulmakarvojen välissä, "kolmas silmä". Rauhoittava, ahdistuksen lievitys, unen parantaminen. Yksi tehokkaimmista yksittäisistä sedatoivista pisteistä. Turvallinen, helppo käyttää.</p>
+          </div>
+          <div style="padding:0.75rem;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)">
+            <div style="font-family:var(--font-m);font-size:0.6rem;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem">KI1 — Yongquan</div>
+            <p style="font-size:0.82rem;color:var(--dim);line-height:1.6">Jalkapohjan keskellä, "kupliva lähde". Maadoittava — paniikki, ylivireys, dissosiaatio. Erityisen hyvä hyperarousal-tilassa. Voidaan yhdistää grounding-harjoitteisiin.</p>
+          </div>
+        </div>
+        <div class="clinical-note" style="margin-top:0.75rem">Aloita yksinkertaisilla yhdistelmillä: Yintang + HT7 + ST36 rauhoittavaan protokollaan. PC6 + HT7 ahdistukseen. GV20 + ST36 väsymykseen ja masennukseen.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Traumaprotokollat</div><div class="acc-sub">NADA · Battlefield · Psyykkinen tasapaino</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Korva-akupunktio · PTSD · Stabilisaatio</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">NADA-protokolla (National Acupuncture Detoxification Association):</strong> 5 korva-akupistettä — Sympathetic, Shen Men, Kidney, Liver, Lung. Alkujaan kehitetty päihderiippuvuuteen, nyt laajasti käytetty traumassa, PTSD:ssä ja stressissä. Tutkimusnäyttö: vähentää ahdistusta, parantaa unta, tukee traumaprosessointia.</p>
+        <p><strong style="color:var(--text)">Battlefield Acupuncture:</strong> 5 korva-akupistettä kipuun (Cingulate Gyrus, Thalamus, Omega 2, Point Zero, Shen Men). Nopea kivunlievitys. Käytetty laajalti sotaveteraanien PTSD:n ja kivun hoidossa Yhdysvalloissa.</p>
+        <p><strong style="color:var(--text)">Psyykkinen tasapaino (Four Gates + PC6 + GV20):</strong> LI4 + LV3 (neljä porttia) avaa Qi:n kulun. Lisää PC6 (neiguan) ja GV20. Tasapainottava protokolla — ahdistus, masennus, emotionaalinen jumittuminen.</p>
+        <p><strong style="color:var(--text)">Integraatio terapiaan:</strong> Akupunktio istunnon alussa rauhoittaa hermoston vastaanottavaisemmaksi psykoterapeuttiselle työskentelylle. Istunnon lopussa maadoittaa ja integroi käsiteltyä materiaalia.</p>
+        <div class="tags"><span class="tag">NADA</span><span class="tag">Battlefield</span><span class="tag">Korva-akupunktio</span><span class="tag">Four Gates</span><span class="tag">PTSD</span></div>
+        <div class="clinical-note">NADA-protokolla sopii erityisen hyvin traumafaasi 1:een — stabilisaatio ilman narratiivista työskentelyä. Voidaan tehdä ryhmäasetuksessa, jopa hiljaa.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Kipu — akupunktio ja PNE yhdistettynä</div><div class="acc-sub">Integroitu lähestymistapa krooniseen kipuun</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Sentraalinen sensitisaatio · Pisteet · Protokolla</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Akupunktio ja porttikontrolli:</strong> Akupunktio aktivoi Aβ-myelinoituja kuituja jotka sulkevat kipuporttia selkäytimessä. Sama mekanismi kuin hieronnassa — selittää paikallisen kivunlievityksen.</p>
+        <p><strong style="color:var(--text)">Endogeeninen kivunesto (DNIC):</strong> Diffuse Noxious Inhibitory Controls — akupunktio yhden alueen kipu estää kipua laajemmin hermostossa. Selittää miksi pistetään usein kaukana kipualueesta.</p>
+        <p><strong style="color:var(--text)">Kroonisen kivun protokolla:</strong></p>
+        <ul class="int-list">
+          <li>ST36 + SP6 — vahvistaa, vähentää tulehdusta, moduloi HPA-akselia</li>
+          <li>LI4 + LV3 (Four Gates) — avaa Qi:n kulun, laaja kivunlievitys</li>
+          <li>GV14 + BL17 — tulehduksen ja immuniteetin säätely</li>
+          <li>Paikalliset Ashi-pisteet — suora paikallinen vaikutus</li>
+          <li>Auricular: Thalamus + Shen Men — sentraalinen kivunlievitys</li>
+        </ul>
+        <p><strong style="color:var(--text)">PNE + akupunktio:</strong> Selitä ensin kivun neurotuede (sentraalinen sensitisaatio, hermosto oppii) — sitten akupunktio tukee hermoston uudelleenoppimista. Asiakas ymmärtää miksi akupunktio ei "korjaa kudosta" vaan rauhoittaa hermostoa.</p>
+        <div class="tags"><span class="tag">Porttikontrolli</span><span class="tag">DNIC</span><span class="tag">Four Gates</span><span class="tag">Ashi</span><span class="tag">Auricular</span></div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Viiden elementin psykologia</div><div class="acc-sub">Kiinalainen lääketiede ja mielenterveys</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Puu · Tuli · Maa · Metalli · Vesi</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.6rem;margin-bottom:0.75rem">
+          <div style="padding:0.65rem;background:var(--bg3);border-radius:var(--r);border-left:2px solid #3a8a50">
+            <div style="font-family:var(--font-m);font-size:0.58rem;color:#3a8a50;text-transform:uppercase;letter-spacing:0.1em">🌿 Puu — Maksa/Sappi</div>
+            <p style="font-size:0.78rem;color:var(--dim);margin-top:0.3rem;line-height:1.5">Tunne: viha, turhautuminen. Epätasapaino: jäykkyys, kontrollointi, perfektionismi. Tasapaino: luovuus, joustavuus, visio.</p>
+          </div>
+          <div style="padding:0.65rem;background:var(--bg3);border-radius:var(--r);border-left:2px solid #c05020">
+            <div style="font-family:var(--font-m);font-size:0.58rem;color:#c05020;text-transform:uppercase;letter-spacing:0.1em">🔥 Tuli — Sydän/OT</div>
+            <p style="font-size:0.78rem;color:var(--dim);margin-top:0.3rem;line-height:1.5">Tunne: ilo, innostus. Epätasapaino: ahdistus, maniamaisuus, yhteyden puute. Tasapaino: lämpö, yhteys, rakkaus.</p>
+          </div>
+          <div style="padding:0.65rem;background:var(--bg3);border-radius:var(--r);border-left:2px solid #c0900a">
+            <div style="font-family:var(--font-m);font-size:0.58rem;color:#c0900a;text-transform:uppercase;letter-spacing:0.1em">🌾 Maa — Perna/Mahalaukku</div>
+            <p style="font-size:0.78rem;color:var(--dim);margin-top:0.3rem;line-height:1.5">Tunne: huolestuneisuus, märehtiminen. Epätasapaino: ahdistus, pakonomainen ajattelu. Tasapaino: hoiva, keskittyneisyys.</p>
+          </div>
+          <div style="padding:0.65rem;background:var(--bg3);border-radius:var(--r);border-left:2px solid #8080a0">
+            <div style="font-family:var(--font-m);font-size:0.58rem;color:#8080a0;text-transform:uppercase;letter-spacing:0.1em">🪨 Metalli — Keuhko/Paksusuoli</div>
+            <p style="font-size:0.78rem;color:var(--dim);margin-top:0.3rem;line-height:1.5">Tunne: suru, menetys. Epätasapaino: masennus, irrottautuminen, perfektionismi. Tasapaino: arvo, laatu, päästäminen irti.</p>
+          </div>
+          <div style="padding:0.65rem;background:var(--bg3);border-radius:var(--r);border-left:2px solid #3060a0">
+            <div style="font-family:var(--font-m);font-size:0.58rem;color:#3060a0;text-transform:uppercase;letter-spacing:0.1em">💧 Vesi — Munuainen/Virtsarakko</div>
+            <p style="font-size:0.78rem;color:var(--dim);margin-top:0.3rem;line-height:1.5">Tunne: pelko, eksistentiaalinen ahdistus. Epätasapaino: ylivireystila, uupumus, fobia. Tasapaino: viisaus, tahto, rohkeus.</p>
+          </div>
+        </div>
+        <div class="clinical-note">Viiden elementin näkökulma täydentää polyvagaalista teoriaa: elementin "ylivalvontaan" voi vastata sekä spesifisillä akupisteillä että tilakohtaisilla psykoterapeuttisilla interventioilla.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Akupunktio ja Long COVID / krooninen väsymys</div><div class="acc-sub">ANS-dysautonomia · Käytännön protokolla</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">POTS · Vagus · Energia</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Long COVID ja ANS:</strong> Vagushermon tulehdus on mahdollinen mekanismi. Akupunktio vagushermon reiteillä (auricular vagus, PC6, ST36) voi moduloida tätä suoraan.</p>
+        <p><strong style="color:var(--text)">Energianhallinnan protokolla:</strong></p>
+        <ul class="int-list">
+          <li>ST36 + SP6 — vahvistaa Qi:tä ja Xue:tä (energiaa ja verta)</li>
+          <li>BL23 + GV4 — munuaisten Yang, perusenergian vahvistus</li>
+          <li>PC6 + HT7 — sydän ja verenkierto, tykytys ja ahdistus</li>
+          <li>KI1 — maadoitus, ylivireystila, dissosiaatio</li>
+          <li>LI4 (varovasti) — immuunijärjestelmä</li>
+        </ul>
+        <p><strong style="color:var(--text)">Varotoimet Long COVID:ssa:</strong> Aloita kevyesti — 3–5 pistettä, lyhyempi aika (20 min). Post-exertional malaise on riski myös akupunktiohoidossa. Seuraa oireita 24–48h jälkeen.</p>
+        <div class="warn-box">⚠ Long COVID: älä ylikuormita. Aloita minimaalisella pistemäärällä. Vahvista vasta kun keho sietää.</div>
+        <div class="tags"><span class="tag">Long COVID</span><span class="tag">Dysautonomia</span><span class="tag">ST36</span><span class="tag">BL23</span><span class="tag">Post-exertional</span></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── ARVIOINNIT ─────────────────────────────── -->
+<div id="page-maarays" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('hoitosuunnitelma',null)">Hoito</span> › <strong>Harj. määräys</strong></div>
+<p class="page-role">Kotiharjoitusohjelman määräys</p>
+
+  <div class="page-eyebrow">Istunto · Kotiharjoittelu</div>
+  <h1 class="page-title">Harjoitteiden määräys</h1>
+  <p class="page-lead">Valitse harjoitteet — kopioi tai tulosta asiakkaalle annettavaksi. Osoite asiakasversioon lisätään automaattisesti.</p>
+
+  <div class="rx-layout">
+    <div>
+      <h3 class="section-h" style="margin-bottom:0.75rem">Valitse harjoitteet</h3>
+      <div class="rx-list" id="rx-list"></div>
+    </div>
+    <div>
+      <div class="rx-output">
+        <div class="rx-output-title">Harjoitusohjelma</div>
+
+        <!-- Generated link -->
+        <div id="rx-link-block" style="display:none;margin-bottom:1rem">
+          <div style="font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem">Suora linkki asiakkaalle</div>
+          <div style="display:flex;gap:0.4rem;align-items:center">
+            <div id="rx-link-url" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:0.5rem 0.75rem;font-family:var(--font-m);font-size:0.7rem;color:var(--teal);word-break:break-all;line-height:1.5"></div>
+            <button class="rx-btn" style="flex-shrink:0;width:auto;padding:0.5rem 0.85rem;margin:0" onclick="copyLink()">Kopioi</button>
+          </div>
+          <div style="font-size:0.78rem;color:var(--dim);margin-top:0.4rem;font-style:italic">Asiakas avaa linkin — valitut harjoitteet korostuvat automaattisesti</div>
+        </div>
+
+        <!-- Code -->
+        <div id="rx-code-block" style="display:none;margin-bottom:1rem">
+          <div style="font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem">Tai anna koodi asiakkaalle</div>
+          <div style="display:flex;align-items:center;gap:0.75rem">
+            <div id="rx-code-display" style="font-family:var(--font-m);font-size:1.6rem;letter-spacing:0.2em;color:var(--gold);background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:var(--r);padding:0.6rem 1rem"></div>
+            <button class="rx-btn" style="width:auto;padding:0.5rem 0.85rem;margin:0" onclick="copyCode()">Kopioi</button>
+          </div>
+          <div style="font-size:0.78rem;color:var(--dim);margin-top:0.4rem;font-style:italic">Asiakas syöttää koodin omaan työkaluunsa → Harjoitteet → "Syötä terapeutin koodi". Toimii myös eri laitteella.</div>
+        </div>
+
+        <div class="rx-preview" id="rx-preview">Valitse harjoitteet vasemmalta...</div>
+        <button class="rx-btn" onclick="copyRx()">📋 Kopioi teksti</button>
+        <button class="rx-btn secondary" onclick="printRx()">🖨️ Tulosta</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── MUISTIINPANOT ──────────────────────────── -->
+<div id="page-psykoed" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('psykoed',null)">Tietopankki</span> › <strong>Psykoedukaatio</strong></div>
+<p class="page-role">Psykoedukaatio-materiaalit asiakastyöhön</p>
+
+  <div class="page-eyebrow">Kliiniset teemat</div>
+  <h1 class="page-title">Psykoedukaatio</h1>
+  <p class="page-lead">Syventävät materiaalit kliinisistä teemoista. Käytä terapiassa, psykoedukaatiossa ja asiakasohjauksessa.</p>
+  <div class="psychoed-grid" id="psychoed-grid-t"></div>
+</div>
+</div>
+
+<!-- ── HARJOITTEIDEN MÄÄRÄYS ──────────────────── -->
+</main>
+
+<nav class="mobile-bottom-bar" id="mobile-bottom-bar">
+  <a onclick="showPage('kojelauta',null)" id="mbb-kojelauta">
+    <span>🏠</span><span class="bar-label">Koti</span>
+  </a>
+  <a onclick="showPage('muistiinpanot',null)" id="mbb-muistiinpanot">
+    <span>📝</span><span class="bar-label">Muistiinpanot</span>
+  </a>
+  <a onclick="showPage('harjoitteet',null)" id="mbb-harjoitteet">
+    <span>🧘</span><span class="bar-label">Harjoitteet</span>
+  </a>
+  <a onclick="showPage('arvioinnit',null)" id="mbb-arvioinnit">
+    <span>📊</span><span class="bar-label">Arvioinnit</span>
+  </a>
+  <a onclick="showPage('hoitosuunnitelma',null)" id="mbb-hoitosuunnitelma">
+    <span>📋</span><span class="bar-label">Hoito</span>
+  </a>
+</nav>
+
+<script>
+function showPage(id, el) {
+  if (window.innerWidth <= 768) closeSidebar();
+  if (el) { var d = el.closest('details.nav-group'); if (d && !d.open) d.open = true; }
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  var t = document.getElementById('page-' + id);
+  if (t) { t.classList.add('active'); } else { goTo(PAGE_MAP[id] || 'index.html', id); return; }
+  ['kojelauta','muistiinpanot','harjoitteet','arvioinnit','hoitosuunnitelma'].forEach(function(pid) {
+    var btn = document.getElementById('mbb-' + pid);
+    if (btn) btn.classList.toggle('active', pid === id);
+  });
+  if (id === 'harjoitteet' && typeof renderTExGrid === 'function') renderTExGrid();
+  if (id === 'edistyminen' && typeof renderProgress === 'function') renderProgress();
+  if (id === 'kojelauta' && typeof updateDashboardStats === 'function') updateDashboardStats();
+  if (id === 'muistiinpanot' && typeof renderNotes === 'function') renderNotes();
+  if (id === 'maarays' && typeof renderRxList === 'function') renderRxList();
+}
+
+function goTo(file, hash) {
+  window.location.href = file + (hash ? '#' + hash : '');
+}
+
+// Sivukartta: mihin tiedostoon mikäkin sivu kuuluu
+var PAGE_MAP = {
+  'kojelauta': 'index.html',
+  'muistiinpanot': 'index.html',
+  'arvioinnit': 'arvioinnit.html',
+  'edistyminen': 'arvioinnit.html',
+  'harjoitteet': 'harjoitteet.html',
+  'lapset-nuoret': 'harjoitteet.html',
+  'hoitosuunnitelma': 'hoitosuunnitelma.html',
+  'akupunktio': 'hoitosuunnitelma.html',
+  'maarays': 'hoitosuunnitelma.html',
+  'aivokerrokset': 'tietopankki.html',
+  'polyvagaali': 'tietopankki.html',
+  'toleranssi': 'tietopankki.html',
+  'kipu': 'tietopankki.html',
+  'trauma': 'tietopankki.html',
+  'ans': 'tietopankki.html',
+  'hrv': 'tietopankki.html',
+  'kehomuisti': 'tietopankki.html',
+  'psykoed': 'tietopankki.html',
+  'elamanjana': 'elamanjana.html',
+};
+// NAVIGATION
+// ═══════════════════════════════════════════
+// ══════════════════════════════════════════════
+// TEEMA — tumma / vaalea
+// ══════════════════════════════════════════════
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  localStorage.setItem('t_theme', isLight ? 'light' : 'dark');
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = isLight ? '☀️' : '🌙';
+}
+
+(function initTheme() {
+  const saved = localStorage.getItem('t_theme');
+  const preferLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  if (saved === 'light' || (!saved && preferLight)) {
+    document.body.classList.add('light');
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = '☀️';
+  }
+})();
+
+// ══════════════════════════════════════════════
+// MOBIILI — sidebar toggle
+// ══════════════════════════════════════════════
+function toggleSidebar() {
+  const sidebar  = document.getElementById('sidebar');
+  const overlay  = document.getElementById('sidebar-overlay');
+  const hamburger = document.getElementById('hamburger');
+  const isOpen   = sidebar.classList.contains('open');
+  if (isOpen) {
+    closeSidebar();
+  } else {
+    sidebar.classList.add('open');
+    overlay.classList.add('visible');
+    hamburger.classList.add('open');
+  }
+}
+
+function closeSidebar() {
+  const sidebar   = document.getElementById('sidebar');
+  const overlay   = document.getElementById('sidebar-overlay');
+  const hamburger = document.getElementById('hamburger');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('visible');
+  hamburger.classList.remove('open');
+}
+
+// ── Touch-elesteet sivupalkin avaamiseen/sulkemiseen ──
+(function() {
+  var tx = 0;
+  document.addEventListener('touchstart', function(e) {
+    tx = e.touches[0].clientX;
+  }, { passive: true });
+  document.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - tx;
+    if (dx < -60) closeSidebar();           // Pyyhkäisy vasemmalle → sulkee
+    if (dx > 60 && tx < 30) toggleSidebar(); // Pyyhkäisy oikealle reunasta → avaa
+  }, { passive: true });
+})();
+
+// ══════════════════════════════════════════════════
+</script>
+
+<script>
+
+// HOITOSUUNNITELMA
+// ═══════════════════════════════════════════
+function planClientChanged(client) {
+  const summary = document.getElementById('plan-client-summary');
+  if (!client || client.length < 2) { if (summary) summary.style.display = 'none'; return; }
+  if (summary) summary.style.display = 'block';
+
+  // Istuntohistoria
+  const notes = loadNotes().filter(n => n.client === client);
+  const sessionEl = document.getElementById('plan-session-summary');
+  if (sessionEl) {
+    if (!notes.length) {
+      sessionEl.innerHTML = '<span style="color:var(--muted)">Ei istuntomerkintöjä.</span>';
+    } else {
+      const last = notes[notes.length - 1];
+      const avgStart = (notes.reduce((a,n) => a + parseInt(n.start||5), 0) / notes.length).toFixed(1);
+      const avgEnd   = (notes.reduce((a,n) => a + parseInt(n.end||5),   0) / notes.length).toFixed(1);
+      const delta    = (parseFloat(avgEnd) - parseFloat(avgStart)).toFixed(1);
+      const deltaCol = delta < 0 ? 'var(--teal)' : delta > 0 ? 'var(--rose)' : 'var(--muted)';
+      sessionEl.innerHTML = `
+        <div style="margin-bottom:0.4rem"><strong style="color:var(--text)">${notes.length} istuntoa</strong> — viimeisin ${last.date?.split(' ')[0] || '—'}</div>
+        <div style="margin-bottom:0.3rem">Keskim. vireystila: ${avgStart}/10 → ${avgEnd}/10 <span style="color:${deltaCol};font-weight:700">${delta > 0 ? '+' : ''}${delta}</span></div>
+        ${last.homework ? `<div style="color:var(--teal)">📋 Viim. kotitehtävä: ${last.homework}</div>` : ''}
+        ${last.next ? `<div style="color:var(--dim);font-style:italic">Seuraava: ${last.next}</div>` : ''}`;
+    }
+  }
+
+  // Arvioinnit
+  const assEl = document.getElementById('plan-ass-summary');
+  if (assEl) {
+    const prefixes = ['gad7','phq9','pcl5','dass21'];
+    const names    = { gad7:'GAD-7', phq9:'PHQ-9', pcl5:'PCL-5', dass21:'DASS-21' };
+    const rows = [];
+    prefixes.forEach(p => {
+      const h = JSON.parse(localStorage.getItem(`ass_history_${p}`) || '[]')
+                  .filter(e => !e.client || e.client === client);
+      if (!h.length) return;
+      const last = h[h.length - 1];
+      const prev = h.length > 1 ? h[h.length - 2] : null;
+      const diff = prev ? last.score - prev.score : null;
+      const diffStr = diff !== null
+        ? `<span style="color:${diff < 0 ? 'var(--teal)' : diff > 0 ? 'var(--rose)' : 'var(--muted)'};font-weight:700;margin-left:4px">${diff > 0 ? '+' : ''}${diff}</span>`
+        : '';
+      rows.push(`<div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.25rem">
+        <span style="font-family:var(--font-m);font-size:0.7rem;min-width:52px;color:var(--dim)">${names[p]}</span>
+        <strong style="color:var(--text)">${last.score}</strong>${diffStr}
+        <span style="color:var(--dim);font-size:0.7rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${last.interp}</span>
+      </div>`);
+    });
+    assEl.innerHTML = rows.length
+      ? rows.join('')
+      : '<span style="color:var(--muted)">Ei arvioinnit tallennettu tälle asiakkaalle.</span>';
+  }
+
+  // Vireystila-palkit
+  const arousalEl = document.getElementById('plan-arousal-summary');
+  if (arousalEl && notes.length) {
+    const maxVal = 10;
+    const bars = notes.slice(-8).map((n, i) => {
+      const startH = Math.round((parseInt(n.start||5)/maxVal)*32);
+      const endH   = Math.round((parseInt(n.end||5)/maxVal)*32);
+      const improved = parseInt(n.end||5) < parseInt(n.start||5);
+      return `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1">
+        <div style="font-size:0.55rem;font-family:var(--font-m);color:var(--dim)">${i+1}</div>
+        <div style="width:100%;display:flex;gap:1px;align-items:flex-end;height:36px">
+          <div style="flex:1;background:var(--rose);opacity:0.5;border-radius:2px 2px 0 0;height:${startH}px"></div>
+          <div style="flex:1;background:${improved?'var(--teal)':'var(--rose)'};border-radius:2px 2px 0 0;height:${endH}px"></div>
+        </div>
+      </div>`;
+    }).join('');
+    arousalEl.innerHTML = `
+      <div style="display:flex;gap:3px;align-items:flex-end;height:44px;margin-bottom:0.3rem">${bars}</div>
+      <div style="display:flex;gap:0.75rem;font-size:0.65rem;color:var(--dim)">
+        <span><span style="color:var(--rose)">■</span> Alku</span>
+        <span><span style="color:var(--teal)">■</span> Loppu (parantunut)</span>
+      </div>`;
+  } else if (arousalEl) {
+    arousalEl.innerHTML = '<span style="color:var(--muted)">Ei vireystiladata.</span>';
+  }
+}
+
+function initPlanClientList() {
+  const clients = new Set();
+  try { loadNotes().forEach(n => { if(n.client) clients.add(n.client); }); } catch(e){}
+  ['gad7','phq9','pcl5','dass21'].forEach(p => {
+    const h = JSON.parse(localStorage.getItem(`ass_history_${p}`)||'[]');
+    h.forEach(e => { if(e.client) clients.add(e.client); });
+  });
+  const dl = document.getElementById('plan-client-list');
+  if (dl) dl.innerHTML = [...clients].sort().map(c => `<option value="${c}">`).join('');
+}
+
+function loadPlans() {
+  try { return JSON.parse(localStorage.getItem('hoitosuunnitelmat')||'[]'); } catch { return []; }
+}
+function savePlans(p) { localStorage.setItem('hoitosuunnitelmat', JSON.stringify(p)); }
+
+function savePlan() {
+  const client = document.getElementById('plan-client')?.value.trim();
+  if (!client) return;
+  const methods = [...document.querySelectorAll('#plan-methods-grid input:checked')].map(i=>i.value);
+  const plan = {
+    client,
+    date: new Date().toLocaleString('fi-FI'),
+    diagnosis: document.getElementById('plan-diagnosis')?.value.trim(),
+    start: document.getElementById('plan-start')?.value,
+    duration: document.getElementById('plan-duration')?.value.trim(),
+    goalLong: document.getElementById('plan-goal-long')?.value.trim(),
+    goalShort: document.getElementById('plan-goal-short')?.value.trim(),
+    measure: document.getElementById('plan-measure')?.value.trim(),
+    methods,
+    contraindications: document.getElementById('plan-contraindications')?.value.trim(),
+    network: document.getElementById('plan-network')?.value.trim(),
+    notes: document.getElementById('plan-notes')?.value.trim(),
+  };
+  const plans = loadPlans();
+  const existing = plans.findIndex(p=>p.client===client);
+  if (existing>=0) plans[existing]=plan; else plans.push(plan);
+  savePlans(plans);
+  renderPlanList();
+  const btn = event.target;
+  btn.textContent='✓ Tallennettu'; setTimeout(()=>btn.textContent='Tallenna hoitosuunnitelma',2000);
+}
+
+const METHOD_PLAN_NAMES = {
+  pne:'PNE',se:'Somaattinen kokeminen',emdr:'EMDR/BLS',cbt:'Kognitiivinen',
+  acup:'Akupunktio',mindful:'Mindfulness',hrv:'HRV-harjoittelu',
+  breathwork:'Hengitystyöskentely',bodywork:'Manuaalinen',
+  psykoed:'Psykoedukaatio',movement:'Liiketerapia',narrative:'Narratiivinen'
+};
+
+function renderPlanList() {
+  const el = document.getElementById('plan-list');
+  if (!el) return;
+  const plans = loadPlans();
+  if (!plans.length) { el.innerHTML='<div class="empty-state">Ei tallennettuja suunnitelmia</div>'; return; }
+  el.innerHTML = plans.slice().reverse().map((p,i) => {
+    const idx = plans.length-1-i;
+    const tags = (p.methods||[]).map(m=>`<span style="font-family:var(--font-m);font-size:0.5rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.1rem 0.35rem;border-radius:2px;background:var(--bg3);border:1px solid var(--border2);color:var(--muted)">${METHOD_PLAN_NAMES[m]||m}</span>`).join('');
+    return `<div class="note-entry">
+      <div class="note-head">
+        <div>
+          <div class="note-date">${p.client} · Päivitetty ${p.date}</div>
+          ${p.diagnosis?`<div style="font-size:0.8rem;color:var(--dim);margin-top:2px">${p.diagnosis}</div>`:''}
+        </div>
+        <button class="note-del" onclick="deletePlan(${idx})">✕</button>
+      </div>
+      ${p.goalLong?`<div class="note-text">${p.goalLong}</div>`:''}
+      ${tags?`<div class="note-methods">${tags}</div>`:''}
+      ${p.duration?`<div style="font-size:0.75rem;color:var(--muted);margin-top:0.3rem">⏱ ${p.duration}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function deletePlan(idx) {
+  const plans = loadPlans();
+  plans.splice(idx,1);
+  savePlans(plans);
+  renderPlanList();
+}
+
+// ═══════════════════════════════════════════
+// PRESCRIPTION
+// ═══════════════════════════════════════════
+const selectedRx = new Set();
+
+function renderRxList() {
+  const list = document.getElementById('rx-list');
+  if (!list) return;
+  list.innerHTML = EXERCISES_T.map(ex => `
+    <div class="rx-item ${selectedRx.has(ex.id)?'selected':''}" onclick="toggleRx('${ex.id}',this)">
+      <div class="rx-check">${selectedRx.has(ex.id)?'✓':''}</div>
+      <div><div class="rx-name">${ex.name}</div><div class="rx-cat">${ex.catLabel} · ${ex.dur}</div></div>
+    </div>
+  `).join('');
+  updateRxPreview();
+}
+
+function toggleRx(id, el) {
+  if (selectedRx.has(id)) selectedRx.delete(id);
+  else selectedRx.add(id);
+  renderRxList();
+}
+
+const CLIENT_BASE = 'https://markooinas-source.github.io/stressijarjestelma/asiakas.html';
+
+function generateCode(ids) {
+  // Encode IDs directly into the code — works across devices
+  // Format: RX-[base36 of btoa(ids joined)]
+  try {
+    const encoded = btoa(ids.sort().join('|'));
+    const short = encoded.replace(/[^A-Z0-9]/gi,'').substring(0,8).toUpperCase();
+    const code = 'RX-' + short.padEnd(8,'0');
+    // Also store locally for convenience
+    const map = JSON.parse(localStorage.getItem('rx_codes')||'{}');
+    map[code] = ids;
+    localStorage.setItem('rx_codes', JSON.stringify(map));
+    return code;
+  } catch(e) {
+    // Fallback: hash-based code + local storage
+    const str = ids.sort().join(',');
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0;
+    const code = 'RX-' + Math.abs(hash).toString(36).toUpperCase().padStart(5,'0').substring(0,5);
+    const map = JSON.parse(localStorage.getItem('rx_codes')||'{}');
+    map[code] = ids;
+    localStorage.setItem('rx_codes', JSON.stringify(map));
+    return code;
+  }
+}
+
+function updateRxPreview() {
+  const preview = document.getElementById('rx-preview');
+  const linkBlock = document.getElementById('rx-link-block');
+  const codeBlock = document.getElementById('rx-code-block');
+  if (!preview) return;
+
+  if (selectedRx.size === 0) {
+    preview.textContent = 'Valitse harjoitteet vasemmalta...';
+    if (linkBlock) linkBlock.style.display = 'none';
+    if (codeBlock) codeBlock.style.display = 'none';
+    return;
+  }
+
+  const ids = Array.from(selectedRx);
+  const date = new Date().toLocaleDateString('fi-FI');
+
+  // Generate link
+  const params = ids.join(',');
+  const link = `${CLIENT_BASE}?rx=${encodeURIComponent(params)}`;
+  const code = generateCode(ids);
+
+  if (linkBlock) {
+    linkBlock.style.display = 'block';
+    document.getElementById('rx-link-url').textContent = link;
+  }
+  if (codeBlock) {
+    codeBlock.style.display = 'block';
+    document.getElementById('rx-code-display').textContent = code;
+  }
+
+  // Text preview
+  let text = `HARJOITUSOHJELMA — ${date}\nMarko Oinas, Psykofyysinen fysioterapeutti\n\n`;
+  text += `Harjoittele näitä päivittäin tai ohjeiden mukaan:\n\n`;
+  ids.forEach(id => {
+    const ex = EXERCISES_T.find(e => e.id === id);
+    if (!ex) return;
+    text += `• ${ex.name} (${ex.dur})\n  ${ex.desc}\n\n`;
+  });
+  text += `Oma työkalu: ${link}\n`;
+  text += `Tai syötä koodi: ${code}`;
+  preview.textContent = text;
+}
+
+function copyLink() {
+  const ids = Array.from(selectedRx);
+  if (!ids.length) return;
+  const link = `${CLIENT_BASE}?rx=${encodeURIComponent(ids.join(','))}`;
+  navigator.clipboard.writeText(link).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✓ Kopioitu!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+function copyCode() {
+  const el = document.getElementById('rx-code-display');
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✓!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+function copyRx() {
+  const text = document.getElementById('rx-preview').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '✓ Kopioitu!';
+    setTimeout(() => btn.textContent='📋 Kopioi leikepöydälle', 2000);
+  });
+}
+
+function printRx() { window.print(); }
+
+// ═══════════════════════════════════════════
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  var saved = localStorage.getItem('t_theme');
+  if (saved === 'light') { document.body.classList.add('light'); var btn = document.getElementById('theme-toggle'); if(btn) btn.textContent='☀️'; }
+  
+  if (typeof renderRxList === 'function') renderRxList();
+  if (typeof loadPlans === 'function') { var plans = loadPlans(); if (typeof renderPlans === 'function') renderPlans(plans); }
+
+});
+</script>
+
+<!-- AUTONOMINEN KEHITYSAGENTTI -->
+<style>
+#agent-pulse{position:fixed;bottom:1.25rem;right:1.25rem;z-index:9000;display:flex;align-items:center;gap:0.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:0.4rem 0.85rem 0.4rem 0.6rem;font-family:var(--font-m);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all 0.2s;user-select:none}
+#agent-pulse:hover{border-color:var(--border2);color:var(--text)}
+#agent-pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background 0.3s}
+#agent-pulse-dot.thinking{background:var(--gold);animation:agent-blink 1s ease-in-out infinite}
+#agent-pulse-dot.ready{background:var(--teal);animation:agent-blink 2s ease-in-out infinite}
+@keyframes agent-blink{0%,100%{opacity:1}50%{opacity:0.35}}
+#agent-badge{display:none;background:var(--teal);color:#fff;font-family:var(--font-m);font-size:0.5rem;font-weight:700;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;flex-shrink:0;margin-left:2px}
+#agent-badge.visible{display:flex}
+#agent-panel{position:fixed;bottom:0;right:0;width:min(480px,100vw);max-height:88vh;background:var(--bg2);border-top:1px solid var(--border2);border-left:1px solid var(--border2);border-radius:16px 0 0 0;z-index:8999;display:flex;flex-direction:column;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0,0,1);overflow:hidden}
+#agent-panel.open{transform:translateY(0)}
+.agent-panel-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem 0.85rem;border-bottom:1px solid var(--border);flex-shrink:0;gap:0.75rem}
+.agent-panel-title{font-family:var(--font-d);font-size:1rem;font-style:italic;color:var(--bright)}
+.agent-panel-meta{font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:0.15rem}
+.agent-close-btn{background:none;border:1px solid var(--border2);border-radius:6px;width:28px;height:28px;color:var(--dim);cursor:pointer;font-size:0.75rem;flex-shrink:0;transition:all 0.18s;display:flex;align-items:center;justify-content:center}
+.agent-close-btn:hover{color:var(--text);border-color:var(--dim)}
+.agent-panel-body{flex:1;overflow-y:auto;padding:1.1rem 1.25rem;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+.agent-suggestion{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;margin-bottom:0.75rem;transition:border-color 0.2s}
+.agent-suggestion:hover{border-color:var(--border2)}
+.agent-suggestion.approved{border-color:var(--teal);background:var(--teal-bg)}
+.agent-sug-cat{font-family:var(--font-m);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.4rem}
+.cat-ux{color:var(--blue)}.cat-sisalto{color:var(--gold)}.cat-kliininen{color:var(--teal)}.cat-rakenne{color:var(--rose)}.cat-tieto{color:var(--amber)}
+.agent-sug-title{font-family:var(--font-d);font-size:0.95rem;font-style:italic;color:var(--bright);margin-bottom:0.35rem;line-height:1.3}
+.agent-sug-desc{font-size:0.82rem;color:var(--dim);line-height:1.6;margin-bottom:0.75rem}
+.agent-sug-preview{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.85rem;font-size:0.78rem;font-family:var(--font-m);color:var(--mid);line-height:1.6;white-space:pre-wrap;margin-bottom:0.75rem;max-height:160px;overflow-y:auto}
+.agent-sug-actions{display:flex;gap:0.5rem}
+.agent-btn-approve{flex:1;padding:0.45rem;background:var(--teal);color:#fff;border:none;border-radius:6px;font-family:var(--font-m);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-weight:500}
+.agent-btn-approve:hover{opacity:0.85}
+.agent-btn-reject,.agent-btn-copy{padding:0.45rem 0.85rem;background:none;border:1px solid var(--border2);border-radius:6px;font-family:var(--font-m);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);cursor:pointer}
+.agent-btn-reject:hover{border-color:var(--rose-bd);color:var(--rose)}
+.agent-btn-copy:hover{border-color:var(--gold-bd);color:var(--gold)}
+.agent-empty{text-align:center;padding:2.5rem 1rem}
+.agent-empty-icon{font-size:1.8rem;margin-bottom:0.75rem;opacity:0.5}
+.agent-empty-text{font-family:var(--font-d);font-size:0.9rem;font-style:italic;color:var(--dim)}
+.agent-empty-sub{font-size:0.78rem;color:var(--muted);margin-top:0.4rem;line-height:1.6}
+.agent-panel-footer{padding:0.85rem 1.25rem;border-top:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:0.75rem}
+.agent-footer-info{font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);line-height:1.5}
+.agent-manual-btn{padding:0.45rem 1rem;background:none;border:1px solid var(--border2);border-radius:6px;font-family:var(--font-m);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.agent-manual-btn:hover{border-color:var(--gold-bd);color:var(--gold)}
+#agent-timer-bar{height:2px;background:var(--border);border-radius:1px;overflow:hidden;margin-top:4px}
+#agent-timer-fill{height:100%;background:var(--gold);border-radius:1px;width:0%;transition:width 1s linear}
+</style>
+
+<div id="agent-pulse" onclick="agentTogglePanel()" title="Kehitysagentti">
+  <div id="agent-pulse-dot"></div>
+  <span id="agent-pulse-label">Agentti</span>
+  <div id="agent-badge"></div>
+</div>
+
+<div id="agent-panel">
+  <div class="agent-panel-header">
+    <div>
+      <div class="agent-panel-title">Kehitysagentti</div>
+      <div class="agent-panel-meta" id="agent-status-text">Odottaa...</div>
+      <div id="agent-timer-bar"><div id="agent-timer-fill"></div></div>
+    </div>
+    <button class="agent-close-btn" onclick="agentTogglePanel()">&#x2715;</button>
+  </div>
+  <div class="agent-panel-body" id="agent-panel-body">
+    <div class="agent-empty">
+      <div class="agent-empty-icon">&#x25CE;</div>
+      <div class="agent-empty-text">Agentti analysoi ty&ouml;kaluasi</div>
+      <div class="agent-empty-sub">Her&auml;&auml; automaattisesti 90 s kuluttua.<br>Voit k&auml;ynnist&auml;&auml; my&ouml;s manuaalisesti.</div>
+    </div>
+  </div>
+  <div class="agent-panel-footer">
+    <div class="agent-footer-info" id="agent-cycle-info">Seuraava: &mdash;<br>Hyv&auml;ksytty: 0</div>
+    <button class="agent-manual-btn" onclick="agentRunNow()">Analysoi nyt</button>
+  </div>
+</div>
+
+<script>
+var AGENT = {
+  INTERVALS: { quick: 600000, deep: 1800000 },
+  CYCLES: [
+    { type: 'quick', label: 'UX & k\u00e4ytett\u00e4vyys',
+      prompt: 'Analysoi t\u00e4m\u00e4 kliininen terapeuttity\u00f6kalu ja ehdota 2\u20133 parannusta UX:n ja k\u00e4ytett\u00e4vyyden n\u00e4k\u00f6kulmasta. Fokusoi: navigaation selkeys, toimintojen l\u00f6ydett\u00e4vyys, mobiilipuutteet, visuaalinen hierarkia.' },
+    { type: 'quick', label: 'Kliininen sis\u00e4lt\u00f6',
+      prompt: 'Analysoi t\u00e4m\u00e4 kliininen terapeuttity\u00f6kalu ja ehdota 2\u20133 parannusta kliiniseen sis\u00e4lt\u00f6\u00f6n. Mieti: puuttuvatko t\u00e4rke\u00e4t psykoedukaatioaiheet, harjoitteet, arviointity\u00f6kalut tai protokollat?' },
+    { type: 'deep',  label: 'Uusi ominaisuus',
+      prompt: 'Ehdota 1 merkitt\u00e4v\u00e4\u00e4 uutta ominaisuutta t\u00e4h\u00e4n kliiniseen terapeuttity\u00f6kaluun. Ominaisuuden tulee olla toteutettavissa HTML/JS-tiedostoon.' },
+    { type: 'quick', label: 'Rakenne & koodi',
+      prompt: 'Analysoi t\u00e4m\u00e4 ty\u00f6kalu rakenteen n\u00e4k\u00f6kulmasta. Ehdota 2\u20133 parannusta: toistuvat rakenteet, saavutettavuuspuutteet, CSS-refaktorointi.' },
+    { type: 'deep',  label: 'Traumainformoitu',
+      prompt: 'Analysoi t\u00e4m\u00e4 psykofyysinen ty\u00f6kalu traumainformoidun hoidon n\u00e4k\u00f6kulmasta. Ehdota 1\u20132 parannusta jotka parantaisivat ty\u00f6kalua trauman, ANS-s\u00e4\u00e4telyn tai kehollisen kohtaamisen kannalta.' }
+  ],
+  state: { panelOpen: false, running: false, approvedCount: 0, suggestions: [], nextRunAt: null, cycleCount: 0 },
+
+  saveState: function() {
+    try {
+      localStorage.setItem('agent_suggestions', JSON.stringify(this.state.suggestions));
+      localStorage.setItem('agent_approvedCount', this.state.approvedCount);
+      localStorage.setItem('agent_cycleCount', this.state.cycleCount);
+    } catch(e) {}
+  },
+
+  loadState: function() {
+    try {
+      var sugs = localStorage.getItem('agent_suggestions');
+      if (sugs) this.state.suggestions = JSON.parse(sugs);
+      var ac = localStorage.getItem('agent_approvedCount');
+      if (ac) this.state.approvedCount = parseInt(ac, 10);
+      var cc = localStorage.getItem('agent_cycleCount');
+      if (cc) this.state.cycleCount = parseInt(cc, 10);
+    } catch(e) {}
+  },
+
+  init: function() {
+    this.loadState();
+    if (this.state.suggestions.length > 0) {
+      this.renderSuggestions();
+      this.setPulse('ready');
+      var pending = this.state.suggestions.filter(function(s){ return !s.approved && !s.rejected; }).length;
+      this.updateStatusText(pending + ' ehdotusta muistissa');
+    }
+    this.updateCycleInfo();
+    this.state.nextRunAt = Date.now() + 90000;
+    this._timer = setTimeout(function() { AGENT.run(); }, 90000);
+    this.startTimerBar(90000);
+    if (this.state.suggestions.length === 0) this.updateStatusText('Her\u00e4\u00e4 90 sekunnin kuluttua...');
+  },
+
+  startTimerBar: function(ms) {
+    clearInterval(this._barTimer);
+    var start = Date.now();
+    this._barTimer = setInterval(function() {
+      var pct = Math.min(100, (Date.now() - start) / ms * 100);
+      var el = document.getElementById('agent-timer-fill');
+      if (el) el.style.width = pct + '%';
+      if (pct >= 100) clearInterval(AGENT._barTimer);
+    }, 1000);
+  },
+
+  updateStatusText: function(t) {
+    var el = document.getElementById('agent-status-text');
+    if (el) el.textContent = t;
+  },
+
+  updateCycleInfo: function() {
+    var el = document.getElementById('agent-cycle-info');
+    if (!el) return;
+    var rem = this.state.nextRunAt ? Math.max(0, this.state.nextRunAt - Date.now()) : 0;
+    el.innerHTML = 'Seuraava: ' + (rem > 0 ? Math.ceil(rem / 60000) + ' min' : 'Pian') + '<br>Hyv\u00e4ksytty: ' + this.state.approvedCount;
+  },
+
+  setPulse: function(mode) {
+    var dot = document.getElementById('agent-pulse-dot');
+    var lbl = document.getElementById('agent-pulse-label');
+    var badge = document.getElementById('agent-badge');
+    if (!dot) return;
+    dot.className = mode === 'thinking' ? 'thinking' : mode === 'ready' ? 'ready' : '';
+    if (lbl) lbl.textContent = mode === 'thinking' ? 'Analysoi...' : mode === 'ready' ? 'Ehdotuksia' : 'Agentti';
+    if (badge) {
+      var n = this.state.suggestions.filter(function(s) { return !s.approved && !s.rejected; }).length;
+      if (mode === 'ready' && n > 0) { badge.textContent = n; badge.classList.add('visible'); }
+      else badge.classList.remove('visible');
+    }
+  },
+
+  buildPrompt: function(cycle, context) {
+    var lines = [
+      'Olet asiantuntija psykofyysisten terapeuttity\u00f6kalujen kehitt\u00e4misess\u00e4.',
+      '',
+      'Analysoit HTML-pohjaista kliinist\u00e4 ty\u00f6kalua: Terapeutin Kliininen Ty\u00f6kalu (Marko Oinas)',
+      '',
+      'Ty\u00f6kalu sis\u00e4lt\u00e4\u00e4 sivut: ' + context.pages.join(', '),
+      'Navigaatio: ' + context.navItems.join(', '),
+      'K\u00e4ytt\u00e4j\u00e4: psykofyysinen fysioterapeutti + kognitiivinen psykoterapeutti (lapset/nuoret, akupunktio, trauma, ANS, kipu)',
+      'Aiemmin hyv\u00e4ksyttyj\u00e4 parannuksia: ' + context.approvedCount,
+      '',
+      cycle.prompt,
+      '',
+      'Vastaa T\u00c4SM\u00c4LLEEN t\u00e4ss\u00e4 JSON-muodossa \u2014 ei muuta teksti\u00e4:',
+      '[',
+      '  {',
+      '    "kategoria": "ux",',
+      '    "otsikko": "Lyhyt otsikko",',
+      '    "kuvaus": "Selitys 2\u20133 lausetta.",',
+      '    "prioriteetti": "t\u00e4rke\u00e4",',
+      '    "toteutus": "Konkreettinen toteutus HTML/JS-esimerkkein\u00e4."',
+      '  }',
+      ']',
+      'kategoria = ux | sis\u00e4lt\u00f6 | kliininen | rakenne | tieto',
+      'prioriteetti = kriittinen | t\u00e4rke\u00e4 | hy\u00f6dyllinen',
+      'Anna ' + (cycle.type === 'deep' ? '1\u20132' : '2\u20133') + ' ehdotusta.'
+    ];
+    return lines.join('\n');
+  },
+
+  run: function() {
+    if (this.state.running) return;
+    this.state.running = true;
+    this.state.cycleCount++;
+    var cycle = this.CYCLES[(this.state.cycleCount - 1) % this.CYCLES.length];
+    var context = this.gatherContext();
+    this.state.running = false;
+    this.setPulse('thinking');
+    this.updateStatusText('Valmistelee: ' + cycle.label + '...');
+    var prompt = this.buildPrompt(cycle, context);
+    this.showInstructions(cycle.label, prompt);
+    var ms = cycle.type === 'deep' ? this.INTERVALS.deep : this.INTERVALS.quick;
+    clearTimeout(this._timer);
+    this._timer = setTimeout(function() { AGENT.run(); }, ms);
+    this.state.nextRunAt = Date.now() + ms;
+    this.startTimerBar(ms);
+  },
+
+  gatherContext: function() {
+    var pages = Array.from(document.querySelectorAll('[id^="page-"]')).map(function(e) { return e.id.replace('page-', ''); });
+    var seen = {};
+    Array.from(document.querySelectorAll('.nav-item')).forEach(function(e) { seen[e.textContent.trim()] = 1; });
+    return { pages: pages, navItems: Object.keys(seen), approvedCount: this.state.approvedCount };
+  },
+
+  showInstructions: function(label, prompt) {
+    var body = document.getElementById('agent-panel-body');
+    if (!body) return;
+    var safe = prompt.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    var h = '<div id="agent-instr-box" style="background:var(--teal-bg);border:1px solid var(--teal-bd);border-radius:10px;padding:1.1rem;margin-bottom:0.75rem;">'
+      + '<div style="font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal);margin-bottom:0.75rem;">\u25cf ' + label + '</div>'
+      + '<div style="font-size:0.82rem;color:var(--bright);font-weight:500;margin-bottom:0.35rem;">1 \u2014 Avaa Claude</div>'
+      + '<button onclick="window.open(\'https://claude.ai/new\',\'_blank\')" style="width:100%;padding:0.55rem;background:var(--bg2);color:var(--text);border:1px solid var(--border2);border-radius:8px;font-size:0.85rem;cursor:pointer;margin-bottom:0.9rem;text-align:left;">\ud83d\udd17 Avaa Claude uuteen v\u00e4lilehteen</button>'
+      + '<div style="font-size:0.82rem;color:var(--bright);font-weight:500;margin-bottom:0.35rem;">2 \u2014 Kopioi prompt</div>'
+      + '<div style="position:relative;margin-bottom:0.9rem;">'
+      + '<textarea id="agent-prompt-box" readonly style="width:100%;height:80px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:0.55rem 2.5rem 0.55rem 0.7rem;font-size:0.72rem;font-family:var(--font-m);color:var(--mid);resize:none;line-height:1.5;">' + safe + '</textarea>'
+      + '<button onclick="AGENT.copyPrompt()" id="agent-copy-btn" style="position:absolute;top:6px;right:6px;background:var(--surface);border:1px solid var(--border2);border-radius:5px;padding:3px 8px;font-size:0.65rem;font-family:var(--font-m);color:var(--dim);cursor:pointer;">kopioi</button>'
+      + '</div>'
+      + '<div style="font-size:0.82rem;color:var(--bright);font-weight:500;margin-bottom:0.35rem;">3 \u2014 Liit\u00e4 Clauden vastaus t\u00e4h\u00e4n</div>'
+      + '<textarea id="agent-response-box" placeholder="Liit\u00e4 t\u00e4h\u00e4n Clauden vastaus (Ctrl+V)..." oninput="AGENT.onResponseInput(this)" style="width:100%;height:80px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:0.55rem 0.7rem;font-size:0.78rem;font-family:var(--font-m);color:var(--text);resize:none;line-height:1.5;margin-bottom:0.55rem;"></textarea>'
+      + '<button id="agent-submit-btn" onclick="AGENT.parseFromTextarea()" disabled style="width:100%;padding:0.6rem;background:var(--muted);color:var(--bg);border:none;border-radius:8px;font-family:var(--font-m);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;cursor:not-allowed;font-weight:500;transition:all 0.2s;">\u2713 N\u00e4yt\u00e4 ehdotukset</button>'
+      + '</div>';
+    body.innerHTML = h + body.innerHTML;
+    if (!this.state.panelOpen) this.togglePanel();
+    this.setPulse('ready');
+    this.updateStatusText('Valmis: ' + label);
+  },
+
+  copyPrompt: function() {
+    var box = document.getElementById('agent-prompt-box');
+    if (!box) return;
+    box.select();
+    try { document.execCommand('copy'); } catch(e) { if (navigator.clipboard) navigator.clipboard.writeText(box.value); }
+    var btn = document.getElementById('agent-copy-btn');
+    if (btn) { btn.textContent = '\u2713 kopioitu'; setTimeout(function() { btn.textContent = 'kopioi'; }, 2000); }
+  },
+
+  onResponseInput: function(el) {
+    var btn = document.getElementById('agent-submit-btn');
+    if (!btn) return;
+    var ok = el.value.trim().length > 20;
+    btn.disabled = !ok;
+    btn.style.background = ok ? 'var(--teal)' : 'var(--muted)';
+    btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+  },
+
+  parseFromTextarea: function() {
+    var box = document.getElementById('agent-response-box');
+    if (!box) return;
+    var sugs = this.parseResponse(box.value.trim());
+    if (sugs.length === 0) {
+      box.style.borderColor = 'var(--rose)';
+      box.value = '';
+      box.placeholder = 'Ei l\u00f6ytynyt ehdotuksia \u2014 kopioi koko Clauden vastaus ja yrit\u00e4 uudelleen.';
+      return;
+    }
+    var instr = document.getElementById('agent-instr-box');
+    if (instr) instr.remove();
+    this.state.suggestions = sugs.concat(this.state.suggestions).slice(0, 20);
+    this.renderSuggestions();
+    this.updateStatusText(sugs.length + ' uutta ehdotusta');
+    this.saveState();
+  },
+
+  parseResponse: function(text) {
+    try {
+      var clean = text.replace(/```json|```/g, '').trim();
+      var match = clean.match(/\[[\s\S]*\]/);
+      if (!match) return [];
+      var parsed = JSON.parse(match[0]);
+      var now = new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit' });
+      return parsed.map(function(s, i) {
+        return { kategoria: s.kategoria, otsikko: s.otsikko, kuvaus: s.kuvaus, prioriteetti: s.prioriteetti, toteutus: s.toteutus,
+          id: 'sug-' + Date.now() + '-' + i, cycle: 'Claude-analyysi', approved: false, rejected: false, ts: now };
+      });
+    } catch(e) { return []; }
+  },
+
+  renderSuggestions: function() {
+    var body = document.getElementById('agent-panel-body');
+    if (!body) return;
+    var active = this.state.suggestions.filter(function(s) { return !s.rejected; });
+    if (active.length === 0) {
+      body.innerHTML = '<div class="agent-empty"><div class="agent-empty-icon">\u2713</div><div class="agent-empty-text">Kaikki k\u00e4sitelty</div><div class="agent-empty-sub">Seuraava analyysi k\u00e4ynnistyy automaattisesti.</div></div>';
+      return;
+    }
+    var CAT = { ux: 'UX \u00b7 k\u00e4ytett\u00e4vyys', sisalto: 'Sis\u00e4lt\u00f6', kliininen: 'Kliininen', rakenne: 'Rakenne', tieto: 'Tietopankki' };
+    var PRI = { 'kriittinen': 'var(--rose)', 't\u00e4rke\u00e4': 'var(--gold)', 'hy\u00f6dyllinen': 'var(--teal)' };
+    body.innerHTML = active.map(function(s) {
+      var id = s.id;
+      return '<div class="agent-suggestion' + (s.approved ? ' approved' : '') + '" id="' + id + '">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.3rem;">'
+        + '<div class="agent-sug-cat cat-' + (s.kategoria || 'ux') + '">' + (CAT[s.kategoria] || s.kategoria) + '</div>'
+        + '<span style="font-family:var(--font-m);font-size:0.5rem;color:' + (PRI[s.prioriteetti] || 'var(--dim)') + '">' + ((s.prioriteetti || '').toUpperCase()) + '</span>'
+        + '</div>'
+        + '<div class="agent-sug-title">' + (s.otsikko || '') + '</div>'
+        + '<div class="agent-sug-desc">' + (s.kuvaus || '') + '</div>'
+        + '<div class="agent-sug-preview">' + (s.toteutus || '') + '</div>'
+        + (s.approved
+          ? '<div style="font-family:var(--font-m);font-size:0.58rem;color:var(--teal);">\u2713 HYV\u00c4KSYTTY \u2014 toteutus kopioitu</div>'
+          : '<div class="agent-sug-actions">'
+            + '<button class="agent-btn-approve" onclick="AGENT.approve(\'' + id + '\')">\u2713 Hyv\u00e4ksy &amp; kopioi</button>'
+            + '<button class="agent-btn-copy" onclick="AGENT.copyToteutus(\'' + id + '\')">Kopioi</button>'
+            + '<button class="agent-btn-reject" onclick="AGENT.reject(\'' + id + '\')">Ohita</button>'
+            + '</div>')
+        + '</div>';
+    }).join('');
+  },
+
+  approve: function(id) {
+    var s = this.state.suggestions.find(function(x) { return x.id === id; });
+    if (!s) return;
+    s.approved = true;
+    this.state.approvedCount++;
+    this.copyToteutus(id);
+    this.renderSuggestions();
+    this.updateCycleInfo();
+    this.saveState();
+  },
+
+  reject: function(id) {
+    var s = this.state.suggestions.find(function(x) { return x.id === id; });
+    if (s) s.rejected = true;
+    this.renderSuggestions();
+    this.saveState();
+  },
+
+  copyToteutus: function(id) {
+    var s = this.state.suggestions.find(function(x) { return x.id === id; });
+    if (s && navigator.clipboard) navigator.clipboard.writeText(s.toteutus).catch(function() {});
+  },
+
+  togglePanel: function() {
+    this.state.panelOpen = !this.state.panelOpen;
+    var panel = document.getElementById('agent-panel');
+    if (panel) panel.classList.toggle('open', this.state.panelOpen);
+    if (this.state.panelOpen) this.updateCycleInfo();
+  }
+};
+
+function agentTogglePanel() { AGENT.togglePanel(); }
+function agentRunNow() { clearTimeout(AGENT._timer); AGENT.run(); }
+window.addEventListener('load', function() { setTimeout(function() { AGENT.init(); }, 2000); });
+setInterval(function() { AGENT.updateCycleInfo(); }, 30000);
+</script>
+
+</body>
+</html>

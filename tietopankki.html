@@ -1,0 +1,2374 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tietopankki — Terapeutin työkalu</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+  <style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --bg:       #0c0f14;
+  --bg2:      #131720;
+  --bg3:      #1a2030;
+  --surface:  #212840;
+  --border:   #2a3450;
+  --border2:  #364060;
+  --muted:    #4a5878;
+  --dim:      #6a7898;
+  --mid:      #9aaac8;
+  --text:     #c8d8f0;
+  --bright:   #e8f0fc;
+
+  --gold:     #c8a050;
+  --gold-bg:  #1a1608;
+  --gold-bd:  #302808;
+
+  --teal:     #3a9880;
+  --teal-bg:  #081a18;
+  --teal-bd:  #0f3028;
+
+  --rose:     #c05060;
+  --rose-bg:  #1a0810;
+  --rose-bd:  #301018;
+
+  --blue:     #4878c8;
+  --blue-bg:  #080e1e;
+  --blue-bd:  #101830;
+
+  --amber:    #c88030;
+  --amber-bg: #180e04;
+  --amber-bd: #281808;
+
+  --font-d: 'Playfair Display', Georgia, serif;
+  --font-b: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-m: 'IBM Plex Mono', monospace;
+
+  --sidebar: 220px;
+  --r: 8px;
+  --r2: 14px;
+}
+
+/* ── VAALEA TEEMA ── */
+body.light {
+  --bg:       #f4f6fa;
+  --bg2:      #ffffff;
+  --bg3:      #eaecf4;
+  --surface:  #e0e4f0;
+  --border:   #c8cedc;
+  --border2:  #b0b8cc;
+  --muted:    #8890a8;
+  --dim:      #6070a0;
+  --mid:      #3a4878;
+  --text:     #1a2040;
+  --bright:   #0a1030;
+
+  --gold:     #9a7020;
+  --gold-bg:  #fdf8ec;
+  --gold-bd:  #e8d8a0;
+
+  --teal:     #2a7860;
+  --teal-bg:  #eaf6f2;
+  --teal-bd:  #a0d8c8;
+
+  --rose:     #a03050;
+  --rose-bg:  #faeaee;
+  --rose-bd:  #e0a0b0;
+
+  --blue:     #2858b0;
+  --blue-bg:  #eaeffa;
+  --blue-bd:  #a0b8e0;
+
+  --amber:    #a06020;
+  --amber-bg: #fdf2e8;
+  --amber-bd: #e8c090;
+
+  color-scheme: light;
+}
+
+body.light .sidebar {
+  background: #ffffff;
+  border-right: 1px solid var(--border);
+}
+body.light .top-bar {
+  background: rgba(244,246,250,0.96);
+  border-bottom: 1px solid var(--border);
+}
+body.light .nav-item:hover { background: var(--bg3); }
+body.light .nav-item.active { background: var(--teal-bg); border-color: var(--teal); }
+body.light .dash-card { background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+body.light .page { background: var(--bg); }
+body.light .info-box { background: var(--gold-bg); border-color: var(--gold-bd); }
+body.light .field-input,
+body.light .field-textarea,
+body.light .field-select {
+  background: #fff;
+  border-color: var(--border);
+  color: var(--text);
+}
+body.light .note-entry { background: #fff; border-color: var(--border); }
+body.light .ass-panel { background: transparent; }
+body.light .q-item { background: #fff; border-color: var(--border); }
+body.light .q-opt { background: var(--bg3); border-color: var(--border); color: var(--text); }
+body.light .q-opt.selected { background: var(--teal-bg); border-color: var(--teal); color: var(--teal); }
+body.light .method-check { color: var(--text); }
+body.light .hamburger { background: #fff; border-color: var(--border); }
+body.light .hamburger span { background: var(--text); }
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+
+body {
+  font-family: var(--font-b);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+}
+
+/* subtle dot grid */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: radial-gradient(circle, rgba(72,120,200,0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events:none; z-index:0;
+}
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+.sidebar {
+  width: var(--sidebar);
+  height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top:0; left:0;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+  padding-bottom: 1rem;
+}
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+
+.sidebar-logo {
+  padding: 1.5rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.logo-name {
+  font-family: var(--font-d);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--bright);
+  margin-bottom: 0.2rem;
+}
+.logo-title {
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.t-ex-filter {
+  font-size: 0.72rem; font-weight: 600; padding: 0.3rem 0.75rem;
+  border-radius: 16px; border: 1px solid var(--border);
+  background: transparent; color: var(--dim); cursor: pointer; transition: all 0.15s;
+  font-family: var(--font-m);
+}
+.t-ex-filter.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+.t-ex-filter:hover:not(.active) { border-color: var(--teal); color: var(--teal); }
+.t-ex-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.9rem 1rem; cursor: pointer;
+  transition: all 0.15s; position: relative; overflow: hidden;
+}
+.t-ex-card:hover { border-color: var(--teal-bd); transform: translateY(-1px); }
+.t-ex-card.hidden { display: none; }
+.t-ex-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2.5px;
+}
+.t-ex-cat-breath::before  { background: var(--blue); }
+.t-ex-cat-vagus::before   { background: var(--teal); }
+.t-ex-cat-somatic::before { background: var(--amber); }
+.t-ex-cat-grounding::before { background: var(--gold); }
+.t-ex-cat-bilateral::before { background: var(--rose); }
+.t-ex-cat-cognitive::before { background: var(--mid); }
+
+  padding: 1rem 0.75rem 0.5rem;
+}
+/* ── COLLAPSIBLE NAV GROUPS ── */
+details.nav-group {
+  margin-bottom: 0.25rem;
+}
+details.nav-group summary.nav-group-title {
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.55rem 1rem 0.55rem 1.1rem;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--radius);
+  transition: color 0.18s, background 0.18s;
+}
+details.nav-group summary.nav-group-title::-webkit-details-marker { display: none; }
+details.nav-group summary.nav-group-title::after {
+  content: '▸';
+  font-size: 0.6rem;
+  opacity: 0.5;
+  transition: transform 0.2s;
+}
+details.nav-group[open] summary.nav-group-title::after {
+  transform: rotate(90deg);
+  opacity: 0.8;
+}
+details.nav-group[open] summary.nav-group-title {
+  color: var(--text);
+}
+details.nav-group summary.nav-group-title:hover {
+  color: var(--text);
+  background: var(--bg3);
+}
+
+.nav-group-label {
+  font-family: var(--font-m);
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.18s;
+  color: var(--dim);
+  font-size: 0.82rem;
+  font-weight: 400;
+  border: 1px solid transparent;
+  margin-bottom: 2px;
+  user-select: none;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active {
+  background: var(--bg3);
+  border-color: var(--border);
+  color: var(--bright);
+  font-weight: 500;
+}
+.nav-item.active .nav-dot { background: var(--gold); }
+
+.nav-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.sidebar-footer {
+  flex-shrink: 0;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+.main {
+  margin-left: var(--sidebar);
+  flex: 1;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.page { display:none; animation: fadeIn 0.25s ease; }
+.page.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:none} }
+
+.page-content {
+  max-width: 1100px;
+  padding: 2.5rem 2rem 5rem;
+}
+
+/* ═══════════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════════ */
+.page-eyebrow {
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.page-title {
+  font-family: var(--font-d);
+  font-size: clamp(1.6rem,3vw,2.4rem);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--bright);
+  line-height: 1.15;
+  margin-bottom: 0.4rem;
+}
+.page-lead {
+  font-size: 0.95rem;
+  color: var(--dim);
+  max-width: 640px;
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+
+h3.section-h {
+  font-family: var(--font-d);
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+/* ═══════════════════════════════════════════
+   CARDS & SURFACES
+═══════════════════════════════════════════ */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.card-sm {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.info-box {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--mid);
+  margin-bottom: 1.5rem;
+}
+.info-box strong { color: var(--gold); font-family: var(--font-d); font-style: italic; }
+
+.warn-box {
+  background: var(--rose-bg);
+  border: 1px solid var(--rose-bd);
+  border-left: 3px solid var(--rose);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  color: #e08090;
+  margin-top: 0.75rem;
+}
+
+.clinical-note {
+  background: var(--teal-bg);
+  border-left: 3px solid var(--teal);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--dim);
+  margin-top: 0.75rem;
+}
+
+/* ═══════════════════════════════════════════
+   TAGS
+═══════════════════════════════════════════ */
+.tags { display:flex; flex-wrap:wrap; gap:0.35rem; margin-top:0.75rem; }
+.tag {
+  font-family: var(--font-m);
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.5rem;
+  border-radius: 3px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--muted);
+}
+
+/* ═══════════════════════════════════════════
+   ACCORDION
+═══════════════════════════════════════════ */
+.acc-item {
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.acc-trigger {
+  width:100%; display:flex; justify-content:space-between; align-items:center;
+  padding: 0.9rem 1.1rem;
+  background: var(--bg2); border:none; cursor:pointer;
+  text-align:left; gap:1rem; transition:background 0.18s;
+}
+.acc-trigger:hover { background: var(--bg3); }
+.acc-item.open .acc-trigger { background: var(--bg3); }
+.acc-title { font-family: var(--font-d); font-size:0.95rem; font-style:italic; color:var(--bright); }
+.acc-sub { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-top:0.15rem; }
+.acc-chev { color:var(--muted); font-size:0.65rem; transition:transform 0.28s; font-family:var(--font-m); }
+.acc-item.open .acc-chev { transform:rotate(90deg); color:var(--gold); }
+.acc-body { max-height:0; overflow:hidden; transition:max-height 0.38s cubic-bezier(0.4,0,0.2,1); }
+.acc-item.open .acc-body { max-height:1200px; }
+.acc-content { padding:1.1rem 1.25rem; border-top:1px solid var(--border); font-size:0.9rem; line-height:1.75; color:var(--mid); }
+.acc-content p+p { margin-top:0.65rem; }
+
+/* ═══════════════════════════════════════════
+   GRID LAYOUTS
+═══════════════════════════════════════════ */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+
+@media(max-width:900px) {
+  .two-col { grid-template-columns:1fr; }
+  .three-col { grid-template-columns:1fr 1fr; }
+}
+
+/* ═══════════════════════════════════════════
+   MOBIILI — hamburger + drawer
+═══════════════════════════════════════════ */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 0.75rem; left: 0.75rem;
+  z-index: 300;
+  width: 40px; height: 40px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0;
+}
+.hamburger span {
+  display: block;
+  width: 18px; height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 199;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.sidebar-overlay.visible {
+  display: block;
+  opacity: 1;
+}
+
+@media(max-width: 768px) {
+  .hamburger { display: flex; }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    z-index: 200;
+    width: 260px;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding-top: 56px;
+  }
+
+  .page-content {
+    padding: 1rem;
+  }
+
+  .page-title { font-size: 1.4rem; }
+
+  /* Kojelauta mobiililla */
+  .dash-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .dash-card { padding: 0.85rem; }
+
+  /* Lomakkeet mobiililla */
+  .two-col, .three-col,
+  div[style*="grid-template-columns: 1fr 1fr"],
+  div[style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Modaalit mobiililla */
+  .modal-content {
+    width: 95vw !important;
+    max-height: 85vh !important;
+    margin: 1rem auto !important;
+  }
+
+  /* RX-kortit */
+  .rx-layout { grid-template-columns: 1fr !important; }
+
+  /* Muistiinpanot */
+  .notes-layout { grid-template-columns: 1fr !important; }
+}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD (Page 1)
+═══════════════════════════════════════════ */
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.dash-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.dash-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+}
+.dash-card.c-gold::before  { background:var(--gold); }
+.dash-card.c-teal::before  { background:var(--teal); }
+.dash-card.c-blue::before  { background:var(--blue); }
+.dash-card.c-rose::before  { background:var(--rose); }
+.dash-card.c-amber::before { background:var(--amber); }
+.dash-card:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+
+.dash-icon { font-size:1.4rem; margin-bottom:0.6rem; }
+.dash-title { font-family:var(--font-d); font-size:0.95rem; font-style:italic; color:var(--bright); margin-bottom:0.3rem; }
+.dash-desc { font-size:0.78rem; color:var(--dim); line-height:1.5; }
+
+.reminder-list { display:flex; flex-direction:column; gap:0.5rem; }
+.reminder-item {
+  display:flex; align-items:flex-start; gap:0.75rem;
+  padding:0.75rem 1rem;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  font-size:0.85rem;
+  color:var(--mid);
+  line-height:1.55;
+}
+.reminder-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.r-gold { background:var(--gold); }
+.r-teal { background:var(--teal); }
+.r-rose { background:var(--rose); }
+.r-blue { background:var(--blue); }
+
+/* ═══════════════════════════════════════════
+   POLYVAGAL LADDER
+═══════════════════════════════════════════ */
+.pv-ladder { display:flex; flex-direction:column; gap:3px; margin-bottom:2rem; }
+.pv-rung { border-radius:var(--r); border:1px solid; overflow:hidden; }
+.pv-rung.ventral { background:var(--teal-bg); border-color:var(--teal-bd); }
+.pv-rung.sym     { background:var(--rose-bg);  border-color:var(--rose-bd); }
+.pv-rung.dorsal  { background:var(--blue-bg);  border-color:var(--blue-bd); }
+.pv-trigger {
+  width:100%; display:flex; align-items:flex-start; justify-content:space-between;
+  padding:1rem 1.25rem; background:none; border:none; cursor:pointer; gap:1rem;
+}
+.pv-name { font-family:var(--font-d); font-size:1rem; font-style:italic; }
+.ventral .pv-name { color:var(--teal); }
+.sym .pv-name     { color:var(--rose); }
+.dorsal .pv-name  { color:var(--blue); }
+.pv-nerve { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-top:0.2rem; }
+.pv-kws { display:flex; flex-wrap:wrap; gap:0.3rem; margin-top:0.5rem; }
+.pv-kw { font-family:var(--font-m); font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.15rem 0.4rem; border-radius:3px; }
+.ventral .pv-kw { background:rgba(58,152,128,0.15); color:var(--teal); }
+.sym .pv-kw     { background:rgba(192,80,96,0.15);  color:var(--rose); }
+.dorsal .pv-kw  { background:rgba(72,120,200,0.15); color:var(--blue); }
+.pv-body { max-height:0; overflow:hidden; transition:max-height 0.38s; }
+.pv-rung.open .pv-body { max-height:500px; }
+.pv-detail { padding:0 1.25rem 1.25rem; border-top:1px solid var(--border); padding-top:1rem; font-size:0.88rem; line-height:1.75; color:var(--mid); }
+.pv-detail p+p { margin-top:0.6rem; }
+
+/* ═══════════════════════════════════════════
+   WINDOW OF TOLERANCE
+═══════════════════════════════════════════ */
+.wot-container { border-radius:var(--r2); overflow:hidden; border:1px solid var(--border); margin-bottom:2rem; }
+.wot-zone { padding:1.1rem 1.5rem; cursor:pointer; transition:filter 0.2s; border-bottom:1px solid var(--border); }
+.wot-zone:last-child { border-bottom:none; }
+.wot-zone:hover { filter:brightness(1.1); }
+.wot-zone.hyper   { background:rgba(192,80,96,0.08); }
+.wot-zone.optimal { background:rgba(58,152,128,0.08); }
+.wot-zone.hypo    { background:rgba(72,120,200,0.08); }
+.wot-label { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; margin-bottom:0.25rem; }
+.hyper .wot-label   { color:var(--rose); }
+.optimal .wot-label { color:var(--teal); }
+.hypo .wot-label    { color:var(--blue); }
+.wot-title { font-family:var(--font-d); font-size:1rem; font-style:italic; color:var(--bright); }
+.wot-syms { font-size:0.78rem; color:var(--muted); margin-top:0.3rem; }
+.wot-body { max-height:0; overflow:hidden; transition:max-height 0.38s; }
+.wot-zone.open .wot-body { max-height:400px; }
+.wot-detail { padding-top:0.9rem; font-size:0.88rem; line-height:1.75; color:var(--mid); }
+.int-list { list-style:none; margin-top:0.6rem; }
+.int-list li { padding:0.35rem 0 0.35rem 1.3rem; position:relative; border-bottom:1px solid var(--border); font-size:0.85rem; color:var(--mid); }
+.int-list li:last-child { border-bottom:none; }
+.int-list li::before { content:'→'; position:absolute; left:0; font-family:var(--font-m); color:var(--gold); font-size:0.7rem; }
+
+/* ═══════════════════════════════════════════
+   ASSESSMENTS
+═══════════════════════════════════════════ */
+.assessment-tabs {
+  display:flex; gap:0; border-bottom:1px solid var(--border);
+  margin-bottom:1.5rem; overflow-x:auto; scrollbar-width:none;
+}
+.assessment-tabs::-webkit-scrollbar { display:none; }
+.ass-tab {
+  font-family:var(--font-m); font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase;
+  padding:0.75rem 1.1rem; border:none; background:none;
+  color:var(--muted); cursor:pointer;
+  border-bottom:2px solid transparent; transition:all 0.2s;
+  white-space:nowrap; flex-shrink:0;
+}
+.ass-tab:hover { color:var(--text); }
+.ass-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+
+.ass-panel { display:none; }
+.ass-panel.active { display:block; }
+
+.q-item {
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:1rem 1.25rem;
+  margin-bottom:0.5rem;
+}
+.q-text { font-size:0.9rem; color:var(--text); margin-bottom:0.75rem; line-height:1.6; }
+.q-scale {
+  display:flex; gap:0.35rem; flex-wrap:wrap;
+}
+.q-opt {
+  font-family:var(--font-m); font-size:0.6rem; letter-spacing:0.06em;
+  padding:0.35rem 0.7rem; border-radius:var(--r);
+  border:1px solid var(--border2); background:var(--bg3);
+  color:var(--dim); cursor:pointer; transition:all 0.18s;
+}
+.q-opt:hover { border-color:var(--gold); color:var(--text); }
+.q-opt.selected { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+
+.score-display {
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-radius:var(--r2);
+  padding:1.25rem 1.5rem;
+  margin-top:1.25rem;
+  display:flex; align-items:center; gap:1.5rem;
+}
+.score-num {
+  font-family:var(--font-d);
+  font-size:2.5rem;
+  font-style:italic;
+  color:var(--bright);
+  line-height:1;
+}
+.score-label { font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem; }
+.score-interp { font-size:0.9rem; color:var(--mid); }
+.score-bar-wrap { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.score-bar-fill { height:100%; border-radius:3px; transition:width 0.5s, background 0.5s; background:var(--teal); }
+
+.btn-reset {
+  font-family:var(--font-m); font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase;
+  padding:0.45rem 1rem; border-radius:var(--r);
+  border:1px solid var(--border2); background:none;
+  color:var(--dim); cursor:pointer; transition:all 0.18s;
+}
+.btn-reset:hover { color:var(--text); border-color:var(--text); }
+
+.pv-obs-grid {
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.75rem;
+  margin-bottom:1.5rem;
+}
+@media(max-width:800px) { .pv-obs-grid { grid-template-columns:1fr; } }
+
+.obs-card {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r2); padding:1.1rem; cursor:pointer; transition:all 0.2s;
+}
+.obs-card:hover { border-color:var(--border2); }
+.obs-card.selected-ventral { background:var(--teal-bg); border-color:var(--teal); }
+.obs-card.selected-sym     { background:var(--rose-bg); border-color:var(--rose); }
+.obs-card.selected-dorsal  { background:var(--blue-bg); border-color:var(--blue); }
+
+.obs-state { font-family:var(--font-m); font-size:0.56rem; letter-spacing:0.14em; text-transform:uppercase; margin-bottom:0.5rem; }
+.obs-state.v { color:var(--teal); }
+.obs-state.s { color:var(--rose); }
+.obs-state.d { color:var(--blue); }
+.obs-name { font-family:var(--font-d); font-size:0.95rem; font-style:italic; color:var(--bright); margin-bottom:0.35rem; }
+.obs-signs { font-size:0.78rem; color:var(--dim); line-height:1.55; }
+
+.obs-result {
+  background:var(--bg3); border:1px solid var(--border2);
+  border-radius:var(--r2); padding:1.25rem;
+  margin-top:1rem; min-height:80px;
+}
+
+/* ═══════════════════════════════════════════
+   EXERCISES (therapist view)
+═══════════════════════════════════════════ */
+.ex-filter-bar { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:1.25rem; }
+.ex-filter {
+  font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase;
+  padding:0.3rem 0.75rem; border-radius:3px;
+  border:1px solid var(--border2); background:none;
+  color:var(--muted); cursor:pointer; transition:all 0.18s;
+}
+.ex-filter:hover { color:var(--text); border-color:var(--dim); }
+.ex-filter.active { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+
+.ex-grid-t { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:1rem; }
+.ex-card-t {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r2); padding:1.25rem;
+  cursor:pointer; transition:all 0.22s;
+  display:flex; flex-direction:column; gap:0.4rem;
+  position:relative; overflow:hidden;
+}
+.ex-card-t::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.ex-card-t.breath::before  { background:var(--teal); }
+.ex-card-t.vagus::before   { background:var(--blue); }
+.ex-card-t.somatic::before { background:var(--rose); }
+.ex-card-t.grounding::before { background:var(--amber); }
+.ex-card-t.cognitive::before { background:var(--gold); }
+.ex-card-t.bilateral::before { background:#508060; }
+.ex-card-t.hidden { display:none; }
+.ex-card-t:hover { border-color:var(--border2); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+.ex-cat-t { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; }
+.breath .ex-cat-t    { color:var(--teal); }
+.vagus .ex-cat-t     { color:var(--blue); }
+.somatic .ex-cat-t   { color:var(--rose); }
+.grounding .ex-cat-t { color:var(--amber); }
+.cognitive .ex-cat-t { color:var(--gold); }
+.bilateral .ex-cat-t { color:#508060; }
+.ex-name-t { font-family:var(--font-d); font-size:1rem; font-style:italic; color:var(--bright); line-height:1.3; }
+.ex-desc-t { font-size:0.82rem; color:var(--dim); line-height:1.55; flex:1; }
+.ex-meta-t { display:flex; gap:0.6rem; flex-wrap:wrap; margin-top:0.4rem; }
+.ex-meta-item { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.05em; color:var(--muted); }
+.ex-flag {
+  font-family:var(--font-m); font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase;
+  padding:0.12rem 0.4rem; border-radius:2px;
+  background:var(--rose-bg); border:1px solid var(--rose-bd); color:var(--rose);
+}
+
+/* ═══════════════════════════════════════════
+   PSYCHOED
+═══════════════════════════════════════════ */
+.psychoed-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; }
+.psychoed-card {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r2); overflow:hidden;
+  cursor:pointer; transition:all 0.22s;
+}
+.psychoed-card:hover { border-color:var(--border2); transform:translateY(-2px); }
+.psychoed-head { padding:1.1rem; border-bottom:1px solid var(--border); }
+.psychoed-icon { font-size:1.4rem; margin-bottom:0.4rem; }
+.psychoed-topic { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:0.3rem; }
+.psychoed-name { font-family:var(--font-d); font-size:1rem; font-style:italic; color:var(--bright); }
+.psychoed-body { padding:0.85rem 1.1rem; font-size:0.82rem; color:var(--dim); line-height:1.55; }
+
+/* ═══════════════════════════════════════════
+   PRESCRIPTION (Harjoitteiden määräys)
+═══════════════════════════════════════════ */
+.rx-layout { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+@media(max-width:900px) { .rx-layout { grid-template-columns:1fr; } }
+
+.rx-list { display:flex; flex-direction:column; gap:0.4rem; }
+.rx-item {
+  display:flex; align-items:center; gap:0.75rem;
+  padding:0.75rem 1rem;
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r); cursor:pointer; transition:all 0.18s;
+}
+.rx-item:hover { border-color:var(--border2); }
+.rx-item.selected { background:var(--gold-bg); border-color:var(--gold); }
+.rx-check {
+  width:16px; height:16px; border-radius:3px;
+  border:1.5px solid var(--border2); flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.6rem; color:var(--gold); transition:all 0.18s;
+}
+.rx-item.selected .rx-check { background:var(--gold-bg); border-color:var(--gold); }
+.rx-name { font-size:0.88rem; color:var(--text); }
+.rx-cat { font-family:var(--font-m); font-size:0.55rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:0.1rem; }
+
+.rx-output {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r2); padding:1.5rem;
+  position:sticky; top:2rem;
+}
+.rx-output-title { font-family:var(--font-d); font-size:1.05rem; font-style:italic; color:var(--bright); margin-bottom:1rem; }
+.rx-preview {
+  background:var(--bg3); border:1px solid var(--border);
+  border-radius:var(--r); padding:1rem;
+  font-size:0.85rem; line-height:1.7; color:var(--mid);
+  min-height:120px; margin-bottom:1rem;
+  font-family:var(--font-m);
+  white-space:pre-wrap;
+}
+.rx-btn {
+  width:100%; padding:0.7rem;
+  background:var(--gold); color:var(--bg);
+  border:none; border-radius:var(--r);
+  font-family:var(--font-b); font-size:0.82rem; font-weight:600;
+  cursor:pointer; transition:all 0.18s;
+  margin-bottom:0.4rem;
+}
+.rx-btn:hover { filter:brightness(1.12); }
+.rx-btn.secondary {
+  background:none; border:1px solid var(--border2);
+  color:var(--dim);
+}
+.rx-btn.secondary:hover { border-color:var(--dim); color:var(--text); }
+
+/* ═══════════════════════════════════════════
+   NOTES
+═══════════════════════════════════════════ */
+.notes-layout { display:grid; grid-template-columns:1.2fr 1fr; gap:1.5rem; }
+@media(max-width:900px) { .notes-layout { grid-template-columns:1fr; } }
+
+.field-label { font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); display:block; margin-bottom:0.35rem; }
+.field-input, .field-textarea, .field-select {
+  width:100%; background:var(--bg3); border:1px solid var(--border2);
+  border-radius:var(--r); padding:0.6rem 0.85rem;
+  font-family:var(--font-b); font-size:0.88rem; color:var(--text);
+  outline:none; transition:border-color 0.18s; resize:none; appearance:none;
+}
+.field-input:focus, .field-textarea:focus, .field-select:focus { border-color:var(--gold); }
+.field-textarea { min-height:75px; line-height:1.6; }
+.field-row { margin-bottom:0.85rem; }
+
+.score-range {
+  width:100%; appearance:none; height:4px;
+  border-radius:2px; background:var(--border2);
+  outline:none; cursor:pointer;
+}
+.score-range::-webkit-slider-thumb {
+  appearance:none; width:16px; height:16px;
+  border-radius:50%; background:var(--gold);
+  cursor:pointer; border:2px solid var(--bg);
+}
+.range-row { display:flex; align-items:center; gap:0.75rem; }
+.range-val { font-family:var(--font-m); font-size:0.85rem; color:var(--gold); min-width:1.5rem; text-align:center; }
+
+.btn-save {
+  font-family:var(--font-m); font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase;
+  padding:0.6rem 1.4rem; border-radius:var(--r);
+  border:none; background:var(--gold); color:var(--bg);
+  cursor:pointer; transition:all 0.18s; font-weight:500;
+}
+.btn-save:hover { filter:brightness(1.12); }
+
+.note-entries { display:flex; flex-direction:column; gap:0.6rem; max-height:600px; overflow-y:auto; }
+.note-entry {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--r); padding:1rem;
+}
+.note-entry:hover { border-color:var(--border2); }
+.note-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.5rem; gap:0.5rem; }
+.note-date { font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.06em; color:var(--muted); }
+.note-state-badge { font-family:var(--font-m); font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.12rem 0.4rem; border-radius:2px; }
+.badge-ventral { background:var(--teal-bg); color:var(--teal); border:1px solid var(--teal-bd); }
+.badge-sym     { background:var(--rose-bg);  color:var(--rose);  border:1px solid var(--rose-bd); }
+.badge-dorsal  { background:var(--blue-bg);  color:var(--blue);  border:1px solid var(--blue-bd); }
+.note-text { font-size:0.85rem; color:var(--dim); line-height:1.6; }
+.note-scores { display:flex; gap:1rem; margin-top:0.4rem; font-family:var(--font-m); font-size:0.58rem; color:var(--muted); }
+.note-del { background:none; border:none; cursor:pointer; color:var(--muted); font-size:0.7rem; padding:2px; transition:color 0.18s; flex-shrink:0; }
+.note-del:hover { color:var(--rose); }
+.empty-state { text-align:center; padding:2rem; color:var(--muted); font-style:italic; font-family:var(--font-d); font-size:0.95rem; }
+
+/* ═══════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════ */
+.modal-bg {
+  display:none; position:fixed; inset:0; z-index:500;
+  background:rgba(8,12,20,0.8); backdrop-filter:blur(6px);
+  align-items:flex-end; justify-content:center;
+}
+.modal-bg.open { display:flex; }
+.modal-sheet {
+  background:var(--bg2); border:1px solid var(--border2);
+  border-radius:18px 18px 0 0;
+  padding:0; width:100%; max-width:680px; max-height:88vh;
+  overflow-y:auto; animation:sheetUp 0.3s cubic-bezier(0.32,0,0,1);
+  scrollbar-width:thin; scrollbar-color:var(--border2) transparent;
+}
+@keyframes sheetUp { from{transform:translateY(100%)} to{transform:none} }
+.modal-handle-row { display:flex; justify-content:center; padding:0.75rem; position:sticky; top:0; background:var(--bg2); border-bottom:1px solid var(--border); z-index:10; }
+.modal-handle { width:36px; height:4px; background:var(--border2); border-radius:2px; }
+.modal-body { padding:1.5rem 1.75rem 2.5rem; }
+.modal-eyebrow { font-family:var(--font-m); font-size:0.56rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); margin-bottom:0.35rem; }
+.modal-title { font-family:var(--font-d); font-size:1.65rem; font-style:italic; color:var(--bright); margin-bottom:0.3rem; line-height:1.2; }
+.modal-desc { font-size:0.9rem; color:var(--dim); margin-bottom:1.5rem; }
+.step-ol { list-style:none; counter-reset:steps; }
+.step-ol li { counter-increment:steps; padding:0.8rem 0 0.8rem 2.75rem; position:relative; border-bottom:1px solid var(--border); font-size:0.9rem; line-height:1.65; color:var(--mid); }
+.step-ol li:last-child { border-bottom:none; }
+.step-ol li::before { content:counter(steps); position:absolute; left:0; top:0.8rem; width:1.7rem; height:1.7rem; background:var(--bg3); border:1px solid var(--border2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-m); font-size:0.62rem; color:var(--gold); }
+
+.method-check {
+  display:flex; align-items:center; gap:0.5rem;
+  font-size:0.82rem; color:var(--mid); cursor:pointer;
+  padding:0.25rem 0;
+}
+.method-check input[type=checkbox] {
+  accent-color:var(--gold); width:14px; height:14px; flex-shrink:0;
+}
+
+.wot-chip, .goal-chip {
+  font-family:var(--font-m); font-size:0.58rem; letter-spacing:0.1em;
+  text-transform:uppercase; padding:0.3rem 0.7rem; border-radius:var(--r);
+  border:1px solid var(--border2); background:none; color:var(--muted);
+  cursor:pointer; transition:all 0.18s;
+}
+.wot-chip:hover, .goal-chip:hover { color:var(--text); border-color:var(--dim); }
+.wot-chip.active-hyper  { background:var(--rose-bg);  border-color:var(--rose);  color:var(--rose); }
+.wot-chip.active-optimal { background:var(--teal-bg); border-color:var(--teal); color:var(--teal); }
+.wot-chip.active-hypo   { background:var(--blue-bg);  border-color:var(--blue);  color:var(--blue); }
+.wot-chip.active-fluctuating { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+.goal-chip.active-yes  { background:var(--teal-bg); border-color:var(--teal); color:var(--teal); }
+.goal-chip.active-partial { background:var(--gold-bg); border-color:var(--gold); color:var(--gold); }
+.goal-chip.active-no   { background:var(--rose-bg); border-color:var(--rose); color:var(--rose); }
+
+.note-methods { display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.35rem; }
+.note-method-tag { font-family:var(--font-m); font-size:0.5rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.1rem 0.35rem; border-radius:2px; background:var(--bg3); border:1px solid var(--border2); color:var(--muted); }
+
+.note-safety { background:var(--rose-bg); border:1px solid var(--rose-bd); border-radius:var(--r); padding:0.4rem 0.6rem; font-size:0.78rem; color:var(--rose); margin-top:0.35rem; }
+.note-homework { font-family:var(--font-m); font-size:0.62rem; color:var(--gold); margin-top:0.3rem; }
+
+/* scrollbar */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+/* divider */
+.divider { height:1px; background:var(--border); margin:2rem 0; }
+
+/* ── BREADCRUMB & PAGE-ROLE ── */
+.breadcrumb {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+.breadcrumb span {
+  cursor: pointer;
+  color: var(--teal);
+  transition: opacity 0.15s;
+}
+.breadcrumb span:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+.breadcrumb strong {
+  color: var(--text);
+  font-weight: 500;
+}
+.page-role {
+  font-size: 0.82rem;
+  color: var(--dim);
+  font-style: italic;
+  margin-bottom: 1.25rem;
+  margin-top: 0;
+}
+
+/* ── MOBILE BOTTOM BAR ── */
+.mobile-bottom-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  justify-content: space-around;
+  align-items: center;
+  padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+  z-index: 1000;
+}
+@media (max-width: 768px) {
+  .mobile-bottom-bar { display: flex; }
+  .main { padding-bottom: 60px; }
+}
+.mobile-bottom-bar a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 1.35rem;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+.mobile-bottom-bar a:hover,
+.mobile-bottom-bar a.active {
+  background: var(--bg3);
+}
+.mobile-bottom-bar a span.bar-label {
+  font-family: var(--font-m);
+  font-size: 0.48rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.mobile-bottom-bar a.active span.bar-label {
+  color: var(--teal);
+}
+</style>
+</head>
+<body>
+
+
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Avaa valikko">
+  <span></span><span></span><span></span>
+</button>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div class="logo-name">Marko Oinas</div>
+      <button id="theme-toggle" onclick="toggleTheme()"
+        style="background:none;border:none;cursor:pointer;font-size:1rem;padding:0.2rem;border-radius:6px;opacity:0.7;transition:opacity 0.2s"
+        title="Vaihda teema">🌙</button>
+    </div>
+    <div class="logo-title">Kliininen työkalu · v1.0</div>
+  </div>
+
+  <div class="sidebar-nav">
+
+  <!-- Istunto — aina auki -->
+  <details class="nav-group" open>
+    <summary class="nav-group-title">Istunto</summary>
+    <div class="nav-item active" onclick="showPage('kojelauta',this)">
+      <span class="nav-dot"></span>Kojelauta
+    </div>
+    <div class="nav-item" onclick="showPage('muistiinpanot',this)">
+      <span class="nav-dot"></span>Muistiinpanot
+    </div>
+    <div class="nav-item" onclick="showPage('lapset-nuoret',this)">
+      <span class="nav-dot"></span>Lapset &amp; nuoret
+    </div>
+    <div class="nav-item" onclick="showPage('elamanjana',this)">
+      <span class="nav-dot"></span>Elämänjana
+    </div>
+  </details>
+
+  <!-- Arvioinnit & Seuranta -->
+  <details class="nav-group" open>
+    <summary class="nav-group-title">Arvioinnit &amp; Seuranta</summary>
+    <div class="nav-item" onclick="showPage('arvioinnit',this)">
+      <span class="nav-dot"></span>Arvioinnit
+    </div>
+    <div class="nav-item" onclick="showPage('edistyminen',this)">
+      <span class="nav-dot"></span>Edistymisseuranta
+    </div>
+    <div class="nav-item" onclick="showPage('psqi',this)">
+      <span class="nav-dot"></span>PSQI (uni)
+    </div>
+  </details>
+
+  <!-- Hoito -->
+  <details class="nav-group" open>
+    <summary class="nav-group-title">Hoito</summary>
+    <div class="nav-item" onclick="showPage('harjoitteet',this)">
+      <span class="nav-dot"></span>Harjoitteet
+    </div>
+    <div class="nav-item" onclick="showPage('hoitosuunnitelma',this)">
+      <span class="nav-dot"></span>Hoitosuunnitelma
+    </div>
+    <div class="nav-item" onclick="showPage('akupunktio',this)">
+      <span class="nav-dot"></span>Akupunktio
+    </div>
+    <div class="nav-item" onclick="showPage('maarays',this)">
+      <span class="nav-dot"></span>Harj. määräys
+    </div>
+  </details>
+
+  <!-- Tietopankki — suljettu oletuksena -->
+  <details class="nav-group" id="nav-theory-details">
+    <summary class="nav-group-title">Tietopankki</summary>
+    <div class="nav-item" onclick="showPage('aivokerrokset',this)">
+      <span class="nav-dot"></span>Aivokerrokset
+    </div>
+    <div class="nav-item" onclick="showPage('polyvagaali',this)">
+      <span class="nav-dot"></span>Polyvagaali
+    </div>
+    <div class="nav-item" onclick="showPage('toleranssi',this)">
+      <span class="nav-dot"></span>Toleranssi-ikkuna
+    </div>
+    <div class="nav-item" onclick="showPage('kipu',this)">
+      <span class="nav-dot"></span>Kipu &amp; hermosto
+    </div>
+    <div class="nav-item" onclick="showPage('trauma',this)">
+      <span class="nav-dot"></span>Trauma &amp; keho
+    </div>
+    <div class="nav-item" onclick="showPage('ans',this)">
+      <span class="nav-dot"></span>ANS käytännössä
+    </div>
+    <div class="nav-item" onclick="showPage('hrv',this)">
+      <span class="nav-dot"></span>HRV &amp; vagushermo
+    </div>
+    <div class="nav-item" onclick="showPage('kehomuisti',this)">
+      <span class="nav-dot"></span>Kehon muisti
+    </div>
+    <div class="nav-item" onclick="showPage('psykoed',this)">
+      <span class="nav-dot"></span>Psykoedukaatio
+    </div>
+  </details>
+
+  </div><!-- /sidebar-nav -->
+
+  <div class="sidebar-footer">
+    Vain terapeutin käyttöön<br>Ei potilastietoja
+  </div>
+</aside>
+
+<main class="main">
+<div id="page-aivokerrokset" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('aivokerrokset',null)">Tietopankki</span> › <strong>Aivokerrokset</strong></div>
+<p class="page-role">Triunainen aivomalli — neuroanatomia</p>
+
+  <div class="page-eyebrow">Neuroanatomia · MacLean</div>
+  <h1 class="page-title">Kolme aivokerrosta</h1>
+  <p class="page-lead">Triunainen aivomalli — kolme evoluution eri aikakaudella kehittynyttä järjestelmää. Ymmärtäminen on keskeistä bottom-up vs top-down -valinnoissa.</p>
+
+  <div class="info-box"><strong>Kliininen ydin:</strong> Kun primitiiviset kerrokset aktivoituvat uhkavasteessa, PFC menee offline. Bottom-up (hengitys, keho, ääni) tavoittaa alimmat kerrokset suoraan — myös silloin kun kognitiiviset menetelmät eivät toimi.</div>
+
+  <div id="brain-acc">
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Neokorteksi</div><div class="acc-sub">~2 milj. v. · Ihminen · Uusin kerros</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Kieli · Suunnittelu · Empatia</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p>Kieli, suunnittelu, empatia, päätöksenteko, ajanperspektiivi, itsetietoisuus. Voi moduloida alempien kerrosten reaktioita — mutta vain kun uhkavaste ei ylikuormitu.</p>
+        <p><strong style="color:var(--text)">PFC ja amygdala:</strong> Prefrontaalikorteksi inhiboi amygdalaa normaalioloissa. Trauman tai kroonisen stressin myötä PFC–amygdala-yhteys heikkenee. Stressitilanteessa verenkierto siirtyy pois PFC:lta — "en pysty ajattelemaan selkeästi" on neurologinen tosiasia.</p>
+        <div class="tags"><span class="tag">Kieli</span><span class="tag">Suunnittelu</span><span class="tag">Empatia</span><span class="tag">PFC</span><span class="tag">Narratiivi</span><span class="tag">Inhibitio</span></div>
+        <div class="clinical-note">Kognitiiviset interventiomenetelmät vaativat toimivan neokorteksin. Arvioi ensin onko asiakas toleranssi-ikkunassa.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Limbinen järjestelmä</div><div class="acc-sub">~200 milj. v. · Nisäkkäät · Tunneaivot</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Amygdala · Hippokampus</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Amygdala</strong> — hälytystorni. Tunnistaa uhan alle 20ms, kauan ennen tietoisuutta. Hälyttää HPA-akselin kortisolin erittämiseen välittömästi.</p>
+        <p><strong style="color:var(--text)">Hippokampus</strong> — kontekstuaalinen muisti. Trauma häiritsee hippokampuksen toimintaa — traumamuistoilla ei ole aikaleimaa. Flashback tuntuu tapahtuvan juuri nyt.</p>
+        <p><strong style="color:var(--text)">Sosiaalinen kipu:</strong> Cingulaarinen korteksi käsittelee sosiaalista kipua — sama hermosto kuin fyysisessä kivussa.</p>
+        <div class="tags"><span class="tag">Amygdala</span><span class="tag">Hippokampus</span><span class="tag">Tunnemuisti</span><span class="tag">HPA-akseli</span><span class="tag">Implisiittinen muisti</span></div>
+        <div class="clinical-note">Trauma tallentuu implisiittisenä — kehollisena, ilman narratiivista rakennetta. Kehotietoisuustyöskentely pääsee tähän kerrokseen suoraan.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Aivorunko & pikkuaivot</div><div class="acc-sub">~500 milj. v. · Reptiilit · Vanhin kerros</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Vagus · Hengitys · Refleksit</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p>Hengitys, sydämen syke, verenpaine, unen säätely, primitiiviset selviytymisrefleksit. Toimii automaattisesti, tietoisuuden alapuolella.</p>
+        <p><strong style="color:var(--text)">Vagushermo (n. vagus, X):</strong> Pisin kraniaalihermoista. 80% impulsseista kulkee pohjalta ylös (afferentit) — tämä on perustelu sille miksi keho-interventiot ovat niin tehokkaita.</p>
+        <div class="tags"><span class="tag">Hengitys</span><span class="tag">Sydän</span><span class="tag">Vagushermo</span><span class="tag">HRV</span><span class="tag">Afferentit</span></div>
+        <div class="clinical-note">Aivorungon tason interventiot: hengitysrytmi, ääni, hyräily, kosketus, lämpö. Toimivat myös silloin kun limbinen ja kortikaalinen taso ovat ylikuormittuneet.</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="info-box"><strong>Top-down vs Bottom-up:</strong> Kognitiiviset menetelmät toimivat top-down — neokorteksista alaspäin. Somaattiset, hengitys- ja kehotietoisuustyöskentely toimivat bottom-up — aivorungosta ylöspäin. Traumatyöskentelyssä bottom-up on usein ensisijainen.</div>
+</div>
+</div>
+
+<!-- ── POLYVAGAALI ────────────────────────────── -->
+<div id="page-polyvagaali" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('polyvagaali',null)">Tietopankki</span> › <strong>Polyvagaali</strong></div>
+<p class="page-role">Polyvagaaliteoria — ANS-säätely</p>
+
+  <div class="page-eyebrow">Stephen Porges · 1994</div>
+  <h1 class="page-title">Polyvagaalinen teoria</h1>
+  <p class="page-lead">Autonomisen hermoston kolme hierarkkista tilaa. Nuorempi kerros aktivoituu ensin — vasta sen pettäessä vanhempi ottaa hallinnan.</p>
+
+  <div class="info-box"><strong>Neuroception:</strong> Hermostomme arvioi turvallisuutta jatkuvasti, automaattisesti, tietoisuuden alapuolella. Tietty äänenpaino, tuoksu tai kehon asento voi aktivoida puolustusreaktion ilman rationaalista uhkaa.</div>
+
+  <div class="pv-ladder">
+    <div class="pv-rung ventral" onclick="togglePV(this)">
+      <button class="pv-trigger">
+        <div><div class="pv-name">Ventraalivagaali — Yhteys ja turva</div><div class="pv-nerve">N. vagus (ventralis) · Sosiaalinen hermosto · Uusin</div><div class="pv-kws"><span class="pv-kw">Turva</span><span class="pv-kw">Yhteys</span><span class="pv-kw">Leikki</span><span class="pv-kw">Oppiminen</span><span class="pv-kw">Empatia</span></div></div>
+        <span class="acc-chev">▶</span>
+      </button>
+      <div class="pv-body"><div class="pv-detail">
+        <p>Uusin evoluutiokerros. Aktivoituu kun keho arvioi ympäristön turvalliseksi. HRV korkea, lihastonus rentoitunut mutta virkeä, kasvonilmeet elävät, äänenpaino melodinen, kuulo terävöityy sosiaalisille äänille (200–2000 Hz).</p>
+        <p><strong style="color:var(--text)">Vagal brake:</strong> Ventraalivagaalinen säätely pitää sydämen sykkeen tasaisena ilman sympaattista kiihdytystä. Korkea kapasiteetti = hyvä kyky säädellä reaktioita sosiaalisissa tilanteissa.</p>
+        <div class="clinical-note">Terapeuttinen läsnäolo (äänenpaino, tempo, kasvonilmeet) on suora ventraalivagaalinen signaali asiakkaalle. Kaikki terapeuttiset interventiot toimivat parhaiten tässä tilassa.</div>
+      </div></div>
+    </div>
+
+    <div class="pv-rung sym" onclick="togglePV(this)">
+      <button class="pv-trigger">
+        <div><div class="pv-name">Sympaattinen — Mobilisaatio</div><div class="pv-nerve">Sympaattinen hermosto · Taistele / Pakene</div><div class="pv-kws"><span class="pv-kw">Taistelu</span><span class="pv-kw">Pako</span><span class="pv-kw">Ahdistus</span><span class="pv-kw">Viha</span><span class="pv-kw">Paniikki</span></div></div>
+        <span class="acc-chev">▶</span>
+      </button>
+      <div class="pv-body"><div class="pv-detail">
+        <p>Kortisoli ja adrenaliini tulvivat verenkiertoon. Sydän sykkii nopeammin, hengitys tihenee, lihakset jännittyvät, ruoansulatus pysähtyy, kipukynnys nousee.</p>
+        <p><strong style="color:var(--text)">Krooninen aktivaatio:</strong> Kun uhka ei pääty, keho ei palaudu. Ahdistuneisuushäiriöt, PTSD, krooninen kipu, univaikeudet, IBS kehittyvät tästä.</p>
+        <div class="clinical-note">Keho tarvitsee tavan purkaa mobilisaatioenergiaa. Ilman purkamista stressihormonit jäävät kiertämään. Peter Levine: eläimet tärisevät vapautuakseen — ihmiset inhiboivat tämän.</div>
+      </div></div>
+    </div>
+
+    <div class="pv-rung dorsal" onclick="togglePV(this)">
+      <button class="pv-trigger">
+        <div><div class="pv-name">Dorsaalivagaali — Romahdus</div><div class="pv-nerve">N. vagus (dorsalis) · Jähmettyminen / Sulkeutuminen · Vanhin</div><div class="pv-kws"><span class="pv-kw">Freeze</span><span class="pv-kw">Dissosiaatio</span><span class="pv-kw">Tunnottomuus</span><span class="pv-kw">Häpeä</span></div></div>
+        <span class="acc-chev">▶</span>
+      </button>
+      <div class="pv-body"><div class="pv-detail">
+        <p>Vanhin kerros. Metabolinen jarru — keho hidastaa, dissosioituu, turtuu. Fysiologinen pysähtyminen suojelee ylivoimaiselta kivulta.</p>
+        <p><strong style="color:var(--text)">Kliinisesti:</strong> masennus, uupumus, keho raskas tai etäinen, tunteet kaukana, vaikeus toimia, häpeä. Varhainen kiintymyssuhdetrauma jättää usein jälkensä tähän kerrokseen.</p>
+        <div class="warn-box">⚠ Dorsaalivagaalisesta tilasta ei voi hypätä suoraan ventraalivagaaliseen. Tarvitaan ensin hallittu siirtymä sympaattisen aktivaation kautta.</div>
+      </div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── TOLERANSSI ─────────────────────────────── -->
+<div id="page-toleranssi" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('toleranssi',null)">Tietopankki</span> › <strong>Toleranssi-ikkuna</strong></div>
+<p class="page-role">Optimaalinen vireystila ja säätely</p>
+
+  <div class="page-eyebrow">Dan Siegel · Pat Ogden</div>
+  <h1 class="page-title">Toleranssi-ikkuna</h1>
+  <p class="page-lead">Optimaalisen integraation alue. Kapea ikkuna = vähäinen kapasiteetti. Terapian keskeinen tehtävä on laajentaa tätä aluetta asteittain.</p>
+
+  <div class="info-box"><strong>Terapeuttinen tavoite:</strong> Auttaa asiakasta löytämään, tunnistamaan ja laajentamaan toleranssi-ikkunaansa — asteittain, turvallisesti, titrattuun tahtiin.</div>
+
+  <div class="wot-container">
+    <div class="wot-zone hyper" onclick="toggleWOT(this)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div class="wot-label">Yliaktivaatio · Hyperarousal</div><div class="wot-title">Yli toleranssirajan</div><div class="wot-syms">Paniikki · Viha · Kaoottinen ajattelu · Agitaatio · Impulsiivisuus</div></div>
+        <span class="acc-chev">▶</span>
+      </div>
+      <div class="wot-body"><div class="wot-detail">
+        <p>Sympaattinen hermosto yliaktivoitunut. PFC suurelta osin offline. Kognitiiviset interventiomenetelmät eivät tavoita asiakasta.</p>
+        <ul class="int-list">
+          <li>Fysiologinen huokaus — vaguksen aktivointi ensin</li>
+          <li>5-4-3-2-1 orientoituminen — PFC takaisin online</li>
+          <li>Fyysinen liike — mobilisaatioenergiaa purkamaan</li>
+          <li>Pidennetty uloshengitys (4–6–8 rytmi)</li>
+          <li>Kylmä vesi kasvoille — dyykkausrefleksi</li>
+        </ul>
+        <div class="warn-box">⚠ Vältä traumakeskeisiä narratiiveja hyperarousal-tilassa.</div>
+      </div></div>
+    </div>
+    <div class="wot-zone optimal" onclick="toggleWOT(this)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div class="wot-label">Optimaalinen vireystila · Toleranssi-ikkuna</div><div class="wot-title">Integraation alue</div><div class="wot-syms">Virkeä · Läsnä · Utelias · Prosessointi mahdollista · Yhteys</div></div>
+        <span class="acc-chev">▶</span>
+      </div>
+      <div class="wot-body"><div class="wot-detail">
+        <p>Ventraalivagaalinen järjestelmä aktiivinen. Asiakas voi sekä tuntea että ajatella samanaikaisesti.</p>
+        <ul class="int-list">
+          <li>Kaikki terapeuttiset menetelmät toimivat</li>
+          <li>Traumatyöskentely, EMDR, narratiivi, kognitiiviset menetelmät</li>
+          <li>Somattiset harjoitteet integraation syventämiseksi</li>
+          <li>Kiintymystyöskentely ja suhdeprosessit</li>
+        </ul>
+      </div></div>
+    </div>
+    <div class="wot-zone hypo" onclick="toggleWOT(this)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div class="wot-label">Aliaktivaatio · Hypoarousal</div><div class="wot-title">Alle toleranssirajan</div><div class="wot-syms">Tunnottomuus · Dissosiaatio · Tyhjyys · Jähmettyminen · Häpeä</div></div>
+        <span class="acc-chev">▶</span>
+      </div>
+      <div class="wot-body"><div class="wot-detail">
+        <p>Dorsaalivagaalinen järjestelmä hallitsee. Kliiniset merkit: tyhjä katse, hidas puhe, vaikeus löytää sanoja, "poissaolo".</p>
+        <ul class="int-list">
+          <li>Aktivointi varovaisesti — ei pakottaen</li>
+          <li>Pienet liikkeet: varpaiden liikuttelu, silmien avaaminen</li>
+          <li>Orientoituminen ympäristöön äänen kautta</li>
+          <li>Hidas, rytminen liike (keinuminen, kävely)</li>
+          <li>Terapeuttinen ääni ja läsnäolo</li>
+          <li>Hyräily vaguksen aktivoimiseksi</li>
+        </ul>
+        <div class="warn-box">⚠ Vältä painostavia interventiota — ne voivat syventää sulkeutumista.</div>
+      </div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── KIPU & HERMOSTO ────────────────────────── -->
+<div id="page-kipu" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('kipu',null)">Tietopankki</span> › <strong>Kipu & hermosto</strong></div>
+<p class="page-role">Kipu neurotiede — moderni kipumalli</p>
+
+  <div class="page-eyebrow">Pain Neuroscience Education · PNE</div>
+  <h1 class="page-title">Kipu &amp; hermosto</h1>
+  <p class="page-lead">Kipu on aivojen suojelureaktio — ei kudosvaurion suora mittari. Ymmärtäminen muuttaa kipukokemusta.</p>
+
+  <div class="info-box"><strong>Kliininen ydin (Moseley &amp; Butler):</strong> Kivun neurotieteellinen ymmärtäminen (PNE) vähentää pelkoa, katastrofointia ja kipuherkkyyttä. Tieto itsessään on interventio.</div>
+
+  <div id="kipu-acc">
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Mitä kipu oikeasti on?</div><div class="acc-sub">Neurotiedepohjainen määritelmä</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Output · Suojelu · Aivot</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p>Kipu on aivojen <strong style="color:var(--text)">output</strong> — ei input. Se on suojelujärjestelmän tuottama kokemus, jonka tarkoitus on motivoida käyttäytymismuutosta. Kipu ≠ kudosvaurio.</p>
+        <p><strong style="color:var(--text)">IASP:n määritelmä 2020:</strong> "Kipu on epämiellyttävä sensorinen ja emotionaalinen kokemus, joka liittyy todelliseen tai mahdolliseen kudosvaurioon tai jota kuvataan sellaisena."</p>
+        <p><strong style="color:var(--text)">Keskeinen havainto:</strong> Kudosvaurion ja kivun välinen korrelaatio on heikko. Vakavia vaurioita voi olla ilman kipua (sotatantere, urheilu). Voimakasta kipua voi olla ilman vauriota (fibromyalgia, CRPS, phantomkipu).</p>
+        <div class="tags"><span class="tag">Output</span><span class="tag">Suojelu</span><span class="tag">IASP</span><span class="tag">Kudosvaurio</span><span class="tag">Nocebo</span></div>
+        <div class="clinical-note">Käytännössä: "Sinun selkäsi on normaali 55-vuotiaan selkä — kipu ei tarkoita että jokin hajoaa." Tämä vähentää katastrofointia merkittävästi.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Nosiseptio vs kipu</div><div class="acc-sub">Kahden eri järjestelmän ero</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Nosiseptori · Vaaratieto · Prosessointi</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Nosiseptio:</strong> Kudoksessa olevien nosiseptorien (vapaiden hermopäätteiden) aktivoituminen vaaratiedon seurauksena. Nosiseptio on neutraali signaalijärjestelmä — kuin palohälytin.</p>
+        <p><strong style="color:var(--text)">Kipu:</strong> Aivojen tulkinta nosiseptisestä signaalista kontekstissaan. Sama nosiseptinen signaali tuottaa eri tilanteissa täysin erilaisen kipukokemuksen.</p>
+        <p><strong style="color:var(--text)">Porttikontrrolliteoria (Melzack &amp; Wall 1965):</strong> Selkäytimen takasarven hermosolut toimivat "porttina" — ei-kipusignaalit (kosketus, lämpö, liike) voivat sulkea kipusignaalin kulkua. Perustaa hiero- ja liiketerapian mekanismin.</p>
+        <div class="tags"><span class="tag">Nosiseptori</span><span class="tag">C-kuitu</span><span class="tag">Aδ-kuitu</span><span class="tag">Portticontrolli</span><span class="tag">Takasarvi</span></div>
+        <div class="clinical-note">Liike, kosketus ja lämpö aktivoivat myelinoituja Aβ-kuituja jotka kilpailevat kipusignaalin kanssa portissa. Tämä on mekaaninen perustelu manuaaliselle terapialle.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Sensitisaatio — hermosto oppii kipua</div><div class="acc-sub">Sentraalinen ja perifeerinen herkistyminen</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Kronistuminen · Allodynia · Hyperalgesia</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Perifeerinen sensitisaatio:</strong> Vaurioitunut kudos vapauttaa tulehdusaineita (prostaglandiinit, bradykiniini, histaminit) jotka herkistävät nosiseptoreita. Normaalit ärsykkeet tuntuvat kivuliailta (allodynia) ja kipu on voimakkaampaa (hyperalgesia).</p>
+        <p><strong style="color:var(--text)">Sentraalinen sensitisaatio:</strong> Selkäytimen ja aivojen kipuprosessointijärjestelmä herkistyy. Kipujärjestelmä "oppii" olemaan sensitiivinen. Taustalla: glutamaattireseptorien herkistyminen (NMDA), inhibitoristen järjestelmien heikkeneminen.</p>
+        <p><strong style="color:var(--text)">Krooninen kipu:</strong> Usein sentraalinen sensitisaatio — hermosto on muuttunut, ei kudos. Selittää miksi kuvauksessa näkyvät löydökset eivät korreloi kivun kanssa.</p>
+        <div class="tags"><span class="tag">Sentraalinen sensitisaatio</span><span class="tag">Allodynia</span><span class="tag">NMDA</span><span class="tag">Neuroplastisuus</span><span class="tag">Krooninen kipu</span></div>
+        <div class="clinical-note">Asiakkaille: "Hermostosi on käynyt yliherkkään tilaan — kuin hälytysjärjestelmä joka reagoi liiaksi. Tavoitteemme on rauhoittaa hermostoa, ei löytää vauriota."</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Biopsykososiaalinen malli</div><div class="acc-sub">Kivun kolme ulottuvuutta</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Bio · Psyko · Sosiaalinen</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Biologiset tekijät:</strong> Kudosvaurio, tulehdus, hermovaurio, uni, ravitsemus, liike, lihaskunto, hormonit.</p>
+        <p><strong style="color:var(--text)">Psykologiset tekijät:</strong> Katastrofointi (pahin selittäjä kroonistumiselle), pelko-välttämiskäyttäytyminen, depressio, ahdistus, traumahistoria, kinetiofobia (liikkumisen pelko).</p>
+        <p><strong style="color:var(--text)">Sosiaaliset tekijät:</strong> Sairauden rooliodotukset, työtilanne, taloudellinen stressi, tukiverkosto, kulttuurinen kipukäsitys, terveysjärjestelmän vuorovaikutukset.</p>
+        <p><strong style="color:var(--text)">Fear-Avoidance Model (Vlaeyen &amp; Linton):</strong> Kipupelko → välttelykäyttäytyminen → toimintakyvyn lasku → lisää kipua. Keskeinen kroonistumista selittävä malli.</p>
+        <div class="tags"><span class="tag">Biopsykososiaalinen</span><span class="tag">Katastrofointi</span><span class="tag">Fear-avoidance</span><span class="tag">Kinetiofobia</span><span class="tag">Toimintakyky</span></div>
+        <div class="clinical-note">PCS (Pain Catastrophizing Scale) ja TSK (Tampa Scale of Kinesiophobia) ovat validoituja mittareita näiden tekijöiden arviointiin.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Stressi, ANS ja kipu</div><div class="acc-sub">Hermostollinen yhteys</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Kortisoli · HPA-akseli · Tulehdus</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Krooniinen stressi pahentaa kipua:</strong> Kortisoli kiihdyttää tulehdusreaktioita pitkäaikaisessa altistuksessa (paradoksaalisesti — akuutisti kortisoli on anti-inflammatorinen). Sympaattinen aktivaatio lisää lihasjännitystä ja heikentää kipuinhibitiota.</p>
+        <p><strong style="color:var(--text)">HPA-akseli ja kipu:</strong> Kroonisessa kivussa HPA-akselin säätely usein häiriintynyt. Kortisolin vuorokausirytmi tasoittuu. Tämä selittää osittain kipuun liittyvää väsymystä ja mielialanvaihtelua.</p>
+        <p><strong style="color:var(--text)">Parasympaattinen aktivaatio kipuun:</strong> Vagushermo moduloi tulehdusreaktioita suoraan (kolinerginen anti-inflammatorinen polku, Tracey 2002). Hengitysharjoitteet ja HRV:n parantaminen voivat vähentää tulehdusta.</p>
+        <div class="tags"><span class="tag">HPA-akseli</span><span class="tag">Kortisoli</span><span class="tag">Vagus</span><span class="tag">Tulehdus</span><span class="tag">Kolinerginen</span></div>
+        <div class="clinical-note">Psykofyysinen lähestymistapa on erityisen perusteltu kroonisessa kivussa: stressi, ANS-säätely ja kipu ovat saman järjestelmän eri ilmentymiä.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">PNE kliinisessä työssä</div><div class="acc-sub">Miten selitetään — käytännön työkalut</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Psykoedukaatio · Metaforat · Tutkimusnäyttö</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Tutkimusnäyttö (Moseley 2004, Louw ym. 2016):</strong> PNE yhdistettynä fyysiseen harjoitteluun on tehokkaampaa kuin pelkkä harjoittelu. Vaikuttaa erityisesti katastrofointiin, pelkoon ja toimintakykyyn.</p>
+        <p><strong style="color:var(--text)">Tehokkaat metaforat:</strong></p>
+        <ul class="int-list">
+          <li>"Kipujärjestelmä on kuin paloilmoitin — se voi hälyyttää ilman oikeaa paloa"</li>
+          <li>"Hermosto oppii herkkyyttä — ja se voi oppia myös pois"</li>
+          <li>"Kipu on hermostosi mielipide tilanteesta — ei totuus kudoksen tilasta"</li>
+          <li>"Särkylääkkeesi ei poista kudosvauriota — se rauhoittaa hermostoa"</li>
+        </ul>
+        <p><strong style="color:var(--text)">Vältä:</strong> Dualistinen ajattelu ("se on psyykkistä" vs "oikeaa kipua"), syyllisyyden tuottaminen, liian nopea edistymisodotus.</p>
+        <div class="tags"><span class="tag">PNE</span><span class="tag">Moseley</span><span class="tag">Metafora</span><span class="tag">Katastrofointi</span><span class="tag">Louw</span></div>
+        <div class="clinical-note">Aloita aina validoinnista: "Kipusi on todellista." Siirry vasta sitten mekanismin selittämiseen. Ilman validointia PNE voi kuulostaa siltä että kipu "on vain päässä".</div>
+      </div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── TRAUMA & KEHO ───────────────────────────── -->
+<div id="page-trauma" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('trauma',null)">Tietopankki</span> › <strong>Trauma & keho</strong></div>
+<p class="page-role">Trauman kehollinen ja neurobiologinen malli</p>
+
+  <div class="page-eyebrow">Somaattinen psykoterapia · SE · EMDR</div>
+  <h1 class="page-title">Trauma &amp; keho</h1>
+  <p class="page-lead">Trauma tallentuu hermostoon — ei pelkästään mieleen. Keho pitää kirjaa (van der Kolk).</p>
+
+  <div class="info-box"><strong>Kliininen ydin:</strong> Traumamuistot ovat fragmentoituneita, kehollisia, ei-narratiivisia. Perinteiset kognitiiviset menetelmät eivät yksin riitä — keho on otettava mukaan integraatioprosessiin.</div>
+
+  <div id="trauma-acc">
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Miten trauma tallentuu?</div><div class="acc-sub">Implisiittinen muisti ja kehon muistijälki</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Hippokampus · Amygdala · Fragmentaatio</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Normaali muistin konsolidointi:</strong> Hippokampus aikaleimaa tapahtumat ja yhdistää ne kontekstuaaliseen narratiiviin. Korkeatasoinen stressi häiritsee tätä prosessia.</p>
+        <p><strong style="color:var(--text)">Traumatallenne:</strong> Voimakkaan stressireaktion aikana kortisoli ja adrenaliini häiritsevät hippokampuksen toimintaa. Muistijälki jää fragmentoituneeksi — sensorisia, kehollisia, emotionaalisia palasia ilman aikaleimaa tai narratiivia.</p>
+        <p><strong style="color:var(--text)">Amygdala-pohjainen muisti:</strong> Pelkokonditionointi tallentuu amygdalaan myös silloin kun hippokampus ei toimi. Tämä on nopeaa, automaattista, tietoisuuden alapuolella toimivaa.</p>
+        <p><strong style="color:var(--text)">Flashback:</strong> Fragmentoitunut muistijälki aktivoituu ilman aikaleimaa — kokemus tuntuu tapahtuvan juuri nyt. Ei ole "muisto menneestä" vaan nykyhetken sensorinen kokemus.</p>
+        <div class="tags"><span class="tag">Hippokampus</span><span class="tag">Amygdala</span><span class="tag">Fragmentaatio</span><span class="tag">Flashback</span><span class="tag">Implisiittinen muisti</span></div>
+        <div class="clinical-note">Flashbackin aikana: "Olet turvassa nyt. Tämä on muisto — se ei tapahdu uudelleen." Grounding-harjoitteet ankkuroivat nykyhetkeen.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Faasimainen traumatyöskentely</div><div class="acc-sub">Herman 1992 · Turva ensin</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Stabilisaatio · Prosessointi · Integraatio</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Faasi 1 — Turvallisuus ja stabilisaatio:</strong> Perusedellytys kaikelle traumatyöskentelylle. Sisältää: ANS-säätelyn opetteleminen, turvapaikan rakentaminen, dissosiaation tunnistaminen, kriisinhallintakeinot. Ei traumanarratiivia vielä.</p>
+        <p><strong style="color:var(--text)">Faasi 2 — Traumamuiston prosessointi:</strong> Vasta kun riittävä kapasiteetti on rakennettu. Titraatio: pieniä annoksia, toleranssi-ikkunassa. EMDR, SE, traumafokusoitu kognitiivinen terapia.</p>
+        <p><strong style="color:var(--text)">Faasi 3 — Integraatio ja yhdistäminen:</strong> Traumamuiston integroiminen osaksi elämäntarinaa. Identiteetin ja kiintymyssuhteiden uudelleenrakentaminen.</p>
+        <div class="warn-box">⚠ Älä siirry faasiin 2 ennen kuin faasi 1 on vakiintunut. Ennenaikainen prosessointi voi destabilisoida.</div>
+        <div class="tags"><span class="tag">Herman</span><span class="tag">Faasimalli</span><span class="tag">Stabilisaatio</span><span class="tag">Titraatio</span><span class="tag">EMDR</span></div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Somaattinen kokeminen (SE)</div><div class="acc-sub">Peter Levine · Kehollinen prosessointi</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Levine · SIBAM · Pendulaatio</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Perusajatus (Levine):</strong> Trauma on jäätynyttä biologista energiaa — keskeytynyt selviytymisreaktio. Eläimillä energia vapautuu ravistelun ja tärinän kautta. Ihmisellä keho yrittää samaa mutta sosiaaliset normit estävät sen.</p>
+        <p><strong style="color:var(--text)">SIBAM-malli:</strong> Sensation (kehontuntemukset), Image (mielikuvat), Behavior (käyttäytymisimpulssit), Affect (tunteet), Meaning (merkitys). Trauma prosessoidaan näiden kanavia pitkin.</p>
+        <p><strong style="color:var(--text)">Titraatio:</strong> Kosketus traumamateriaaliin pienissä annoksissa — "kipupisteiden" lähestyminen varovasti, ei upottamalla.</p>
+        <p><strong style="color:var(--text)">Pendulaatio:</strong> Vuorottelu resurssin (turva, miellyttävä kehontuntemus) ja aktivaation (trauma-materiaali) välillä. Laajentaa toleranssi-ikkunaa vähitellen.</p>
+        <div class="tags"><span class="tag">SE</span><span class="tag">Levine</span><span class="tag">SIBAM</span><span class="tag">Titraatio</span><span class="tag">Pendulaatio</span></div>
+        <div class="clinical-note">SE:ssä seurataan kehontuntemuksia, ei narratiivia. "Mitä huomaat kehossasi kun kerrot tästä?" — ohjaa pois älyanalyysin ja kohti sensorisen prosessoinnin.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">EMDR — silmänliiketerapia</div><div class="acc-sub">Shapiro 1989 · Bilateraalinen stimulaatio</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">BLS · AIP · WHO suositus</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Adaptive Information Processing (AIP):</strong> Levottomasti tallentuneet muistot ovat traumaoireiden lähde. BLS (bilateraalinen stimulaatio) aktivoi aivojen luonnollisen prosessointijärjestelmän — muisto "sulaa" adaptiiviseen muotoon.</p>
+        <p><strong style="color:var(--text)">BLS-muodot:</strong> Silmänliikkeet (alkuperäinen), taputtelu (tapping), kuulostimulaat (vuorotteleva ääni). Kaikki yhtä tehokkaita tutkimusnäytön mukaan.</p>
+        <p><strong style="color:var(--text)">Tehokkuusnäyttö:</strong> WHO:n ja APA:n suosittelema PTSD:n hoitoon. Meta-analyysien mukaan yhtä tehokas tai tehokkaampi kuin prolonged exposure, nopeampi hoitojakso.</p>
+        <p><strong style="color:var(--text)">Kontraindikaatiot:</strong> Vakava dissosiaatio, epävakaa mielenterveys, psykoosi. Faasi 1 aina ensin.</p>
+        <div class="tags"><span class="tag">EMDR</span><span class="tag">BLS</span><span class="tag">AIP</span><span class="tag">WHO</span><span class="tag">PTSD</span></div>
+        <div class="clinical-note">Perhoshalaus (butterfly hug) on asiakaslähteinen BLS-muoto jota asiakas voi käyttää itse kotona. Sopii stabilisaatioon ja resursointiin.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Dissosiaatio — kliininen tunnistaminen</div><div class="acc-sub">Rakennedissosiaatio · Spectrum</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">EP · ANP · Tunnistaminen</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Rakennedissosiaatioteoria (Van der Hart ym.):</strong> Persoonallisuus jakautuu Emotionaaliseen Persoonallisuuteen (EP — trauma-aktivoitu) ja Arjen Normaaliin Persoonallisuuteen (ANP).</p>
+        <p><strong style="color:var(--text)">Dissosiaatiospektri:</strong></p>
+        <ul class="int-list">
+          <li>Normaali: uppoutuminen, haaveileminen</li>
+          <li>Lievä: tilanteiden muistikatkokset, depersonalisaatio/derealisaatio</li>
+          <li>Keskivaikea: dissosiatiiiviset tilat, EP:n "ottaa vallan"</li>
+          <li>Vaikea: DID (dissociatiivinen identiteettihäiriö)</li>
+        </ul>
+        <p><strong style="color:var(--text)">Kliiniset merkit:</strong> Tyhjä katse, poissaolo, äänenpainon muutos, lapsenomainen puhe, muistikatkokset, depersonalisaatio, derealisaatio.</p>
+        <div class="warn-box">⚠ Dissosiaatiossa: grounding ensin. Ei traumaprosessointia dissosioituneessa tilassa.</div>
+        <div class="tags"><span class="tag">Dissosiaatio</span><span class="tag">EP</span><span class="tag">ANP</span><span class="tag">DID</span><span class="tag">Grounding</span></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── ANS KÄYTÄNNÖSSÄ ─────────────────────────── -->
+<div id="page-ans" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('ans',null)">Tietopankki</span> › <strong>ANS käytännössä</strong></div>
+<p class="page-role">Autonominen hermosto kliinisessä työssä</p>
+
+  <div class="page-eyebrow">Autonominen hermosto · Kliiniset sovellukset</div>
+  <h1 class="page-title">ANS käytännössä</h1>
+  <p class="page-lead">Autonominen hermosto säätelee kaikkea — sydän, hengitys, ruoansulatus, immuunijärjestelmä, kivun säätely. Terapeutti työskentelee ANS:n kanssa jokaisessa istunnossa.</p>
+
+  <div class="info-box"><strong>Kliininen ydin:</strong> ANS:n tila määrää mitä interventiomenetelmää käytetään. Väärän menetelmän käyttö väärässä ANS-tilassa on tehotonta tai vahingollista.</div>
+
+  <div id="ans-acc">
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">ANS:n anatomia lyhyesti</div><div class="acc-sub">Sympaattinen · Parasympaattinen · Enteraalinen</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">SNS · PNS · ENS</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Sympaattinen (SNS):</strong> Rintarangan tasolta (T1–L2). Välittäjäaine noradrenaliini. Kiihdyttää: sydän, verenpaine, hengitys, verensokeri. Hidastaa: ruoansulatus, immuuni, lisääntyminen. "Fight-flight".</p>
+        <p><strong style="color:var(--text)">Parasympaattinen (PNS):</strong> Aivorungosta (vagushermo CN X) ja ristirangasta (S2–S4). Välittäjäaine asetyylikoliini. Rauhoittaa sydämen, aktivoi ruoansulatuksen, tukee palautumista. "Rest-digest".</p>
+        <p><strong style="color:var(--text)">Enteraalinen (ENS):</strong> "Toinen aivot" — 500 miljoonaa hermosolua suolistossa. Toimii itsenäisesti, kommunikoi vaguksen kautta. Selittää miksi stressitila näkyy suolisto-oireina ja miksi suoliston hoito vaikuttaa mielenterveyteen.</p>
+        <div class="tags"><span class="tag">SNS</span><span class="tag">PNS</span><span class="tag">ENS</span><span class="tag">Vagus</span><span class="tag">Asetyylikoliini</span><span class="tag">Noradrenaliini</span></div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">ANS-tilan tunnistaminen istunnossa</div><div class="acc-sub">Kliiniset indikaattorit</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Havainnointi · Merkit · Tilat</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:0.75rem">
+          <div style="padding:0.75rem;background:var(--teal-bg);border:1px solid var(--teal-bd);border-radius:var(--r)">
+            <div style="font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:0.4rem">Ventral vagal</div>
+            <ul style="font-size:0.78rem;color:var(--dim);padding-left:1rem;margin:0">
+              <li>Puhe: melodinen, rytminen</li>
+              <li>Silmät: kirkkaat, kontakti</li>
+              <li>Lihastonus: rentotunut virkeä</li>
+              <li>Hengitys: syvä, tasainen</li>
+              <li>Kasvot: elävät ilmeet</li>
+            </ul>
+          </div>
+          <div style="padding:0.75rem;background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:var(--r)">
+            <div style="font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem">Sympaattinen</div>
+            <ul style="font-size:0.78rem;color:var(--dim);padding-left:1rem;margin:0">
+              <li>Puhe: nopea, katkonainen</li>
+              <li>Silmät: laajentunut pupilli</li>
+              <li>Lihastonus: jännittyneisyys</li>
+              <li>Hengitys: pinnallinen, nopea</li>
+              <li>Kasvot: jäykkyys, punoitus</li>
+            </ul>
+          </div>
+          <div style="padding:0.75rem;background:var(--blue-bg);border:1px solid var(--blue-bd);border-radius:var(--r)">
+            <div style="font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);margin-bottom:0.4rem">Dorsal vagal</div>
+            <ul style="font-size:0.78rem;color:var(--dim);padding-left:1rem;margin:0">
+              <li>Puhe: hidas, matala, vähäistä</li>
+              <li>Silmät: tyhjä katse, välttely</li>
+              <li>Lihastonus: roikkuva, lyyhistynyt</li>
+              <li>Hengitys: pinnallinen, hidas</li>
+              <li>Kasvot: tasaiset, kalvas</li>
+            </ul>
+          </div>
+        </div>
+        <div class="clinical-note">Opettele lukemaan ANS-tilaa jatkuvasti istunnon aikana. Tila voi muuttua nopeasti erityisesti traumamateriaalin äärellä.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">ANS-säätelyn portit — interventioiden valinta</div><div class="acc-sub">Miten vaikutat suoraan ANS:iin</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Hengitys · Ääni · Keho · Kosketus</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">1. Hengitys — suorin ANS-portti:</strong> Uloshengitys aktivoi vaguksen (RSA — respiratory sinus arrhythmia). Pidennetty uloshengitys = parasympaattinen aktivaatio välittömästi. Nopea sisäänhengitys = sympaattinen.</p>
+        <p><strong style="color:var(--text)">2. Ääni ja hyräily:</strong> Vaguksen dorsaalinen haara säätelee kurkunpäätä. Hyräily, laulu, ääntely aktivoivat vaguksen — erityisesti 200–2000 Hz taajuudet (sosiaalinen kierto). Laulaminen yhdessä on evoluutionaalisesti co-regulation mekanismi.</p>
+        <p><strong style="color:var(--text)">3. Silmien ja kaulan liikkeet:</strong> Silmänliikelihakset saavat hermotuksensa samoista aivorungon tumakkeista kuin vagus (sosiaalinen kierto). Hidas sivuttaisliike rauhoittaa. EMDR toimii osittain tätä kautta.</p>
+        <p><strong style="color:var(--text)">4. Kosketus:</strong> C-taktiilikuidut (hitaat, myelinimattomat) reagoivat lämpimään, hitaaseen kosketukseen ja tuottavat oksitosiinia. Isoäidin kosketus = ANS-säätelyn biologinen mekanismi.</p>
+        <p><strong style="color:var(--text)">5. Kylmä:</strong> Dyykkausrefleksi — kylmä vesi kasvoille aktivoi vaguksen välittömästi. Sykettä hidastava vaikutus alkaa 30 sekunnissa. Tehokkain yksittäinen akuutti säätelymenetelmä.</p>
+        <div class="tags"><span class="tag">RSA</span><span class="tag">Vagal brake</span><span class="tag">C-taktiilikuitu</span><span class="tag">Oksitosiini</span><span class="tag">Dyykkausrefleksi</span></div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Co-regulation — yhteissäätely</div><div class="acc-sub">Terapeutin ANS vaikuttaa asiakkaan ANS:iin</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Peilisolusto · Limbinen resonanssi · Suhde</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Biologinen perusta:</strong> Ihminen on sosiaalinen laji — ANS kehittyi alun perin co-regulation kontekstissa. Autonominen hermosto synkronoituu toisen ihmisen ANS:n kanssa. Äidin ja vauvan syke ja hengitys voivat synkronoitua fyysisessä kontaktissa.</p>
+        <p><strong style="color:var(--text)">Terapeutin vaikutus:</strong> Terapeutin oma ANS-tila on suora interventio. Rauhallinen, läsnäoleva terapeutti lähettää ventraalivagaalisia signaaleja (äänenpaino, kasvonilmeet, kehon asento). Asiakas "lukee" näitä tiedostamattaan.</p>
+        <p><strong style="color:var(--text)">Käytännössä:</strong> Terapeutin oman ANS-säätelyn harjoittaminen on ammatillinen velvollisuus. Et voi viedä asiakasta pidemmälle kuin oma säätelykapasiteettisi ulottuu.</p>
+        <div class="tags"><span class="tag">Co-regulation</span><span class="tag">Peilisolusto</span><span class="tag">Limbinen resonanssi</span><span class="tag">Terapeutti ANS</span></div>
+        <div class="clinical-note">Ennen haastavaa istuntoa: tarkista oma tila. Hengitä. Maadoitu. Siirry sitten asiakkaan tilaan — älä ennen.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">ANS ja krooniset sairaudet</div><div class="acc-sub">Dysautonomiasta kliiniseen ymmärrykseen</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Dysautonomia · Long COVID · Kipu</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Dysautonomia:</strong> ANS:n säätely on häiriintynyt. Esiintyy mm. Long COVID:ssa, FMS:ssä, kroonisessa väsymysoireyhtymässä (ME/CFS), POTS:ssa. Oireita: ortostaattinen hypotensio, sykevaihtelut, GI-oireet, lämmönsäätely.</p>
+        <p><strong style="color:var(--text)">Long COVID ja ANS:</strong> Noin 50% Long COVID -potilaista täyttää POTS:n kriteerit. Vagushermon tulehdus on mahdollinen mekanismi. Selittää monimuotoiset oireet.</p>
+        <p><strong style="color:var(--text)">Kliininen sovellus:</strong> Rauhallinen, vähävireys harjoittelu ANS-tilaa tukien. Ei ylikuormitusta (post-exertional malaise). HRV-biofeedback voi olla hyödyllistä. Psykoedukaatio ANS:n roolista.</p>
+        <div class="tags"><span class="tag">Dysautonomia</span><span class="tag">POTS</span><span class="tag">Long COVID</span><span class="tag">ME/CFS</span><span class="tag">HRV biofeedback</span></div>
+        <div class="clinical-note">Long COVID -asiakkaan kanssa: mittaa ensin ortostaattinen reaktio. Aloita harjoitteet makuuasennosta. Noudata 50% sääntöä — alle väsymiskynnyksen.</div>
+      </div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── HRV & VAGUSHERMO ────────────────────────── -->
+<div id="page-hrv" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('hrv',null)">Tietopankki</span> › <strong>HRV & vagushermo</strong></div>
+<p class="page-role">Sydämen sykevaihtelu ja vagaalitonus</p>
+
+  <div class="page-eyebrow">Heart Rate Variability · Vagushermo</div>
+  <h1 class="page-title">HRV &amp; vagushermo</h1>
+  <p class="page-lead">Sykevariaatio on ANS-säätelyn biologinen mitta — "ikkunapaikka" vaguksen toimintaan. HRV:n parannus on mitattava hoitovaikutus.</p>
+
+  <div class="info-box"><strong>Kliininen ydin:</strong> Korkea HRV = hyvä ANS-säätely = parempi palautuminen, resilienssä, tunnistäminen ja kognitiivinen suorituskyky. Matala HRV liittyy stressisairauksiin, traumaan ja sydän- ja verisuonisairauksiin.</div>
+
+  <div id="hrv-acc">
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Mitä HRV on?</div><div class="acc-sub">Mekanism ja mittaaminen</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">RMSSD · LF · HF · RSA</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">HRV = sydämen lyöntien välinen aikaero:</strong> Terveellä ihmisellä lyöntien väli vaihtelee — tämä vaihtelu on merkki hyvästä ANS-säätelystä. Täsmällinen syke (ei vaihtelua) on huono merkki.</p>
+        <p><strong style="color:var(--text)">RSA (Respiratory Sinus Arrhythmia):</strong> Sisäänhengityksellä syke nopeutuu, uloshengityksellä hidastuu. Tämä on vaguksen toiminnan suora vaikutus. RSA on parasympaattisen aktiviteetin puhtain mittari.</p>
+        <p><strong style="color:var(--text)">Mittarit:</strong></p>
+        <ul class="int-list">
+          <li><strong>RMSSD</strong> — lyhyen aikavälin HRV, parasympaattinen. Kliinisin mittari.</li>
+          <li><strong>HF-power</strong> (0.15–0.4 Hz) — korkean taajuuden komponentti, vagaalinen</li>
+          <li><strong>LF-power</strong> (0.04–0.15 Hz) — matalan taajuuden komponentti, sekoitus</li>
+          <li><strong>LF/HF-suhde</strong> — sympaattinen/parasympaattinen tasapaino (kiistanalainen tulkinta)</li>
+        </ul>
+        <div class="tags"><span class="tag">RMSSD</span><span class="tag">RSA</span><span class="tag">HF-power</span><span class="tag">Vagal tone</span><span class="tag">Porges</span></div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">HRV ja mielenterveys — tutkimusnäyttö</div><div class="acc-sub">Meta-analyysit · Yhteydet · Merkitys</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">PTSD · Ahdistus · Masennus · Kipu</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">PTSD:</strong> Matala HRV on yksi luotettavimmista PTSD:n biologisista markkereista. Vagal tone laskee traumahistorian myötä (Tan ym. 2011, meta-analyysi).</p>
+        <p><strong style="color:var(--text)">Ahdistushäiriöt:</strong> Johdonmukainen matala HRV kaikissa ahdistushäiriöissä. Hoitointerventiot jotka parantavat HRV:tä ovat tehokkaita (Chalmers ym. 2014).</p>
+        <p><strong style="color:var(--text)">Masennus:</strong> MDD:ssä HRV merkittävästi alentunut — erityisesti sydänkuolleisuusriskin kasvussa tämä on kliinisesti merkittävää (Kemp ym. 2010).</p>
+        <p><strong style="color:var(--text)">Krooninen kipu:</strong> Matala HRV ennustaa huonompaa kivun säätelyä ja kroonistumista. HRV:n parantaminen voi moduloida kipua endogeenisten inhibitoriojärjestelmien kautta.</p>
+        <div class="tags"><span class="tag">Meta-analyysi</span><span class="tag">PTSD biomarkkeri</span><span class="tag">Vagal tone</span><span class="tag">Kipuinhibitio</span></div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Resonanssihengitys — HRV biofeedback</div><div class="acc-sub">Optimaalinen hengitystaajuus</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">0.1 Hz · 6 hengitystä/min · Lehrer</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Resonanssitaajuus:</strong> Noin 0.1 Hz (6 hengitystä/min) on useimmilla ihmisillä baroreseptoreiden ja sydämen sykkeen resonanssitaajuus. Tässä taajuudessa HRV maksimoituu — baroreflex amplitudia.</p>
+        <p><strong style="color:var(--text)">Käytännössä:</strong> Hengitä sisään 5 sekuntia, ulos 5 sekuntia. Toista 5-10 minuuttia. Tämä yksinkertainen harjoite on yksi tutkituimmista HRV:n parannusmenetelmistä.</p>
+        <p><strong style="color:var(--text)">Näyttö (Lehrer &amp; Gevirtz 2014):</strong> HRV biofeedback on tehokas astma, hypertensio, ahdistus, masennus, PTSD ja kroonisessa kivussa. 10 istuntoa tyypillisesti riittää.</p>
+        <p><strong style="color:var(--text)">Henkilökohtainen resonanssitaajuus:</strong> Vaihtelee 4.5–7 hengitystä/min. Tarkin tapa löytää se on HRV-biofeedbacklaitteen avulla.</p>
+        <div class="tags"><span class="tag">Resonanssihengitys</span><span class="tag">0.1 Hz</span><span class="tag">Baroreflex</span><span class="tag">Lehrer</span><span class="tag">HRV biofeedback</span></div>
+        <div class="clinical-note">Neliöhengitys (4-4-4-4) on lähellä resonanssitaajuutta. Fysiologinen huokaus aktivoi RSA:n eri mekanismilla (CO₂ nopea lasku uloshengityksellä).</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Vagushermo — anatomia ja toiminta</div><div class="acc-sub">N. vagus (CN X) · Haarat · Toiminnot</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Afferentit · Efferentit · 80/20</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Anatominen rakenne:</strong> Pisin kraniaalihermoista — kulkee aivorungosta (nucleus tractus solitarius, nucleus ambiguus) kaulan kautta rintaonteloon ja vatsaonteloon. Hermottaa sydämen, keuhkot, GI-kanavan, maksan, munuaiset.</p>
+        <p><strong style="color:var(--text)">80% afferentti:</strong> Valtaosa vaguksen signaaleista kulkee kehosta aivoihin (alhaalta ylös) — ei aivoista kehoon. Tämä on neurofysiologinen peruste bottom-up -lähestymistavalle.</p>
+        <p><strong style="color:var(--text)">Ventraali vs dorsaali:</strong> Ventraalivagaalinen haara (uudempi, nisäkäsevoluutio) säätelee sosiaalista kiertoa. Dorsaalivagaalinen haara (vanhempi, reptiilit) säätelee jähmettymisreaktiota ja GI-toimintaa.</p>
+        <p><strong style="color:var(--text)">Anti-inflammatorinen polku:</strong> Vagus säätelee tulehdusta kolinergisen anti-inflammatorisen polun kautta (Tracey 2002). Vagaalitonus suojaa systeemiseltä tulehdukselta.</p>
+        <div class="tags"><span class="tag">CN X</span><span class="tag">NTS</span><span class="tag">80% afferentti</span><span class="tag">Kolinerginen</span><span class="tag">Tracey</span></div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Vaguksen aktivointi — käytännön menetelmät</div><div class="acc-sub">Näyttöön perustuvat tekniikat</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Hengitys · Ääni · Kylmä · Harjoittelu</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Hengitys:</strong> Pidennetty uloshengitys (4–6–8 tai 5–5) → suorin vagusaktivointimenetelmä. Vaikutus alkaa yhden hengityssyklin aikana.</p>
+        <p><strong style="color:var(--text)">Fysiologinen huokaus:</strong> Kaksoisinhalaatio + pitkä uloshengitys. Nopein tapa vähentää stressiä (Balban ym. 2023, Stanford). Vaikutus CO₂-tasapainon nopeaan normalisoitumiseen.</p>
+        <p><strong style="color:var(--text)">Ääni ja hyräily:</strong> Vagus hermottaa kurkunpään ja nielun lihaksia. Hyräily, laulu, Om-ääntelyt aktivoivat vaguksen suoraan. 30 sekuntia riittää mitattavaan vaikutukseen.</p>
+        <p><strong style="color:var(--text)">Kylmä altistus:</strong> Kylmä vesi kasvoille → dyykkausrefleksi → välitön vagusaktivatio. Kylmäsuihku tai kylmä vesi niskaan toimivat samoin.</p>
+        <p><strong style="color:var(--text)">Aerobinen harjoittelu:</strong> Pitkäaikaisin vaikutus HRV:hen. 20–40 min kohtalainen aerobinen harjoittelu 3× viikossa kasvattaa vagaalista tonusta kuukauden kuluessa.</p>
+        <p><strong style="color:var(--text)">Meditaatio:</strong> Tietoisuusharjoittelu kasvattaa HRV:tä pitkällä aikavälillä. Erityisesti lovingkindness (ystävällisyysmeditaatio) on osoittanut vagaalisia vaikutuksia.</p>
+        <div class="tags"><span class="tag">Vagusaktivointia</span><span class="tag">Balban 2023</span><span class="tag">Dyykkausrefleksi</span><span class="tag">Aerobinen</span><span class="tag">Meditaatio</span></div>
+      </div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── KEHON MUISTI ────────────────────────────── -->
+<div id="page-kehomuisti" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('kehomuisti',null)">Tietopankki</span> › <strong>Kehon muisti</strong></div>
+<p class="page-role">Somaattinen muisti ja kehollinen tieto</p>
+
+  <div class="page-eyebrow">Implisiittinen muisti · Kehollinen oppiminen</div>
+  <h1 class="page-title">Kehon muisti</h1>
+  <p class="page-lead">Keho pitää kirjaa — kehollinen muisti on vanhempaa, nopeampaa ja voimakkaampaa kuin sanallinen muisti.</p>
+
+  <div class="info-box"><strong>Kliininen ydin:</strong> Implisiittinen kehollinen muisti aktivoituu ilman tietoisuutta. Terapia joka ei tavoita kehon muistia jää pinnalliseksi — erityisesti varhaisessa traumassa ja kiintymyssuhteiden häiriöissä.</div>
+
+  <div id="keho-acc">
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Implisiittinen vs eksplisiittinen muisti</div><div class="acc-sub">Kahden muistijärjestelmän ero</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Proseduraalinen · Episodinen · Semanttinen</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Eksplisiittinen muisti (deklaratiivinen):</strong> Hippokampusvälitteinen, tietoinen, sanallinen. Episodinen (tapahtumat) ja semanttinen (faktat). Kehittyy ~3-vuotiaana — tämä selittää varhaisen lapsuuden muistikatkokset.</p>
+        <p><strong style="color:var(--text)">Implisiittinen muisti:</strong> Syntymästä aktiivinen. Proseduraalinen (taidot, tavat), emotionaalinen (amygdala), sensorinen (kehontuntemukset), priming. Ei vaadi tietoisuutta — aktivoituu automaattisesti.</p>
+        <p><strong style="color:var(--text)">Kliininen merkitys:</strong> Varhainen trauma tallentuu lähes kokonaan implisiittisesti — siksi siitä ei ole muistoa mutta keho reagoi. Asiakas ei "muista" vaan "tuntee" kehossaan ilman tietoa miksi.</p>
+        <div class="tags"><span class="tag">Hippokampus</span><span class="tag">Amygdala</span><span class="tag">Proseduraalinen</span><span class="tag">Varhainen trauma</span><span class="tag">Syntymästä</span></div>
+        <div class="clinical-note">"Keho muistaa mitä mieli ei" — tämä on neurofysiologinen tosiasia. Validoiva selitys asiakkaalle joka ei ymmärrä kehoreaktioidensa lähdettä.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Proseduraalinen muisti terapiassa</div><div class="acc-sub">Toisto rakentaa hermostoa</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Neuroplastisuus · Toisto · Hermopolku</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Hebb'in sääntö:</strong> "Neurons that fire together, wire together." Toistuvasti aktivoituvat hermosoluyhteydet vahvistuvat — tätä kutsutaan pitkäaikaiseksi potentiaatioksi (LTP).</p>
+        <p><strong style="color:var(--text)">Säätelytaidot ovat proseduraalisia:</strong> ANS-säätely, tunnesäätely ja kehollinen läsnäolo ovat taitoja — ne rakentuvat toiston kautta samoin kuin polkupyörällä ajaminen. Ei kognitiivista ymmärtämistä tarvita.</p>
+        <p><strong style="color:var(--text)">Harjoittelu muuttaa hermostoa:</strong> Meditaatio, hengitysharjoitteet ja kehotietoisuus tuottavat mitattavia rakenteellisia muutoksia aivoissa (Hölzel ym. 2011 — meditaation vaikutus hippokampuksen kokoon). 8 viikkoa MBSR riittää muutokseen.</p>
+        <p><strong style="color:var(--text)">Terapeuttiset toistot:</strong> Jokaisella istunnolla rakennetaan uusia proseduraalisia muistijälkiä. "Tein harjoitteen ja olo helpottui" — tämä toistuu → hermostomuutos → vähitellen automaattinen.</p>
+        <div class="tags"><span class="tag">LTP</span><span class="tag">Neuroplastisuus</span><span class="tag">Hebb</span><span class="tag">Hölzel</span><span class="tag">MBSR</span></div>
+        <div class="clinical-note">Kotitehtävät ovat neuroplastisuuden rakentamista. Pienikin päivittäinen toisto on tehokkaampi kuin kerran viikossa intensiivinen harjoitus.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Kiintymyssuhde ja kehollinen oppiminen</div><div class="acc-sub">Varhaiset muistijäljet säätelyssä</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Bowlby · Ainsworth · Säätelymalli</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Kiintymyssuhde on ANS-säätelyn oppimisympäristö:</strong> Lapsi oppii säätelemään ANS:ään hoivaajan co-regulation kautta. Hoivaajan ANS-tila siirtyy lapselle suoraan (limbinen resonanssi).</p>
+        <p><strong style="color:var(--text)">Turvallinen kiintymys:</strong> Lapsi oppii että aktivaatio (hätä, jännitys) seuraa rauhoittuminen (hoivaajan vastaus). Tämä tallentuu proseduraalisena muistina: "aktivaatio on siedettävää — se menee ohi".</p>
+        <p><strong style="color:var(--text)">Turvaton kiintymys:</strong> Epäjohdonmukainen tai puuttuva co-regulation → ANS ei opi perusrauhoittumista. Aikuisena ylireagoiminen tai tunteiden estäminen on proseduraalinen muistijälki varhaisesta oppimisesta.</p>
+        <p><strong style="color:var(--text)">Terapia kiintymyksenä:</strong> Terapeuttinen suhde on uusi oppimisympäristö. Co-regulation terapeutin kanssa rakentaa uusia proseduraalisia muistijälkiä (Schore 2003).</p>
+        <div class="tags"><span class="tag">Kiintymys</span><span class="tag">Co-regulation</span><span class="tag">Bowlby</span><span class="tag">Schore</span><span class="tag">Limbinen resonanssi</span></div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Kehollinen läsnäolo — interoceptio</div><div class="acc-sub">Kehon sisäinen aistijärjestelmä</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Insula · Interoceptio · Kehotietoisuus</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Interoceptio:</strong> Kehon sisäisten tilojen aistiminen — syke, hengitys, vatsan tuntemukset, lihaskireys, lämpötila. Käsitellään insulassa (insular cortex).</p>
+        <p><strong style="color:var(--text)">Insula ja tunteet:</strong> Insula on kehollisten tunnekokemusten ydin. Tunnekokemus on aina ensin kehollinen — vasta sitten kognitiivinen. Antonio Damasio: "somaattinen merkki" — kehon tuntemukset ohjaavat päätöksentekoa.</p>
+        <p><strong style="color:var(--text)">Trauma ja interoceptio:</strong> Traumassa insula voi olla yli- tai aliaktiivinen. Hyperinteroceptio: kehontuntemukset hallitsevat (paniikki, somaattiset oireet). Hypointeroceptio: keho tuntuu vieraalta, tuntemuksia ei tunnisteta (alexithymia).</p>
+        <p><strong style="color:var(--text)">Interoception training:</strong> Kehoskannaus, kehotietoisuusharjoitteet, yoga ja mindfulness kasvattavat insulan harmaan aineen paksuutta. Kehontuntemustietoisuus on koulutettava taito.</p>
+        <div class="tags"><span class="tag">Interoceptio</span><span class="tag">Insula</span><span class="tag">Damasio</span><span class="tag">Alexithymia</span><span class="tag">Somaattinen merkki</span></div>
+        <div class="clinical-note">"Mitä tunnet kehossasi kun kerrot tästä?" — tämä yksinkertainen kysymys kouluttaa interoseptistä tietoisuutta jokaisessa istunnossa.</div>
+      </div></div>
+    </div>
+
+    <div class="acc-item" onclick="toggleAcc(this)">
+      <div class="acc-trigger">
+        <div><div class="acc-title">Neuroplastisuus — aivot muuttuvat</div><div class="acc-sub">Muutoksen biologinen pohja</div></div>
+        <div style="display:flex;align-items:center;gap:0.75rem"><span style="font-family:var(--font-m);font-size:0.58rem;color:var(--muted)">Synaptinen · Rakenteellinen · Funktionaalinen</span><span class="acc-chev">▶</span></div>
+      </div>
+      <div class="acc-body"><div class="acc-content">
+        <p><strong style="color:var(--text)">Neuroplastisuuden muodot:</strong></p>
+        <ul class="int-list">
+          <li><strong>Synaptinen:</strong> Synaptisten yhteyksien vahvistuminen tai heikkeneminen (LTP/LTD)</li>
+          <li><strong>Rakenteellinen:</strong> Hermosolun rakenne muuttuu — dendriitit, aksonit, myelinaatio</li>
+          <li><strong>Toiminnallinen:</strong> Aivoalueiden välinen yhteys kasvaa (default mode network)</li>
+          <li><strong>Neurogenesis:</strong> Uusien hermosolujen syntyminen (hippokampus, koko elämän ajan)</li>
+        </ul>
+        <p><strong style="color:var(--text)">Muutosta tukevat tekijät:</strong> Uusi oppiminen, liikunta (BDNF — brain-derived neurotrophic factor), uni (muistien konsolidointi), sosiaalinen kontakti, merkityksellinen toiminta, matala krooninen stressi.</p>
+        <p><strong style="color:var(--text)">Muutosta estävät tekijät:</strong> Krooniinen stressi (kortisoli tappaa hippokampuksen hermosoluja), unenpuute, sosiaalinen eristäytyminen, päihteet, liikkumattomuus.</p>
+        <div class="tags"><span class="tag">LTP</span><span class="tag">BDNF</span><span class="tag">Neurogenesis</span><span class="tag">Hippokampus</span><span class="tag">Kortisoli</span></div>
+        <div class="clinical-note">Liikunta on neuroprotektiivisin yksittäinen interventio. BDNF = "aivojen lannoite". 20 min aerobista harjoittelua → BDNF nousee välittömästi.</div>
+      </div></div>
+    </div>
+  </div>
+</div>
+</div>
+<div id="page-psykoed" class="page">
+<div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('psykoed',null)">Tietopankki</span> › <strong>Psykoedukaatio</strong></div>
+<p class="page-role">Psykoedukaatio-materiaalit asiakastyöhön</p>
+
+  <div class="page-eyebrow">Kliiniset teemat</div>
+  <h1 class="page-title">Psykoedukaatio</h1>
+  <p class="page-lead">Syventävät materiaalit kliinisistä teemoista. Käytä terapiassa, psykoedukaatiossa ja asiakasohjauksessa.</p>
+  <div class="psychoed-grid" id="psychoed-grid-t"></div>
+</div>
+</div>
+
+<!-- ── HARJOITTEIDEN MÄÄRÄYS ──────────────────── -->
+</main>
+
+<nav class="mobile-bottom-bar" id="mobile-bottom-bar">
+  <a onclick="showPage('kojelauta',null)" id="mbb-kojelauta">
+    <span>🏠</span><span class="bar-label">Koti</span>
+  </a>
+  <a onclick="showPage('muistiinpanot',null)" id="mbb-muistiinpanot">
+    <span>📝</span><span class="bar-label">Muistiinpanot</span>
+  </a>
+  <a onclick="showPage('harjoitteet',null)" id="mbb-harjoitteet">
+    <span>🧘</span><span class="bar-label">Harjoitteet</span>
+  </a>
+  <a onclick="showPage('arvioinnit',null)" id="mbb-arvioinnit">
+    <span>📊</span><span class="bar-label">Arvioinnit</span>
+  </a>
+  <a onclick="showPage('hoitosuunnitelma',null)" id="mbb-hoitosuunnitelma">
+    <span>📋</span><span class="bar-label">Hoito</span>
+  </a>
+</nav>
+
+<script>
+function showPage(id, el) {
+  if (window.innerWidth <= 768) closeSidebar();
+  if (el) { var d = el.closest('details.nav-group'); if (d && !d.open) d.open = true; }
+  document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+  var t = document.getElementById('page-' + id);
+  if (t) { t.classList.add('active'); } else { goTo(PAGE_MAP[id] || 'index.html', id); return; }
+  ['kojelauta','muistiinpanot','harjoitteet','arvioinnit','hoitosuunnitelma'].forEach(function(pid) {
+    var btn = document.getElementById('mbb-' + pid);
+    if (btn) btn.classList.toggle('active', pid === id);
+  });
+  if (id === 'harjoitteet' && typeof renderTExGrid === 'function') renderTExGrid();
+  if (id === 'edistyminen' && typeof renderProgress === 'function') renderProgress();
+  if (id === 'kojelauta' && typeof updateDashboardStats === 'function') updateDashboardStats();
+  if (id === 'muistiinpanot' && typeof renderNotes === 'function') renderNotes();
+  if (id === 'maarays' && typeof renderRxList === 'function') renderRxList();
+}
+
+function goTo(file, hash) {
+  window.location.href = file + (hash ? '#' + hash : '');
+}
+
+// Sivukartta: mihin tiedostoon mikäkin sivu kuuluu
+var PAGE_MAP = {
+  'kojelauta': 'index.html',
+  'muistiinpanot': 'index.html',
+  'arvioinnit': 'arvioinnit.html',
+  'edistyminen': 'arvioinnit.html',
+  'harjoitteet': 'harjoitteet.html',
+  'lapset-nuoret': 'harjoitteet.html',
+  'hoitosuunnitelma': 'hoitosuunnitelma.html',
+  'akupunktio': 'hoitosuunnitelma.html',
+  'maarays': 'hoitosuunnitelma.html',
+  'aivokerrokset': 'tietopankki.html',
+  'polyvagaali': 'tietopankki.html',
+  'toleranssi': 'tietopankki.html',
+  'kipu': 'tietopankki.html',
+  'trauma': 'tietopankki.html',
+  'ans': 'tietopankki.html',
+  'hrv': 'tietopankki.html',
+  'kehomuisti': 'tietopankki.html',
+  'psykoed': 'tietopankki.html',
+  'elamanjana': 'elamanjana.html',
+};
+// NAVIGATION
+// ═══════════════════════════════════════════
+// ══════════════════════════════════════════════
+// TEEMA — tumma / vaalea
+// ══════════════════════════════════════════════
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  localStorage.setItem('t_theme', isLight ? 'light' : 'dark');
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = isLight ? '☀️' : '🌙';
+}
+
+(function initTheme() {
+  const saved = localStorage.getItem('t_theme');
+  const preferLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  if (saved === 'light' || (!saved && preferLight)) {
+    document.body.classList.add('light');
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = '☀️';
+  }
+})();
+
+// ══════════════════════════════════════════════
+// MOBIILI — sidebar toggle
+// ══════════════════════════════════════════════
+function toggleSidebar() {
+  const sidebar  = document.getElementById('sidebar');
+  const overlay  = document.getElementById('sidebar-overlay');
+  const hamburger = document.getElementById('hamburger');
+  const isOpen   = sidebar.classList.contains('open');
+  if (isOpen) {
+    closeSidebar();
+  } else {
+    sidebar.classList.add('open');
+    overlay.classList.add('visible');
+    hamburger.classList.add('open');
+  }
+}
+
+function closeSidebar() {
+  const sidebar   = document.getElementById('sidebar');
+  const overlay   = document.getElementById('sidebar-overlay');
+  const hamburger = document.getElementById('hamburger');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('visible');
+  hamburger.classList.remove('open');
+}
+
+// ── Touch-elesteet sivupalkin avaamiseen/sulkemiseen ──
+(function() {
+  var tx = 0;
+  document.addEventListener('touchstart', function(e) {
+    tx = e.touches[0].clientX;
+  }, { passive: true });
+  document.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - tx;
+    if (dx < -60) closeSidebar();           // Pyyhkäisy vasemmalle → sulkee
+    if (dx > 60 && tx < 30) toggleSidebar(); // Pyyhkäisy oikealle reunasta → avaa
+  }, { passive: true });
+})();
+
+// ══════════════════════════════════════════════════
+</script>
+
+<script>
+// Tietopankki — ei erityistä JS:ää tarvita
+
+document.addEventListener('DOMContentLoaded', function() {
+  var saved = localStorage.getItem('t_theme');
+  if (saved === 'light') { document.body.classList.add('light'); var btn = document.getElementById('theme-toggle'); if(btn) btn.textContent='☀️'; }
+  
+});
+</script>
+
+<!-- AUTONOMINEN KEHITYSAGENTTI -->
+<style>
+#agent-pulse{position:fixed;bottom:1.25rem;right:1.25rem;z-index:9000;display:flex;align-items:center;gap:0.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:0.4rem 0.85rem 0.4rem 0.6rem;font-family:var(--font-m);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:all 0.2s;user-select:none}
+#agent-pulse:hover{border-color:var(--border2);color:var(--text)}
+#agent-pulse-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background 0.3s}
+#agent-pulse-dot.thinking{background:var(--gold);animation:agent-blink 1s ease-in-out infinite}
+#agent-pulse-dot.ready{background:var(--teal);animation:agent-blink 2s ease-in-out infinite}
+@keyframes agent-blink{0%,100%{opacity:1}50%{opacity:0.35}}
+#agent-badge{display:none;background:var(--teal);color:#fff;font-family:var(--font-m);font-size:0.5rem;font-weight:700;width:16px;height:16px;border-radius:50%;align-items:center;justify-content:center;flex-shrink:0;margin-left:2px}
+#agent-badge.visible{display:flex}
+#agent-panel{position:fixed;bottom:0;right:0;width:min(480px,100vw);max-height:88vh;background:var(--bg2);border-top:1px solid var(--border2);border-left:1px solid var(--border2);border-radius:16px 0 0 0;z-index:8999;display:flex;flex-direction:column;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0,0,1);overflow:hidden}
+#agent-panel.open{transform:translateY(0)}
+.agent-panel-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem 0.85rem;border-bottom:1px solid var(--border);flex-shrink:0;gap:0.75rem}
+.agent-panel-title{font-family:var(--font-d);font-size:1rem;font-style:italic;color:var(--bright)}
+.agent-panel-meta{font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:0.15rem}
+.agent-close-btn{background:none;border:1px solid var(--border2);border-radius:6px;width:28px;height:28px;color:var(--dim);cursor:pointer;font-size:0.75rem;flex-shrink:0;transition:all 0.18s;display:flex;align-items:center;justify-content:center}
+.agent-close-btn:hover{color:var(--text);border-color:var(--dim)}
+.agent-panel-body{flex:1;overflow-y:auto;padding:1.1rem 1.25rem;scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
+.agent-suggestion{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;margin-bottom:0.75rem;transition:border-color 0.2s}
+.agent-suggestion:hover{border-color:var(--border2)}
+.agent-suggestion.approved{border-color:var(--teal);background:var(--teal-bg)}
+.agent-sug-cat{font-family:var(--font-m);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.4rem}
+.cat-ux{color:var(--blue)}.cat-sisalto{color:var(--gold)}.cat-kliininen{color:var(--teal)}.cat-rakenne{color:var(--rose)}.cat-tieto{color:var(--amber)}
+.agent-sug-title{font-family:var(--font-d);font-size:0.95rem;font-style:italic;color:var(--bright);margin-bottom:0.35rem;line-height:1.3}
+.agent-sug-desc{font-size:0.82rem;color:var(--dim);line-height:1.6;margin-bottom:0.75rem}
+.agent-sug-preview{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.85rem;font-size:0.78rem;font-family:var(--font-m);color:var(--mid);line-height:1.6;white-space:pre-wrap;margin-bottom:0.75rem;max-height:160px;overflow-y:auto}
+.agent-sug-actions{display:flex;gap:0.5rem}
+.agent-btn-approve{flex:1;padding:0.45rem;background:var(--teal);color:#fff;border:none;border-radius:6px;font-family:var(--font-m);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-weight:500}
+.agent-btn-approve:hover{opacity:0.85}
+.agent-btn-reject,.agent-btn-copy{padding:0.45rem 0.85rem;background:none;border:1px solid var(--border2);border-radius:6px;font-family:var(--font-m);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);cursor:pointer}
+.agent-btn-reject:hover{border-color:var(--rose-bd);color:var(--rose)}
+.agent-btn-copy:hover{border-color:var(--gold-bd);color:var(--gold)}
+.agent-empty{text-align:center;padding:2.5rem 1rem}
+.agent-empty-icon{font-size:1.8rem;margin-bottom:0.75rem;opacity:0.5}
+.agent-empty-text{font-family:var(--font-d);font-size:0.9rem;font-style:italic;color:var(--dim)}
+.agent-empty-sub{font-size:0.78rem;color:var(--muted);margin-top:0.4rem;line-height:1.6}
+.agent-panel-footer{padding:0.85rem 1.25rem;border-top:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:0.75rem}
+.agent-footer-info{font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);line-height:1.5}
+.agent-manual-btn{padding:0.45rem 1rem;background:none;border:1px solid var(--border2);border-radius:6px;font-family:var(--font-m);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.agent-manual-btn:hover{border-color:var(--gold-bd);color:var(--gold)}
+#agent-timer-bar{height:2px;background:var(--border);border-radius:1px;overflow:hidden;margin-top:4px}
+#agent-timer-fill{height:100%;background:var(--gold);border-radius:1px;width:0%;transition:width 1s linear}
+</style>
+
+<div id="agent-pulse" onclick="agentTogglePanel()" title="Kehitysagentti">
+  <div id="agent-pulse-dot"></div>
+  <span id="agent-pulse-label">Agentti</span>
+  <div id="agent-badge"></div>
+</div>
+
+<div id="agent-panel">
+  <div class="agent-panel-header">
+    <div>
+      <div class="agent-panel-title">Kehitysagentti</div>
+      <div class="agent-panel-meta" id="agent-status-text">Odottaa...</div>
+      <div id="agent-timer-bar"><div id="agent-timer-fill"></div></div>
+    </div>
+    <button class="agent-close-btn" onclick="agentTogglePanel()">&#x2715;</button>
+  </div>
+  <div class="agent-panel-body" id="agent-panel-body">
+    <div class="agent-empty">
+      <div class="agent-empty-icon">&#x25CE;</div>
+      <div class="agent-empty-text">Agentti analysoi ty&ouml;kaluasi</div>
+      <div class="agent-empty-sub">Her&auml;&auml; automaattisesti 90 s kuluttua.<br>Voit k&auml;ynnist&auml;&auml; my&ouml;s manuaalisesti.</div>
+    </div>
+  </div>
+  <div class="agent-panel-footer">
+    <div class="agent-footer-info" id="agent-cycle-info">Seuraava: &mdash;<br>Hyv&auml;ksytty: 0</div>
+    <button class="agent-manual-btn" onclick="agentRunNow()">Analysoi nyt</button>
+  </div>
+</div>
+
+<script>
+var AGENT = {
+  INTERVALS: { quick: 600000, deep: 1800000 },
+  CYCLES: [
+    { type: 'quick', label: 'UX & k\u00e4ytett\u00e4vyys',
+      prompt: 'Analysoi t\u00e4m\u00e4 kliininen terapeuttity\u00f6kalu ja ehdota 2\u20133 parannusta UX:n ja k\u00e4ytett\u00e4vyyden n\u00e4k\u00f6kulmasta. Fokusoi: navigaation selkeys, toimintojen l\u00f6ydett\u00e4vyys, mobiilipuutteet, visuaalinen hierarkia.' },
+    { type: 'quick', label: 'Kliininen sis\u00e4lt\u00f6',
+      prompt: 'Analysoi t\u00e4m\u00e4 kliininen terapeuttity\u00f6kalu ja ehdota 2\u20133 parannusta kliiniseen sis\u00e4lt\u00f6\u00f6n. Mieti: puuttuvatko t\u00e4rke\u00e4t psykoedukaatioaiheet, harjoitteet, arviointity\u00f6kalut tai protokollat?' },
+    { type: 'deep',  label: 'Uusi ominaisuus',
+      prompt: 'Ehdota 1 merkitt\u00e4v\u00e4\u00e4 uutta ominaisuutta t\u00e4h\u00e4n kliiniseen terapeuttity\u00f6kaluun. Ominaisuuden tulee olla toteutettavissa HTML/JS-tiedostoon.' },
+    { type: 'quick', label: 'Rakenne & koodi',
+      prompt: 'Analysoi t\u00e4m\u00e4 ty\u00f6kalu rakenteen n\u00e4k\u00f6kulmasta. Ehdota 2\u20133 parannusta: toistuvat rakenteet, saavutettavuuspuutteet, CSS-refaktorointi.' },
+    { type: 'deep',  label: 'Traumainformoitu',
+      prompt: 'Analysoi t\u00e4m\u00e4 psykofyysinen ty\u00f6kalu traumainformoidun hoidon n\u00e4k\u00f6kulmasta. Ehdota 1\u20132 parannusta jotka parantaisivat ty\u00f6kalua trauman, ANS-s\u00e4\u00e4telyn tai kehollisen kohtaamisen kannalta.' }
+  ],
+  state: { panelOpen: false, running: false, approvedCount: 0, suggestions: [], nextRunAt: null, cycleCount: 0 },
+
+  saveState: function() {
+    try {
+      localStorage.setItem('agent_suggestions', JSON.stringify(this.state.suggestions));
+      localStorage.setItem('agent_approvedCount', this.state.approvedCount);
+      localStorage.setItem('agent_cycleCount', this.state.cycleCount);
+    } catch(e) {}
+  },
+
+  loadState: function() {
+    try {
+      var sugs = localStorage.getItem('agent_suggestions');
+      if (sugs) this.state.suggestions = JSON.parse(sugs);
+      var ac = localStorage.getItem('agent_approvedCount');
+      if (ac) this.state.approvedCount = parseInt(ac, 10);
+      var cc = localStorage.getItem('agent_cycleCount');
+      if (cc) this.state.cycleCount = parseInt(cc, 10);
+    } catch(e) {}
+  },
+
+  init: function() {
+    this.loadState();
+    if (this.state.suggestions.length > 0) {
+      this.renderSuggestions();
+      this.setPulse('ready');
+      var pending = this.state.suggestions.filter(function(s){ return !s.approved && !s.rejected; }).length;
+      this.updateStatusText(pending + ' ehdotusta muistissa');
+    }
+    this.updateCycleInfo();
+    this.state.nextRunAt = Date.now() + 90000;
+    this._timer = setTimeout(function() { AGENT.run(); }, 90000);
+    this.startTimerBar(90000);
+    if (this.state.suggestions.length === 0) this.updateStatusText('Her\u00e4\u00e4 90 sekunnin kuluttua...');
+  },
+
+  startTimerBar: function(ms) {
+    clearInterval(this._barTimer);
+    var start = Date.now();
+    this._barTimer = setInterval(function() {
+      var pct = Math.min(100, (Date.now() - start) / ms * 100);
+      var el = document.getElementById('agent-timer-fill');
+      if (el) el.style.width = pct + '%';
+      if (pct >= 100) clearInterval(AGENT._barTimer);
+    }, 1000);
+  },
+
+  updateStatusText: function(t) {
+    var el = document.getElementById('agent-status-text');
+    if (el) el.textContent = t;
+  },
+
+  updateCycleInfo: function() {
+    var el = document.getElementById('agent-cycle-info');
+    if (!el) return;
+    var rem = this.state.nextRunAt ? Math.max(0, this.state.nextRunAt - Date.now()) : 0;
+    el.innerHTML = 'Seuraava: ' + (rem > 0 ? Math.ceil(rem / 60000) + ' min' : 'Pian') + '<br>Hyv\u00e4ksytty: ' + this.state.approvedCount;
+  },
+
+  setPulse: function(mode) {
+    var dot = document.getElementById('agent-pulse-dot');
+    var lbl = document.getElementById('agent-pulse-label');
+    var badge = document.getElementById('agent-badge');
+    if (!dot) return;
+    dot.className = mode === 'thinking' ? 'thinking' : mode === 'ready' ? 'ready' : '';
+    if (lbl) lbl.textContent = mode === 'thinking' ? 'Analysoi...' : mode === 'ready' ? 'Ehdotuksia' : 'Agentti';
+    if (badge) {
+      var n = this.state.suggestions.filter(function(s) { return !s.approved && !s.rejected; }).length;
+      if (mode === 'ready' && n > 0) { badge.textContent = n; badge.classList.add('visible'); }
+      else badge.classList.remove('visible');
+    }
+  },
+
+  buildPrompt: function(cycle, context) {
+    var lines = [
+      'Olet asiantuntija psykofyysisten terapeuttity\u00f6kalujen kehitt\u00e4misess\u00e4.',
+      '',
+      'Analysoit HTML-pohjaista kliinist\u00e4 ty\u00f6kalua: Terapeutin Kliininen Ty\u00f6kalu (Marko Oinas)',
+      '',
+      'Ty\u00f6kalu sis\u00e4lt\u00e4\u00e4 sivut: ' + context.pages.join(', '),
+      'Navigaatio: ' + context.navItems.join(', '),
+      'K\u00e4ytt\u00e4j\u00e4: psykofyysinen fysioterapeutti + kognitiivinen psykoterapeutti (lapset/nuoret, akupunktio, trauma, ANS, kipu)',
+      'Aiemmin hyv\u00e4ksyttyj\u00e4 parannuksia: ' + context.approvedCount,
+      '',
+      cycle.prompt,
+      '',
+      'Vastaa T\u00c4SM\u00c4LLEEN t\u00e4ss\u00e4 JSON-muodossa \u2014 ei muuta teksti\u00e4:',
+      '[',
+      '  {',
+      '    "kategoria": "ux",',
+      '    "otsikko": "Lyhyt otsikko",',
+      '    "kuvaus": "Selitys 2\u20133 lausetta.",',
+      '    "prioriteetti": "t\u00e4rke\u00e4",',
+      '    "toteutus": "Konkreettinen toteutus HTML/JS-esimerkkein\u00e4."',
+      '  }',
+      ']',
+      'kategoria = ux | sis\u00e4lt\u00f6 | kliininen | rakenne | tieto',
+      'prioriteetti = kriittinen | t\u00e4rke\u00e4 | hy\u00f6dyllinen',
+      'Anna ' + (cycle.type === 'deep' ? '1\u20132' : '2\u20133') + ' ehdotusta.'
+    ];
+    return lines.join('\n');
+  },
+
+  run: function() {
+    if (this.state.running) return;
+    this.state.running = true;
+    this.state.cycleCount++;
+    var cycle = this.CYCLES[(this.state.cycleCount - 1) % this.CYCLES.length];
+    var context = this.gatherContext();
+    this.state.running = false;
+    this.setPulse('thinking');
+    this.updateStatusText('Valmistelee: ' + cycle.label + '...');
+    var prompt = this.buildPrompt(cycle, context);
+    this.showInstructions(cycle.label, prompt);
+    var ms = cycle.type === 'deep' ? this.INTERVALS.deep : this.INTERVALS.quick;
+    clearTimeout(this._timer);
+    this._timer = setTimeout(function() { AGENT.run(); }, ms);
+    this.state.nextRunAt = Date.now() + ms;
+    this.startTimerBar(ms);
+  },
+
+  gatherContext: function() {
+    var pages = Array.from(document.querySelectorAll('[id^="page-"]')).map(function(e) { return e.id.replace('page-', ''); });
+    var seen = {};
+    Array.from(document.querySelectorAll('.nav-item')).forEach(function(e) { seen[e.textContent.trim()] = 1; });
+    return { pages: pages, navItems: Object.keys(seen), approvedCount: this.state.approvedCount };
+  },
+
+  showInstructions: function(label, prompt) {
+    var body = document.getElementById('agent-panel-body');
+    if (!body) return;
+    var safe = prompt.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    var h = '<div id="agent-instr-box" style="background:var(--teal-bg);border:1px solid var(--teal-bd);border-radius:10px;padding:1.1rem;margin-bottom:0.75rem;">'
+      + '<div style="font-family:var(--font-m);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal);margin-bottom:0.75rem;">\u25cf ' + label + '</div>'
+      + '<div style="font-size:0.82rem;color:var(--bright);font-weight:500;margin-bottom:0.35rem;">1 \u2014 Avaa Claude</div>'
+      + '<button onclick="window.open(\'https://claude.ai/new\',\'_blank\')" style="width:100%;padding:0.55rem;background:var(--bg2);color:var(--text);border:1px solid var(--border2);border-radius:8px;font-size:0.85rem;cursor:pointer;margin-bottom:0.9rem;text-align:left;">\ud83d\udd17 Avaa Claude uuteen v\u00e4lilehteen</button>'
+      + '<div style="font-size:0.82rem;color:var(--bright);font-weight:500;margin-bottom:0.35rem;">2 \u2014 Kopioi prompt</div>'
+      + '<div style="position:relative;margin-bottom:0.9rem;">'
+      + '<textarea id="agent-prompt-box" readonly style="width:100%;height:80px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:0.55rem 2.5rem 0.55rem 0.7rem;font-size:0.72rem;font-family:var(--font-m);color:var(--mid);resize:none;line-height:1.5;">' + safe + '</textarea>'
+      + '<button onclick="AGENT.copyPrompt()" id="agent-copy-btn" style="position:absolute;top:6px;right:6px;background:var(--surface);border:1px solid var(--border2);border-radius:5px;padding:3px 8px;font-size:0.65rem;font-family:var(--font-m);color:var(--dim);cursor:pointer;">kopioi</button>'
+      + '</div>'
+      + '<div style="font-size:0.82rem;color:var(--bright);font-weight:500;margin-bottom:0.35rem;">3 \u2014 Liit\u00e4 Clauden vastaus t\u00e4h\u00e4n</div>'
+      + '<textarea id="agent-response-box" placeholder="Liit\u00e4 t\u00e4h\u00e4n Clauden vastaus (Ctrl+V)..." oninput="AGENT.onResponseInput(this)" style="width:100%;height:80px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:0.55rem 0.7rem;font-size:0.78rem;font-family:var(--font-m);color:var(--text);resize:none;line-height:1.5;margin-bottom:0.55rem;"></textarea>'
+      + '<button id="agent-submit-btn" onclick="AGENT.parseFromTextarea()" disabled style="width:100%;padding:0.6rem;background:var(--muted);color:var(--bg);border:none;border-radius:8px;font-family:var(--font-m);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;cursor:not-allowed;font-weight:500;transition:all 0.2s;">\u2713 N\u00e4yt\u00e4 ehdotukset</button>'
+      + '</div>';
+    body.innerHTML = h + body.innerHTML;
+    if (!this.state.panelOpen) this.togglePanel();
+    this.setPulse('ready');
+    this.updateStatusText('Valmis: ' + label);
+  },
+
+  copyPrompt: function() {
+    var box = document.getElementById('agent-prompt-box');
+    if (!box) return;
+    box.select();
+    try { document.execCommand('copy'); } catch(e) { if (navigator.clipboard) navigator.clipboard.writeText(box.value); }
+    var btn = document.getElementById('agent-copy-btn');
+    if (btn) { btn.textContent = '\u2713 kopioitu'; setTimeout(function() { btn.textContent = 'kopioi'; }, 2000); }
+  },
+
+  onResponseInput: function(el) {
+    var btn = document.getElementById('agent-submit-btn');
+    if (!btn) return;
+    var ok = el.value.trim().length > 20;
+    btn.disabled = !ok;
+    btn.style.background = ok ? 'var(--teal)' : 'var(--muted)';
+    btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+  },
+
+  parseFromTextarea: function() {
+    var box = document.getElementById('agent-response-box');
+    if (!box) return;
+    var sugs = this.parseResponse(box.value.trim());
+    if (sugs.length === 0) {
+      box.style.borderColor = 'var(--rose)';
+      box.value = '';
+      box.placeholder = 'Ei l\u00f6ytynyt ehdotuksia \u2014 kopioi koko Clauden vastaus ja yrit\u00e4 uudelleen.';
+      return;
+    }
+    var instr = document.getElementById('agent-instr-box');
+    if (instr) instr.remove();
+    this.state.suggestions = sugs.concat(this.state.suggestions).slice(0, 20);
+    this.renderSuggestions();
+    this.updateStatusText(sugs.length + ' uutta ehdotusta');
+    this.saveState();
+  },
+
+  parseResponse: function(text) {
+    try {
+      var clean = text.replace(/```json|```/g, '').trim();
+      var match = clean.match(/\[[\s\S]*\]/);
+      if (!match) return [];
+      var parsed = JSON.parse(match[0]);
+      var now = new Date().toLocaleTimeString('fi', { hour: '2-digit', minute: '2-digit' });
+      return parsed.map(function(s, i) {
+        return { kategoria: s.kategoria, otsikko: s.otsikko, kuvaus: s.kuvaus, prioriteetti: s.prioriteetti, toteutus: s.toteutus,
+          id: 'sug-' + Date.now() + '-' + i, cycle: 'Claude-analyysi', approved: false, rejected: false, ts: now };
+      });
+    } catch(e) { return []; }
+  },
+
+  renderSuggestions: function() {
+    var body = document.getElementById('agent-panel-body');
+    if (!body) return;
+    var active = this.state.suggestions.filter(function(s) { return !s.rejected; });
+    if (active.length === 0) {
+      body.innerHTML = '<div class="agent-empty"><div class="agent-empty-icon">\u2713</div><div class="agent-empty-text">Kaikki k\u00e4sitelty</div><div class="agent-empty-sub">Seuraava analyysi k\u00e4ynnistyy automaattisesti.</div></div>';
+      return;
+    }
+    var CAT = { ux: 'UX \u00b7 k\u00e4ytett\u00e4vyys', sisalto: 'Sis\u00e4lt\u00f6', kliininen: 'Kliininen', rakenne: 'Rakenne', tieto: 'Tietopankki' };
+    var PRI = { 'kriittinen': 'var(--rose)', 't\u00e4rke\u00e4': 'var(--gold)', 'hy\u00f6dyllinen': 'var(--teal)' };
+    body.innerHTML = active.map(function(s) {
+      var id = s.id;
+      return '<div class="agent-suggestion' + (s.approved ? ' approved' : '') + '" id="' + id + '">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.3rem;">'
+        + '<div class="agent-sug-cat cat-' + (s.kategoria || 'ux') + '">' + (CAT[s.kategoria] || s.kategoria) + '</div>'
+        + '<span style="font-family:var(--font-m);font-size:0.5rem;color:' + (PRI[s.prioriteetti] || 'var(--dim)') + '">' + ((s.prioriteetti || '').toUpperCase()) + '</span>'
+        + '</div>'
+        + '<div class="agent-sug-title">' + (s.otsikko || '') + '</div>'
+        + '<div class="agent-sug-desc">' + (s.kuvaus || '') + '</div>'
+        + '<div class="agent-sug-preview">' + (s.toteutus || '') + '</div>'
+        + (s.approved
+          ? '<div style="font-family:var(--font-m);font-size:0.58rem;color:var(--teal);">\u2713 HYV\u00c4KSYTTY \u2014 toteutus kopioitu</div>'
+          : '<div class="agent-sug-actions">'
+            + '<button class="agent-btn-approve" onclick="AGENT.approve(\'' + id + '\')">\u2713 Hyv\u00e4ksy &amp; kopioi</button>'
+            + '<button class="agent-btn-copy" onclick="AGENT.copyToteutus(\'' + id + '\')">Kopioi</button>'
+            + '<button class="agent-btn-reject" onclick="AGENT.reject(\'' + id + '\')">Ohita</button>'
+            + '</div>')
+        + '</div>';
+    }).join('');
+  },
+
+  approve: function(id) {
+    var s = this.state.suggestions.find(function(x) { return x.id === id; });
+    if (!s) return;
+    s.approved = true;
+    this.state.approvedCount++;
+    this.copyToteutus(id);
+    this.renderSuggestions();
+    this.updateCycleInfo();
+    this.saveState();
+  },
+
+  reject: function(id) {
+    var s = this.state.suggestions.find(function(x) { return x.id === id; });
+    if (s) s.rejected = true;
+    this.renderSuggestions();
+    this.saveState();
+  },
+
+  copyToteutus: function(id) {
+    var s = this.state.suggestions.find(function(x) { return x.id === id; });
+    if (s && navigator.clipboard) navigator.clipboard.writeText(s.toteutus).catch(function() {});
+  },
+
+  togglePanel: function() {
+    this.state.panelOpen = !this.state.panelOpen;
+    var panel = document.getElementById('agent-panel');
+    if (panel) panel.classList.toggle('open', this.state.panelOpen);
+    if (this.state.panelOpen) this.updateCycleInfo();
+  }
+};
+
+function agentTogglePanel() { AGENT.togglePanel(); }
+function agentRunNow() { clearTimeout(AGENT._timer); AGENT.run(); }
+window.addEventListener('load', function() { setTimeout(function() { AGENT.init(); }, 2000); });
+setInterval(function() { AGENT.updateCycleInfo(); }, 30000);
+</script>
+
+</body>
+</html>
