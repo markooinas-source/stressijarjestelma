@@ -5887,11 +5887,38 @@ var AGENT = {
   ],
   state: { panelOpen: false, running: false, approvedCount: 0, suggestions: [], nextRunAt: null, cycleCount: 0 },
 
+  saveState: function() {
+    try {
+      localStorage.setItem('agent_suggestions', JSON.stringify(this.state.suggestions));
+      localStorage.setItem('agent_approvedCount', this.state.approvedCount);
+      localStorage.setItem('agent_cycleCount', this.state.cycleCount);
+    } catch(e) {}
+  },
+
+  loadState: function() {
+    try {
+      var sugs = localStorage.getItem('agent_suggestions');
+      if (sugs) this.state.suggestions = JSON.parse(sugs);
+      var ac = localStorage.getItem('agent_approvedCount');
+      if (ac) this.state.approvedCount = parseInt(ac, 10);
+      var cc = localStorage.getItem('agent_cycleCount');
+      if (cc) this.state.cycleCount = parseInt(cc, 10);
+    } catch(e) {}
+  },
+
   init: function() {
+    this.loadState();
+    if (this.state.suggestions.length > 0) {
+      this.renderSuggestions();
+      this.setPulse('ready');
+      var pending = this.state.suggestions.filter(function(s){ return !s.approved && !s.rejected; }).length;
+      this.updateStatusText(pending + ' ehdotusta muistissa');
+    }
+    this.updateCycleInfo();
     this.state.nextRunAt = Date.now() + 90000;
     this._timer = setTimeout(function() { AGENT.run(); }, 90000);
     this.startTimerBar(90000);
-    this.updateStatusText('Her\u00e4\u00e4 90 sekunnin kuluttua...');
+    if (this.state.suggestions.length === 0) this.updateStatusText('Her\u00e4\u00e4 90 sekunnin kuluttua...');
   },
 
   startTimerBar: function(ms) {
@@ -6042,6 +6069,7 @@ var AGENT = {
     this.state.suggestions = sugs.concat(this.state.suggestions).slice(0, 20);
     this.renderSuggestions();
     this.updateStatusText(sugs.length + ' uutta ehdotusta');
+    this.saveState();
   },
 
   parseResponse: function(text) {
@@ -6097,12 +6125,14 @@ var AGENT = {
     this.copyToteutus(id);
     this.renderSuggestions();
     this.updateCycleInfo();
+    this.saveState();
   },
 
   reject: function(id) {
     var s = this.state.suggestions.find(function(x) { return x.id === id; });
     if (s) s.rejected = true;
     this.renderSuggestions();
+    this.saveState();
   },
 
   copyToteutus: function(id) {
