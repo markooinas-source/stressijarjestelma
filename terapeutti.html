@@ -1028,6 +1028,49 @@ h3.section-h {
   margin-bottom: 1.25rem;
   margin-top: 0;
 }
+
+/* ── MOBILE BOTTOM BAR ── */
+.mobile-bottom-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  justify-content: space-around;
+  align-items: center;
+  padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+  z-index: 1000;
+}
+@media (max-width: 768px) {
+  .mobile-bottom-bar { display: flex; }
+  .main { padding-bottom: 60px; }
+}
+.mobile-bottom-bar a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 1.35rem;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 8px;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+.mobile-bottom-bar a:hover,
+.mobile-bottom-bar a.active {
+  background: var(--bg3);
+}
+.mobile-bottom-bar a span.bar-label {
+  font-family: var(--font-m);
+  font-size: 0.48rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.mobile-bottom-bar a.active span.bar-label {
+  color: var(--teal);
+}
 </style>
 </head>
 <body>
@@ -4132,6 +4175,13 @@ function showPage(id, el) {
 
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
+
+  // Päivitä mobile bottom bar aktiivinen tila
+  var mbbIds = ['kojelauta','muistiinpanot','harjoitteet','arvioinnit','hoitosuunnitelma'];
+  mbbIds.forEach(function(pid) {
+    var btn = document.getElementById('mbb-'+pid);
+    if (btn) btn.classList.toggle('active', pid === id);
+  });
   if (id === 'harjoitteet') renderTExGrid();
   if (id === 'lapset-nuoret') lnInit();
   if (id === 'psykoed') renderPsychoedT();
@@ -6277,6 +6327,25 @@ function agentRunNow() { clearTimeout(AGENT._timer); AGENT.run(); }
 window.addEventListener('load', function() { setTimeout(function() { AGENT.init(); }, 2000); });
 setInterval(function() { AGENT.updateCycleInfo(); }, 30000);
 </script>
+
+
+<nav class="mobile-bottom-bar" id="mobile-bottom-bar">
+  <a onclick="showPage('kojelauta',null)" id="mbb-kojelauta">
+    <span>🏠</span><span class="bar-label">Koti</span>
+  </a>
+  <a onclick="showPage('muistiinpanot',null)" id="mbb-muistiinpanot">
+    <span>📝</span><span class="bar-label">Muistiinpanot</span>
+  </a>
+  <a onclick="showPage('harjoitteet',null)" id="mbb-harjoitteet">
+    <span>🧘</span><span class="bar-label">Harjoitteet</span>
+  </a>
+  <a onclick="showPage('arvioinnit',null)" id="mbb-arvioinnit">
+    <span>📊</span><span class="bar-label">Arvioinnit</span>
+  </a>
+  <a onclick="showPage('hoitosuunnitelma',null)" id="mbb-hoitosuunnitelma">
+    <span>📋</span><span class="bar-label">Hoito</span>
+  </a>
+</nav>
 
 </body>
 </html>
