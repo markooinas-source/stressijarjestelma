@@ -997,6 +997,37 @@ h3.section-h {
 
 /* divider */
 .divider { height:1px; background:var(--border); margin:2rem 0; }
+
+/* ── BREADCRUMB & PAGE-ROLE ── */
+.breadcrumb {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+.breadcrumb span {
+  cursor: pointer;
+  color: var(--teal);
+  transition: opacity 0.15s;
+}
+.breadcrumb span:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+.breadcrumb strong {
+  color: var(--text);
+  font-weight: 500;
+}
+.page-role {
+  font-size: 0.82rem;
+  color: var(--dim);
+  font-style: italic;
+  margin-bottom: 1.25rem;
+  margin-top: 0;
+}
 </style>
 </head>
 <body>
@@ -1286,6 +1317,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 </style>
 
 <div class="kd-wrap">
+<div class="breadcrumb"><strong>Kojelauta</strong></div>
+<p class="page-role">Istunnon yleiskatsaus ja nopeat toiminnot</p>
+
 
   <!-- Header -->
   <div class="kd-header">
@@ -1426,6 +1460,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 
 <div id="page-aivokerrokset" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('aivokerrokset',null)">Tietopankki</span> › <strong>Aivokerrokset</strong></div>
+<p class="page-role">Triunainen aivomalli — neuroanatomia</p>
+
   <div class="page-eyebrow">Neuroanatomia · MacLean</div>
   <h1 class="page-title">Kolme aivokerrosta</h1>
   <p class="page-lead">Triunainen aivomalli — kolme evoluution eri aikakaudella kehittynyttä järjestelmää. Ymmärtäminen on keskeistä bottom-up vs top-down -valinnoissa.</p>
@@ -1482,6 +1519,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── POLYVAGAALI ────────────────────────────── -->
 <div id="page-polyvagaali" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('polyvagaali',null)">Tietopankki</span> › <strong>Polyvagaali</strong></div>
+<p class="page-role">Polyvagaaliteoria — ANS-säätely</p>
+
   <div class="page-eyebrow">Stephen Porges · 1994</div>
   <h1 class="page-title">Polyvagaalinen teoria</h1>
   <p class="page-lead">Autonomisen hermoston kolme hierarkkista tilaa. Nuorempi kerros aktivoituu ensin — vasta sen pettäessä vanhempi ottaa hallinnan.</p>
@@ -1531,6 +1571,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── TOLERANSSI ─────────────────────────────── -->
 <div id="page-toleranssi" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('toleranssi',null)">Tietopankki</span> › <strong>Toleranssi-ikkuna</strong></div>
+<p class="page-role">Optimaalinen vireystila ja säätely</p>
+
   <div class="page-eyebrow">Dan Siegel · Pat Ogden</div>
   <h1 class="page-title">Toleranssi-ikkuna</h1>
   <p class="page-lead">Optimaalisen integraation alue. Kapea ikkuna = vähäinen kapasiteetti. Terapian keskeinen tehtävä on laajentaa tätä aluetta asteittain.</p>
@@ -1595,6 +1638,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── KIPU & HERMOSTO ────────────────────────── -->
 <div id="page-kipu" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('kipu',null)">Tietopankki</span> › <strong>Kipu & hermosto</strong></div>
+<p class="page-role">Kipu neurotiede — moderni kipumalli</p>
+
   <div class="page-eyebrow">Pain Neuroscience Education · PNE</div>
   <h1 class="page-title">Kipu &amp; hermosto</h1>
   <p class="page-lead">Kipu on aivojen suojelureaktio — ei kudosvaurion suora mittari. Ymmärtäminen muuttaa kipukokemusta.</p>
@@ -1699,6 +1745,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── TRAUMA & KEHO ───────────────────────────── -->
 <div id="page-trauma" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('trauma',null)">Tietopankki</span> › <strong>Trauma & keho</strong></div>
+<p class="page-role">Trauman kehollinen ja neurobiologinen malli</p>
+
   <div class="page-eyebrow">Somaattinen psykoterapia · SE · EMDR</div>
   <h1 class="page-title">Trauma &amp; keho</h1>
   <p class="page-lead">Trauma tallentuu hermostoon — ei pelkästään mieleen. Keho pitää kirjaa (van der Kolk).</p>
@@ -1791,6 +1840,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── ANS KÄYTÄNNÖSSÄ ─────────────────────────── -->
 <div id="page-ans" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('ans',null)">Tietopankki</span> › <strong>ANS käytännössä</strong></div>
+<p class="page-role">Autonominen hermosto kliinisessä työssä</p>
+
   <div class="page-eyebrow">Autonominen hermosto · Kliiniset sovellukset</div>
   <h1 class="page-title">ANS käytännössä</h1>
   <p class="page-lead">Autonominen hermosto säätelee kaikkea — sydän, hengitys, ruoansulatus, immuunijärjestelmä, kivun säätely. Terapeutti työskentelee ANS:n kanssa jokaisessa istunnossa.</p>
@@ -1902,6 +1954,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── HRV & VAGUSHERMO ────────────────────────── -->
 <div id="page-hrv" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('hrv',null)">Tietopankki</span> › <strong>HRV & vagushermo</strong></div>
+<p class="page-role">Sydämen sykevaihtelu ja vagaalitonus</p>
+
   <div class="page-eyebrow">Heart Rate Variability · Vagushermo</div>
   <h1 class="page-title">HRV &amp; vagushermo</h1>
   <p class="page-lead">Sykevariaatio on ANS-säätelyn biologinen mitta — "ikkunapaikka" vaguksen toimintaan. HRV:n parannus on mitattava hoitovaikutus.</p>
@@ -1993,6 +2048,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── KEHON MUISTI ────────────────────────────── -->
 <div id="page-kehomuisti" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('kehomuisti',null)">Tietopankki</span> › <strong>Kehon muisti</strong></div>
+<p class="page-role">Somaattinen muisti ja kehollinen tieto</p>
+
   <div class="page-eyebrow">Implisiittinen muisti · Kehollinen oppiminen</div>
   <h1 class="page-title">Kehon muisti</h1>
   <p class="page-lead">Keho pitää kirjaa — kehollinen muisti on vanhempaa, nopeampaa ja voimakkaampaa kuin sanallinen muisti.</p>
@@ -2083,6 +2141,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 
 <div id="page-hoitosuunnitelma" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('hoitosuunnitelma',null)">Hoito</span> › <strong>Hoitosuunnitelma</strong></div>
+<p class="page-role">Yksilöllinen hoitosuunnitelma ja tavoitteet</p>
+
   <div class="page-eyebrow">Rakenteinen suunnittelu</div>
   <h1 class="page-title">Hoitosuunnitelma</h1>
   <p class="page-lead">Asiakaskohtainen hoitosuunnitelma tavoitteineen ja menetelmineen. Tallennetaan paikallisesti.</p>
@@ -2178,6 +2239,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── AKUPUNKTIO ─────────────────────────────── -->
 <div id="page-akupunktio" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('hoitosuunnitelma',null)">Hoito</span> › <strong>Akupunktio</strong></div>
+<p class="page-role">Akupunktioprotokollit ja pisteet</p>
+
   <div class="page-eyebrow">Kiinalainen lääketiede · Psykofyysinen integraatio</div>
   <h1 class="page-title">Akupunktio psykofyysisessä työssä</h1>
   <p class="page-lead">ANS-säätely, trauma, kipu ja psykologinen tasapaino kiinalaisen lääketieteen näkökulmasta. Neurotieteellinen perusta kiinalaisen lääketieteen kliiniseen soveltamiseen.</p>
@@ -2332,6 +2396,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── ARVIOINNIT ─────────────────────────────── -->
 <div id="page-arvioinnit" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('arvioinnit',null)">Arvioinnit & Seuranta</span> › <strong>Arvioinnit</strong></div>
+<p class="page-role">Validoidut kyselylomakkeet ja pisteet</p>
+
   <div class="page-eyebrow">Validoidut kyselylomakkeet</div>
   <h1 class="page-title">Kliiniset arvioinnit</h1>
   <p class="page-lead">GAD-7, PHQ-9, PCL-5 ja polyvagaalinen tilaarvio. Pisteet lasketaan automaattisesti.</p>
@@ -2485,6 +2552,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── EDISTYMISSEURANTA ──────────────────────── -->
 <div id="page-edistyminen" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('arvioinnit',null)">Arvioinnit & Seuranta</span> › <strong>Edistymisseuranta</strong></div>
+<p class="page-role">Hoitoprosessin seuranta ja tulokset</p>
+
   <div class="page-eyebrow">Asiakaskohtainen seuranta</div>
   <h1 class="page-title">Edistymisseuranta</h1>
   <p class="page-lead">Seuraa asiakkaan kehitystä ajan yli — vireystila, arviointitulokset ja istuntojen laatu. Data kerätään automaattisesti muistiinpanoista.</p>
@@ -2542,6 +2612,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── PSYKOEDUKAATIO ─────────────────────────── -->
 <div id="page-psykoed" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('psykoed',null)">Tietopankki</span> › <strong>Psykoedukaatio</strong></div>
+<p class="page-role">Psykoedukaatio-materiaalit asiakastyöhön</p>
+
   <div class="page-eyebrow">Kliiniset teemat</div>
   <h1 class="page-title">Psykoedukaatio</h1>
   <p class="page-lead">Syventävät materiaalit kliinisistä teemoista. Käytä terapiassa, psykoedukaatiossa ja asiakasohjauksessa.</p>
@@ -2552,6 +2625,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── HARJOITTEIDEN MÄÄRÄYS ──────────────────── -->
 <div id="page-maarays" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('hoitosuunnitelma',null)">Hoito</span> › <strong>Harj. määräys</strong></div>
+<p class="page-role">Kotiharjoitusohjelman määräys</p>
+
   <div class="page-eyebrow">Istunto · Kotiharjoittelu</div>
   <h1 class="page-title">Harjoitteiden määräys</h1>
   <p class="page-lead">Valitse harjoitteet — kopioi tai tulosta asiakkaalle annettavaksi. Osoite asiakasversioon lisätään automaattisesti.</p>
@@ -2597,6 +2673,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── MUISTIINPANOT ──────────────────────────── -->
 <div id="page-muistiinpanot" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('kojelauta',null)">Istunto</span> › <strong>Muistiinpanot</strong></div>
+<p class="page-role">Kliiniset muistiinpanot ja havainnointi</p>
+
   <div class="page-eyebrow">Istuntokohtainen seuranta</div>
   <h1 class="page-title">Muistiinpanot</h1>
 
@@ -2759,6 +2838,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <!-- ── HARJOITTEET ──────────────────────────── -->
 <div id="page-harjoitteet" class="page">
 <div class="page-content">
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <span onclick="showPage('hoitosuunnitelma',null)">Hoito</span> › <strong>Harjoitteet</strong></div>
+<p class="page-role">Terapeuttiset harjoitteet ja ohjeet</p>
+
   <div class="page-eyebrow">Kliiniset harjoitteet</div>
   <h1 class="page-title">Harjoitteet</h1>
   <p class="page-lead">Selaa ja hae harjoitteita. Suodata vireystilan tai kategorian mukaan.</p>
@@ -2875,6 +2957,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 
 <div class="ln-hero">
   <div class="ln-hero-title">Lasten &amp; nuorten psykoterapia</div>
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <strong>Lapset &amp; nuoret</strong></div>
+<p class="page-role">Lasten ja nuorten terapiaprotokollat</p>
+
   <div class="ln-hero-sub">Protokollat · Arviointi · Harjoitteet</div>
   <div class="ln-hero-badges">
     <span class="ln-hero-badge">🔵 CBT</span>
@@ -2919,6 +3004,9 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
 <div id="page-elamanjana" class="page">
 <div style="padding:1.5rem 1.5rem 0">
   <div style="font-size:1.25rem;font-weight:800;color:var(--text);margin-bottom:0.25rem">📅 Elämänjana</div>
+<div class="breadcrumb"><span onclick="showPage('kojelauta',null)">Kojelauta</span> › <strong>Elämänjana</strong></div>
+<p class="page-role">Asiakkaan elämänhistorian kartoitus ja aikajana</p>
+
   <div style="font-size:0.8rem;color:var(--text2);margin-bottom:1.2rem">Asiakkaan elämänhistoria visuaalisena aikajanana — tapahtumat, voimavarat ja haasteet.</div>
 
   <!-- Asetukset -->
