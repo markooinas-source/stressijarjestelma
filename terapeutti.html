@@ -215,6 +215,45 @@ body::before {
 
   padding: 1rem 0.75rem 0.5rem;
 }
+/* ── COLLAPSIBLE NAV GROUPS ── */
+details.nav-group {
+  margin-bottom: 0.25rem;
+}
+details.nav-group summary.nav-group-title {
+  font-family: var(--font-m);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.55rem 1rem 0.55rem 1.1rem;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--radius);
+  transition: color 0.18s, background 0.18s;
+}
+details.nav-group summary.nav-group-title::-webkit-details-marker { display: none; }
+details.nav-group summary.nav-group-title::after {
+  content: '▸';
+  font-size: 0.6rem;
+  opacity: 0.5;
+  transition: transform 0.2s;
+}
+details.nav-group[open] summary.nav-group-title::after {
+  transform: rotate(90deg);
+  opacity: 0.8;
+}
+details.nav-group[open] summary.nav-group-title {
+  color: var(--text);
+}
+details.nav-group summary.nav-group-title:hover {
+  color: var(--text);
+  background: var(--bg3);
+}
+
 .nav-group-label {
   font-family: var(--font-m);
   font-size: 0.52rem;
@@ -981,17 +1020,14 @@ h3.section-h {
 
   <div class="sidebar-nav">
 
-  <!-- Istunto-työkalut — aina näkyvissä -->
-  <div class="nav-group">
-    <div class="nav-group-label">Istunto</div>
+  <!-- Istunto — aina auki -->
+  <details class="nav-group" open>
+    <summary class="nav-group-title">Istunto</summary>
     <div class="nav-item active" onclick="showPage('kojelauta',this)">
       <span class="nav-dot"></span>Kojelauta
     </div>
     <div class="nav-item" onclick="showPage('muistiinpanot',this)">
       <span class="nav-dot"></span>Muistiinpanot
-    </div>
-    <div class="nav-item" onclick="showPage('arvioinnit',this)">
-      <span class="nav-dot"></span>Arvioinnit
     </div>
     <div class="nav-item" onclick="showPage('lapset-nuoret',this)">
       <span class="nav-dot"></span>Lapset &amp; nuoret
@@ -999,11 +1035,25 @@ h3.section-h {
     <div class="nav-item" onclick="showPage('elamanjana',this)">
       <span class="nav-dot"></span>Elämänjana
     </div>
-  </div>
+  </details>
+
+  <!-- Arvioinnit & Seuranta -->
+  <details class="nav-group">
+    <summary class="nav-group-title">Arvioinnit &amp; Seuranta</summary>
+    <div class="nav-item" onclick="showPage('arvioinnit',this)">
+      <span class="nav-dot"></span>Arvioinnit
+    </div>
+    <div class="nav-item" onclick="showPage('edistyminen',this)">
+      <span class="nav-dot"></span>Edistymisseuranta
+    </div>
+    <div class="nav-item" onclick="showPage('psqi',this)">
+      <span class="nav-dot"></span>PSQI (uni)
+    </div>
+  </details>
 
   <!-- Hoito -->
-  <div class="nav-group">
-    <div class="nav-group-label">Hoito</div>
+  <details class="nav-group" open>
+    <summary class="nav-group-title">Hoito</summary>
     <div class="nav-item" onclick="showPage('harjoitteet',this)">
       <span class="nav-dot"></span>Harjoitteet
     </div>
@@ -1016,48 +1066,39 @@ h3.section-h {
     <div class="nav-item" onclick="showPage('maarays',this)">
       <span class="nav-dot"></span>Harj. määräys
     </div>
-    <div class="nav-item" onclick="showPage('edistyminen',this)">
-      <span class="nav-dot"></span>Edistymisseuranta
-    </div>
-  </div>
+  </details>
 
-  <!-- Tietopankki — piilotettu, avautuu napista -->
-  <div class="nav-group">
-    <div class="nav-group-label" onclick="toggleNavSection('nav-theory')"
-      style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none">
-      Tietopankki
-      <span id="nav-theory-arrow" style="font-size:0.65rem;opacity:0.6">▸</span>
+  <!-- Tietopankki — suljettu oletuksena -->
+  <details class="nav-group" id="nav-theory-details">
+    <summary class="nav-group-title">Tietopankki</summary>
+    <div class="nav-item" onclick="showPage('aivokerrokset',this)">
+      <span class="nav-dot"></span>Aivokerrokset
     </div>
-    <div id="nav-theory" style="display:none">
-      <div class="nav-item" onclick="showPage('aivokerrokset',this)">
-        <span class="nav-dot"></span>Aivokerrokset
-      </div>
-      <div class="nav-item" onclick="showPage('polyvagaali',this)">
-        <span class="nav-dot"></span>Polyvagaali
-      </div>
-      <div class="nav-item" onclick="showPage('toleranssi',this)">
-        <span class="nav-dot"></span>Toleranssi-ikkuna
-      </div>
-      <div class="nav-item" onclick="showPage('kipu',this)">
-        <span class="nav-dot"></span>Kipu & hermosto
-      </div>
-      <div class="nav-item" onclick="showPage('trauma',this)">
-        <span class="nav-dot"></span>Trauma & keho
-      </div>
-      <div class="nav-item" onclick="showPage('ans',this)">
-        <span class="nav-dot"></span>ANS käytännössä
-      </div>
-      <div class="nav-item" onclick="showPage('hrv',this)">
-        <span class="nav-dot"></span>HRV & vagushermo
-      </div>
-      <div class="nav-item" onclick="showPage('kehomuisti',this)">
-        <span class="nav-dot"></span>Kehon muisti
-      </div>
-      <div class="nav-item" onclick="showPage('psykoed',this)">
-        <span class="nav-dot"></span>Psykoedukaatio
-      </div>
+    <div class="nav-item" onclick="showPage('polyvagaali',this)">
+      <span class="nav-dot"></span>Polyvagaali
     </div>
-  </div>
+    <div class="nav-item" onclick="showPage('toleranssi',this)">
+      <span class="nav-dot"></span>Toleranssi-ikkuna
+    </div>
+    <div class="nav-item" onclick="showPage('kipu',this)">
+      <span class="nav-dot"></span>Kipu &amp; hermosto
+    </div>
+    <div class="nav-item" onclick="showPage('trauma',this)">
+      <span class="nav-dot"></span>Trauma &amp; keho
+    </div>
+    <div class="nav-item" onclick="showPage('ans',this)">
+      <span class="nav-dot"></span>ANS käytännössä
+    </div>
+    <div class="nav-item" onclick="showPage('hrv',this)">
+      <span class="nav-dot"></span>HRV &amp; vagushermo
+    </div>
+    <div class="nav-item" onclick="showPage('kehomuisti',this)">
+      <span class="nav-dot"></span>Kehon muisti
+    </div>
+    <div class="nav-item" onclick="showPage('psykoed',this)">
+      <span class="nav-dot"></span>Psykoedukaatio
+    </div>
+  </details>
 
   </div><!-- /sidebar-nav -->
 
@@ -3995,15 +4036,10 @@ function showPage(id, el) {
   // Sulje sidebar mobiililla sivua vaihdettaessa
   if (window.innerWidth <= 768) closeSidebar();
 
-  // Avaa tietopankki automaattisesti jos navigoidaan teoriasivulle
-  const theoryPages = ['aivokerrokset','polyvagaali','toleranssi','kipu','trauma','ans','hrv','kehomuisti','psykoed'];
-  if (theoryPages.includes(id)) {
-    const panel = document.getElementById('nav-theory');
-    const arrow = document.getElementById('nav-theory-arrow');
-    if (panel && panel.style.display === 'none') {
-      panel.style.display = 'block';
-      if (arrow) arrow.textContent = '▾';
-    }
+  // Avaa se details-ryhmä automaattisesti jossa navigoitu sivu on
+  if (el) {
+    var details = el.closest('details.nav-group');
+    if (details && !details.open) details.open = true;
   }
 
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
