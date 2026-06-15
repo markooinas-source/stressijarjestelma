@@ -1383,6 +1383,7 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
   </div>
 
 </div>
+</div>
 
 
 
@@ -2316,6 +2317,37 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
     <button class="ass-tab" onclick="switchAss('ace',this)">ACE — Lapsuus</button>
     <button class="ass-tab" onclick="switchAss('pvobs',this)">Polyvagaalinen tilaarvio</button>
     <button class="ass-tab" onclick="switchAss('wotobs',this)">Toleranssi-ikkunan arvio</button>
+    <button class="ass-tab" onclick="switchAss('pcs',this)">PCS</button>
+    <button class="ass-tab" onclick="switchAss('tsk11',this)">TSK-11</button>
+    <button class="ass-tab" onclick="switchAss('csi',this)">CSI</button>
+    <button class="ass-tab" onclick="switchAss('rbdi',this)">R-BDI</button>
+    <button class="ass-tab" onclick="switchAss('ocir',this)">OCI-R</button>
+    <button class="ass-tab" onclick="switchAss('audit',this)">AUDIT</button>
+    <button class="ass-tab" onclick="switchAss('pdss',this)">PDSS-SR</button>
+    <button class="ass-tab" onclick="switchAss('bdi21',this)">BDI-21</button>
+    <button class="ass-tab" onclick="switchAss('scoff',this)">SCOFF</button>
+    <button class="ass-tab" onclick="switchAss('bes',this)">BES</button>
+    <button class="ass-tab" onclick="switchAss('keds',this)">KEDS</button>
+    <button class="ass-tab" onclick="switchAss('bdi2',this)">BDI-II</button>
+    <button class="ass-tab" onclick="switchAss('des',this)">DES-II</button>
+    <button class="ass-tab" onclick="switchAss('deps',this)">DEPS</button>
+    <button class="ass-tab" onclick="switchAss('pseq',this)">PSEQ</button>
+    <button class="ass-tab" onclick="switchAss('oswestry',this)">ODI</button>
+    <button class="ass-tab" onclick="switchAss('startback',this)">STarT Back</button>
+    <button class="ass-tab" onclick="switchAss('selkaoire',this)">Roland-Morris</button>
+    <button class="ass-tab" onclick="switchAss('dsq14',this)">DSQ-SF14</button>
+    <button class="ass-tab" onclick="switchAss('pem_screening',this)">PEM Seulonta</button>
+    <button class="ass-tab" onclick="switchAss('maps',this)">MAPS</button>
+    <button class="ass-tab" onclick="switchAss('nijmegen',this)">Nijmegen</button>
+    <button class="ass-tab" onclick="switchAss('fcs',this)">FCS</button>
+    <button class="ass-tab" onclick="switchAss('borg',this)">Borg RPE</button>
+    <button class="ass-tab" onclick="switchAss('beighton',this)">Beighton</button>
+    <button class="ass-tab" onclick="switchAss('hypermob5',this)">5-piste Hypermob.</button>
+    <button class="ass-tab" onclick="switchAss('mmrc',this)">mMRC</button>
+    <button class="ass-tab" onclick="switchAss('cat',this)">CAT</button>
+    <button class="ass-tab" onclick="switchAss('edeq',this)">EDE-Q</button>
+    <button class="ass-tab" onclick="switchAss('ysq',this)">YSQ-SF</button>
+    <button class="ass-tab" onclick="switchAss('pseq2',this)">PSFS</button>
   </div>
 
   <!-- GAD-7 -->
@@ -2440,7 +2472,409 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
     <div class="info-box"><strong>Toleranssi-ikkunan arvio</strong> — kliininen työkalu vireystilan sijainnin arviointiin istunnon aikana.</div>
     <div id="wot-obs-items"></div>
   </div>
-</div>
+
+  <!-- ── PCS ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-pcs" style="display:none">
+    <div class="info-box"><strong>PCS</strong> — Pain Catastrophizing Scale. Pisteet 0–52.</div>
+    <div id="pcs-items"></div>
+    <div class="score-display" id="pcs-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="pcs-num">0</div></div>
+      <div class="score-interp" id="pcs-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('pcs')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── TSK-11 ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-tsk11" style="display:none">
+    <div class="info-box"><strong>TSK-11</strong> — Tampa Scale — Liikkumisen pelko. Pisteet 0–44.</div>
+    <div id="tsk11-items"></div>
+    <div class="score-display" id="tsk11-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="tsk11-num">0</div></div>
+      <div class="score-interp" id="tsk11-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('tsk11')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── CSI ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-csi" style="display:none">
+    <div class="info-box"><strong>CSI</strong> — Central Sensitization Inventory. Pisteet 0–100.</div>
+    <div id="csi-items"></div>
+    <div class="score-display" id="csi-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="csi-num">0</div></div>
+      <div class="score-interp" id="csi-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('csi')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── R-BDI ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-rbdi" style="display:none">
+    <div class="info-box"><strong>R-BDI</strong> — Nuorten mielialakysely. Pisteet 0–39.</div>
+    <div id="rbdi-items"></div>
+    <div class="score-display" id="rbdi-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="rbdi-num">0</div></div>
+      <div class="score-interp" id="rbdi-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('rbdi')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── OCI-R ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-ocir" style="display:none">
+    <div class="info-box"><strong>OCI-R</strong> — Pakko-oirekysely. Pisteet 0–72.</div>
+    <div id="ocir-items"></div>
+    <div class="score-display" id="ocir-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="ocir-num">0</div></div>
+      <div class="score-interp" id="ocir-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('ocir')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── AUDIT ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-audit" style="display:none">
+    <div class="info-box"><strong>AUDIT</strong> — Alkoholin käytön kysely. Pisteet 0–40.</div>
+    <div id="audit-items"></div>
+    <div class="score-display" id="audit-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="audit-num">0</div></div>
+      <div class="score-interp" id="audit-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('audit')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── PDSS-SR ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-pdss" style="display:none">
+    <div class="info-box"><strong>PDSS-SR</strong> — Paniikkioirekysely. Pisteet 0–28.</div>
+    <div id="pdss-items"></div>
+    <div class="score-display" id="pdss-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="pdss-num">0</div></div>
+      <div class="score-interp" id="pdss-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('pdss')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── BDI-21 ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-bdi21" style="display:none">
+    <div class="info-box"><strong>BDI-21</strong> — Beckin masennusmittari (lyhyt). Pisteet 0–63.</div>
+    <div id="bdi21-items"></div>
+    <div class="score-display" id="bdi21-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="bdi21-num">0</div></div>
+      <div class="score-interp" id="bdi21-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('bdi21')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── SCOFF ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-scoff" style="display:none">
+    <div class="info-box"><strong>SCOFF</strong> — Syömishäiriöseula. Pisteet 0–5.</div>
+    <div id="scoff-items"></div>
+    <div class="score-display" id="scoff-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="scoff-num">0</div></div>
+      <div class="score-interp" id="scoff-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('scoff')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── BES ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-bes" style="display:none">
+    <div class="info-box"><strong>BES</strong> — Ahmimiskäyttäytymisen kysely. Pisteet 0–46.</div>
+    <div id="bes-items"></div>
+    <div class="score-display" id="bes-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="bes-num">0</div></div>
+      <div class="score-interp" id="bes-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('bes')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── KEDS ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-keds" style="display:none">
+    <div class="info-box"><strong>KEDS</strong> — Uupumuksen oirekysely. Pisteet 0–54.</div>
+    <div id="keds-items"></div>
+    <div class="score-display" id="keds-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="keds-num">0</div></div>
+      <div class="score-interp" id="keds-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('keds')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── BDI-II ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-bdi2" style="display:none">
+    <div class="info-box"><strong>BDI-II</strong> — Beck Depression Inventory II. Pisteet 0–63.</div>
+    <div id="bdi2-items"></div>
+    <div class="score-display" id="bdi2-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="bdi2-num">0</div></div>
+      <div class="score-interp" id="bdi2-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('bdi2')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── DES-II ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-des" style="display:none">
+    <div class="info-box"><strong>DES-II</strong> — Dissociative Experiences Scale. Pisteet 0–100.</div>
+    <div id="des-items"></div>
+    <div class="score-display" id="des-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="des-num">0</div></div>
+      <div class="score-interp" id="des-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('des')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── DEPS ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-deps" style="display:none">
+    <div class="info-box"><strong>DEPS</strong> — Masennusseula (suomalainen). Pisteet 0–30.</div>
+    <div id="deps-items"></div>
+    <div class="score-display" id="deps-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="deps-num">0</div></div>
+      <div class="score-interp" id="deps-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('deps')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── PSEQ ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-pseq" style="display:none">
+    <div class="info-box"><strong>PSEQ</strong> — Kipuminäpystyvyys. Pisteet 0–60.</div>
+    <div id="pseq-items"></div>
+    <div class="score-display" id="pseq-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="pseq-num">0</div></div>
+      <div class="score-interp" id="pseq-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('pseq')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── ODI ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-oswestry" style="display:none">
+    <div class="info-box"><strong>ODI</strong> — Oswestry Disability Index. Pisteet 0–100.</div>
+    <div id="oswestry-items"></div>
+    <div class="score-display" id="oswestry-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="oswestry-num">0</div></div>
+      <div class="score-interp" id="oswestry-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('oswestry')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── START BACK ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-startback" style="display:none">
+    <div class="info-box"><strong>STarT Back</strong> — Selkäkivun riskiprofiili. Pisteet 0–9.</div>
+    <div id="startback-items"></div>
+    <div class="score-display" id="startback-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="startback-num">0</div></div>
+      <div class="score-interp" id="startback-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('startback')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── ROLAND-MORRIS ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-selkaoire" style="display:none">
+    <div class="info-box"><strong>Roland-Morris</strong> — Selkäkivun haittakysely. Pisteet 0–24.</div>
+    <div id="selkaoire-items"></div>
+    <div class="score-display" id="selkaoire-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="selkaoire-num">0</div></div>
+      <div class="score-interp" id="selkaoire-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('selkaoire')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── DSQ-SF14 ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-dsq14" style="display:none">
+    <div class="info-box"><strong>DSQ-SF14</strong> — ME/CFS ja Long COVID oirekysely. Pisteet 0–56.</div>
+    <div id="dsq14-items"></div>
+    <div class="score-display" id="dsq14-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="dsq14-num">0</div></div>
+      <div class="score-interp" id="dsq14-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('dsq14')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── PEM SEULONTA ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-pem_screening" style="display:none">
+    <div class="info-box"><strong>PEM Seulonta</strong> — Post-Exertional Malaise. Pisteet 0–4.</div>
+    <div id="pem_screening-items"></div>
+    <div class="score-display" id="pem_screening-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="pem_screening-num">0</div></div>
+      <div class="score-interp" id="pem_screening-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('pem_screening')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── MAPS ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-maps" style="display:none">
+    <div class="info-box"><strong>MAPS</strong> — POTS-oirekysely. Pisteet 0–120.</div>
+    <div id="maps-items"></div>
+    <div class="score-display" id="maps-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="maps-num">0</div></div>
+      <div class="score-interp" id="maps-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('maps')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── NIJMEGEN ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-nijmegen" style="display:none">
+    <div class="info-box"><strong>Nijmegen</strong> — Hyperventilaatio-oireyhtymä. Pisteet 0–64.</div>
+    <div id="nijmegen-items"></div>
+    <div class="score-display" id="nijmegen-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="nijmegen-num">0</div></div>
+      <div class="score-interp" id="nijmegen-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('nijmegen')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── FCS ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-fcs" style="display:none">
+    <div class="info-box"><strong>FCS</strong> — Toimintakykyasteikko ME/CFS. Pisteet 0–10.</div>
+    <div id="fcs-items"></div>
+    <div class="score-display" id="fcs-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="fcs-num">0</div></div>
+      <div class="score-interp" id="fcs-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('fcs')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── BORG RPE ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-borg" style="display:none">
+    <div class="info-box"><strong>Borg RPE</strong> — Koettu kuormittuminen. Pisteet 0–10.</div>
+    <div id="borg-items"></div>
+    <div class="score-display" id="borg-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="borg-num">0</div></div>
+      <div class="score-interp" id="borg-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('borg')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── BEIGHTON ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-beighton" style="display:none">
+    <div class="info-box"><strong>Beighton</strong> — Nivelten yliliikkuvuus. Pisteet 0–9.</div>
+    <div id="beighton-items"></div>
+    <div class="score-display" id="beighton-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="beighton-num">0</div></div>
+      <div class="score-interp" id="beighton-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('beighton')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── 5-PISTE HYPERMOB. ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-hypermob5" style="display:none">
+    <div class="info-box"><strong>5-piste Hypermob.</strong> — Hypermobiliteetin seulonta. Pisteet 0–5.</div>
+    <div id="hypermob5-items"></div>
+    <div class="score-display" id="hypermob5-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="hypermob5-num">0</div></div>
+      <div class="score-interp" id="hypermob5-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('hypermob5')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── MMRC ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-mmrc" style="display:none">
+    <div class="info-box"><strong>mMRC</strong> — Hengenahdistuksen vaikeusaste. Pisteet 0–4.</div>
+    <div id="mmrc-items"></div>
+    <div class="score-display" id="mmrc-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="mmrc-num">0</div></div>
+      <div class="score-interp" id="mmrc-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('mmrc')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── CAT ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-cat" style="display:none">
+    <div class="info-box"><strong>CAT</strong> — COPD Assessment Test. Pisteet 0–40.</div>
+    <div id="cat-items"></div>
+    <div class="score-display" id="cat-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="cat-num">0</div></div>
+      <div class="score-interp" id="cat-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('cat')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── EDE-Q ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-edeq" style="display:none">
+    <div class="info-box"><strong>EDE-Q</strong> — Syömishäiriöseulonta. Pisteet 0–96.</div>
+    <div id="edeq-items"></div>
+    <div class="score-display" id="edeq-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="edeq-num">0</div></div>
+      <div class="score-interp" id="edeq-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('edeq')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── YSQ-SF ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-ysq" style="display:none">
+    <div class="info-box"><strong>YSQ-SF</strong> — Tunnelukkokartoitus. Pisteet 0–108.</div>
+    <div id="ysq-items"></div>
+    <div class="score-display" id="ysq-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="ysq-num">0</div></div>
+      <div class="score-interp" id="ysq-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('ysq')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
+
+  <!-- ── PSFS ──────────────────────────────── -->
+  <div class="ass-panel" id="ass-pseq2" style="display:none">
+    <div class="info-box"><strong>PSFS</strong> — Potilaskohtainen toimintakyky. Pisteet 0–30.</div>
+    <div id="pseq2-items"></div>
+    <div class="score-display" id="pseq2-score" style="display:none">
+      <div><div class="score-label">Pisteet</div><div class="score-num" id="pseq2-num">0</div></div>
+      <div class="score-interp" id="pseq2-interp"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <button onclick="saveAssResult('pseq2')" class="btn-primary">Tallenna tulos</button>
+    </div>
+  </div>
 </div>
 
 <!-- ── HARJOITTEET ────────────────────────────── -->
@@ -3009,6 +3443,8 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
   </div>
 </div>
 
+</main>
+
 <script>
 // ══════════════════════════════════════════════════
 // ELÄMÄNJANA — TERAPEUTTI
@@ -3446,7 +3882,7 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
     }).join('');
     const win = window.open('', '_blank');
     win.document.write(`<!DOCTYPE html><html><head><title>Elämänjana — ${name}</title>
-    <style>body{font-family:Georgia,serif;padding:2cm;color:#222}h1{font-size:1.4rem;color:#1a3a2a}table{width:100%;border-collapse:collapse}th{text-align:left;padding:6px 10px;border-bottom:2px solid #1a3a2a;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;color:#555}@media print{button{display:none}}</style></head>
+    <sty'+'le>body{font-family:Georgia,serif;padding:2cm;color:#222}h1{font-size:1.4rem;color:#1a3a2a}table{width:100%;border-collapse:collapse}th{text-align:left;padding:6px 10px;border-bottom:2px solid #1a3a2a;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;color:#555}@media print{button{display:none}}</sty'+'le></head>
     <body><h1>Elämänjana</h1><p style="color:#666;font-size:0.9rem">${name} · Syntymävuosi ${birth} · Tulostettu ${new Date().toLocaleDateString('fi-FI')}</p>
     <table><thead><tr><th>Aika</th><th>Kategoria</th><th>Tapahtuma</th><th>Kuvaus</th></tr></thead><tbody>${rows}</tbody></table>
     <scr' + 'ipt>window.print();<\/scr' + 'ipt></body></html>`);
@@ -3480,7 +3916,6 @@ body.light .kd-safety-slider::-webkit-slider-thumb { background: #2a2520; border
   }
 })();
 </script>
-</main>
 
 <!-- MODAL -->
 <div class="modal-bg" id="modal-bg" onclick="closeBg(event)">
@@ -4072,6 +4507,118 @@ function buildQuestionnaire(items, opts, prefix, maxScore, interpFn) {
 
 const assScores = { gad7:{}, phq9:{}, pcl5:{} };
 
+function buildExtraQ(id) {
+  const l = LOMAKKEET_EXTRA[id];
+  if (!l) return;
+
+  // Update info-box with ohje
+  const panel = document.getElementById('ass-' + id);
+  if (panel) {
+    const infoBox = panel.querySelector('.info-box');
+    if (infoBox) {
+      infoBox.innerHTML = `
+        <strong>${l.nimi}</strong> — ${l.kuvaus}. Pisteet 0–${l.max}.
+        ${l.riskiraja ? `<br><span style="color:#b01820;font-size:0.78rem">⚠ ${l.riskiraja}</span>` : ''}
+        ${l.ohje ? `<div style="margin-top:0.5rem;font-style:italic;color:var(--text2);font-size:0.82rem">${l.ohje}</div>` : ''}`;
+    }
+    // Clear score display
+    const scoreEl = panel.querySelector('.score-display');
+    if (scoreEl) scoreEl.style.display = 'none';
+  }
+
+  const container = document.getElementById(id + '-items');
+  if (!container) return;
+  container.innerHTML = l.kysymykset.map((q, i) => {
+    const isRisk = (id === 'bdi21' || id === 'rbdi' || id === 'bdi2') && i === 8;
+    return `<div class="q-item${isRisk ? ' q-risk' : ''}">
+      <div class="q-text">${i+1}. ${q}</div>
+      <div class="q-scale">
+        ${l.asteikko.filter(a => a !== '—').map((a, ai) => {
+          const valMatch = a.match(/\((\d+)\)/);
+          const val = valMatch ? parseInt(valMatch[1]) : (id === 'tsk11' ? ai+1 : ai);
+          return `<button class="q-opt" onclick="selectExtraQ(this,'${id}',${i},${val})">${a}</button>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectExtraQ(btn, id, q, v) {
+  if (!window.extraScores) window.extraScores = {};
+  if (!window.extraScores[id]) window.extraScores[id] = {};
+  btn.closest('.q-scale').querySelectorAll('.q-opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  window.extraScores[id][q] = v;
+
+  const l = LOMAKKEET_EXTRA[id];
+  if (!l) return;
+  const answered = Object.keys(window.extraScores[id]).length;
+  let total = Object.values(window.extraScores[id]).reduce((a,b)=>a+b, 0);
+
+  // TSK-11: reverse score items
+  if (id === 'tsk11' && l.kaanteinen) {
+    total = 0;
+    l.kysymykset.forEach((_, i) => {
+      const val = window.extraScores[id][i];
+      if (val !== undefined) {
+        total += l.kaanteinen.includes(i) ? (5 - val) : val;
+      }
+    });
+  }
+
+  if (answered < l.kysymykset.length) return;
+
+  // Find interpretation
+  let interpIdx = l.tulkinnat.length - 1;
+  for (let i = 0; i < l.varit.length; i++) {
+    if (total <= l.varit[i]) { interpIdx = i; break; }
+  }
+  const interp = l.tulkinnat[interpIdx];
+  const vari = l.variList[interpIdx] || '#666';
+  const pct = Math.min(100, Math.round((total / l.max) * 100));
+
+  // Build toimintaohje
+  const toimintaohje = l.toimintaohjeet ? l.toimintaohjeet[Math.min(interpIdx, l.toimintaohjeet.length-1)] : null;
+
+  // Build riskiraja warning
+  const riskiHTML = l.riskiraja ? `
+    <div style="margin-top:0.75rem;padding:0.55rem 0.75rem;background:#fff5f5;border-radius:8px;border:1px solid #fca5a5;display:flex;gap:0.5rem;align-items:flex-start">
+      <span style="color:#b01820;font-size:0.8rem">⚠</span>
+      <span style="font-size:0.75rem;color:#b01820;font-family:var(--font-m)">${l.riskiraja}</span>
+    </div>` : '';
+
+  const ohjeHTML = toimintaohje ? `
+    <div style="margin-top:0.75rem;padding:0.75rem 0.85rem;background:#fffbeb;border-radius:10px;border:1px solid #d97706aa">
+      <div style="font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#d97706;margin-bottom:0.4rem">🩺 Kliininen toimintaohje</div>
+      <div style="font-size:0.82rem;color:var(--text2);line-height:1.65">${toimintaohje}</div>
+    </div>` : '';
+
+  const scoreEl = document.getElementById(id + '-score');
+  if (scoreEl) {
+    scoreEl.style.display = 'block';
+    scoreEl.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:${vari};margin-bottom:0.25rem">Tulos</div>
+          <div style="font-size:1rem;font-weight:700;color:${vari}">${interp}</div>
+          <div style="margin-top:0.5rem;background:var(--border);border-radius:4px;height:6px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:${vari};border-radius:4px;transition:width 0.4s"></div>
+          </div>
+        </div>
+        <div style="text-align:center;flex-shrink:0">
+          <div style="font-size:2.2rem;font-weight:800;color:${vari};line-height:1">${total}</div>
+          <div style="font-size:0.65rem;color:var(--dim);font-family:var(--font-m)">/ ${l.max}</div>
+        </div>
+      </div>
+      ${riskiHTML}
+      ${ohjeHTML}
+      <div style="margin-top:0.85rem">
+        <button onclick="saveAssResult('${id}')" class="btn-primary">💾 Tallenna tulos</button>
+      </div>`;
+  }
+}
+
+
 function selectOpt(btn, prefix, q, v) {
   const container = document.getElementById(prefix+'-items');
   container.querySelectorAll(`[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
@@ -4088,30 +4635,61 @@ function updateAssScore(prefix) {
   const total = Object.values(scores).reduce((a,b)=>a+b,0);
   const maxScore = prefix==='pcl5' ? 80 : prefix==='phq9' ? 27 : 21;
 
-  let interp='', color=getComputedStyle(document.documentElement).getPropertyValue('--teal').trim();
-  if (prefix==='gad7') {
-    if(total<=4){interp='Minimaalinen ahdistuneisuus'}
-    else if(total<=9){interp='Lievä ahdistuneisuus'; color='#c8a050'}
-    else if(total<=14){interp='Kohtalainen ahdistuneisuus'; color='#c88030'}
-    else{interp='Vaikea ahdistuneisuus'; color='#c05060'}
-  } else if (prefix==='phq9') {
-    if(total<=4){interp='Minimaalinen masennus'}
-    else if(total<=9){interp='Lievä masennus'; color='#c8a050'}
-    else if(total<=14){interp='Kohtalainen masennus'; color='#c88030'}
-    else if(total<=19){interp='Melko vaikea masennus'; color='#c05060'}
-    else{interp='Vaikea masennus'; color='#c05060'}
-  } else {
-    if(total<33){interp='Alle kliinisen kynnyksen (< 33)'}
-    else{interp='Kliininen kynnys ylittyy (≥ 33) — traumaoireisto merkittävä'; color='#c05060'}
+  // Clinical data
+  const CLINICAL = {
+    gad7: {
+      varit:[4,9,14,21], variList:['#186030','#a05808','#c88030','#b01820'],
+      tulkinnat:['Minimaalinen ahdistuneisuus (0–4)','Lievä ahdistuneisuus (5–9)','Kohtalainen ahdistuneisuus (10–14)','Vaikea ahdistuneisuus (15–21)'],
+      toimintaohjeet:['Psykoedukaatio ahdistuksesta. Hengitys- ja rentoutusharjoitteet. Seuranta.','Ahdistuksenhallintataidot. CBT-tekniikat. Harkitse strukturoitua hoitoa.','Strukturoitu CBT tai ACT. Lääkärin arvio. Välttämiskäyttäytymisen kartoitus.','Intensiivinen hoito tarpeen. Psykiatrin konsultaatio. Lääkitys harkintaan.'],
+      riskiraja:'≥ 10 → kohtalainen ahdistus, hoito suositeltava'
+    },
+    phq9: {
+      varit:[4,9,14,19,27], variList:['#186030','#1a6050','#a05808','#b04010','#b01820'],
+      tulkinnat:['Minimaalinen masennus (0–4)','Lievä masennus (5–9)','Kohtalainen masennus (10–14)','Melko vaikea masennus (15–19)','Vaikea masennus (20–27)'],
+      toimintaohjeet:['Seuranta ja itsehoidon tuki. Psykoedukaatio masennuksesta. Liikunta, uni, sosiaaliset kontaktit.','Lyhytterapeuttinen interventio. Behavioraalinen aktivointi. Harkitse lääkärille ohjausta.','Strukturoitu hoito tarpeen. BA + CBT. Lääkärin arvio lääkitystarpeesta. Turvallisuusarvio.','Intensiivinen hoito. Psykiatrin konsultaatio suositeltavaa. Turvallisuusarvio välttämätön.','Kiireellinen psykiatrin arvio. Turvallisuusarvio välittömästi. Sairaalahoito mahdollisesti tarpeen.'],
+      riskiraja:'Q9 > 0 → tarkista itsemurha-ajatukset välittömästi'
+    },
+    pcl5: {
+      varit:[31,49,80], variList:['#186030','#a05808','#b01820'],
+      tulkinnat:['Alle kliinisen kynnyksen (0–31)','Todennäköinen PTSD (32–49)','Vakava PTSD-oireisto (≥50)'],
+      toimintaohjeet:['Seuranta. Stabilisaatiotaidot. Psykoedukaatio traumasta.','Traumafokusoitu arvio. Stabilisaatio ennen prosessointia. Turvallisuuden varmistaminen.','Traumaprotokolla. EMDR tai CPT harkintaan. Psykiatrin konsultaatio. Ei altistusta ilman stabilisaatiota.'],
+      riskiraja:'≥ 32 → todennäköinen PTSD, traumainformoitu lähestyminen välttämätön'
+    }
+  };
+
+  const cl = CLINICAL[prefix];
+  let interpIdx = cl.tulkinnat.length - 1;
+  for (let i = 0; i < cl.varit.length; i++) {
+    if (total <= cl.varit[i]) { interpIdx = i; break; }
   }
+  const interp = cl.tulkinnat[interpIdx];
+  const color = cl.variList[interpIdx];
+  const toimintaohje = cl.toimintaohjeet[Math.min(interpIdx, cl.toimintaohjeet.length-1)];
+  const pct = Math.min(100, Math.round((total / maxScore) * 100));
 
   const scoreEl = document.getElementById(prefix+'-score');
-  scoreEl.style.display='flex';
+  scoreEl.style.display = 'flex';
   document.getElementById(prefix+'-num').textContent = total;
   document.getElementById(prefix+'-interp').textContent = interp;
   const bar = document.getElementById(prefix+'-bar');
-  bar.style.width = (total/maxScore*100)+'%';
-  bar.style.background = color;
+  if (bar) { bar.style.width = pct+'%'; bar.style.background = color; }
+
+  // Show/update clinical guidance
+  let guideEl = document.getElementById(prefix+'-guide');
+  if (!guideEl) {
+    guideEl = document.createElement('div');
+    guideEl.id = prefix + '-guide';
+    scoreEl.parentElement.insertBefore(guideEl, scoreEl.nextSibling);
+  }
+  guideEl.innerHTML = `
+    <div style="margin-top:0.75rem;padding:0.55rem 0.75rem;background:#fff5f5;border-radius:8px;border:1px solid #fca5a5;display:flex;gap:0.5rem">
+      <span style="color:#b01820">⚠</span>
+      <span style="font-size:0.75rem;color:#b01820;font-family:var(--font-m)">${cl.riskiraja}</span>
+    </div>
+    <div style="margin-top:0.75rem;padding:0.75rem 0.85rem;background:#fffbeb;border-radius:10px;border:1px solid #d97706aa">
+      <div style="font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#d97706;margin-bottom:0.4rem">🩺 Kliininen toimintaohje</div>
+      <div style="font-size:0.82rem;color:var(--text2);line-height:1.65">${toimintaohje}</div>
+    </div>`;
 }
 
 function resetAss(prefix) {
@@ -4334,6 +4912,42 @@ function buildWOTObs() {
 
 // ═══════════════════════════════════════════
 // EXERCISES
+// ═══════════════════════════════════════════
+function buildACE() {
+  const container = document.getElementById('ace-items');
+  if (!container) return;
+  container.innerHTML = ACE_ITEMS.map((item, i) => `
+    <div class="q-item">
+      <div class="q-text" style="font-size:0.7rem;color:var(--dim);margin-bottom:0.25rem">${item.cat}</div>
+      <div class="q-text">${i+1}. ${item.q}</div>
+      <div class="q-scale">
+        <button class="q-opt" onclick="selectACE(this,${i},0)" data-q="${i}" data-v="0">0 — Ei</button>
+        <button class="q-opt" onclick="selectACE(this,${i},1)" data-q="${i}" data-v="1">1 — Kyllä</button>
+      </div>
+    </div>`).join('');
+}
+
+function selectACE(btn, q, v) {
+  document.querySelectorAll(`[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  if (!window.aceScores) window.aceScores = {};
+  window.aceScores[q] = v;
+  const total = Object.values(window.aceScores).reduce((a,b)=>a+b,0);
+  const scoreEl = document.getElementById('ace-score');
+  const numEl = document.getElementById('ace-total');
+  const interpEl = document.getElementById('ace-interp');
+  if (scoreEl && Object.keys(window.aceScores).length === ACE_ITEMS.length) {
+    scoreEl.style.display = 'block';
+    if (numEl) numEl.textContent = total;
+    if (interpEl) {
+      interpEl.textContent = total === 0 ? 'Ei merkittäviä lapsuuden haittakokemuksia' :
+        total <= 3 ? `Pisteet ${total}/10 — Matala riski` :
+        total <= 6 ? `Pisteet ${total}/10 — Kohtalainen riski — lisäkartoitus suositeltavaa` :
+        `Pisteet ${total}/10 — Korkea riski — traumainformoitu lähestymistapa tärkeä`;
+    }
+  }
+}
+
 // ═══════════════════════════════════════════
 function renderExercisesT() {
   const grid = document.getElementById('ex-grid-t');
@@ -4762,7 +5376,7 @@ function printNote(idx) {
   const html = `<!DOCTYPE html>
 <html lang="fi"><head><meta charset="UTF-8">
 <title>Istuntotiivistelmä${n.client ? ' — '+n.client : ''}</title>
-<style>
+<sty'+'le>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family: Georgia, serif; max-width: 680px; margin: 2rem auto; color: #1a1208; font-size: 13px; line-height: 1.7; }
   .header { border-bottom: 2px solid #2a6a3a; padding-bottom: 1rem; margin-bottom: 1.5rem; }
@@ -4785,7 +5399,7 @@ function printNote(idx) {
   .homework { background: #e8f2ec; border-left: 3px solid #2a6a3a; padding: 0.5rem 0.75rem; margin-top: 0.75rem; }
   .footer { margin-top: 2rem; padding-top: 0.75rem; border-top: 1px solid #ddd8d0; font-size: 0.68rem; color: #b0a490; display: flex; justify-content: space-between; }
   @media print { body { margin: 1cm; } @page { margin: 1.5cm; } }
-</style></head><body>
+</sty'+'le></head><body>
 
 <div class="header">
   <div class="header-top">
@@ -5294,14 +5908,370 @@ function closeModal() {
 // ═══════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════
+// LAAJENNETUT KYSELYLOMAKKEET — DATA
+// ═══════════════════════════════════════════════════
+
+const LOMAKKEET_EXTRA = {
+
+  pcs: {
+    nimi:"PCS", kuvaus:"Pain Catastrophizing Scale — Kipukatastrofointi", max:52,
+    varit:[12,23,29,52], variList:["#186030","#a05808","#b04010","#b01820"],
+    tulkinnat:["Matala (0–12)","Kohtalainen (13–23)","Korkea (24–29)","Kliinisesti merkittävä (≥30)"],
+    riskiraja:"≥ 30 → kliinisesti merkittävä, hoitosuunnitelma tarkistettava",
+    toimintaohjeet:["Seuranta. Psykoedukaatio kivusta.","Kognitiivinen työ. Katastrofointiajattelun tunnistaminen.","Strukturoitu CBT-P. Kipuneurotiede. Psykologinen arvio.","Intensiivinen psykologinen hoito. Moniammatillinen tiimi."],
+    ohje:"Ajatellessasi kipua, kuinka usein sinulla on seuraavia ajatuksia tai tunteita? (0=ei koskaan, 4=koko ajan)",
+    asteikko:["0 — Ei koskaan","1 — Harvoin","2 — Joskus","3 — Usein","4 — Koko ajan"],
+    kysymykset:["Minua huolestuttaa, loppuuko kipu koskaan","Tunnen, etten enää jaksa","Kipu on kamalaa enkä usko, että se voi parantua","Kipu on hirveää enkä usko, että voin selviytyä siitä","Tunnen, etten kykene enää sietämään kipua","Pelkään, että kipu pahenee","Ajattelen jatkuvasti muita tilanteita, joissa kipu oli pahaa","Haluaisin kipeästi, että kipu loppuisi","Kipua ei voi tuntea olevan olematta pelästynyt","Ajattelen jatkuvasti, kuinka paljon sattuu","Ajattelen jatkuvasti, kuinka paljon haluan, että kipu loppuu","Kipua ei voi lievittää millään","Ihmettelen, tapahtuuko minulle jotain vakavaa"]
+  },
+
+  tsk11: {
+    nimi:"TSK-11", kuvaus:"Tampa Scale — Liikkumisen pelko (Kinesiofobia)", max:44,
+    varit:[22,33,44], variList:["#186030","#a05808","#b01820"],
+    tulkinnat:["Matala (11–22)","Kohtalainen (23–33)","Korkea ≥34 — merkittävä kinesiofobia"],
+    riskiraja:"≥ 37 → merkittävä kinesiofobia, altistushoito suositeltava",
+    toimintaohjeet:["Psykoedukaatio. Liikuntaohjaus.","Kipuneurotiede. Asteittainen altistus. Pacing.","Graded exposure. Moniammatillinen. Psykologinen arvio."],
+    ohje:"Ympyröi vaihtoehto, joka parhaiten kuvaa mielipidettäsi asteikolla 1–4.",
+    asteikko:["1 — Täysin eri mieltä","2 — Jokseenkin eri mieltä","3 — Jokseenkin samaa mieltä","4 — Täysin samaa mieltä"],
+    kaanteinen:[2,4,5,7],
+    kysymykset:["Pelkään, että satutan itseni, jos liikun","Jos yrittäisin selviytyä siitä, kipuni lisääntyisi","Kehoni kertoo minulle, että minulla on jokin vakavasti vialla","Kipuni merkitsisi sitä, että liikuntani on vaarallista","Ihmiset eivät ota vakavasti terveydentilaani","Loukkaantumiseni vaarantaa kehoni pitkäksi aikaa","Kipu tarkoittaa aina, että olen loukannut kehoni","Vain sen vuoksi, että jokin pahentaa kipua, ei tarkoita, että se on vaarallista","Pelkään vahingossa satuttavani itseäni","Turvallisin tapa estää kipuni paheneminen on olla varovainen","En olisi ollut näin kivulias, jos minulla ei olisi jotain mahdollisesti vaarallista kehossani"]
+  },
+
+  csi: {
+    nimi:"CSI", kuvaus:"Central Sensitization Inventory — Sentraalinen sensitisaatio", max:100,
+    varit:[29,39,49,59,100], variList:["#186030","#1a6050","#a05808","#b04010","#b01820"],
+    tulkinnat:["Ei viitteitä (0–29)","Lievä (30–39)","Kohtalainen (40–49)","Vakava (50–59)","Erittäin vakava (60–100)"],
+    riskiraja:"≥ 40 → kohtalainen sentraalinen sensitisaatio, kipupsykoedukaatio keskeinen",
+    toimintaohjeet:["Seuranta.","Psykoedukaatio kivusta. Stressinhallinta.","Kipupsykoedukaatio. Multisensorinen lähestyminen. Lääkärin arvio.","Moniammatillinen kipukuntoutus.","Intensiivinen kipukuntoutus. Erikoislääkäri."],
+    ohje:"Kuinka usein seuraavat oireet ovat vaivanneet sinua viimeisen 3 kuukauden aikana?",
+    asteikko:["0 — Ei koskaan","1 — Harvoin","2 — Joskus","3 — Usein","4 — Aina"],
+    kysymykset:["Tunnen kipua koko kehossani","Väsyn helposti","Minulla on lihaskipuja","Minulla on jäykkiä niveliä tai lihaksia","Minulla on unihäiriöitä","Minulla on keskittymisvaikeuksia","Minulla on iho-ongelmia kuten kuivuutta, kutinaa tai ihottumaa","Stressaantuminen pahentaa oireitani","Tunnen olevani ahdistunut","Minulla on rakkovaivoja (tihentynyt virtsaamistarve, kipu)","Minulla on leukakipua tai -jäykkyyttä","Silmäni ovat herkkiä valolle","Kuulen ääniä korvissani","Minulla on suolistovaivoja (ripuli, ummetus, turvotus)","Minulla on niska- tai hartia-alueen kipuja","Saan usein päänsärkyä","Minulla on kaikille aisteille lisääntynyt herkkyys","Tunnen, että sydämeni lyö epäsäännöllisesti","Masennun helposti","Tunnen uupumusta suhteettoman pieniinkin ponnisteluihin","Minulla on kipua lantio- tai häpyluun alueella","Minulla on näköhäiriöitä","Minulla on päänsärkyä","Minulla on herkkyys kemikaaleille tai lääkkeille","Minulla on kipua selässäni"]
+  },
+
+  rbdi: {
+    nimi:"R-BDI", kuvaus:"Nuorten mielialakysely (13-vuotiaat+)", max:39,
+    varit:[4,7,11,16,39], variList:["#186030","#1a6050","#a05808","#b04010","#b01820"],
+    tulkinnat:["Ei masennusta (0–4)","Lievä masennus (5–7)","Kohtalainen masennus (8–11)","Vakava masennus (12–16)","Erittäin vakava masennus (≥17)"],
+    riskiraja:"≥ 8 → kohtalainen masennus; Q9 > 0 → tarkista itsemurha-ajatukset",
+    toimintaohjeet:["Seuranta. Psykoedukaatio.","BA-ohjelma. Liikunta. Lääkärin arvio.","Strukturoitu CBT/BA. Lääkärin arvio. Turvallisuusarvio.","Intensiivinen hoito. Psykiatrin konsultaatio.","Kiireellinen psykiatrin arvio. Turvallisuusarvio välittömästi."],
+    ohje:"Valitse jokaisesta ryhmästä se vaihtoehto, joka parhaiten kuvaa tuntemuksiasi viimeisen viikon aikana. Asteikko 0–3.",
+    asteikko:["0","1","2","3"],
+    kysymykset:["En ole surullinen / Tunnen itseni alakuloiseksi / Olen alakuloinen ja onneton / Olen niin onneton, että se on sietämätöntä","Tulevaisuus ei pelota minua / Pelkään tulevaisuutta / Minulla ei ole mitään odotettavaa / Tulevaisuus tuntuu toivottomalta","En tunne epäonnistuneeni / Tunnen epäonnistuneeni useammin / Elämäni on täynnä epäonnistumisia / Tunnen olevani täysin epäonnistunut","Asiat tuottavat tyydytystä kuten ennenkin / En nauti yhtä paljon / En saa tyydytystä juuri mistään / Kaikki on yhtä tylsää","En tunne erityistä syyllisyyttä / Tunnen syyllisyyttä melko usein / Tunnen syyllisyyttä suurimman osan ajasta / Tunnen syyllisyyttä kaiken aikaa","En tunne ansaitsevani rangaistusta / Tunnen saattavani ansaita rangaistuksen / Odotan tulevani rangaistuksi / Uskon ansaitsevani rangaistuksen","En ole pettynyt itseeni / Olen pettynyt itseeni / Olen kyllästynyt itseeni / Vihaan itseäni","En tunne olevani pahempi kuin muut / Arvostelen itseäni / Moitin itseäni jatkuvasti / Syytän itseäni kaikesta","Minulla ei ole ajatuksia itseni vahingoittamisesta / Minulla on joskus ajatuksia / Haluaisin kuolla / Haluaisin tappaa itseni","En itke tavallista enemmän / Itken enemmän kuin ennen / Itken nykyään paljon / Haluaisin itkeä, mutten pysty","En ole tavallista ärtyneempi / Ärsyynnyn herkemmin / Olen jatkuvasti ärtynyt / En enää reagoi asioihin jotka ärsyttivät","Olen yhtä kiinnostunut muista kuin ennenkin / Olen vähemmän kiinnostunut / Olen menettänyt suurimman osan kiinnostuksesta / Olen menettänyt kaiken kiinnostuksen","Teen päätöksiä yhtä helposti kuin ennenkin / Päätöksenteko vaikeampaa / Minulla on suuria vaikeuksia / En pysty tekemään päätöksiä"]
+  },
+
+  ocir: {
+    nimi:"OCI-R", kuvaus:"Pakko-oirekysely (Obsessive Compulsive Inventory)", max:72,
+    varit:[20,72], variList:["#186030","#b01820"],
+    tulkinnat:["Ei viitteitä OCD:stä (0–20)","OCD-oireet todennäköisiä (≥21)"],
+    riskiraja:"≥ 21 → OCD-oireet todennäköisiä, tarkempi arvio suositeltava",
+    toimintaohjeet:["Seuranta. Psykoedukaatio.","Strukturoitu ERP (Exposure and Response Prevention). Psykologinen arvio."],
+    ohje:"Kuinka paljon seuraavat ongelmat ovat häirinneet tai ahdistaneet sinua viimeisen kuukauden aikana?",
+    asteikko:["0 — Ei lainkaan","1 — Vähän","2 — Kohtalaisesti","3 — Paljon","4 — Erittäin paljon"],
+    kysymykset:["Keräilen niin paljon tavaraa, että se haittaa minua","Tarkistan asioita useammin kuin on tarpeen","Olen järjestänyt asioita tietyllä tavalla","Minulla on epämiellyttäviä ajatuksia, joita en halua","Tunnen tarvetta toistaa tiettyjä numeroita tai sanoja mielessäni","Pesen tai puhdistan itseni useammin kuin on tarpeen","Kertyn tavaraa tavalla, joka vaikuttaa elämääni","Tarkistan ovet, ikkunat tai lieden useaan kertaan","Minusta tuntuu pahalta, jos asiat eivät ole järjestyksessä","Tunnen tarvetta ajatella tiettyjä ajatuksia, vaikka ne ahdistaisivat","Tunnen tarvetta toistaa joitain tekoja useita kertoja","Pesen käsiäni tai kehoa useammin kuin on tarpeen"]
+  },
+
+  audit: {
+    nimi:"AUDIT", kuvaus:"Alkoholin käytön kysely (WHO)", max:40,
+    varit:[7,15,19,40], variList:["#186030","#a05808","#b04010","#b01820"],
+    tulkinnat:["Matala riski (0–7)","Riskikäyttö (8–15)","Haitallinen käyttö (16–19)","Todennäköinen riippuvuus (≥20)"],
+    riskiraja:"≥ 8 → riskikäyttö, mini-interventio suositeltava; ≥ 20 → todennäköinen riippuvuus",
+    toimintaohjeet:["Seuranta. Psykoedukaatio.","Mini-interventio. Motivoiva haastattelu.","Lääkärin arvio. Vieroitushoito.","Päihdepsykiatrian arvio. Intensiivinen hoito."],
+    ohje:"Vastaa seuraaviin kysymyksiin alkoholin käyttöäsi koskien.",
+    asteikko:["Ei koskaan (0)","Noin kerran kuukaudessa (1)","2–4 kertaa kuukaudessa (2)","2–3 kertaa viikossa (3)","4+ kertaa viikossa (4)"],
+    kysymykset:["Kuinka usein juot alkoholia?","Kuinka monta annosta juot tyypillisesti kerralla?","Kuinka usein juot kerralla 6 annosta tai enemmän?","Kuinka usein et pystynyt lopettamaan juomista, kun olit aloittanut?","Kuinka usein et ole pystynyt tekemään normaalisti odotettua, koska olit juonut?","Kuinka usein olet tarvinnut juomisen aamulla päästäksesi liikkeelle?","Kuinka usein olet tuntenut syyllisyyttä tai katumusta juomisesi jälkeen?","Kuinka usein et pystynyt muistamaan edellisen illan tapahtumia juomisesi takia?","Oletko itse tai onko joku muu satuttanut itseään, koska olit juonut?","Onko sukulainen, ystävä tai lääkäri ollut huolissaan juomisestasi?"]
+  },
+
+  pdss: {
+    nimi:"PDSS-SR", kuvaus:"Paniikkioirekysely (itseraportointiversio)", max:28,
+    varit:[7,14,20,28], variList:["#186030","#1a6050","#a05808","#b01820"],
+    tulkinnat:["Ei merkittävää (0–7)","Lievä (8–14)","Kohtalainen (15–20)","Vakava (21–28)"],
+    riskiraja:"≥ 15 → kohtalainen paniikkihäiriö, CBT tai lääkehoito suositeltava",
+    toimintaohjeet:["Seuranta. Psykoedukaatio ahdistuksesta.","Hengitys- ja rauhoittumistaidot. CBT.","Strukturoitu CBT. Altistusharjoitukset. Lääkärin arvio.","Intensiivinen CBT. Lääkärin arvio. Lääkitys."],
+    ohje:"Seuraavat kysymykset koskevat paniikkikohtauksiasi viimeisen viikon aikana.",
+    asteikko:["0 — Ei lainkaan","1 — Lievä","2 — Kohtalainen","3 — Vakava","4 — Erittäin vakava"],
+    kysymykset:["Kuinka monta paniikkikohtausta sinulla on ollut?","Jos kohtauksia oli, kuinka vakavia ne olivat?","Kuinka paljon olet kärsinyt paniikkikohtauksiin liittyvästä ahdistuksesta?","Onko sinulla ollut pelkoa tai ahdistusta paniikkikohtausten odottamisesta?","Pelkäätkö tiettyjä tilanteita tai paikkoja, koska olet yhdistänyt ne paniikkiin?","Vältätkö tilanteita tai paikkoja paniikkiin liittymisen vuoksi?","Kuinka paljon paniikkiin liittyvät ongelmat häiritsevät työtäsi tai koulutustasi?"]
+  },
+
+  bdi21: {
+    nimi:"BDI-21", kuvaus:"Beckin masennusmittari (lyhytversio)", max:63,
+    varit:[13,19,28,63], variList:["#186030","#a05808","#b04010","#b01820"],
+    tulkinnat:["Minimaalinen (0–13)","Lievä (14–19)","Kohtalainen (20–28)","Vakava (≥29)"],
+    riskiraja:"≥ 20 → kohtalainen masennus; Q9 > 0 → tarkista itsemurha-ajatukset",
+    toimintaohjeet:["Psykoedukaatio. Seuranta.","BA-ohjelma. CBT. Lääkärin arvio.","Intensiivinen CBT/BA. Psykiatri. Turvallisuusarvio.","Kiireellinen psykiatrin arvio. Turvallisuusarvio välittömästi."],
+    ohje:"Valitse jokaisesta ryhmästä se vaihtoehto (0–3), joka kuvaa vointiasi viimeisen kahden viikon aikana.",
+    asteikko:["0","1","2","3"],
+    kysymykset:["Surullisuus: En ole surullinen / Olen surullinen / Olen surullinen koko ajan / En kestä sitä","Pessimismi: En ole lannistunut / Olen lannistunut / En odota mitään / Tulevaisuus on toivoton","Epäonnistuminen: En tunne epäonnistuneeni / Epäonnistunut enemmän kuin muut / Vain epäonnistumisia / Täysin epäonnistunut","Nautinto: Nautin kuten ennen / En nauti yhtä paljon / Vähän nautintoa / Ei nautintoa","Syyllisyys: Ei erityistä / Syyllisyyttä monista asioista / Suurimman osan ajasta / Koko ajan","Rangaistus: En tunne ansaitsevani / Saatan ansaita / Odotan rangaistusta / Olen sen arvoinen","Itsetunto: Yhtä myönteinen kuin ennen / Luottamus menetetty / Pettynyt itseen / En pidä itsestäni","Itsearvostelu: En arvioi itseäni muita huonommaksi / Arvostelee enemmän / Kaikista heikkouksista / Syytän kaikesta","Itsemurha-ajatukset: Ei ajatuksia / Ajatuksia mutta ei toteuttaisi / Haluaisi tappaa itsensä / Tappaisin itseni jos voisin","Itkuisuus: En itke enemmän / Itken enemmän / Jokaisen pienen asian takia / Haluaisin itkeä mutten pysty","Levottomuus: En ole normaalia levottomampi / Hieman levottomampi / Selvästi levottomampi / Niin levoton etten pysty paikallaan","Kiinnostus: Ei menetetty / Vähemmän kiinnostunut / Suurin osa menetetty / Vaikea kiinnostua","Päätöksenteko: Teen päätöksiä yhtä hyvin / Huonommin kuin ennen / Paljon vaikeampi / En pysty lainkaan"]
+  },
+
+  scoff: {
+    nimi:"SCOFF", kuvaus:"Syömishäiriöseula (5 kysymystä)", max:5,
+    varit:[2,5], variList:["#186030","#b01820"],
+    tulkinnat:["Ei viitteitä (0–1)","Viitteitä syömishäiriöstä (≥2) — tarkempi arvio suositeltava"],
+    riskiraja:"≥ 2 → positiivinen seula, tarkempi arvio tarpeen",
+    toimintaohjeet:["Seuranta. Kehokuvatyö.","Syömishäiriöarvio. Ravitsemusterapeutti. Lääkärin arvio."],
+    ohje:"Vastaa rehellisesti seuraaviin kysymyksiin. Jokainen 'kyllä' = 1 piste.",
+    asteikko:["Ei (0)","Kyllä (1)"],
+    kysymykset:["Oksennatko itsesi kipeäksi, kun tunnet olevasi epämukavan kylläinen?","Huolestutko siitä, että olet menettänyt hallinnan syömisesi suhteen?","Oletko viimeisen 3 kuukauden aikana laihtanut yli 6 kg?","Uskovatko muut, että olet liian laiha, vaikka itse koet olevasi lihava?","Hallitseeko ruoka elämääsi?"]
+  },
+
+  bes: {
+    nimi:"BES", kuvaus:"Ahmimiskäyttäytymisen kysely (Binge Eating Scale)", max:46,
+    varit:[17,26,46], variList:["#186030","#a05808","#b01820"],
+    tulkinnat:["Ei ahmimista (0–17)","Kohtalainen (18–26)","Vakava ahmiminen (≥27)"],
+    riskiraja:"≥ 27 → vakava ahmiminen, syömishäiriöarvio suositeltava",
+    toimintaohjeet:["Seuranta. Psykoedukaatio.","CBT-E. Ravitsemusterapeutti.","Intensiivinen syömishäiriöhoito. Psykiatrin arvio."],
+    ohje:"Lue jokainen kohta huolellisesti ja valitse vaihtoehto, joka parhaiten kuvaa sinua.",
+    asteikko:["0 — Ei lainkaan","1 — Harvoin","2 — Joskus","3 — Usein"],
+    kysymykset:["Syön enemmän kuin pitäisi, vaikka en olisi nälkäinen","Minulla on vaikeuksia lopettaa syöminen","Syön nopeasti ilman huomiota","Syön yksin häpeän takia","Tunnen oloni masentuneeksi tai syylliseksi syömisen jälkeen","Syön suuria määriä ruokaa, vaikka en ole nälkäinen","Tunnen hallinnanmenetystä syödessäni","Ajattelen pakonomaisesti syömistä","Syön salassa","Syön vastauksena negatiivisiin tunteisiin","Minulla on vaikeuksia seurata ruokavalio-ohjeita","Syön nopeammin kuin normaalisti"]
+  },
+
+  keds: {
+    nimi:"KEDS", kuvaus:"Uupumuksen oirekysely (Karolinska Exhaustion Disorder Scale)", max:54,
+    varit:[18,27,54], variList:["#186030","#a05808","#b01820"],
+    tulkinnat:["Ei uupumusta (0–18)","Kohtalainen uupumus (19–27)","Vakava uupumus / burnout (≥28)"],
+    riskiraja:"≥ 19 → kohtalainen uupumus; ≥ 28 → vakava burnout, lääkäriarvio suositeltava",
+    toimintaohjeet:["Seuranta. Stressinhallinta.","Pacing. Energianhallinta. Psykoedukaatio.","Lääkärin arvio. Sairausloma harkintaan. Moniammatillinen tuki."],
+    ohje:"Arvioi miten olet voinut viimeisten 2 viikon aikana.",
+    asteikko:["0 — Ei lainkaan","1 — Harvoin","2 — Joskus","3 — Usein","4 — Lähes aina","5 — Koko ajan"],
+    kysymykset:["Sinulla on vaikeuksia aloittaa tehtäviä","Sinulla on vaikeuksia keskittyä lukemiseen","Muistisi on huono","Sinulla on vaikeuksia tehdä päätöksiä","Tunnet itsesi fyysisesti heikoksi tai väsyneeksi","Sinulla on vaikeuksia palautua levossa","Sinut uuvuttaa pienin ponnistus","Tunnet itsesi ylikuormittuneeksi","Sinulla on univaikeuksia"]
+  },
+
+  bdi2: {
+    nimi:"BDI-II", kuvaus:"Beck Depression Inventory II — Masennus (21 osiota)", max:63,
+    varit:[13,19,28,63], variList:["#186030","#1a6050","#a05808","#b01820"],
+    tulkinnat:["Minimaalinen (0–13)","Lievä (14–19)","Kohtalainen (20–28)","Vaikea (29–63)"],
+    riskiraja:"Q9 > 0 → tarkista itsemurhariski",
+    toimintaohjeet:["Psykoedukaatio. Elämäntapainterventiot. Seuranta.","BA-ohjelma. CBT. Lääkärin arvio.","Intensiivinen CBT/BA. Psykiatri. Turvallisuusarvio.","Kiireellinen psykiatrin arvio. Turvallisuusarvio välittömästi."],
+    ohje:"Lue kukin ryhmä huolellisesti ja valitse se lause joka parhaiten kuvaa mielialaasi TÄLLÄ VIIKOLLA, mukaanlukien tänään.",
+    asteikko:["0","1","2","3"],
+    kysymykset:["Surullisuus","Pessimismi","Epäonnistumisen tunne","Mielihyvän menetys","Syyllisyyden tunne","Rangaistuksen tunne","Tyytymättömyys itseen","Itsensä kritisointi","Itsemurha-ajatukset","Itkuisuus","Levottomuus","Kiinnostumattomuus","Päätöksenteon vaikeus","Arvottomuuden tunne","Energian puute","Muutokset nukkumisessa","Ärsyyntyväisyys","Ruokahalun muutokset","Keskittymisvaikeus","Väsymys","Kiinnostamattomuus seksiin"]
+  },
+
+  des: {
+    nimi:"DES-II", kuvaus:"Dissociative Experiences Scale — Dissosiaatio", max:100,
+    varit:[20,30,50,100], variList:["#186030","#a05808","#b04010","#b01820"],
+    tulkinnat:["Normaali (0–20)","Lievä (21–30)","Kohtalainen (31–50)","Korkea — arvio suositeltava (51+)"],
+    riskiraja:"≥ 30 → merkittävä dissosiaatio, DID-arvio harkittava",
+    toimintaohjeet:["Normaali. Seuranta.","Traumahistorian kartoitus. Stabilisaatiotaidot.","Traumaprotokolla — stabilisaatio ensin. Psykiatrin konsultaatio.","Vakava dissosiaatio. Erikoislääkärin arvio."],
+    ohje:"Ympyröi kuinka usein sinulla esiintyy kutakin kokemusta. 0% = ei koskaan, 100% = aina.",
+    asteikko:["0%","10%","20%","30%","40%","50%","60%","70%","80%","90%","100%"],
+    kysymykset:["Ajat autolla ja huomaat yhtäkkiä, ettet muista, mitä tien osalla tapahtui","Kuuntelet puhuvan henkilön puhetta ja huomaat, että et ole kuullut osaa siitä","Löydät itsesi tuntemattomasta paikasta tietämättä, miten sinne päädyit","Löydät vaatteita tai esineitä, joita et muista ostaneesi","Löydät kirjoittaneesi tai tehneesi jotain, mitä et muista tehneesi","Kuulet ääniä päässäsi, jotka sanovat sinulle asioita","Tunnet, ettet ole tietoinen siitä, mitä ympärilläsi tapahtuu","Katselet televisiota niin intensiivisesti, että olet tietämätön muista tapahtumista","Tunnet kehosi tai osan siitä ei kuuluvan sinulle","Muistat äkillisesti jonkin unohtuneen muiston ja tunnet sen olevan todellisuutta"]
+  },
+
+  deps: {
+    nimi:"DEPS", kuvaus:"Depression Evaluation Scale — Masennusseula (suomalainen)", max:30,
+    varit:[8,14,20,30], variList:["#186030","#1a6050","#a05808","#b01820"],
+    tulkinnat:["Ei masennusta (0–7)","Lievä masennus (8–13)","Kohtalainen (14–19)","Vakava masennus (20–30)"],
+    riskiraja:"≥ 12 → masennus todennäköinen, hoito suositeltava",
+    toimintaohjeet:["Seuranta.","Psykoedukaatio. BA-ohjelma. Lääkärin arvio.","Strukturoitu hoito. Lääkärin arvio.","Kiireellinen lääkärin arvio. Turvallisuusarvio."],
+    ohje:"Merkitse jokaisen kohdalle se vaihtoehto, joka parhaiten kuvaa omaa tilaasi VIIMEISEN KUUKAUDEN aikana.",
+    asteikko:["0 — Ei lainkaan","1 — Harvoin","2 — Silloin tällöin","3 — Usein"],
+    kysymykset:["Olen tuntenut itseni surulliseksi tai alakuloiseksi","Tulevaisuus tuntuu toivottomalta","Olen kokenut epäonnistumisia tai pettymyksiä","En ole nauttinut asioista joista yleensä nautin","Olen tuntenut syyllisyyttä tai arvottomuutta","Olen ajatellut kuolemaa tai toivonut olevani kuollut","Minulla on ollut vaikeuksia keskittyä asioihin","Olen tuntenut itseni levottomaksi tai jännittyneeksi","Olen tuntenut itseni väsyneeksi tai vailla energiaa","Olen tuntenut itseni yksinäiseksi"]
+  },
+
+  pseq: {
+    nimi:"PSEQ", kuvaus:"Pain Self-Efficacy Questionnaire — Kipuminäpystyvyys", max:60,
+    varit:[20,40,50,60], variList:["#b01820","#a05808","#1a6050","#186030"],
+    tulkinnat:["Matala minäpystyvyys (0–20)","Kohtalainen (21–40)","Hyvä (41–50)","Korkea minäpystyvyys (51–60)"],
+    riskiraja:"< 40 → matala kipuminäpystyvyys, aktiivinen kuntoutus tärkeää",
+    toimintaohjeet:["Intensiivinen kuntoutus. ACT. Kipuneurotiede.","Aktiivinen kuntoutus. Pystyvyyden vahvistaminen.","Hyvä perusta. Ylläpitävä kuntoutus.","Erinomainen. Tuetaan ylläpitämään."],
+    ohje:"Arvioi kuinka luottavainen olet siinä, että voit tehdä kutakin toimintoa tällä hetkellä, huolimatta kivustasi. Asteikko: 0 = ei lainkaan luottavainen, 6 = täysin luottavainen.",
+    asteikko:["0 — Ei lainkaan","1","2","3","4","5","6 — Täysin"],
+    kysymykset:["Pystyn nauttimaan asioista huolimatta kivusta","Pystyn tekemään useimmat kotitöistä huolimatta kivusta","Pystyn olemaan sosiaalisessa kanssakäymisessä ystävien kanssa niin usein kuin haluaisin","Pystyn selviytymään kivustani useimmissa tilanteissa","Pystyn tekemään jonkin kevyen toiminnan huolimatta kivusta","Pystyn selviytymään kivustani ilman lääkitystä","Pystyn selviytymään useimmista asioista huolimatta kivusta","Pystyn nauttimaan elämästä huolimatta kivusta","Pystyn tekemään useimmat välttämättömät päivittäiset toiminnot huolimatta kivusta","Pystyn olemaan aktiivinen huolimatta kivusta"]
+  },
+
+  oswestry: {
+    nimi:"ODI — Oswestry", kuvaus:"Oswestry Disability Index — Selän toimintakyky", max:100,
+    varit:[20,40,60,80], variList:["#186030","#a05808","#b04010","#b01820"],
+    tulkinnat:["Minimaalinen haitta (0–20%)","Kohtalainen (21–40%)","Vaikea (41–60%)","Erittäin vaikea (61–80%)","Täysin työkyvytön (81–100%)"],
+    riskiraja:"≥ 41% → vaikea haitta, moniammatillinen arvio suositeltava",
+    toimintaohjeet:["Itsehoidon tuki. Liikuntaohjaus.","Fysioterapia. Kipuneurotiede. Pacing.","Moniammatillinen. Kipupsykologi. ACT tai CBT-P.","Kipupoliklinikka. Psykologinen arvio.","Kirurginen/erikoislääkärin arvio."],
+    ohje:"Tämä kysely kertoo miten selkäkipusi vaikuttaa kykyysi selviytyä jokapäiväisistä toiminnoista. Valitse jokaisesta osiosta vaihtoehto joka kuvaa tilannettasi TÄNÄÄN.",
+    asteikko:["0 — Ei haittaa","1 — Lievä haitta","2 — Kohtalainen haitta","3 — Huomattava haitta","4 — Erittäin huomattava haitta","5 — Pahin mahdollinen"],
+    kysymykset:["Kipulääkitys","Henkilökohtainen hygienia","Nostaminen","Kävely","Istuminen","Seisominen","Nukkuminen","Seksielämä","Sosiaalinen elämä","Matkustaminen"]
+  },
+
+  startback: {
+    nimi:"STarT Back", kuvaus:"STarT Back Screening Tool — Selkäkivun riskiprofiili", max:9,
+    varit:[3,5,9], variList:["#186030","#a05808","#b01820"],
+    tulkinnat:["Matala riski (0–3)","Kohtalainen riski (4–5)","Korkea riski (6–9)"],
+    riskiraja:"≥ 4 → kohtalainen/korkea riski kroonistumiselle, psykososiaalinen arvio tärkeä",
+    toimintaohjeet:["Matala riski. Lyhyt neuvonta, liikuntaohjaus.","Psykofyysinen lähestyminen. Kipuneurotiede. Pacing.","Moniammatillinen kuntoutus. Psykologinen arvio. Kipupoliklinikka."],
+    ohje:"Ajattele selkäkipuasi viimeisten 2 viikon ajalta. Oletko samaa vai eri mieltä seuraavista?",
+    asteikko:["Eri mieltä (0)","Samaa mieltä (1)"],
+    kysymykset:["Selkäkipuni on levinnyt jalkaani jossain vaiheessa viimeisten 2 viikon aikana","Minulla on ollut olkapää- tai niskakipua viimeisten 2 viikon aikana","Olen käyttänyt kävelyä vain lyhyitä matkoja selkäkivun takia","Olen pukeutunut hitaammin selkäkivun takia","On ehdottomasti turvallista olla fyysisesti aktiivinen selkäkipuiselle","Huolestuttavat ajatukset ovat täyttäneet mieleni suurimman osan ajasta","Tunnen, etteivät selkäkipuni ole kauheita ja että tilanne tulee paranemaan","En ole nauttinut asioista niin kuin ennenkin","Kokonaisuudessaan, kuinka häiritsevä selkäkipusi on ollut viimeisten 2 viikon aikana?"]
+  },
+
+  selkaoire: {
+    nimi:"Roland-Morris", kuvaus:"Roland-Morris Disability Questionnaire — Selkäkivun haittakysely", max:24,
+    varit:[4,8,14,24], variList:["#186030","#1a6050","#a05808","#b01820"],
+    tulkinnat:["Minimaalinen haitta (0–4)","Lievä haitta (5–8)","Kohtalainen (9–14)","Vaikea haitta (15–24)"],
+    riskiraja:"≥ 9 → kohtalainen haitta, aktiivinen kuntoutus suositeltava",
+    toimintaohjeet:["Itsehoidon tuki. Liikuntaohjaus.","Fysioterapia. Kipuneurotiede. Pacing.","Moniammatillinen arvio. Psykologinen tuki.","Kipupoliklinikka. Psykiatrin arvio tarvittaessa."],
+    ohje:"Rastita ne lauseet jotka kuvaavat sinua TÄNÄÄN. Älä rastita lauseita jotka eivät kuvaa sinua.",
+    asteikko:["Ei kuvaa (0)","Kyllä, kuvaa (1)"],
+    kysymykset:["Pysyn kotona suurimman osan ajasta selkäkivun takia","Vaihdan asentoa usein yrittäessäni saada selkäni mukavaksi","Kävelen hitaammin kuin tavallisesti selkäkivun takia","En tee mitään töitä joita tavallisesti teen kotona","Pidän kaiteesta kiinni portaita noustessani","Makaan useammin selkäkivun takia","Minun täytyy pitää tuesta kiinni noustessani tuolilta","Yritän saada muita tekemään asioita puolestani","Puen vaatteeni hitaammin kuin tavallisesti","Seison lyhyitä aikoja kerrallaan","Vältän taivuttamasta tai polvistumasta","Minulla on vaikeus nousta tuolista","Selkäni on kipeä suurimman osan ajasta","Minulla on vaikeus kääntäytyä sängyssä","Ruokahaluni ei ole kovin hyvä selkäkivun takia","Minulla on vaikeus laittaa sukat tai kengät","Kävelen vain lyhyitä matkoja","Nukun heikommin selkäkivun takia","Pukeutumiseen menee apua","Istun suurimman osan päivästä","Vältän raskaita töitä kotona","Olen ärtyisämpi selkäkivun takia","Nouseminen portaita on hitaampaa","Pysyn sängyssä suurimman osan ajasta"]
+  },
+
+  dsq14: {
+    nimi:"DePaul DSQ-SF14", kuvaus:"ME/CFS ja Long COVID oirekysely (DePaul University)", max:56,
+    varit:[14,28,42,56], variList:["#186030","#1a6050","#a05808","#b01820"],
+    tulkinnat:["Ei viitettä (0–13)","Lievä oireilu (14–27)","Kohtalainen (28–41)","Merkittävä — lisäselvitys (42–56)"],
+    riskiraja:"≥ 2 pistettä KAIKISSA kohdissa → ME/CFS tai Long COVID lisäselvitys suositeltava",
+    toimintaohjeet:["Seuranta.","PEM-arvio. Pacing-ohjaus. Energianhallinta.","ME/CFS-protokolla. Lääkärin arvio. NASA Lean Test.","Erikoislääkärin arvio. Intensiivinen pacing."],
+    ohje:"Arvioi kuinka usein seuraavat oireet ovat esiintyneet VIIMEISEN 6 KUUKAUDEN aikana. Asteikko 0–4.",
+    asteikko:["0 — Ei lainkaan","1 — Joskus","2 — Puolet ajasta","3 — Suurimman osan","4 — Koko ajan"],
+    kysymykset:["Uupumus","Seuraavan päivän kivuliaisuus ei-kuormittavien toimintojen jälkeen","Vähäinenkin liikunta väsyttää fyysisesti","Herättyäsi et tunne oloasi levänneeksi","Lihaskipu","Turvotuksen tunne vatsan alueella","Vaikeuksia muistaa asioita","Vaikeus keskittyä pidempiaikaisesti","Suolisto-oireita (ärtyvä suoli, vatsakipu)","Tasapaino-ongelmia seistessä","Kylmät raajat","Kylmän tai kuuman tuntemuksia ilman syytä","Nuhakuumeen kaltaisia oireita","Jotkut hajut tai kemikaalit saavat olon pahoinvoivaksi"]
+  },
+
+  pem_screening: {
+    nimi:"PEM/PESE Seulonta", kuvaus:"Post-Exertional Malaise seulonta — ME/CFS, Long COVID", max:4,
+    varit:[1,2,3,4], variList:["#186030","#a05808","#b04010","#b01820"],
+    tulkinnat:["Ei viitettä PEM:iin (0)","Mahdollinen PEM (1)","Todennäköinen PEM (2–3)","Vahva PEM-viite (4)"],
+    riskiraja:"≥ 1 Kyllä → epäile PEM/PESE; ≥ 3 Kyllä → diagnostinen tarkkuus optimaalinen",
+    toimintaohjeet:["Seuranta.","Energiapäiväkirja. Pacing-ohjaus. Lääkärin arvio.","Selvä PEM. ME/CFS-protokolla. Vältä GET.","Intensiivinen pacing. Erikoislääkärin arvio."],
+    ohje:"PEM = voimakas oireiden paheneminen jopa vähäisen aktiviteetin jälkeen. Ilmenee 12–48h viiveellä. Vastaa Kyllä tai Ei.",
+    asteikko:["Ei (0)","Kyllä (1)"],
+    kysymykset:["Kestääkö aktiivisuudesta toipuminen tavanomaiseen lähtötasoon yli 1 päivän?","Tunnetko olosi huonovointiseksi tai heikoksi toipuessasi aktiivisuudesta?","Onko kykysi tehdä tavanomaisia päivittäisiä toimintoja rajoittunut aktiivisuuden jälkeen?","Vaikuttaako liikunta/aktiivisuus myönteisesti sinuun? (Ei = 1 piste)"]
+  },
+
+  maps: {
+    nimi:"MAPS — POTS-oirekysely", kuvaus:"Malmö POTS Symptom Score — POTSin oireiden vakavuus", max:120,
+    varit:[20,42,80,120], variList:["#186030","#1a6050","#a05808","#b01820"],
+    tulkinnat:["Ei viitettä (0–20)","Lievä (21–41)","POTS-viite (42–80)","Vaikea POTS (81–120)"],
+    riskiraja:"≥ 42 → viittaa POTSiin",
+    toimintaohjeet:["Seuranta.","Strukturoitu pacing-ohjelma. Toimintakyvyn arvio.","Intensiivinen pacing. Moniammatillinen tuki.","Erikoislääkärin arvio. Kardiologin konsultaatio."],
+    ohje:"Arvioi oireitasi asteikolla 0–10: 0 = Ei oireita, 10 = Erittäin voimakkaat oireet. Kuvaa VIIMEISEN VIIKON keskimääräisiä oireita.",
+    asteikko:["0","1","2","3","4","5","6","7","8","9","10"],
+    kysymykset:["Huimaus pystyasennossa tai seisomaan noustessa","Pyörrytyksen tunne","Palpitaatiot, korkea tai epäsäännöllinen syke","Hengitysvaikeudet sekä levossa että rasituksessa","Rintakipu","Päänsärky","Keskittymisvaikeudet tai ajattelun vaikeus (brain fog)","Lihaskipu","Pahoinvointi","GI-ongelmat (vatsakipu, ripuli, ummetus)","Epänormaali väsymys joka jatkuu levon jälkeen","Unettomuus"]
+  },
+
+  nijmegen: {
+    nimi:"Nijmegen-kysely", kuvaus:"Hyperventilaatio-oireyhtymän ja hengityksen dysfunktion seulonta", max:64,
+    varit:[11,23,40,64], variList:["#186030","#1a6050","#a05808","#b01820"],
+    tulkinnat:["Ei viitettä (0–10)","Hengityksen dysfunktio mahdollinen (11–22)","Hyperventilaatio-OY viite (23–40)","Vaikea hyperventilaatio (41–64)"],
+    riskiraja:"> 23 → hyperventilaatio-oireyhtymä; ≥ 3 oiretta 'Usein' → hengityksen dysfunktio",
+    toimintaohjeet:["Seuranta.","Hengitysohjaus. Psykoedukaatio. Rentoutus.","Hengitysterapia. Ahdistuksen hoito. Lääkärin arvio.","Fysioterapia. CBT. Psykiatrin arvio."],
+    ohje:"Arvioi kuinka usein olet kokenut kutakin oiretta.",
+    asteikko:["0 — Ei koskaan","1 — Harvemmin","2 — Joskus","3 — Usein","4 — Todella usein"],
+    kysymykset:["Rintakivut","Jännittyneisyyden tunne","Näön hämärtyminen","Huimauskohtaukset","Hämmentyneisyyden tunne","Nopeampi tai syvempi hengittäminen","Hengenahdistuksen tunne","Kireyden tunne rinnassa","Ilman täyteisyyden tunne vatsassa","Pistelyn tunne sormissa","Kyvyttömyys hengittää syvään","Sormien tai käsien jäykkyys","Kylmät jalat tai kädet","Sydämen tykytys","Ahdistuneisuuden tunteet","Kasvojen, käsien tai jalkojen puutuminen"]
+  },
+
+  fcs: {
+    nimi:"FCS — Toimintakykyasteikko", kuvaus:"Functional Capacity Scale — ME/CFS ja Long COVID (Bested & Marshall)", max:10,
+    varit:[3,5,8,10], variList:["#b01820","#a05808","#1a6050","#186030"],
+    tulkinnat:["Vaikeasti sairas — vuodepotilas (0–3)","Kohtalaisen vaikeasti sairas (4–5)","Kohtalaisesti sairas (6–8)","Normaali toimintakyky (9–10)"],
+    riskiraja:"FCS 0–3 = vaikeasti sairas, tarvitsee laajaa tukea",
+    toimintaohjeet:["Vuodelepo. Intensiivinen tuki. Lähiomaisten osallistaminen.","Kohtalainen. Rajoitukset merkittäviä. Pacing keskeistä.","Kohtalainen. Strukturoitu pacing. Toimintaterapia.","Normaali toimintakyky."],
+    ohje:"Valitse numero 0–10, joka parhaiten kuvaa TÄMÄNHETKISTÄ toimintakykyäsi.",
+    asteikko:["0 — Täysin vuoteenomana","1","2","3 — Vuoteenomana, omahoito muutaman min","4","5 — Kävelee 10–20 min/pv","6","7 — Töissä alle 25h/vk","8","9","10 — Täysi toimintakyky"],
+    kysymykset:["Valitse numero joka parhaiten kuvaa toimintakykyäsi tänään"]
+  },
+
+  borg: {
+    nimi:"Borg RPE 0–10", kuvaus:"Koettu kuormittuminen — modifioitu Borgin asteikko", max:10,
+    varit:[3,5,7,10], variList:["#186030","#1a6050","#a05808","#b01820"],
+    tulkinnat:["Hyvin kevyt (0–2)","Kohtalainen (3–4)","Rasittava (5–6)","Hyvin rasittava (7–9)","Maksimaalinen (10)"],
+    riskiraja:"ME/CFS ja Long COVID: suositus pysyä ≤ 3–4. Yli 4 → kasvava PEM-riski.",
+    toimintaohjeet:["Sopiva intensiteetti. Jatka.","Kohtalainen. Tarkkaile oireita.","Raskas. Liian intensiivinen ME/CFS-potilaalle. Vähennä.","Erittäin raskas. Lopeta. PEM-riski.","Maksimaalinen. Lopeta välittömästi."],
+    ohje:"Arvioi tämänhetkistä tai juuri päättyneen toiminnan aiheuttamaa koettua kuormittumista asteikolla 0–10.",
+    asteikko:["0 — Lepo","1 — Hyvin kevyt","2 — Kevyt","3 — Kohtalaisen rasittava","4","5 — Rasittava","6","7 — Hyvin rasittava","8","9","10 — Maksimaalisen rasittava"],
+    kysymykset:["Arvioi koettua kuormittumistasi tällä hetkellä tai juuri päättyneessä toiminnassa"]
+  },
+
+  beighton: {
+    nimi:"Beightonin Pisteytys", kuvaus:"Nivelten yliliikkuvuuden arviointi (Beighton 1973/1997)", max:9,
+    varit:[3,5,7,9], variList:["#186030","#1a6050","#a05808","#b01820"],
+    tulkinnat:["Normaali liikkuvuus (0–2)","Mahdollinen hypermobiliteetti (3–4)","Hypermobiliteetti (5–7)","Merkittävä hypermobiliteetti (8–9)"],
+    riskiraja:"≥ 5/9 aikuisilla → hypermobiliteetti (≥ 6/9 lapsilla/nuorilla)",
+    toimintaohjeet:["Normaali löydös.","Lievä yliliikkuvuus. Proprioseptioharjoittelu.","hEDS/HSD mahdollinen. Fysioterapia. Geneettiset syyt poissuljettava.","Merkittävä. Erikoislääkärin arvio."],
+    ohje:"Terapeutti arvioi jokaisen testin. Kumpikin puoli pisteytetään erikseen. Maksimipisteet 9/9.",
+    asteikko:["Negatiivinen (0)","Positiivinen (1)"],
+    kysymykset:["Pikkusormen MCP V -nivel yliojennus >90° — VASEN","Pikkusormen MCP V -nivel yliojennus >90° — OIKEA","Peukalo koskettaa kyynärvartta passiivisesti — VASEN","Peukalo koskettaa kyynärvartta passiivisesti — OIKEA","Kyynärnivelen yliojennus >10° — VASEN","Kyynärnivelen yliojennus >10° — OIKEA","Polvinivelen yliojennus >10° seistessä — VASEN","Polvinivelen yliojennus >10° seistessä — OIKEA","Selkäranka: molemmat kämmenet litteänä lattialla polvet suorina"]
+  },
+
+  hypermob5: {
+    nimi:"5-pisteen Hypermobiliteettikysely", kuvaus:"Nopea hypermobiliteetin seulonta (Hakim & Grahame 2003)", max:5,
+    varit:[1,2,3,5], variList:["#186030","#1a6050","#a05808","#b01820"],
+    tulkinnat:["Ei viitettä (0)","Mahdollinen hypermobiliteetti (1)","Todennäköinen hypermobiliteetti (2–3)","Selvä hypermobiliteetti (4–5)"],
+    riskiraja:"≥ 2 Kyllä → ennustaa vahvasti Beighton ≥ 4/9",
+    toimintaohjeet:["Ei yliliikkuvuutta.","Lievä. Harjoitteluohjaus. Seuranta.","Merkittävä yliliikkuvuus. hEDS-arvio. Fysioterapia.","Beighton-pistytys suositeltava. Erikoislääkärin arvio."],
+    ohje:"Vastaa Kyllä tai Ei jokaiseen kysymykseen.",
+    asteikko:["Ei (0)","Kyllä (1)"],
+    kysymykset:["Pystytkö nyt (tai oletko joskus pystynyt) saamaan kämmenet lattiaan polvet suorina?","Pystytkö nyt (tai oletko joskus pystynyt) taivuttamaan peukalosi kyynärvarteesi?","Huvititko lapsena kavereitasi vääntelemällä kehoasi outoihin asentoihin tai pystyitkö tekemään spagaatit?","Onko polvilumpiosi tai olkapääsi mennyt sijoiltaan useammin kuin kerran lapsena tai teini-ikäisenä?","Pidätkö itseäsi yliliikkuvana (double-jointed)?"]
+  },
+
+  mmrc: {
+    nimi:"mMRC Dyspnea Scale", kuvaus:"Modified Medical Research Council — hengenahdistuksen vaikeusaste", max:4,
+    varit:[1,2,3,4], variList:["#186030","#a05808","#b04010","#b01820"],
+    tulkinnat:["Lievä (0–1)","Kohtalainen (2)","Vaikea (3)","Hyvin vaikea (4)"],
+    riskiraja:"≥ 2 → kohtalainen hengenahdistus, hengityksen kuntoutus suositeltava",
+    toimintaohjeet:["Ei merkittävää hengenahdistusta.","Lievä. Liikuntaohjaus. Hengitysfysioterapia.","Kohtalainen. Keuhkolääkärin arvio. Hengitysharjoitteet.","Vakava. Kiireellinen lääkärin arvio.","Erittäin vakava. Sairaalahoito."],
+    ohje:"Valitse se vaihtoehto, joka parhaiten kuvaa hengenahdistustasi.",
+    asteikko:["0 — Hengenahdistusta vain erittäin voimakkaassa rasituksessa","1 — Hengenahdistusta kiirehtimisessä tai mäkeä noustessa","2 — Kävelen hitaammin kuin ikäiseni tai pysähdyn tasaisella","3 — Pystyn kävelemään n.100m ennen pysähtymistä","4 — En voi poistua asunnostani tai hengenahdistus pukeutuessa"],
+    kysymykset:["Valitse vaihtoehto joka parhaiten kuvaa hengenahdistustasi"]
+  },
+
+  cat: {
+    nimi:"CAT — COPD Assessment Test", kuvaus:"COPD Assessment Test — keuhkojen vaikutus hyvinvointiin", max:40,
+    varit:[10,20,30,40], variList:["#186030","#1a6050","#a05808","#b01820"],
+    tulkinnat:["Vähäinen vaikutus (0–10)","Kohtalainen vaikutus (11–20)","Suuri vaikutus (21–30)","Erittäin suuri vaikutus (31–40)"],
+    riskiraja:"≥ 10 → kohtalainen tai suuri vaikutus elämänlaatuun",
+    toimintaohjeet:["Seuranta. Tupakoinnin lopetus.","Keuhkolääkärin arvio. Hengitysfysioterapia.","Intensiivinen hoito. Lääkitys. Kuntoutus.","Erikoissairaanhoito. Intensiivinen kuntoutus."],
+    ohje:"Arvioi jokainen väittämä asteikolla 0–5.",
+    asteikko:["0","1","2","3","4","5"],
+    kysymykset:["Yskä: En yski koskaan (0) ← → Yskin jatkuvasti (5)","Lima: Ei limaa keuhkoissa (0) ← → Keuhkot täynnä limaa (5)","Rintakehä: Ei ahdistu (0) ← → Ahdistaa kovasti (5)","Hengästyminen mäessä: En hengästy (0) ← → Hengästyn pahasti (5)","Kotiaskareet: Suoriudun helposti (0) ← → Suoriudun tuskin (5)","Poistuminen kotoa: Voin luottavaisesti (0) ← → En lainkaan luottavaisesti (5)","Uni: Nukun sikeästi (0) ← → En nuku sikeästi (5)","Energia: Oloni on energinen (0) ← → Ei koskaan energinen (5)"]
+  },
+
+  edeq: {
+    nimi:"EDE-Q", kuvaus:"Eating Disorder Examination Questionnaire — Syömishäiriöseulonta", max:96,
+    varit:[20,40,67,96], variList:["#186030","#1a6050","#a05808","#b01820"],
+    tulkinnat:["Ei viitettä (0–19)","Lievä oireilu (20–39)","Kohtalainen (40–66)","Kliinisesti merkittävä ≥67"],
+    riskiraja:"≥ 2.8 kokonaiskeskiarvo → kliinisesti merkittävä syömishäiriöoire",
+    toimintaohjeet:["Psykoedukaatio. Kehokuvatyö. Seuranta.","Strukturoitu CBT-E tai FBT. Ravitsemusterapeutti.","Intensiivinen hoito. Moniammatillinen tiimi. Psykiatrin arvio.","Kiireellinen lääkärin arvio. Osastohoito mahdollisesti tarpeen."],
+    ohje:"Seuraavat kysymykset koskevat VIIMEISTÄ 28 PÄIVÄÄ. Asteikko 0–6.",
+    asteikko:["0 — Ei lainkaan","1","2","3","4","5","6 — Joka päivä/erittäin paljon"],
+    kysymykset:["Oletko tarkoituksellisesti yrittänyt rajoittaa syömäsi ruoan määrää laihtumiseksi?","Oletko jättänyt syömättä pitkiä aikoja (8+ tuntia hereillä ollessasi)?","Oletko yrittänyt noudattaa tiettyjä sääntöjä syömiseen liittyen?","Oletko halunnut pitää vatsan tyhjänä?","Onko ruoka tai syöminen hallinnut ajatuksiasi suurimman osan hereillä oloajastasi?","Oletko ollut huolissasi siitä, että et pysty kontrolloimaan syömistäsi?","Oletko tuntenut syyllisyyttä syömisestäsi?","Oletko ollut liiaksi huolissasi kehosi muodosta?","Oletko halunnut kovasti olla laihempi?","Oletko pohtinut painoasi paljon?","Oletko puntaroinnut itsesi usein?","Oletko vältellyt kehosi punnitsemista?","Oletko ollut tyytymätön kehosi muotoon?","Onko kehon muotosi vaikuttanut paljon siihen, miten arvioit itsesi?","Oletko tuntenut itsesi lihavaksi?","Onko paino vaikuttanut paljon siihen miten arvioit itsesi?"]
+  },
+
+  ysq: {
+    nimi:"YSQ-SF", kuvaus:"Young Schema Questionnaire — Tunnelukkokartoitus (lyhytversio)", max:108,
+    varit:[27,54,81,108], variList:["#186030","#a05808","#b04010","#b01820"],
+    tulkinnat:["Matala (0–27)","Kohtalainen (28–54)","Korkea (55–81)","Erittäin korkea (82–108)"],
+    riskiraja:"Yksittäisen skeeman pisteet ≥ 16 → kliinisesti merkittävä",
+    toimintaohjeet:["Psykoedukaatio tunnelukosta. Tietoisuuden lisääminen.","Skeematerapeuttinen lähestyminen. Tunnelukkotyö.","Strukturoitu skeematerapia. Tilatyöskentely.","Intensiivinen skeematerapia. Erikoisosaaminen tarpeen."],
+    ohje:"Arvioi jokainen väite asteikolla 1–6. Mieti miten väite kuvaa sinua YLEENSÄ.",
+    asteikko:["1 — Ei kuvaa lainkaan","2","3","4","5","6 — Kuvaa täydellisesti"],
+    kysymykset:["Murehdin, että tärkeät ihmiset jättävät minut tai lähtevät pois elämästäni","En koe olevani kenenkään erityinen henkilö","En tunne kuuluvani mihinkään ryhmään tai yhteisöön","En luota muihin ihmisiin — he satuttavat tai käyttävät minua hyväksi","Kukaan ei todella rakasta minua eikä välitä minusta","Tunnen olevani viallinen, huono tai arvoton","En selviydy arjesta ilman muiden apua","En pysty selviytymään kriisitilanteista yksin","En saa koskaan sitä mitä haluan — asiat menevät aina pieleen","Tulevaisuus on toivoton — asiat eivät muutu paremmiksi","Ansaitsen rangaistuksen — olen tehnyt pahoja asioita","Muiden tarpeet ovat tärkeämpiä kuin minun","Minun täytyy olla täydellinen — virheitä ei saa tehdä","Olen erilainen kuin muut ihmiset — en sovi joukkoon","Hallitsen tunteitani tiukasti — niitä ei saa näyttää","Minulla on oikeus saada mitä haluan — säännöt eivät koske minua","En pysty sietämään epämukavuutta tai pettymystä","Pelkään hylätyksi tulemista"]
+  },
+
+  pseq2: {
+    nimi:"PSFS — Potilaskohtainen", kuvaus:"Patient-Specific Functional Scale — Potilaskohtainen toimintakykymittari", max:30,
+    varit:[10,20,25,30], variList:["#b01820","#a05808","#1a6050","#186030"],
+    tulkinnat:["Vaikea toimintarajoite (0–10)","Kohtalainen (11–20)","Lievä (21–25)","Hyvä toimintakyky (26–30)"],
+    riskiraja:"< 20 → merkittävä toimintakykyrajoite, tavoitteenasettelu tärkeää",
+    toimintaohjeet:["Intensiivinen kuntoutus. Tavoitteenasettelu. ACT.","Aktiivinen kuntoutus. Pienet onnistumiset.","Lievä. Tuetaan itsenäisyyttä.","Hyvä pystyvyysusko. Ylläpitävä tuki."],
+    ohje:"Nimeä kolme tärkeintä toimintoa joissa sinulla on vaikeuksia kivun/oireen takia. Arvioi asteikolla 0–10: 0 = et pysty lainkaan, 10 = pystyt kuten ennen.",
+    asteikko:["0 — Ei pysty","1","2","3","4","5","6","7","8","9","10 — Täysin normaali"],
+    kysymykset:["Toiminto 1 — kirjaa toiminto terapeutin kanssa","Toiminto 2 — kirjaa toiminto terapeutin kanssa","Toiminto 3 — kirjaa toiminto terapeutin kanssa"]
+  }
+
+};
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
   buildQuestionnaire(GAD7_Q, GAD7_OPTS, 'gad7', 21);
+  // Build extra questionnaires
+  Object.keys(LOMAKKEET_EXTRA).forEach(id => buildExtraQ(id));
   buildQuestionnaire(PHQ9_Q, GAD7_OPTS, 'phq9', 27);
   buildQuestionnaire(PCL5_Q, PCL5_OPTS, 'pcl5', 80);
   buildPSQI();
   buildDASSQuestionnaire();
   buildPVObs();
   buildWOTObs();
+  buildACE();
   // renderExercisesT replaced by renderTExGrid (called on showPage)
   renderPsychoedT();
   renderRxList();
